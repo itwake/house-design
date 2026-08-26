@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#123c35" />
+    <meta
+      name="description"
+      content="广州荟雅苑 104.83㎡ 三房两卫 Sweet Home 3D JS 在线比例模型与复尺清单。"
+    />
+    <title>荟雅苑 104.83㎡ · 户型比例模型</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script defer src="vendor/big.min.js"></script>
+    <script defer src="vendor/gl-matrix-min.js"></script>
+    <script defer src="vendor/jszip.min.js"></script>
+    <script defer src="vendor/core.min.js"></script>
+    <script defer src="vendor/geom.min.js"></script>
+    <script defer src="vendor/stroke.min.js"></script>
+    <script defer src="vendor/batik-svgpathparser.min.js"></script>
+    <script defer src="vendor/jsXmlSaxParser.min.js"></script>
+    <script defer src="vendor/triangulator.min.js"></script>
+    <script defer src="vendor/viewmodel.min.js"></script>
+    <script defer src="vendor/viewhome.min.js"></script>
+    <script defer src="app.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="返回顶部">
+        <span class="brand-mark">荟</span>
+        <span>
+          <strong>荟雅苑 104.83㎡</strong>
+          <small>28F · 三房两卫 · 北向</small>
+        </span>
+      </a>
+      <div class="header-actions">
+        <span class="status-pill"><i></i> V0.2 图纸比例校准版</span>
+        <a class="button button-ghost" href="models/huiyayuan-104-calibrated.sh3d" download>下载 .sh3d</a>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Sweet Home 3D JS / 1:1 厘米坐标</p>
+          <h1>先把尺寸讲清楚，<br />再谈空间想象。</h1>
+          <p class="hero-lead">
+            这是依据目标房源尺寸图重建的三房两卫在线模型。绿色为图纸明确尺寸；橙色为按图校准或建模假设，必须在拆改和水电深化前复尺。
+          </p>
+          <div class="hero-actions">
+            <button class="button button-primary" data-open-tab="viewer">进入 3D 模型</button>
+            <button class="button button-secondary" data-open-tab="plan">核对 2D 尺寸</button>
+          </div>
+        </div>
+        <div class="hero-metrics" aria-label="模型主要尺寸">
+          <article>
+            <span>北侧总宽</span>
+            <strong>6,870<small> mm</small></strong>
+            <em class="grade grade-a">A · 图纸值</em>
+          </article>
+          <article>
+            <span>西侧总长</span>
+            <strong>14,010<small> mm</small></strong>
+            <em class="grade grade-a">A · 图纸值</em>
+          </article>
+          <article>
+            <span>南侧下部总宽</span>
+            <strong>6,410<small> mm</small></strong>
+            <em class="grade grade-a">A · 图纸值</em>
+          </article>
+          <article>
+            <span>当前统一墙厚</span>
+            <strong>120<small> mm</small></strong>
+            <em class="grade grade-c">C · 待复尺</em>
+          </article>
+        </div>
+      </section>
+
+      <section class="model-section" id="model">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">交互模型</p>
+            <h2>同一份坐标，三种核对方式</h2>
+          </div>
+          <p>3D 用于空间感；2D 用于比例；尺寸依据用于决定哪些数据能进施工图。</p>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="模型视图">
+          <button class="tab is-active" id="tab-viewer" role="tab" aria-selected="true" aria-controls="panel-viewer" data-tab="viewer">3D 在线模型</button>
+          <button class="tab" id="tab-plan" role="tab" aria-selected="false" aria-controls="panel-plan" data-tab="plan">2D 比例核对</button>
+          <button class="tab" id="tab-audit" role="tab" aria-selected="false" aria-controls="panel-audit" data-tab="audit">尺寸依据</button>
+        </div>
+
+        <div class="tab-panel is-active" id="panel-viewer" role="tabpanel" aria-labelledby="tab-viewer">
+          <div class="viewer-shell" id="viewerShell">
+            <canvas id="viewerCanvas" tabindex="0" aria-label="Sweet Home 3D JS 三维模型"></canvas>
+            <div class="viewer-progress" id="viewerProgressBox" aria-live="polite">
+              <span class="spinner"></span>
+              <strong id="viewerProgressLabel">正在读取 .sh3d 模型…</strong>
+              <progress id="viewerProgress" value="0" max="200"></progress>
+            </div>
+            <div class="viewer-error" id="viewerError" hidden>
+              <strong>3D 模型未能加载</strong>
+              <span id="viewerErrorText">可切换到 2D 比例核对继续查看。</span>
+            </div>
+            <div class="viewer-toolbar">
+              <div class="camera-switch">
+                <input id="aerialView" name="cameraType" type="radio" checked />
+                <label for="aerialView">鸟瞰</label>
+                <input id="virtualVisit" name="cameraType" type="radio" />
+                <label for="virtualVisit">漫游</label>
+              </div>
+              <select id="levelsAndCameras" aria-label="楼层和预设视角"></select>
+              <button class="icon-button" id="fullscreenButton" type="button" title="全屏查看">全屏</button>
+            </div>
+            <div class="viewer-help">拖动旋转 · 滚轮缩放 · 双击进入</div>
+          </div>
+          <div class="viewer-caption">
+            <p><strong>3D 只回答“放不放得下”。</strong>家具为真实尺寸的尺度块；材质、门扇开启方向和窗高仍需深化。</p>
+            <a href="models/huiyayuan-104-calibrated.sh3d" download>下载并在桌面版继续编辑 →</a>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="panel-plan" role="tabpanel" aria-labelledby="tab-plan" hidden>
+          <div class="plan-layout">
+            <div class="plan-stage">
+              <svg id="planSvg" viewBox="-120 -130 1100 1690" role="img" aria-label="荟雅苑三房两卫比例平面图"></svg>
+            </div>
+            <aside class="plan-sidebar">
+              <div class="panel-card">
+                <span class="card-kicker">显示</span>
+                <label class="check-row"><input id="toggleFurniture" type="checkbox" checked /> 家具尺度块</label>
+                <label class="check-row"><input id="toggleGrid" type="checkbox" checked /> 1 米网格</label>
+              </div>
+              <div class="panel-card">
+                <span class="card-kicker">选中空间</span>
+                <strong id="selectedRoomName">客餐厅 / 过道</strong>
+                <p id="selectedRoomArea">点击平面图中的房间查看模型几何面积。</p>
+              </div>
+              <div class="panel-card legend-card">
+                <span class="card-kicker">可信度</span>
+                <p><i class="legend-dot a"></i><b>A</b> 图纸明确标注，可作为本版坐标锚点</p>
+                <p><i class="legend-dot b"></i><b>B</b> 按两张图比例校准，建议现场核对</p>
+                <p><i class="legend-dot c"></i><b>C</b> 建模假设，不得直接下单施工</p>
+              </div>
+            </aside>
+          </div>
+          <details class="source-compare">
+            <summary>展开查看两张原始户型图</summary>
+            <div>
+              <figure>
+                <img src="assets/original-plan.webp" alt="同户型原始三房两卫平面图" />
+                <figcaption>同户型原始三房两卫图：用于确认空间关系。</figcaption>
+              </figure>
+              <figure>
+                <img src="assets/current-ziroom-plan.jpg" alt="目标房源自如改造现状尺寸图" />
+                <figcaption>目标房源现状图：用于提取总宽、总长与分段尺寸。</figcaption>
+              </figure>
+            </div>
+          </details>
+        </div>
+
+        <div class="tab-panel" id="panel-audit" role="tabpanel" aria-labelledby="tab-audit" hidden>
+          <div class="audit-intro">
+            <div>
+              <p class="eyebrow">可追溯尺寸</p>
+              <h3>哪些数字可以信，哪些要拿尺子确认</h3>
+            </div>
+            <p>“准确比例”不等于“竣工尺寸”。本模型对已标尺寸严格按 1:1 坐标录入，但墙体构造、门窗洞口、梁柱与管井仍缺现场数据。</p>
+          </div>
+          <div class="audit-table-wrap">
+            <table>
+              <thead><tr><th>项目</th><th>模型值</th><th>等级</th><th>依据 / 下一步</th></tr></thead>
+              <tbody id="auditRows"></tbody>
+            </table>
+          </div>
+          <div class="survey-list">
+            <h3>交房后第一轮复尺，优先拿这 8 项</h3>
+            <ol>
+              <li>每段承重墙、剪力墙和轻质隔墙的实际厚度</li>
+              <li>全部门洞净宽、墙垛宽度、门洞离墙距离与开启方向</li>
+              <li>窗洞宽高、窗台高、窗框进深，以及临路侧玻璃配置</li>
+              <li>梁底标高、原顶标高、地面高差和空调孔位</li>
+              <li>两卫排污管、地漏、沉箱边界、通风井及检修口</li>
+              <li>厨房烟道、燃气表、上下水、强弱电入户位置</li>
+              <li>阳台地漏、栏板/窗台高度、洗烘塔可用净宽</li>
+              <li>自如隔墙拆除后的原始墙面、找平层和水电遗留情况</li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <section class="method-section">
+        <div>
+          <p class="eyebrow">本版边界</p>
+          <h2>可以现在用，也知道何时不能用</h2>
+        </div>
+        <div class="method-grid">
+          <article><span>01</span><h3>现在可用</h3><p>确认三房两卫关系、检验家具尺度、与设计师沟通动线、形成复尺清单。</p></article>
+          <article><span>02</span><h3>复尺后更新</h3><p>墙厚、洞口、梁柱、管井、窗台、层高录入后，可进入平面深化和水电定位。</p></article>
+          <article><span>03</span><h3>不能直接施工</h3><p>本版不是结构图、拆改图或水电施工图；涉及承重与燃气必须由有资质人员确认。</p></article>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>荟雅苑 104.83㎡ 户型研究 · Sweet Home 3D JS Viewer 7.5.2</p>
+      <a href="https://www.sweethome3d.com/SweetHome3DJSOnline.jsp" target="_blank" rel="noreferrer">官方 Sweet Home 3D JS</a>
+    </footer>
+  </body>
+</html>
