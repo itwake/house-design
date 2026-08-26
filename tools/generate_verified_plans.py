@@ -24,11 +24,13 @@ SPACES = [
         "title": "客厅 + 餐厅",
         "subtitle": "连续公共区 · 模型净面积约35.0㎡",
         "polygon": [(277,334),(410,334),(410,632),(675,632),(675,1115),(530,1115),(530,1389),(212,1389),(212,632),(277,632)],
-        "items": ["三人沙发", "电视薄柜", "茶几", "四人餐桌", "餐椅北1", "餐椅北2", "餐椅南1", "餐椅南2", "玄关柜", "餐边柜"],
+        "items": ["三人沙发", "电视薄柜", "茶几", "窗边矮柜", "窗边绿植", "四人餐桌", "餐椅北1", "餐椅北2", "餐椅南1", "餐椅南2", "玄关柜", "餐边柜"],
+        "windows": [(212,647,212,847,"西窗2000·C")],
+        "clearanceIds": ["living_window_clear"],
         "doors": [(390,1389,490,1389,"入户1000")],
         "clearZones": [(390,1289,490,1389,"入户门落脚区")],
-        "status": "成立（餐桌已缩至1200×700）",
-        "notes": ["沙发—电视净距约2590", "餐桌东侧保留约1200主通道", "入户门内侧不再放端头餐椅"],
+        "status": "成立（电视墙已避开西窗）",
+        "notes": ["电视转至双卫南侧2650实墙", "柜前—沙发前净距约2440", "西窗前600范围无高柜或电视"],
     },
     {
         "file": "02-entry-dining.svg",
@@ -128,6 +130,7 @@ COLORS = {
     "metal": "#59615e",
     "sanitary": "#e7e5df",
     "wet": "#a9cbc8",
+    "plant": "#708a72",
 }
 
 
@@ -205,6 +208,18 @@ def make_svg(space: dict, furniture: dict[str, dict]) -> str:
         door_svg.append(f'<line x1="{px(x1):.1f}" y1="{py(y1):.1f}" x2="{px(x2):.1f}" y2="{py(y2):.1f}" stroke="#c25d31" stroke-width="4" stroke-dasharray="10 6"/>')
         door_svg.append(f'<text x="{(px(x1)+px(x2))/2:.1f}" y="{(py(y1)+py(y2))/2-9:.1f}" text-anchor="middle" class="door-label">{escape(label)}</text>')
 
+    window_svg = []
+    for x1,y1,x2,y2,label in space.get("windows", []):
+        window_svg.append(f'<line x1="{px(x1):.1f}" y1="{py(y1):.1f}" x2="{px(x2):.1f}" y2="{py(y2):.1f}" stroke="#f7f4ed" stroke-width="13"/>')
+        window_svg.append(f'<line x1="{px(x1):.1f}" y1="{py(y1):.1f}" x2="{px(x2):.1f}" y2="{py(y2):.1f}" stroke="#27849a" stroke-width="6"/>')
+        if abs(x2-x1) < abs(y2-y1):
+            tx, ty, anchor = px(x1)-12, (py(y1)+py(y2))/2, "middle"
+            transform = f' transform="rotate(-90 {tx:.1f} {ty:.1f})"'
+        else:
+            tx, ty, anchor = (px(x1)+px(x2))/2, py(y1)-12, "middle"
+            transform = ""
+        window_svg.append(f'<text x="{tx:.1f}" y="{ty:.1f}" text-anchor="{anchor}" class="window-label"{transform}>{escape(label)}</text>')
+
     clear_zone_svg = []
     for x1,y1,x2,y2,label in space.get("clearZones", []):
         clear_zone_svg.append(
@@ -224,14 +239,14 @@ def make_svg(space: dict, furniture: dict[str, dict]) -> str:
 <style>
   .title{{font:800 31px system-ui,'Microsoft YaHei';fill:#16342e}} .sub{{font:500 16px system-ui,'Microsoft YaHei';fill:#65706b}}
   .dim{{font:700 15px system-ui,'Microsoft YaHei';fill:#087567}} .fixture{{font:700 11px system-ui,'Microsoft YaHei';fill:#183b34}}
-  .door-label{{font:700 12px system-ui,'Microsoft YaHei';fill:#a44925}} .note{{font:600 15px system-ui,'Microsoft YaHei';fill:#31423d}}
+  .door-label{{font:700 12px system-ui,'Microsoft YaHei';fill:#a44925}} .window-label{{font:700 12px system-ui,'Microsoft YaHei';fill:#1c7488}} .note{{font:600 15px system-ui,'Microsoft YaHei';fill:#31423d}}
   .status{{font:800 18px system-ui,'Microsoft YaHei';fill:#fff}} .meta{{font:600 14px system-ui,'Microsoft YaHei';fill:#6a746f}}
 </style>
 <rect width="1100" height="650" fill="#f5f1e8"/><text x="55" y="57" class="title">{escape(space['title'])}</text>
 <text x="55" y="87" class="sub">{escape(space['subtitle'])}</text>
 <rect x="35" y="108" width="580" height="500" rx="24" fill="#fffdfa" stroke="#ddd6c9"/>
 <polygon points="{plan_points}" fill="#eee1cd" stroke="#193a33" stroke-width="9" stroke-linejoin="round"/>
-{''.join(clear_zone_svg)}{''.join(item_svg)}{''.join(door_svg)}
+{''.join(clear_zone_svg)}{''.join(item_svg)}{''.join(window_svg)}{''.join(door_svg)}
 <line x1="{px(min_x):.1f}" y1="{oy-24:.1f}" x2="{px(max_x):.1f}" y2="{oy-24:.1f}" stroke="#087567" stroke-width="2"/>
 <text x="{(px(min_x)+px(max_x))/2:.1f}" y="{oy-34:.1f}" text-anchor="middle" class="dim">{span_x*10:.0f} mm</text>
 <line x1="{ox-24:.1f}" y1="{py(min_y):.1f}" x2="{ox-24:.1f}" y2="{py(max_y):.1f}" stroke="#087567" stroke-width="2"/>
@@ -240,18 +255,27 @@ def make_svg(space: dict, furniture: dict[str, dict]) -> str:
 <rect x="650" y="115" width="410" height="94" rx="18" fill="#123c35"/><text x="675" y="151" class="status">平面校核结论</text>
 <text x="675" y="184" class="status">{escape(space['status'])}</text>
 <text x="665" y="258" class="title" style="font-size:23px">成立条件 / 风险</text>{notes}
-<text x="665" y="585" class="meta">绿色家具＝按比例固定投影</text><text x="665" y="611" class="meta">橙色虚线＝门洞 / 必须保持的通行净空</text>
+<text x="665" y="585" class="meta">家具＝按比例固定投影 · 青线＝外窗</text><text x="665" y="611" class="meta">橙色虚线＝门洞 / 必须保持的通行净空</text>
 </svg>'''
 
 
 def main() -> None:
     data = json.loads(MODEL_DATA.read_text(encoding="utf-8"))
     furniture = {item["name"]: item for item in data["furniture"]}
+    clearances = {item["id"]: item for item in data.get("clearances", [])}
     missing = sorted({name for space in SPACES for name in space["items"] if name not in furniture})
     if missing:
         raise ValueError(f"Missing furniture in model-data.json: {missing}")
+    missing_clearances = sorted({clearance_id for space in SPACES for clearance_id in space.get("clearanceIds", []) if clearance_id not in clearances})
+    if missing_clearances:
+        raise ValueError(f"Missing clearance zones in model-data.json: {missing_clearances}")
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     for space in SPACES:
+        shared_zones = [clearances[clearance_id] for clearance_id in space.get("clearanceIds", [])]
+        space["clearZones"] = [
+            *space.get("clearZones", []),
+            *((zone["x"], zone["y"], zone["x"] + zone["w"], zone["y"] + zone["d"], zone["name"].replace("客厅", "")) for zone in shared_zones),
+        ]
         audit_space(space, furniture)
         (OUTPUT_DIR / space["file"]).write_text(make_svg(space, furniture), encoding="utf-8")
     print(f"Generated and audited {len(SPACES)} verified SVG plans in {OUTPUT_DIR.relative_to(ROOT)}")

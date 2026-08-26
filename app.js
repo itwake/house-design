@@ -11,10 +11,11 @@ const DESIGN_ROOMS = [
   {
     index: "01", title: "客厅 + 餐厅", eyebrow: "模型净面积约35.0㎡ · 已做投影碰撞检查",
     image: "assets/verified/01-living-dining.svg",
-    summary: "保留连续公共区，但把餐桌缩至1200×700，取消端头餐椅，避免侵进入户门落脚区；客厅家具按同一厘米坐标核对。",
-    specs: ["2200沙发", "1200×700餐桌", "东侧主通道≈1200", "平面校核：成立"],
+    summary: "电视从有窗的西墙移到双卫南侧完整实墙；2200沙发横向面对电视，西窗前保留600mm净空，同时维持连续客餐厅。",
+    specs: ["2200沙发", "65英寸电视", "窗前净空600", "平面校核：成立"],
     details: [
-      ["校核结论", "沙发—电视净距约2590mm；餐桌东侧保留约1200mm主通道。四把餐椅只能布置在长边。"],
+      ["校核结论", "电视背板落在双卫南侧约2650mm实墙内；柜前至沙发前净距约2440mm，屏幕至坐姿视点约3100mm，客厅西窗不再被电视或高柜遮挡。"],
+      ["施工条件", "复尺时必须探测双卫南墙的材质、暗管和检修口；不适合直接打膨胀螺栓时，改用落地龙骨背板承重。"],
       ["照明与电气", "基础、电视/阅读、餐桌吊灯和柜下灯至少4组回路；窗帘电机双侧预留。"],
       ["临路策略", "北向外窗先做夜间噪声实测，再决定夹胶中空窗、密封和新风；不要只靠厚窗帘。"],
     ],
@@ -247,6 +248,13 @@ function renderPlan(model) {
   });
   root.append(roomsGroup);
 
+  const clearances = svg("g", { id: "clearanceLayer" });
+  model.clearances.forEach((zone) => {
+    clearances.append(svg("rect", { x: zone.x, y: zone.y, width: zone.w, height: zone.d, rx: 2, class: "clearance-zone" }));
+    clearances.append(svg("text", { x: zone.x + zone.w / 2, y: zone.y + zone.d / 2, class: "clearance-label", transform: `rotate(-90 ${zone.x + zone.w / 2} ${zone.y + zone.d / 2})` }, `${zone.name} · ${zone.grade}`));
+  });
+  root.append(clearances);
+
   const furniture = svg("g", { id: "furnitureLayer" });
   model.furniture.forEach((item) => {
     furniture.append(svg("rect", { x: item.x, y: item.y, width: item.w, height: item.d, rx: 4, class: `furniture-shape furniture-${item.tone || "wood"}` }));
@@ -382,7 +390,7 @@ function initViewer() {
   try {
     state.homeComponent = viewHome(
       "viewerCanvas",
-      "models/huiyayuan-104-calibrated.sh3d?v=2.1.0",
+      "models/huiyayuan-104-calibrated.sh3d?v=2.2.0",
       onerror,
       onprogression,
       {
@@ -416,7 +424,7 @@ async function start() {
   document.getElementById("fullscreenButton").addEventListener("click", () => document.getElementById("viewerShell").requestFullscreen?.());
   window.addEventListener("resize", resizeViewer);
 
-  const response = await fetch("models/model-data.json?v=2.1.0");
+  const response = await fetch("models/model-data.json?v=2.2.0");
   if (!response.ok) throw new Error(`模型坐标读取失败：HTTP ${response.status}`);
   state.model = await response.json();
   renderPlan(state.model);

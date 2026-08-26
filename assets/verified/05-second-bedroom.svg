@@ -2,7 +2,7 @@
 <style>
   .title{font:800 31px system-ui,'Microsoft YaHei';fill:#16342e} .sub{font:500 16px system-ui,'Microsoft YaHei';fill:#65706b}
   .dim{font:700 15px system-ui,'Microsoft YaHei';fill:#087567} .fixture{font:700 11px system-ui,'Microsoft YaHei';fill:#183b34}
-  .door-label{font:700 12px system-ui,'Microsoft YaHei';fill:#a44925} .note{font:600 15px system-ui,'Microsoft YaHei';fill:#31423d}
+  .door-label{font:700 12px system-ui,'Microsoft YaHei';fill:#a44925} .window-label{font:700 12px system-ui,'Microsoft YaHei';fill:#1c7488} .note{font:600 15px system-ui,'Microsoft YaHei';fill:#31423d}
   .status{font:800 18px system-ui,'Microsoft YaHei';fill:#fff} .meta{font:600 14px system-ui,'Microsoft YaHei';fill:#6a746f}
 </style>
 <rect width="1100" height="650" fill="#f5f1e8"/><text x="55" y="57" class="title">次卧 B</text>
@@ -18,5 +18,5 @@
 <rect x="650" y="115" width="410" height="94" rx="18" fill="#123c35"/><text x="675" y="151" class="status">平面校核结论</text>
 <text x="675" y="184" class="status">成立（门洞已与分墙脱开）</text>
 <text x="665" y="258" class="title" style="font-size:23px">成立条件 / 风险</text><g transform="translate(665 330)"><circle cx="10" cy="-5" r="5" fill="#087567"/><text x="28" y="0" class="note">1350床—衣柜主通道约990</text></g><g transform="translate(665 404)"><circle cx="10" cy="-5" r="5" fill="#087567"/><text x="28" y="0" class="note">900书桌放北侧，避免占门后区</text></g><g transform="translate(665 478)"><circle cx="10" cy="-5" r="5" fill="#087567"/><text x="28" y="0" class="note">门洞右边止于分墙内侧；门位仍为C级假设</text></g>
-<text x="665" y="585" class="meta">绿色家具＝按比例固定投影</text><text x="665" y="611" class="meta">橙色虚线＝门洞 / 必须保持的通行净空</text>
+<text x="665" y="585" class="meta">家具＝按比例固定投影 · 青线＝外窗</text><text x="665" y="611" class="meta">橙色虚线＝门洞 / 必须保持的通行净空</text>
 </svg>

@@ -29,7 +29,7 @@ WALL_HEIGHT = 270.0
 WALL_THICKNESS = 12.0
 
 MODEL_NOTES = {
-    "model.status": "V2.1门窗同源校核；2D与3D由同一套墙线、房间和开口坐标生成，不是现场竣工测量图",
+    "model.status": "V2.2窗口避让设计；2D与3D由同一套墙线、房间和开口坐标生成，客厅家具已避开西窗",
     "model.units": "Sweet Home 3D 内部单位为厘米；网页尺寸标注为毫米",
     "source.top_width": "6870mm，目标房源现状尺寸图",
     "source.bottom_width": "6410mm，目标房源现状尺寸图",
@@ -117,7 +117,7 @@ def opening_plan_record(spec: dict[str, object]) -> dict[str, object]:
 
 MODEL_DATA = {
     "name": "荟雅苑 104.83㎡ · 28F",
-    "version": "V2.1 门窗同源校核版",
+    "version": "V2.2 窗口避让设计版",
     "unit": "cm",
     "north": "图上方（临道路侧）",
     "palette": [
@@ -142,6 +142,9 @@ MODEL_DATA = {
     "walls": [list(item["coords"]) for item in WALL_SPECS],
     "windows": [opening_plan_record(item) for item in OPENING_SPECS if item["kind"] == "window"],
     "doors": [opening_plan_record(item) for item in OPENING_SPECS if item["kind"] != "window"],
+    "clearances": [
+        {"id": "living_window_clear", "name": "客厅西窗前600净空", "x": 212, "y": 647, "w": 60, "d": 200, "grade": "C"},
+    ],
     "furniture": [
         {"name": "次卧1350床", "x": 24, "y": 20, "w": 135, "d": 200, "a": 0, "tone": "fabric"},
         {"name": "次卧书桌", "x": 165, "y": 20, "w": 90, "d": 52, "a": 0, "tone": "wood"},
@@ -153,9 +156,11 @@ MODEL_DATA = {
         {"name": "1100书桌", "x": 207.5, "y": 335, "w": 55, "d": 110, "a": 0, "tone": "wood"},
         {"name": "书房办公椅", "x": 136, "y": 391, "w": 58, "d": 58, "a": 0, "tone": "fabric"},
         {"name": "书房客衣柜", "x": 167.5, "y": 550, "w": 85, "d": 50, "a": 0, "tone": "wood"},
-        {"name": "三人沙发", "x": 511, "y": 710, "w": 88, "d": 220, "a": 0, "tone": "fabric"},
-        {"name": "电视薄柜", "x": 218, "y": 710, "w": 34, "d": 220, "a": 0, "tone": "wood"},
-        {"name": "茶几", "x": 389, "y": 760, "w": 62, "d": 120, "a": 0, "tone": "wood"},
+        {"name": "三人沙发", "x": 435, "y": 911, "w": 220, "d": 88, "a": 0, "tone": "fabric"},
+        {"name": "电视薄柜", "x": 435, "y": 633, "w": 220, "d": 34, "a": 0, "tone": "wood"},
+        {"name": "茶几", "x": 485, "y": 789, "w": 120, "d": 62, "a": 0, "tone": "wood"},
+        {"name": "窗边矮柜", "x": 212.5, "y": 860, "w": 35, "d": 80, "a": 0, "tone": "wood"},
+        {"name": "窗边绿植", "x": 253, "y": 863, "w": 34, "d": 34, "a": 0, "tone": "plant"},
         {"name": "四人餐桌", "x": 290, "y": 1150, "w": 120, "d": 70, "a": 0, "tone": "wood"},
         {"name": "餐椅北1", "x": 298, "y": 1092.5, "w": 44, "d": 45, "a": 0, "tone": "fabric"},
         {"name": "餐椅北2", "x": 358, "y": 1092.5, "w": 44, "d": 45, "a": 0, "tone": "fabric"},
@@ -354,14 +359,18 @@ def design_pieces() -> list[str]:
     items += wardrobe_components("wardrobe_c", "书房客衣柜", 210, 575, 85, 50)
     items.append(piece("chair_c", "人体工学椅尺度", 165, 420, 58, 58, 105, "FF55655F"))
 
-    # Living room: thin TV storage, low sofa and clear daylight axis.
-    items += sofa_components("sofa", 555, 820, angle=math.pi / 2)
-    items += table_components("coffee", "客厅茶几", 420, 820, 120, 62, 42, angle=math.pi / 2, color="FFC9A77C")
-    items.append(piece("living_rug", "客厅暖灰地毯", 435, 820, 185, 270, 1.5, "FFBBB5AA", angle=math.pi / 2, elevation=.2))
-    items.append(piece("tv_low", "电视悬浮薄柜", 235, 820, 220, 34, 42, "FFBF9A70", angle=math.pi / 2, elevation=18))
-    items.append(piece("tv_panel", "浅橡木电视背板", 218, 820, 220, 4, 205, "FFC8A57C", angle=math.pi / 2, elevation=20))
-    items.append(piece("tv_screen", "65英寸电视尺度", 224, 820, 145, 5, 83, "FF252A29", angle=math.pi / 2, elevation=85))
-    items.append(piece("living_side", "客厅矮边柜", 630, 700, 80, 35, 62, "FFC4A078", angle=math.pi / 2))
+    # Living room: the west window stays fully clear.  TV moves to the wet-core
+    # south wall; the freestanding sofa faces north with about 3.1 m from screen
+    # to seated eye and 2.44 m clear between furniture footprints.
+    items += sofa_components("sofa", 545, 955)
+    items += table_components("coffee", "客厅茶几", 545, 820, 120, 62, 42, color="FFC9A77C")
+    items.append(piece("living_rug", "客厅暖灰地毯", 545, 820, 250, 185, 1.5, "FFBBB5AA", elevation=.2))
+    items.append(piece("tv_low", "电视悬浮薄柜", 545, 650, 220, 34, 42, "FFBF9A70", elevation=18))
+    items.append(piece("tv_panel", "浅橡木电视背板", 545, 636, 220, 4, 205, "FFC8A57C", elevation=20))
+    items.append(piece("tv_screen", "65英寸电视尺度", 545, 640, 145, 5, 83, "FF252A29", elevation=85))
+    items.append(piece("living_side", "窗边矮柜", 230, 900, 80, 35, 62, "FFC4A078", angle=math.pi / 2))
+    items.append(piece("living_plant_pot", "窗边绿植陶盆", 270, 880, 34, 34, 30, "FFB78F6B", model="models/cylinder.obj"))
+    items.append(piece("living_plant", "窗边绿植", 270, 880, 48, 48, 68, "FF708A72", elevation=28, model="models/cylinder.obj"))
 
     # Entry, dining and water bar storage stay on solid walls.
     items += wardrobe_components("entry", "350深玄关柜", 230, 1220, 180, 35, angle=math.pi / 2)
@@ -437,7 +446,7 @@ def design_lights() -> list[str]:
 def build_home_xml() -> str:
     lines: list[str] = [
         "<?xml version='1.0' encoding='UTF-8'?>",
-        f"<home {attrs(version='7500', name='荟雅苑104.83㎡_三房两卫_门窗同源校核V2.1.sh3d', camera='topCamera', wallHeight=WALL_HEIGHT, basePlanLocked='true')}>",
+        f"<home {attrs(version='7500', name='荟雅苑104.83㎡_三房两卫_窗口避让设计V2.2.sh3d', camera='topCamera', wallHeight=WALL_HEIGHT, basePlanLocked='true')}>",
     ]
     for key, value in MODEL_NOTES.items():
         lines.append(f"  <property {attrs(name=key, value=value)}/>")
@@ -493,7 +502,7 @@ def build_home_xml() -> str:
     lines.extend(dims)
     lines.extend([
         label("note_north", "北 / 临道路侧", 345, -82, "FF0B6A5D"),
-        label("note_accuracy", "V2.1同源校核：2D/3D共用墙线、房间和门窗；客厅西窗为C级待复尺", 315, 1460, "FFB45D2A"),
+        label("note_accuracy", "V2.2设计校核：电视转至卫浴南墙；客厅西窗前600净空；2D/3D同源", 315, 1460, "FFB45D2A"),
     ])
     lines.append("</home>")
     return "\n".join(lines) + "\n"
