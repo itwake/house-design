@@ -6,9 +6,9 @@
     <meta name="theme-color" content="#123c35" />
     <meta
       name="description"
-      content="广州荟雅苑 104.83㎡ 三房两卫 Sweet Home 3D JS 在线比例模型与复尺清单。"
+      content="广州荟雅苑 104.83㎡ 三房两卫完整概念设计，含逐房间效果参考、尺寸方案、Sweet Home 3D JS 在线模型与复尺清单。"
     />
-    <title>荟雅苑 104.83㎡ · 户型比例模型</title>
+    <title>荟雅苑 104.83㎡ · 三房两卫完整概念设计</title>
     <link rel="stylesheet" href="styles.css" />
     <script defer src="vendor/big.min.js"></script>
     <script defer src="vendor/gl-matrix-min.js"></script>
@@ -33,7 +33,7 @@
         </span>
       </a>
       <div class="header-actions">
-        <span class="status-pill"><i></i> V0.2 图纸比例校准版</span>
+        <span class="status-pill"><i></i> V1.0 完整概念设计版</span>
         <a class="button button-ghost" href="models/huiyayuan-104-calibrated.sh3d" download>下载 .sh3d</a>
       </div>
     </header>
@@ -41,14 +41,14 @@
     <main id="top">
       <section class="hero">
         <div class="hero-copy">
-          <p class="eyebrow">Sweet Home 3D JS / 1:1 厘米坐标</p>
-          <h1>先把尺寸讲清楚，<br />再谈空间想象。</h1>
+          <p class="eyebrow">Sweet Home 3D JS / 1:1 坐标 / 完整设计</p>
+          <h1>尺寸是底盘，<br />设计才是生活。</h1>
           <p class="hero-lead">
-            这是依据目标房源尺寸图重建的三房两卫在线模型。绿色为图纸明确尺寸；橙色为按图校准或建模假设，必须在拆改和水电深化前复尺。
+            在比例底模上落实“现代自然”的完整方案：拆除第四房，恢复连续客餐厅；三卧、双卫、可闭合厨房和家政阳台均加入真实尺寸柜体、家具、设备与分层照明。
           </p>
           <div class="hero-actions">
-            <button class="button button-primary" data-open-tab="viewer">进入 3D 模型</button>
-            <button class="button button-secondary" data-open-tab="plan">核对 2D 尺寸</button>
+            <a class="button button-primary" href="#design">查看逐房间设计</a>
+            <button class="button button-secondary" data-open-tab="viewer">进入 3D 模型</button>
           </div>
         </div>
         <div class="hero-metrics" aria-label="模型主要尺寸">
@@ -73,6 +73,41 @@
             <em class="grade grade-c">C · 待复尺</em>
           </article>
         </div>
+      </section>
+
+      <section class="design-section" id="design">
+        <div class="section-heading design-heading">
+          <div>
+            <p class="eyebrow">完整概念设计 V1</p>
+            <h2>九个空间，一套克制的语言</h2>
+          </div>
+          <p>暖白墙面、浅橡木、暖灰织物和少量鼠尾草绿；公共区3000K，厨房与卫浴任务光3500K。所有固定柜体都避开主要采光面。</p>
+        </div>
+
+        <div class="design-manifesto">
+          <article class="manifesto-lead">
+            <span>核心动作</span>
+            <h3>拆掉自如第四房，<br />把光和公共生活还给客厅。</h3>
+            <p>保留原厨卫湿区，厨房用黑框玻璃门实现“打开连通、关闭控烟”；临路北窗把隔声与新风作为装修底盘，而不是后期补救。</p>
+          </article>
+          <div class="design-decisions">
+            <article><b>01</b><strong>客餐厅连续</strong><p>薄电视柜、低沙发、餐桌靠厨房，高柜集中实体墙。</p></article>
+            <article><b>02</b><strong>三卧不定制死</strong><p>主卧1500床；次卧可成长；小卧用独立日床而非固定榻榻米。</p></article>
+            <article><b>03</b><strong>水电服务收纳</strong><p>柜体、电器和照明回路同步设计，先锁设备尺寸再下柜体订单。</p></article>
+          </div>
+        </div>
+
+        <div class="palette" aria-label="设计配色">
+          <span>材料基调</span>
+          <i style="--swatch:#F2EEE5"><b>暖白</b></i>
+          <i style="--swatch:#C8A77E"><b>浅橡木</b></i>
+          <i style="--swatch:#A9A39A"><b>暖灰织物</b></i>
+          <i style="--swatch:#7C9485"><b>鼠尾草绿</b></i>
+          <i style="--swatch:#303533"><b>哑黑金属</b></i>
+        </div>
+
+        <div class="design-grid" id="designGrid" aria-live="polite"></div>
+        <p class="render-note">效果图用于表达材质、色温与家具语言；实际几何以本页2D/3D比例模型和交房复尺为准。</p>
       </section>
 
       <section class="model-section" id="model">
@@ -115,7 +150,7 @@
             <div class="viewer-help">拖动旋转 · 滚轮缩放 · 双击进入</div>
           </div>
           <div class="viewer-caption">
-            <p><strong>3D 只回答“放不放得下”。</strong>家具为真实尺寸的尺度块；材质、门扇开启方向和窗高仍需深化。</p>
+            <p><strong>V1 已加入141个设计构件与14组灯光。</strong>床品、沙发、柜门、厨卫设备和家政系统均由真实尺寸参数组合；门窗洞口与结构仍需复尺。</p>
             <a href="models/huiyayuan-104-calibrated.sh3d" download>下载并在桌面版继续编辑 →</a>
           </div>
         </div>
@@ -202,8 +237,20 @@
       </section>
     </main>
 
+    <dialog class="design-dialog" id="designDialog">
+      <button class="dialog-close" id="dialogClose" aria-label="关闭设计详情">×</button>
+      <div class="dialog-media"><img id="dialogImage" alt="" /></div>
+      <div class="dialog-copy">
+        <p class="eyebrow" id="dialogEyebrow"></p>
+        <h2 id="dialogTitle"></h2>
+        <p id="dialogSummary"></p>
+        <div class="dialog-specs" id="dialogSpecs"></div>
+        <div class="dialog-detail" id="dialogDetail"></div>
+      </div>
+    </dialog>
+
     <footer>
-      <p>荟雅苑 104.83㎡ 户型研究 · Sweet Home 3D JS Viewer 7.5.2</p>
+      <p>荟雅苑 104.83㎡ 完整概念设计 V1 · Sweet Home 3D JS Viewer 7.5.2</p>
       <a href="https://www.sweethome3d.com/SweetHome3DJSOnline.jsp" target="_blank" rel="noreferrer">官方 Sweet Home 3D JS</a>
     </footer>
   </body>
