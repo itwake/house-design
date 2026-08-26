@@ -360,7 +360,7 @@ function initViewer() {
   try {
     state.homeComponent = viewHome(
       "viewerCanvas",
-      "models/huiyayuan-104-calibrated.sh3d?v=1.0.0",
+      "models/huiyayuan-104-calibrated.sh3d?v=1.1.0",
       onerror,
       onprogression,
       {
@@ -394,7 +394,7 @@ async function start() {
   document.getElementById("fullscreenButton").addEventListener("click", () => document.getElementById("viewerShell").requestFullscreen?.());
   window.addEventListener("resize", resizeViewer);
 
-  const response = await fetch("models/model-data.json?v=1.0.0");
+  const response = await fetch("models/model-data.json?v=1.1.0");
   if (!response.ok) throw new Error(`模型坐标读取失败：HTTP ${response.status}`);
   state.model = await response.json();
   renderPlan(state.model);

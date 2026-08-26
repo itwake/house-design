@@ -11,6 +11,8 @@ from __future__ import annotations
 
 import json
 import math
+import struct
+import zlib
 from pathlib import Path
 from xml.sax.saxutils import escape, quoteattr
 from zipfile import ZIP_DEFLATED, ZipFile
@@ -26,7 +28,7 @@ WALL_HEIGHT = 270.0
 WALL_THICKNESS = 12.0
 
 MODEL_NOTES = {
-    "model.status": "V1设计模型；按图纸锚点1:1建模，不是现场竣工测量图",
+    "model.status": "V1.1设计模型；修正次卧B门洞并加入真实门板材质，不是现场竣工测量图",
     "model.units": "Sweet Home 3D 内部单位为厘米；网页尺寸标注为毫米",
     "source.top_width": "6870mm，目标房源现状尺寸图",
     "source.bottom_width": "6410mm，目标房源现状尺寸图",
@@ -43,7 +45,7 @@ MODEL_NOTES = {
 
 MODEL_DATA = {
     "name": "荟雅苑 104.83㎡ · 28F",
-    "version": "V1.0 完整概念设计版",
+    "version": "V1.1 门洞与材质修正版",
     "unit": "cm",
     "north": "图上方（临道路侧）",
     "palette": [
@@ -213,10 +215,19 @@ def light(light_id: str, name: str, x: float, y: float, power: float = .35,
 
 
 def opening(opening_id: str, name: str, x: float, y: float, width: float,
-            depth: float, height: float, color: str, *, angle: float = 0,
-            elevation: float = 0) -> str:
+            depth: float, height: float, color: str | None, *, angle: float = 0,
+            elevation: float = 0, model: str = "models/box.obj") -> str:
     return (
-        f"  <doorOrWindow {attrs(id=opening_id, level='level0', name=name, model='models/box.obj', x=x, y=y, elevation=elevation, angle=angle, width=width, depth=depth, height=height, color=color, movable='false', wallThickness='1', wallDistance='0', wallWidth='1', wallLeft='0', wallHeight='1', wallTop='0', boundToWall='true')}/>"
+        f"  <doorOrWindow {attrs(id=opening_id, level='level0', name=name, model=model, x=x, y=y, elevation=elevation, angle=angle, width=width, depth=depth, height=height, color=color, movable='false', wallThickness='1', wallDistance='0', wallWidth='1', wallLeft='0', wallHeight='1', wallTop='0', boundToWall='true')}/>"
+    )
+
+
+def interior_door(opening_id: str, name: str, x: float, y: float,
+                  width: float, *, angle: float = 0, height: float = 215) -> str:
+    """A closed, framed door with a wood-grain leaf and metal handle."""
+    return opening(
+        opening_id, name, x, y, width, 12, height, None,
+        angle=angle, model="models/door.obj",
     )
 
 
@@ -338,7 +349,7 @@ def design_lights() -> list[str]:
 def build_home_xml() -> str:
     lines: list[str] = [
         "<?xml version='1.0' encoding='UTF-8'?>",
-        f"<home {attrs(version='7500', name='荟雅苑104.83㎡_三房两卫_完整概念设计V1.sh3d', camera='topCamera', wallHeight=WALL_HEIGHT, basePlanLocked='true')}>",
+        f"<home {attrs(version='7500', name='荟雅苑104.83㎡_三房两卫_完整概念设计V1.1.sh3d', camera='topCamera', wallHeight=WALL_HEIGHT, basePlanLocked='true')}>",
     ]
     for key, value in MODEL_NOTES.items():
         lines.append(f"  <property {attrs(name=key, value=value)}/>")
@@ -368,12 +379,12 @@ def build_home_xml() -> str:
         opening("window_c", "小卧西窗（待复尺）", 6, 470, 110, 12, 140, "FF8EC7D8", angle=1.5707963, elevation=90),
         opening("balcony_door", "客厅阳台门（待复尺）", 681, 1035, 150, 12, 220, "FF7FB5C5", angle=1.5707963),
         opening("entry_door", "入户门（待复尺）", 440, 1395, 100, 12, 220, "FF805F49"),
-        opening("door_a", "主卧门（待复尺）", 360, 328, 90, 12, 215, "FFD1C6B7"),
-        opening("door_b", "次卧门（待复尺）", 280, 328, 85, 12, 215, "FFD1C6B7"),
-        opening("door_c", "小卧门（待复尺）", 271, 500, 85, 12, 215, "FFD1C6B7", angle=1.5707963),
-        opening("door_bath_1", "主卫门（待复尺）", 416, 410, 75, 12, 210, "FFD1C6B7", angle=1.5707963),
-        opening("door_bath_2", "客卫门（待复尺）", 416, 555, 75, 12, 210, "FFD1C6B7", angle=1.5707963),
-        opening("door_kitchen", "厨房门（待复尺）", 536, 1220, 90, 12, 215, "FFD1C6B7", angle=1.5707963),
+        interior_door("door_a", "主卧门（待复尺）", 371, 328, 90),
+        interior_door("door_b", "次卧门（待复尺）", 270.5, 328, 85),
+        interior_door("door_c", "小卧门（待复尺）", 271, 500, 85, angle=1.5707963),
+        interior_door("door_bath_1", "主卫门（待复尺）", 416, 410, 75, angle=1.5707963, height=210),
+        interior_door("door_bath_2", "客卫门（待复尺）", 416, 555, 75, angle=1.5707963, height=210),
+        interior_door("door_kitchen", "厨房门（待复尺）", 536, 1220, 90, angle=1.5707963),
     ]
     lines.extend(pieces)
     lines.extend(openings)
@@ -458,6 +469,87 @@ f 5 1 4 8
 """
 
 
+DOOR_MTL = """# Materials for the framed interior door
+newmtl oak_leaf
+Ka 0.45 0.36 0.27
+Kd 0.95 0.91 0.84
+Ks 0.08 0.08 0.07
+Ns 18
+map_Kd wood-door.png
+
+newmtl warm_white_frame
+Ka 0.72 0.70 0.65
+Kd 0.92 0.90 0.85
+Ks 0.05 0.05 0.05
+Ns 10
+
+newmtl graphite_handle
+Ka 0.08 0.09 0.09
+Kd 0.17 0.18 0.17
+Ks 0.45 0.45 0.42
+Ns 80
+"""
+
+
+def build_door_obj() -> str:
+    """Build a unit framed door; X=width, Y=height and Z=depth."""
+    lines = [
+        "# Textured framed interior door",
+        "mtllib door.mtl",
+        "o InteriorDoor",
+        "vt 0 0", "vt 1 0", "vt 1 1", "vt 0 1",
+    ]
+    vertex_count = 0
+
+    def add_box(name: str, bounds: tuple[float, float, float, float, float, float],
+                material: str) -> None:
+        nonlocal vertex_count
+        x1, y1, z1, x2, y2, z2 = bounds
+        vertices = [
+            (x1, y1, z1), (x2, y1, z1), (x2, y2, z1), (x1, y2, z1),
+            (x1, y1, z2), (x2, y1, z2), (x2, y2, z2), (x1, y2, z2),
+        ]
+        lines.extend([f"g {name}", f"usemtl {material}"])
+        lines.extend(f"v {x} {y} {z}" for x, y, z in vertices)
+        base = vertex_count + 1
+        for a, b, c, d in ((0, 1, 2, 3), (4, 7, 6, 5), (0, 4, 5, 1),
+                           (1, 5, 6, 2), (2, 6, 7, 3), (4, 0, 3, 7)):
+            lines.append(f"f {base+a}/1 {base+b}/2 {base+c}/3 {base+d}/4")
+        vertex_count += 8
+
+    add_box("oak_door_leaf", (-.44, .035, -.12, .44, .94, .12), "oak_leaf")
+    add_box("left_frame", (-.50, 0, -.18, -.44, 1, .18), "warm_white_frame")
+    add_box("right_frame", (.44, 0, -.18, .50, 1, .18), "warm_white_frame")
+    add_box("top_frame", (-.44, .94, -.18, .44, 1, .18), "warm_white_frame")
+    add_box("lever_handle", (.25, .44, -.50, .39, .49, -.18), "graphite_handle")
+    add_box("handle_plate", (.29, .39, -.22, .35, .54, -.12), "graphite_handle")
+    return "\n".join(lines) + "\n"
+
+
+def build_wood_texture_png(width: int = 96, height: int = 96) -> bytes:
+    """Return a small deterministic oak-grain PNG for the interior door leaf."""
+    rows = bytearray()
+    for y in range(height):
+        rows.append(0)
+        for x in range(width):
+            broad = ((x // 7) % 4) * 3
+            fine = ((x * 17 + y * 3 + (y // 11) * 5) % 13) - 6
+            knot = -14 if (x - 58) ** 2 + ((y - 35) * 2) ** 2 < 95 else 0
+            rows.extend((
+                max(0, min(255, 201 + broad + fine + knot)),
+                max(0, min(255, 169 + broad + fine // 2 + knot)),
+                max(0, min(255, 127 + broad + fine // 3 + knot)),
+                255,
+            ))
+
+    def chunk(kind: bytes, data: bytes) -> bytes:
+        return struct.pack(">I", len(data)) + kind + data + struct.pack(">I", zlib.crc32(kind + data) & 0xFFFFFFFF)
+
+    signature = b"\x89PNG\r\n\x1a\n"
+    header = struct.pack(">IIBBBBB", width, height, 8, 6, 0, 0, 0)
+    return signature + chunk(b"IHDR", header) + chunk(b"IDAT", zlib.compress(bytes(rows), 9)) + chunk(b"IEND", b"")
+
+
 def build_cylinder_obj(segments: int = 24) -> str:
     lines = ["# Unit cylinder centered on X/Z, standing on Y=0", "o UnitCylinder"]
     for y in (0, 1):
@@ -494,6 +586,9 @@ def main() -> None:
         archive.writestr("Home.xml", xml)
         archive.writestr("models/box.obj", BOX_OBJ)
         archive.writestr("models/cylinder.obj", build_cylinder_obj())
+        archive.writestr("models/door.obj", build_door_obj())
+        archive.writestr("models/door.mtl", DOOR_MTL)
+        archive.writestr("models/wood-door.png", build_wood_texture_png())
         archive.write(plan, "plan-original.webp")
 
     print(f"Generated {OUTPUT.relative_to(ROOT)} ({OUTPUT.stat().st_size:,} bytes)")
