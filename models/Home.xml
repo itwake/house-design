@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<home version="7500" name="荟雅苑104.83㎡_三房两卫_窗口避让设计V2.2.sh3d" camera="topCamera" wallHeight="270.0" basePlanLocked="true">
-  <property name="model.status" value="V2.2窗口避让设计；2D与3D由同一套墙线、房间和开口坐标生成，客厅家具已避开西窗"/>
+<home version="7500" name="荟雅苑104.83㎡_三房两卫_模型渲染视角V2.3.sh3d" camera="topCamera" wallHeight="270.0" basePlanLocked="true">
+  <property name="model.status" value="V2.3模型渲染视角；2D、3D与十一张渲染图共用同一套墙线、房间、开口和家具坐标"/>
   <property name="model.units" value="Sweet Home 3D 内部单位为厘米；网页尺寸标注为毫米"/>
   <property name="source.top_width" value="6870mm，目标房源现状尺寸图"/>
   <property name="source.bottom_width" value="6410mm，目标房源现状尺寸图"/>
@@ -16,15 +16,19 @@
   <environment groundColor='FFB6B2A8' skyColor='FFBDD7EA' lightColor='FFD8D2C7' ceillingLightColor='FFD8D0C5' wallsAlpha='0.0' observerCameraElevationAdjusted='false'/>
   <backgroundImage image='plan-original.webp' scaleDistance='687' scaleDistanceXStart='386' scaleDistanceYStart='39' scaleDistanceXEnd='768' scaleDistanceYEnd='39' xOrigin='694.1859' yOrigin='70.1390' visible='true'/>
   <compass x='760' y='70' diameter='70' northDirection='0' longitude='1.9775' latitude='0.4037' timeZone='Asia/Shanghai' visible='true'/>
-  <camera attribute='topCamera' lens='PINHOLE' x='420' y='720' z='2200' yaw='0' pitch='1.24' fieldOfView='1.0471976' time='1787731200000'/>
-  <observerCamera attribute='observerCamera' lens='PINHOLE' x='365' y='1280' z='160' yaw='3.1415927' pitch='0.08' fieldOfView='1.0471976' time='1787731200000'/>
-  <observerCamera attribute='storedCamera' name='客餐厅视角' lens='PINHOLE' x='365' y='1250' z='155' yaw='3.1415927' pitch='0.05' fieldOfView='1.0471976' time='1787731200000'/>
-  <observerCamera attribute='storedCamera' name='主卧视角' lens='PINHOLE' x='500' y='265' z='150' yaw='3.45' pitch='0.03' fieldOfView='1.0471976' time='1787731200000'/>
-  <observerCamera attribute='storedCamera' name='次卧视角' lens='PINHOLE' x='220' y='280' z='150' yaw='3.85' pitch='0.04' fieldOfView='1.0471976' time='1787731200000'/>
-  <observerCamera attribute='storedCamera' name='书房客卧视角' lens='PINHOLE' x='220' y='580' z='150' yaw='3.85' pitch='0.04' fieldOfView='1.0471976' time='1787731200000'/>
-  <observerCamera attribute='storedCamera' name='厨房视角' lens='PINHOLE' x='600' y='1250' z='155' yaw='1.5707963' pitch='0.04' fieldOfView='1.0471976' time='1787731200000'/>
-  <observerCamera attribute='storedCamera' name='双卫视角' lens='PINHOLE' x='520' y='610' z='150' yaw='3.1415927' pitch='0.05' fieldOfView='1.0471976' time='1787731200000'/>
-  <observerCamera attribute='storedCamera' name='家政阳台视角' lens='PINHOLE' x='720' y='1090' z='150' yaw='4.712389' pitch='0.04' fieldOfView='1.0471976' time='1787731200000'/>
+  <camera attribute='topCamera' lens='PINHOLE' x='420' y='-175' z='2600' yaw='0' pitch='1.24' fieldOfView='1.0471976' time='1787731200000'/>
+  <observerCamera attribute='observerCamera' lens='PINHOLE' x='330' y='1120' z='160' yaw='3.559' pitch='0.08' fieldOfView='1.2217305' time='1787731200000'/>
+  <observerCamera attribute='storedCamera' name='客厅电视墙视角' lens='PINHOLE' x='330' y='1120' z='160' yaw='3.559' pitch='0.08' fieldOfView='1.2217305' time='1787731200000'/>
+  <observerCamera attribute='storedCamera' name='客厅窗景视角' lens='PINHOLE' x='620' y='1070' z='160' yaw='2.25' pitch='0.08' fieldOfView='1.2217305' time='1787731200000'/>
+  <observerCamera attribute='storedCamera' name='餐厅回望视角' lens='PINHOLE' x='450' y='1360' z='170' yaw='2.665' pitch='0.12' fieldOfView='1.3089969' time='1787731200000'/>
+  <camera attribute='storedCamera' name='全屋俯视视角' lens='PINHOLE' x='420' y='-175' z='2600' yaw='0' pitch='1.24' fieldOfView='1.0471976' time='1787731200000'/>
+  <observerCamera attribute='storedCamera' name='主卧俯视视角' lens='PINHOLE' x='500' y='165' z='240' yaw='0' pitch='1.50' fieldOfView='2.10' time='1787731200000'/>
+  <observerCamera attribute='storedCamera' name='次卧俯视视角' lens='PINHOLE' x='160' y='165' z='240' yaw='0' pitch='1.50' fieldOfView='2.10' time='1787731200000'/>
+  <observerCamera attribute='storedCamera' name='书房客卧俯视视角' lens='PINHOLE' x='138' y='475' z='240' yaw='0' pitch='1.50' fieldOfView='2.10' time='1787731200000'/>
+  <observerCamera attribute='storedCamera' name='厨房俯视视角' lens='PINHOLE' x='685' y='1260' z='240' yaw='0' pitch='1.50' fieldOfView='2.10' time='1787731200000'/>
+  <observerCamera attribute='storedCamera' name='主卫俯视视角' lens='PINHOLE' x='548' y='410' z='240' yaw='0' pitch='1.50' fieldOfView='2.00' time='1787731200000'/>
+  <observerCamera attribute='storedCamera' name='客卫俯视视角' lens='PINHOLE' x='548' y='560' z='240' yaw='0' pitch='1.50' fieldOfView='2.00' time='1787731200000'/>
+  <observerCamera attribute='storedCamera' name='家政阳台俯视视角' lens='PINHOLE' x='758' y='1040' z='240' yaw='0' pitch='1.50' fieldOfView='1.90' time='1787731200000'/>
   <level id="level0" name="28F 三房两卫" elevation="0" floorThickness="12" height="270.0" elevationIndex="0" visible="true" viewable="true"/>
   <pieceOfFurniture id="bed_b_base" level="level0" name="次卧1350床" model="models/box.obj" x="91.5" y="120.0" elevation="0" angle="0" width="135" depth="200" height="22" color="FFC39F75" movable="true" resizable="true" deformable="true" texturable="false"/>
   <pieceOfFurniture id="bed_b_mattress" level="level0" name="次卧1350床床垫" model="models/box.obj" x="91.5" y="120.0" elevation="22" angle="0" width="127" depth="192" height="23" color="FFE7E0D5" movable="true" resizable="true" deformable="true" texturable="false"/>
@@ -232,5 +236,5 @@
   <dimensionLine id="dim_balcony_depth" level="level0" xStart="829" yStart="954" xEnd="829" yEnd="1115" offset="26" endMarkSize="9" color="FF136F63"/>
   <dimensionLine id="dim_kitchen_depth" level="level0" xStart="829" yStart="1127" xEnd="829" yEnd="1389" offset="26" endMarkSize="9" color="FF136F63"/>
   <label id="note_north" level="level0" x="345" y="-82" color="FF0B6A5D"><text>北 / 临道路侧</text></label>
-  <label id="note_accuracy" level="level0" x="315" y="1460" color="FFB45D2A"><text>V2.2设计校核：电视转至卫浴南墙；客厅西窗前600净空；2D/3D同源</text></label>
+  <label id="note_accuracy" level="level0" x="315" y="1460" color="FFB45D2A"><text>V2.3设计校核：十一张预设渲染视角；客厅西窗前600净空；2D/3D同源</text></label>
 </home>

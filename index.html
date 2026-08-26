@@ -6,10 +6,10 @@
     <meta name="theme-color" content="#123c35" />
     <meta
       name="description"
-      content="广州荟雅苑 104.83㎡ 三房两卫逐空间比例校核设计，含九张同坐标平面校核图、Sweet Home 3D JS 在线模型与复尺清单。"
+      content="广州荟雅苑 104.83㎡ 三房两卫逐空间比例校核设计，含十一张模型渲染设计图、九张同坐标平面校核图、Sweet Home 3D JS 在线模型与复尺清单。"
     />
     <title>荟雅苑 104.83㎡ · 三房两卫逐空间比例校核</title>
-    <link rel="stylesheet" href="styles.css?v=2.2.0" />
+    <link rel="stylesheet" href="styles.css?v=2.3.3" />
     <script defer src="vendor/big.min.js"></script>
     <script defer src="vendor/gl-matrix-min.js"></script>
     <script defer src="vendor/jszip.min.js"></script>
@@ -21,7 +21,7 @@
     <script defer src="vendor/triangulator.min.js"></script>
     <script defer src="vendor/viewmodel.min.js"></script>
     <script defer src="vendor/viewhome.min.js"></script>
-    <script defer src="app.js?v=2.2.0"></script>
+    <script defer src="app.js?v=2.3.3"></script>
   </head>
   <body>
     <header class="site-header">
@@ -33,8 +33,8 @@
         </span>
       </a>
       <div class="header-actions">
-        <span class="status-pill"><i></i> V2.2 窗口避让设计版</span>
-        <a class="button button-ghost" href="models/huiyayuan-104-calibrated.sh3d?v=2.2.0" download>下载 .sh3d</a>
+        <span class="status-pill"><i></i> V2.3 模型渲染视角版</span>
+        <a class="button button-ghost" href="models/huiyayuan-104-calibrated.sh3d?v=2.3.3" download>下载 .sh3d</a>
       </div>
     </header>
 
@@ -47,7 +47,8 @@
             在比例底模上落实“现代自然”的完整方案：拆除第四房，恢复连续客餐厅；三卧、双卫、可闭合厨房和家政阳台均加入真实尺寸柜体、家具、设备与分层照明。
           </p>
           <div class="hero-actions">
-            <a class="button button-primary" href="#design">查看逐房间设计</a>
+            <a class="button button-primary" href="#renders">查看模型渲染图</a>
+            <a class="button button-secondary" href="#design">查看逐房间设计</a>
             <button class="button button-secondary" data-open-tab="viewer">进入 3D 模型</button>
           </div>
         </div>
@@ -110,6 +111,68 @@
         <p class="render-note"><strong>设计没有删除。</strong>家具、柜体、配色、灯光和厨卫设备仍完整保留在3D模型中；九张比例图专门负责证明这些设计能否放得下。门位、开向、排污、烟道、窗扇和结构仍须交房复尺，条件不满足时调整设计而不是隐藏问题。</p>
       </section>
 
+      <section class="render-section" id="renders">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Sweet Home 3D JS 实时导出</p>
+            <h2>不是想象图，是模型里的设计</h2>
+          </div>
+          <p>以下画面全部从当前 <code>.sh3d</code> 模型按预设相机直接导出。墙线、门窗、家具和洁具占位与2D校核图共用同一套厘米坐标。</p>
+        </div>
+
+        <div class="render-callout">
+          <strong>怎样阅读这些图</strong>
+          <p>客餐厅采用正常人眼透视；卧室、厨卫和阳台面积紧凑，采用吊顶下方的垂直广角镜头，以完整展示真实占位。广角会放大边缘，但不会改变家具尺寸或位置。它们是尺度模型渲染，不是交房现场照片，也不是AI生成的装修照片。</p>
+        </div>
+
+        <div class="render-gallery">
+          <figure class="render-card render-card-wide">
+            <img src="assets/renders/overall-3d.png" alt="荟雅苑三房两卫完整模型俯视渲染" />
+            <figcaption><span>01 · 全屋</span><strong>三房两卫完整俯视</strong><p>一眼核对恢复三房、连续客餐厅、双卫、封闭厨房和家政阳台的总体关系。</p></figcaption>
+          </figure>
+          <figure class="render-card">
+            <img src="assets/renders/living-tv.png" alt="客厅电视墙与沙发关系模型渲染" />
+            <figcaption><span>02 · 客厅</span><strong>电视转至双卫南侧实墙</strong><p>电视不再挡西窗；前景为沙发与茶几，左侧保持通往三卧和双卫的过道。</p></figcaption>
+          </figure>
+          <figure class="render-card">
+            <img src="assets/renders/living-window.png" alt="客厅西窗及窗前净空模型渲染" />
+            <figcaption><span>03 · 客厅</span><strong>西窗与600mm窗前净空</strong><p>独立检查用户指出的窗口：电视离开此墙，矮柜和绿植不越过窗前净空区。</p></figcaption>
+          </figure>
+          <figure class="render-card">
+            <img src="assets/renders/dining.png" alt="玄关餐厅回望模型渲染" />
+            <figcaption><span>04 · 玄关餐厅</span><strong>1200×700四人桌 + 薄玄关柜</strong><p>画面保留入户落脚和去厨房、卧室的连续通道，端头不再长期摆椅。</p></figcaption>
+          </figure>
+          <figure class="render-card">
+            <img src="assets/renders/master.png" alt="主卧1500床和衣柜高位广角模型渲染" />
+            <figcaption><span>05 · 主卧</span><strong>1500床、床头柜与2400衣柜</strong><p>高位广角用于同时展示床、东侧到顶柜和门口回转区；门窗尺寸仍须复尺。</p></figcaption>
+          </figure>
+          <figure class="render-card">
+            <img src="assets/renders/bedroom-b.png" alt="次卧床书桌衣柜高位广角模型渲染" />
+            <figcaption><span>06 · 次卧 B</span><strong>1350床 + 独立书桌 + 到顶衣柜</strong><p>门位已按目标户型重新校正，家具投影未穿墙；北窗前不布高柜。</p></figcaption>
+          </figure>
+          <figure class="render-card">
+            <img src="assets/renders/study.png" alt="书房日床书桌衣柜高位广角模型渲染" />
+            <figcaption><span>07 · 书房客卧</span><strong>独立日床，不做固定榻榻米</strong><p>1100书桌、日床和客衣柜可以单独更换，给偶住与长期办公留下调整余地。</p></figcaption>
+          </figure>
+          <figure class="render-card">
+            <img src="assets/renders/kitchen.png" alt="双排厨房设备高位广角模型渲染" />
+            <figcaption><span>08 · 厨房</span><strong>双排台面与东侧电器高柜</strong><p>水槽、洗碗机、灶具、冰箱和蒸烤塔均按设备尺度进入模型，中间通道约1360mm。</p></figcaption>
+          </figure>
+          <figure class="render-card">
+            <img src="assets/renders/master-bath.png" alt="主卫洁具高位广角模型渲染" />
+            <figcaption><span>09 · 主卫</span><strong>800浴室柜 + 壁挂马桶 + 完整淋浴</strong><p>固定玻璃仅保留必要宽度；门洞、排污和淋浴净宽必须交房复尺后再深化。</p></figcaption>
+          </figure>
+          <figure class="render-card">
+            <img src="assets/renders/guest-bath.png" alt="客卫洁具高位广角模型渲染" />
+            <figcaption><span>10 · 客卫</span><strong>400角盆 + 壁挂马桶 + 折叠屏</strong><p>客卫很紧，因此没有塞入标准大浴室柜；当前组合是按平面能够成立的紧凑方案。</p></figcaption>
+          </figure>
+          <figure class="render-card">
+            <img src="assets/renders/balcony.png" alt="家政阳台洗烘塔和家政柜高位广角模型渲染" />
+            <figcaption><span>11 · 家政阳台</span><strong>洗烘塔、浅柜与晾晒系统</strong><p>柜体贴南墙，洗烘叠放在东侧，避免再次压缩客厅至阳台的主通道。</p></figcaption>
+          </figure>
+        </div>
+      </section>
+
       <section class="model-section" id="model">
         <div class="section-heading">
           <div>
@@ -150,8 +213,8 @@
             <div class="viewer-help">拖动旋转 · 滚轮缩放 · 双击进入</div>
           </div>
           <div class="viewer-caption">
-            <p><strong>V2.2 保留完整设计，并把设计重新放进真实边界。</strong>电视转至双卫南侧实墙，沙发正向观看，客厅西窗前保留600mm净空；窗宽与窗台仍为C级假设，必须现场复尺。</p>
-            <a href="models/huiyayuan-104-calibrated.sh3d?v=2.2.0" download>下载并在桌面版继续编辑 →</a>
+            <p><strong>V2.3 增加十一张可复现的预设渲染视角。</strong>电视转至双卫南侧实墙，沙发正向观看，客厅西窗前保留600mm净空；窗宽与窗台仍为C级假设，必须现场复尺。</p>
+            <a href="models/huiyayuan-104-calibrated.sh3d?v=2.3.3" download>下载并在桌面版继续编辑 →</a>
           </div>
         </div>
 
@@ -253,7 +316,7 @@
     </dialog>
 
     <footer>
-      <p>荟雅苑 104.83㎡ 窗口避让设计 V2.2 · Sweet Home 3D JS Viewer 7.5.2</p>
+      <p>荟雅苑 104.83㎡ 模型渲染视角 V2.3 · Sweet Home 3D JS Viewer 7.5.2</p>
       <a href="https://www.sweethome3d.com/SweetHome3DJSOnline.jsp" target="_blank" rel="noreferrer">官方 Sweet Home 3D JS</a>
     </footer>
   </body>

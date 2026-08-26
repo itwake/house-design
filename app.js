@@ -6,6 +6,12 @@ const state = {
 };
 
 const SVG_NS = "http://www.w3.org/2000/svg";
+const QUERY = new URLSearchParams(window.location.search);
+const CAPTURE_MODE = QUERY.get("capture") === "1";
+const CAPTURE_CAMERA = QUERY.get("camera");
+const SELECTABLE_CAMERAS = ["全屋俯视视角", "客厅电视墙视角", "客厅窗景视角", "餐厅回望视角", "主卧俯视视角", "次卧俯视视角", "书房客卧俯视视角", "厨房俯视视角", "主卫俯视视角", "客卫俯视视角", "家政阳台俯视视角"];
+
+if (CAPTURE_MODE) document.documentElement.classList.add("capture-mode");
 
 const DESIGN_ROOMS = [
   {
@@ -390,7 +396,7 @@ function initViewer() {
   try {
     state.homeComponent = viewHome(
       "viewerCanvas",
-      "models/huiyayuan-104-calibrated.sh3d?v=2.2.0",
+      `models/huiyayuan-104-calibrated.sh3d?v=2.3.3${CAPTURE_MODE && QUERY.get("r") ? `&r=${encodeURIComponent(QUERY.get("r"))}` : ""}`,
       onerror,
       onprogression,
       {
@@ -399,6 +405,8 @@ function initViewer() {
         aerialViewButtonId: "aerialView",
         virtualVisitButtonId: "virtualVisit",
         levelsAndCamerasListId: "levelsAndCameras",
+        selectableCameras: SELECTABLE_CAMERAS,
+        camera: CAPTURE_CAMERA || undefined,
         activateCameraSwitchKey: true,
       },
     );
@@ -424,7 +432,7 @@ async function start() {
   document.getElementById("fullscreenButton").addEventListener("click", () => document.getElementById("viewerShell").requestFullscreen?.());
   window.addEventListener("resize", resizeViewer);
 
-  const response = await fetch("models/model-data.json?v=2.2.0");
+  const response = await fetch("models/model-data.json?v=2.3.3");
   if (!response.ok) throw new Error(`模型坐标读取失败：HTTP ${response.status}`);
   state.model = await response.json();
   renderPlan(state.model);
