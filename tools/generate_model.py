@@ -28,7 +28,7 @@ WALL_HEIGHT = 270.0
 WALL_THICKNESS = 12.0
 
 MODEL_NOTES = {
-    "model.status": "V1.1设计模型；修正次卧B门洞并加入真实门板材质，不是现场竣工测量图",
+    "model.status": "V2.0逐空间比例校核；九个空间按净框、门洞和通道重排，不是现场竣工测量图",
     "model.units": "Sweet Home 3D 内部单位为厘米；网页尺寸标注为毫米",
     "source.top_width": "6870mm，目标房源现状尺寸图",
     "source.bottom_width": "6410mm，目标房源现状尺寸图",
@@ -45,7 +45,7 @@ MODEL_NOTES = {
 
 MODEL_DATA = {
     "name": "荟雅苑 104.83㎡ · 28F",
-    "version": "V1.1 门洞与材质修正版",
+    "version": "V2.0 逐空间比例校核版",
     "unit": "cm",
     "north": "图上方（临道路侧）",
     "palette": [
@@ -82,23 +82,48 @@ MODEL_DATA = {
         [416, 328, 416, 626], [416, 493, 681, 493], [416, 626, 681, 626],
         [681, 960, 681, 1121], [681, 1121, 835, 1121], [536, 1121, 681, 1121], [536, 1121, 536, 1395],
     ],
+    "doors": [
+        {"name": "次卧门", "x1": 228, "y1": 328, "x2": 313, "y2": 328, "widthMm": 850, "grade": "C"},
+        {"name": "主卧门", "x1": 326, "y1": 328, "x2": 416, "y2": 328, "widthMm": 900, "grade": "C"},
+        {"name": "书房门", "x1": 271, "y1": 457.5, "x2": 271, "y2": 542.5, "widthMm": 850, "grade": "C"},
+        {"name": "主卫门（外开/移门条件）", "x1": 416, "y1": 372.5, "x2": 416, "y2": 447.5, "widthMm": 750, "grade": "C"},
+        {"name": "客卫门（外开/移门条件）", "x1": 416, "y1": 517.5, "x2": 416, "y2": 592.5, "widthMm": 750, "grade": "C"},
+        {"name": "厨房移门", "x1": 536, "y1": 1175, "x2": 536, "y2": 1265, "widthMm": 900, "grade": "C"},
+        {"name": "入户门", "x1": 390, "y1": 1395, "x2": 490, "y2": 1395, "widthMm": 1000, "grade": "C"},
+    ],
     "furniture": [
-        {"name": "次卧1350床", "x": 25, "y": 92, "w": 135, "d": 200, "a": 0, "tone": "fabric"},
-        {"name": "次卧书桌", "x": 205, "y": 38, "w": 90, "d": 55, "a": 0, "tone": "wood"},
-        {"name": "次卧衣柜", "x": 247, "y": 105, "w": 55, "d": 175, "a": 0, "tone": "wood"},
-        {"name": "主卧1500床", "x": 375, "y": 108, "w": 150, "d": 200, "a": 0, "tone": "fabric"},
-        {"name": "主卧衣柜", "x": 615, "y": 42, "w": 55, "d": 240, "a": 0, "tone": "wood"},
-        {"name": "书房日床", "x": 24, "y": 370, "w": 100, "d": 200, "a": 0, "tone": "fabric"},
-        {"name": "1600书桌", "x": 176, "y": 350, "w": 55, "d": 160, "a": 0, "tone": "wood"},
-        {"name": "三人沙发", "x": 514, "y": 700, "w": 90, "d": 220, "a": 0, "tone": "fabric"},
-        {"name": "电视薄柜", "x": 226, "y": 700, "w": 35, "d": 220, "a": 0, "tone": "wood"},
-        {"name": "茶几", "x": 390, "y": 770, "w": 65, "d": 120, "a": 0, "tone": "wood"},
-        {"name": "餐桌", "x": 325, "y": 1180, "w": 80, "d": 140, "a": 0, "tone": "wood"},
-        {"name": "玄关柜", "x": 226, "y": 1160, "w": 35, "d": 180, "a": 0, "tone": "wood"},
+        {"name": "次卧1350床", "x": 24, "y": 20, "w": 135, "d": 200, "a": 0, "tone": "fabric"},
+        {"name": "次卧书桌", "x": 165, "y": 20, "w": 90, "d": 52, "a": 0, "tone": "wood"},
+        {"name": "次卧书椅", "x": 188, "y": 82, "w": 44, "d": 46, "a": 0, "tone": "fabric"},
+        {"name": "次卧衣柜", "x": 258, "y": 25, "w": 55, "d": 175, "a": 0, "tone": "wood"},
+        {"name": "主卧1500床", "x": 365, "y": 20, "w": 150, "d": 200, "a": 0, "tone": "fabric"},
+        {"name": "主卧衣柜", "x": 617.5, "y": 45, "w": 55, "d": 240, "a": 0, "tone": "wood"},
+        {"name": "书房日床", "x": 20, "y": 350, "w": 100, "d": 200, "a": 0, "tone": "fabric"},
+        {"name": "1100书桌", "x": 207.5, "y": 335, "w": 55, "d": 110, "a": 0, "tone": "wood"},
+        {"name": "书房办公椅", "x": 136, "y": 391, "w": 58, "d": 58, "a": 0, "tone": "fabric"},
+        {"name": "书房客衣柜", "x": 167.5, "y": 550, "w": 85, "d": 50, "a": 0, "tone": "wood"},
+        {"name": "三人沙发", "x": 511, "y": 710, "w": 88, "d": 220, "a": 0, "tone": "fabric"},
+        {"name": "电视薄柜", "x": 218, "y": 710, "w": 34, "d": 220, "a": 0, "tone": "wood"},
+        {"name": "茶几", "x": 389, "y": 760, "w": 62, "d": 120, "a": 0, "tone": "wood"},
+        {"name": "四人餐桌", "x": 290, "y": 1150, "w": 120, "d": 70, "a": 0, "tone": "wood"},
+        {"name": "餐椅北1", "x": 298, "y": 1092.5, "w": 44, "d": 45, "a": 0, "tone": "fabric"},
+        {"name": "餐椅北2", "x": 358, "y": 1092.5, "w": 44, "d": 45, "a": 0, "tone": "fabric"},
+        {"name": "餐椅南1", "x": 298, "y": 1232.5, "w": 44, "d": 45, "a": 0, "tone": "fabric"},
+        {"name": "餐椅南2", "x": 358, "y": 1232.5, "w": 44, "d": 45, "a": 0, "tone": "fabric"},
+        {"name": "玄关柜", "x": 212.5, "y": 1130, "w": 35, "d": 180, "a": 0, "tone": "wood"},
+        {"name": "餐边柜", "x": 212.5, "y": 960, "w": 35, "d": 140, "a": 0, "tone": "wood"},
         {"name": "厨房南侧地柜", "x": 542, "y": 1329, "w": 287, "d": 60, "a": 0, "tone": "cabinet"},
         {"name": "厨房北侧地柜", "x": 590, "y": 1127, "w": 239, "d": 60, "a": 0, "tone": "cabinet"},
-        {"name": "冰箱高柜", "x": 769, "y": 1195, "w": 60, "d": 70, "a": 0, "tone": "metal"},
-        {"name": "洗烘塔", "x": 757, "y": 1015, "w": 65, "d": 70, "a": 0, "tone": "metal"},
+        {"name": "冰箱高柜", "x": 765, "y": 1188, "w": 60, "d": 70, "a": 0, "tone": "metal"},
+        {"name": "蒸烤高柜", "x": 765, "y": 1259, "w": 60, "d": 70, "a": 0, "tone": "cabinet"},
+        {"name": "洗烘塔", "x": 764, "y": 966, "w": 65, "d": 70, "a": 0, "tone": "metal"},
+        {"name": "阳台家政柜", "x": 687, "y": 1080, "w": 70, "d": 35, "a": 0, "tone": "cabinet"},
+        {"name": "主卫800浴室柜", "x": 432, "y": 337, "w": 80, "d": 45, "a": 0, "tone": "sanitary"},
+        {"name": "主卫壁挂马桶", "x": 525, "y": 337, "w": 38, "d": 62, "a": 0, "tone": "sanitary"},
+        {"name": "主卫淋浴区", "x": 581, "y": 340, "w": 90, "d": 141, "a": 0, "tone": "wet"},
+        {"name": "客卫角盆", "x": 422, "y": 590, "w": 40, "d": 30, "a": 0, "tone": "sanitary"},
+        {"name": "客卫壁挂马桶", "x": 497, "y": 502, "w": 36, "d": 58, "a": 0, "tone": "sanitary"},
+        {"name": "客卫淋浴区", "x": 582, "y": 504, "w": 88, "d": 111, "a": 0, "tone": "wet"},
     ],
 }
 
@@ -242,27 +267,26 @@ def label(label_id: str, text: str, x: float, y: float,
 
 
 def design_pieces() -> list[str]:
-    """Return the V1 modern-natural design as dimensioned parametric objects."""
+    """Return the V2 dimension-audited modern-natural design."""
     items: list[str] = []
 
     # Bedroom B: a neutral, future-proof room for child, elder or guests.
-    items += bed_components("bed_b", "次卧1350床", 100, 190, 135, 200, head_side=1)
-    items += wardrobe_components("wardrobe_b", "次卧到顶衣柜", 284, 180, 175, 55, angle=math.pi / 2)
-    items += table_components("desk_b", "次卧书桌", 240, 48, 90, 52, 75)
-    items.append(piece("desk_b_upper", "次卧书桌上柜", 240, 23, 90, 28, 65, "FFC8AB86", elevation=145))
-    items.append(piece("chair_b", "次卧书椅", 240, 105, 44, 46, 82, "FF8B9B8F"))
+    items += bed_components("bed_b", "次卧1350床", 91.5, 120, 135, 200, head_side=-1)
+    items += wardrobe_components("wardrobe_b", "次卧到顶衣柜", 285.5, 112.5, 175, 55, angle=math.pi / 2)
+    items += table_components("desk_b", "次卧书桌", 210, 46, 90, 52, 75)
+    items.append(piece("desk_b_upper", "次卧书桌上柜", 210, 23, 90, 28, 65, "FFC8AB86", elevation=145))
+    items.append(piece("chair_b", "次卧书椅", 210, 105, 44, 46, 82, "FF8B9B8F"))
 
     # Master bedroom: 1500 bed keeps a usable aisle beside the 2400 wardrobe.
-    items += bed_components("bed_a", "主卧1500床", 455, 205, 150, 200, head_side=1)
+    items += bed_components("bed_a", "主卧1500床", 440, 120, 150, 200, head_side=-1)
     items += wardrobe_components("wardrobe_a", "主卧2400到顶衣柜", 645, 165, 240, 55, angle=math.pi / 2)
-    items += table_components("bedside_a", "主卧床头柜", 355, 275, 38, 36, 48)
-    items.append(piece("master_bench", "主卧窗边矮台", 455, 35, 170, 42, 42, "FFC7A67F"))
+    items += table_components("bedside_a", "主卧床头柜", 540, 182, 38, 36, 48)
     items.append(piece("master_curtain", "主卧隔声窗帘示意", 505, 16, 160, 5, 245, "FFD8D0C3", elevation=8))
 
     # Bedroom C: office first, occasional guest room second.
-    items += bed_components("daybed_c", "书房抽屉日床", 74, 470, 100, 200, head_side=1)
-    items += table_components("desk_c", "书房1600书桌", 220, 420, 160, 55, 75, angle=math.pi / 2)
-    items.append(piece("desk_c_upper", "书房封闭上柜", 252, 420, 30, 150, 65, "FFC7AA85", angle=math.pi / 2, elevation=145))
+    items += bed_components("daybed_c", "书房抽屉日床", 70, 450, 100, 200, head_side=-1)
+    items += table_components("desk_c", "书房1100书桌", 235, 390, 110, 55, 75, angle=math.pi / 2)
+    items.append(piece("desk_c_upper", "书房封闭上柜", 252, 390, 30, 100, 65, "FFC7AA85", angle=math.pi / 2, elevation=145))
     items += wardrobe_components("wardrobe_c", "书房客衣柜", 210, 575, 85, 50)
     items.append(piece("chair_c", "人体工学椅尺度", 165, 420, 58, 58, 105, "FF55655F"))
 
@@ -280,8 +304,8 @@ def design_pieces() -> list[str]:
     items.append(piece("entry_open", "玄关开放台", 248, 1220, 72, 3, 45, "FFEEE7DB", angle=math.pi / 2, elevation=90))
     items.append(piece("sideboard", "餐边柜/水吧", 230, 1030, 140, 35, 92, "FFC5A37C", angle=math.pi / 2))
     items.append(piece("sideboard_top", "餐边柜石英石台面", 230, 1030, 140, 38, 4, "FFE7E1D8", angle=math.pi / 2, elevation=92))
-    items += table_components("dining", "四人餐桌", 375, 1240, 140, 80, 75, angle=math.pi / 2)
-    for index, (x, y, angle) in enumerate(((305, 1190, -math.pi / 2), (445, 1190, math.pi / 2), (305, 1290, -math.pi / 2), (445, 1290, math.pi / 2))):
+    items += table_components("dining", "四人餐桌", 350, 1185, 120, 70, 75)
+    for index, (x, y, angle) in enumerate(((320, 1115, 0), (380, 1115, 0), (320, 1255, math.pi), (380, 1255, math.pi))):
         items += chair_components(f"dining_chair_{index}", x, y, angle=angle)
 
     # Kitchen: two working runs, appliance tower and full-height storage.
@@ -290,38 +314,38 @@ def design_pieces() -> list[str]:
     items.append(piece("kitchen_base_n", "厨房北侧地柜", 709.5, 1157, 239, 60, 86, "FFC5A57F"))
     items.append(piece("kitchen_top_n", "厨房北侧台面", 709.5, 1157, 239, 63, 4, "FFE8E3DA", elevation=86))
     items.append(piece("kitchen_wall_s", "厨房到顶吊柜", 685.5, 1380, 210, 34, 82, "FFD6C2A6", elevation=158))
-    items.append(piece("fridge", "冰箱预留 600×700", 795, 1210, 60, 70, 190, "FF434746"))
-    items.append(piece("oven_tower", "蒸烤高柜", 795, 1290, 60, 70, 230, "FFBFA17E"))
-    items.append(piece("oven", "蒸烤箱", 786, 1290, 3, 50, 55, "FF252928", elevation=92))
+    items.append(piece("fridge", "冰箱预留 600×700", 795, 1223, 60, 70, 190, "FF434746"))
+    items.append(piece("oven_tower", "蒸烤高柜", 795, 1294, 60, 70, 230, "FFBFA17E"))
+    items.append(piece("oven", "蒸烤箱", 764, 1294, 3, 50, 55, "FF252928", elevation=92))
     items.append(piece("dishwasher", "洗碗机600", 640, 1162, 60, 58, 82, "FF555B59"))
     items.append(piece("sink", "水槽", 720, 1168, 66, 42, 8, "FF777D7B", elevation=90))
     items.append(piece("hob", "双眼灶", 670, 1335, 74, 42, 5, "FF242827", elevation=90))
     items.append(piece("hood", "侧吸烟机", 670, 1380, 78, 30, 48, "FF303432", elevation=145))
 
     # Utility balcony: stacked laundry, slim cleaning cabinet and drying rail.
-    items.append(piece("utility_cabinet", "耐潮家政柜", 710, 1040, 35, 120, 230, "FFC3AE92"))
-    items.append(piece("washer", "洗衣机", 795, 1006, 65, 70, 88, "FFE6E7E4"))
-    items.append(piece("washer_face", "洗衣机门", 795, 970, 38, 3, 38, "FF4C5655", elevation=24, model="models/cylinder.obj"))
-    items.append(piece("dryer", "烘干机", 795, 1006, 65, 70, 88, "FFE6E7E4", elevation=91))
-    items.append(piece("dryer_face", "烘干机门", 795, 970, 38, 3, 38, "FF4C5655", elevation=115, model="models/cylinder.obj"))
+    items.append(piece("utility_cabinet", "南墙700宽耐潮家政柜", 722, 1097.5, 70, 35, 230, "FFC3AE92"))
+    items.append(piece("washer", "洗衣机", 796.5, 1001, 65, 70, 88, "FFE6E7E4"))
+    items.append(piece("washer_face", "洗衣机门", 764, 1001, 3, 38, 38, "FF4C5655", elevation=24, model="models/cylinder.obj"))
+    items.append(piece("dryer", "烘干机", 796.5, 1001, 65, 70, 88, "FFE6E7E4", elevation=91))
+    items.append(piece("dryer_face", "烘干机门", 764, 1001, 3, 38, 38, "FF4C5655", elevation=115, model="models/cylinder.obj"))
     items.append(piece("drying_rail", "电动晾衣架尺度", 758, 1050, 105, 5, 5, "FFB6B9B5", elevation=230))
 
     # Bathrooms: drawers, mirrored cabinets, WC and full shower zones.
-    items.append(piece("bath1_vanity", "主卫900悬空浴室柜", 475, 360, 90, 48, 52, "FFC1A17D", elevation=28))
-    items.append(piece("bath1_basin", "主卫台盆", 475, 360, 72, 42, 12, "FFF0EEE8", elevation=80))
-    items.append(piece("bath1_mirror", "主卫镜柜", 475, 338, 90, 4, 75, "FFAAB3B0", elevation=105))
-    items.append(piece("bath1_wc", "主卫坐便", 560, 375, 40, 66, 42, "FFECEBE6"))
-    items.append(piece("bath1_wc_bowl", "主卫坐便上部", 560, 385, 42, 52, 22, "FFF4F3EF", elevation=42, model="models/cylinder.obj"))
-    items.append(piece("bath1_shower", "主卫淋浴区", 630, 410, 82, 118, 4, "FFBFCAC7"))
-    items.append(piece("bath1_glass", "主卫淋浴玻璃", 590, 410, 2, 118, 195, "FF8DBDCA", elevation=4))
+    items.append(piece("bath1_vanity", "主卫800悬空浴室柜", 472, 359.5, 80, 45, 52, "FFC1A17D", elevation=28))
+    items.append(piece("bath1_basin", "主卫台盆", 472, 359.5, 68, 39, 12, "FFF0EEE8", elevation=80))
+    items.append(piece("bath1_mirror", "主卫镜柜", 472, 338, 80, 4, 75, "FFAAB3B0", elevation=105))
+    items.append(piece("bath1_wc", "主卫壁挂坐便", 544, 368, 38, 62, 42, "FFECEBE6"))
+    items.append(piece("bath1_wc_bowl", "主卫坐便上部", 544, 374, 40, 48, 20, "FFF4F3EF", elevation=42, model="models/cylinder.obj"))
+    items.append(piece("bath1_shower", "主卫900×1410淋浴区", 626, 410.5, 90, 141, 4, "FFBFCAC7"))
+    items.append(piece("bath1_glass", "主卫600固定玻璃", 581, 370, 2, 60, 195, "FF8DBDCA", elevation=4))
 
-    items.append(piece("bath2_vanity", "客卫650悬空浴室柜", 465, 525, 65, 44, 50, "FFC1A17D", elevation=28))
-    items.append(piece("bath2_basin", "客卫台盆", 465, 525, 58, 39, 11, "FFF0EEE8", elevation=78))
-    items.append(piece("bath2_mirror", "客卫镜柜", 465, 505, 65, 4, 70, "FFAAB3B0", elevation=103))
-    items.append(piece("bath2_wc", "客卫坐便", 535, 550, 38, 58, 40, "FFECEBE6"))
-    items.append(piece("bath2_wc_bowl", "客卫坐便上部", 535, 558, 40, 48, 20, "FFF4F3EF", elevation=40, model="models/cylinder.obj"))
-    items.append(piece("bath2_shower", "客卫淋浴区", 625, 555, 82, 98, 4, "FFBFCAC7"))
-    items.append(piece("bath2_glass", "客卫淋浴玻璃", 585, 555, 2, 98, 195, "FF8DBDCA", elevation=4))
+    items.append(piece("bath2_vanity", "客卫400角盆", 442, 605, 40, 30, 38, "FFC1A17D", elevation=42))
+    items.append(piece("bath2_basin", "客卫小台盆", 442, 605, 34, 26, 10, "FFF0EEE8", elevation=80))
+    items.append(piece("bath2_mirror", "客卫窄镜柜", 424, 580, 4, 38, 58, "FFAAB3B0", elevation=103))
+    items.append(piece("bath2_wc", "客卫壁挂坐便", 515, 531, 36, 58, 40, "FFECEBE6"))
+    items.append(piece("bath2_wc_bowl", "客卫坐便上部", 515, 537, 38, 46, 18, "FFF4F3EF", elevation=40, model="models/cylinder.obj"))
+    items.append(piece("bath2_shower", "客卫880×1110淋浴区", 626, 559.5, 88, 111, 4, "FFBFCAC7"))
+    items.append(piece("bath2_glass", "客卫可折叠玻璃屏", 582, 526, 2, 54, 195, "FF8DBDCA", elevation=4))
 
     return items
 
@@ -349,7 +373,7 @@ def design_lights() -> list[str]:
 def build_home_xml() -> str:
     lines: list[str] = [
         "<?xml version='1.0' encoding='UTF-8'?>",
-        f"<home {attrs(version='7500', name='荟雅苑104.83㎡_三房两卫_完整概念设计V1.1.sh3d', camera='topCamera', wallHeight=WALL_HEIGHT, basePlanLocked='true')}>",
+        f"<home {attrs(version='7500', name='荟雅苑104.83㎡_三房两卫_逐空间比例校核V2.sh3d', camera='topCamera', wallHeight=WALL_HEIGHT, basePlanLocked='true')}>",
     ]
     for key, value in MODEL_NOTES.items():
         lines.append(f"  <property {attrs(name=key, value=value)}/>")
@@ -444,7 +468,7 @@ def build_home_xml() -> str:
     lines.extend(dims)
     lines.extend([
         label("note_north", "北 / 临道路侧", 345, -82, "FF0B6A5D"),
-        label("note_accuracy", "V1现代自然设计：柜体/家具/灯光已加入；绿色尺寸=图纸锚点", 315, 1460, "FFB45D2A"),
+        label("note_accuracy", "V2逐空间校核：家具/洁具/门洞已复核；绿色尺寸=图纸锚点", 315, 1460, "FFB45D2A"),
     ])
     lines.append("</home>")
     return "\n".join(lines) + "\n"
@@ -592,6 +616,8 @@ def main() -> None:
         archive.write(plan, "plan-original.webp")
 
     print(f"Generated {OUTPUT.relative_to(ROOT)} ({OUTPUT.stat().st_size:,} bytes)")
+    from generate_verified_plans import main as generate_verified_plans
+    generate_verified_plans()
 
 
 if __name__ == "__main__":

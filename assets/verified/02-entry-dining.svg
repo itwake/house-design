@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 650" role="img" aria-label="玄关 + 餐厅局部按比例空间校核图">
+<style>
+  .title{font:800 31px system-ui,'Microsoft YaHei';fill:#16342e} .sub{font:500 16px system-ui,'Microsoft YaHei';fill:#65706b}
+  .dim{font:700 15px system-ui,'Microsoft YaHei';fill:#087567} .fixture{font:700 11px system-ui,'Microsoft YaHei';fill:#183b34}
+  .door-label{font:700 12px system-ui,'Microsoft YaHei';fill:#a44925} .note{font:600 15px system-ui,'Microsoft YaHei';fill:#31423d}
+  .status{font:800 18px system-ui,'Microsoft YaHei';fill:#fff} .meta{font:600 14px system-ui,'Microsoft YaHei';fill:#6a746f}
+</style>
+<rect width="1100" height="650" fill="#f5f1e8"/><text x="55" y="57" class="title">玄关 + 餐厅局部</text>
+<text x="55" y="87" class="sub">3180宽下部公共区 · 局部进深4290</text>
+<rect x="35" y="108" width="580" height="500" rx="24" fill="#fffdfa" stroke="#ddd6c9"/>
+<polygon points="165.6,145.0 484.4,145.0 484.4,575.0 165.6,575.0" fill="#eee1cd" stroke="#193a33" stroke-width="9" stroke-linejoin="round"/>
+<rect x="344.0" y="474.8" width="100.2" height="100.2" fill="#e5a46a" fill-opacity=".12" stroke="#c25d31" stroke-width="2" stroke-dasharray="8 6"/><text x="394.2" y="524.9" text-anchor="middle" dominant-baseline="middle" class="door-label">入户门落脚区</text><rect x="243.8" y="335.4" width="120.3" height="70.2" rx="6" fill="#c8a77e" stroke="#183b34" stroke-width="2"/><text x="304.0" y="370.5" text-anchor="middle" dominant-baseline="middle" class="fixture">四人餐桌</text><rect x="251.8" y="277.8" width="44.1" height="45.1" rx="6" fill="#a8a39a" stroke="#183b34" stroke-width="2"/><text x="273.9" y="300.4" text-anchor="middle" dominant-baseline="middle" class="fixture">餐椅北1</text><rect x="312.0" y="277.8" width="44.1" height="45.1" rx="6" fill="#a8a39a" stroke="#183b34" stroke-width="2"/><text x="334.0" y="300.4" text-anchor="middle" dominant-baseline="middle" class="fixture">餐椅北2</text><rect x="251.8" y="418.1" width="44.1" height="45.1" rx="6" fill="#a8a39a" stroke="#183b34" stroke-width="2"/><text x="273.9" y="440.7" text-anchor="middle" dominant-baseline="middle" class="fixture">餐椅南1</text><rect x="312.0" y="418.1" width="44.1" height="45.1" rx="6" fill="#a8a39a" stroke="#183b34" stroke-width="2"/><text x="334.0" y="440.7" text-anchor="middle" dominant-baseline="middle" class="fixture">餐椅南2</text><rect x="166.1" y="315.4" width="35.1" height="180.4" rx="6" fill="#c8a77e" stroke="#183b34" stroke-width="2"/><text x="183.7" y="405.6" text-anchor="middle" dominant-baseline="middle" class="fixture">玄关柜</text><rect x="166.1" y="145.0" width="35.1" height="140.3" rx="6" fill="#c8a77e" stroke="#183b34" stroke-width="2"/><text x="183.7" y="215.2" text-anchor="middle" dominant-baseline="middle" class="fixture">餐边柜</text><line x1="344.0" y1="575.0" x2="444.3" y2="575.0" stroke="#f7f4ed" stroke-width="12"/><line x1="344.0" y1="575.0" x2="444.3" y2="575.0" stroke="#c25d31" stroke-width="4" stroke-dasharray="10 6"/><text x="394.2" y="566.0" text-anchor="middle" class="door-label">入户1000</text>
+<line x1="165.6" y1="121.0" x2="484.4" y2="121.0" stroke="#087567" stroke-width="2"/>
+<text x="325.0" y="111.0" text-anchor="middle" class="dim">3180 mm</text>
+<line x1="141.6" y1="145.0" x2="141.6" y2="575.0" stroke="#087567" stroke-width="2"/>
+<text x="128.6" y="360.0" transform="rotate(-90 128.6 360.0)" text-anchor="middle" class="dim">4290 mm</text>
+<text x="55" y="633" class="meta">模型净面积 13.6㎡ · 家具投影与Sweet Home 3D使用同一厘米坐标</text>
+<rect x="650" y="115" width="410" height="94" rx="18" fill="#123c35"/><text x="675" y="151" class="status">平面校核结论</text>
+<text x="675" y="184" class="status">条件成立（四椅放长边）</text>
+<text x="665" y="258" class="title" style="font-size:23px">成立条件 / 风险</text><g transform="translate(665 330)"><circle cx="10" cy="-5" r="5" fill="#087567"/><text x="28" y="0" class="note">餐桌1200×700，四把椅子只放南北长边</text></g><g transform="translate(665 404)"><circle cx="10" cy="-5" r="5" fill="#087567"/><text x="28" y="0" class="note">玄关柜深350，不占东侧主通道</text></g><g transform="translate(665 478)"><circle cx="10" cy="-5" r="5" fill="#087567"/><text x="28" y="0" class="note">入户门位置与开启方向仍须复尺</text></g>
+<text x="665" y="585" class="meta">绿色家具＝按比例固定投影</text><text x="665" y="611" class="meta">橙色虚线＝门洞 / 必须保持的通行净空</text>
+</svg>

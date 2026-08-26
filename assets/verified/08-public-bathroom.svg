@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 650" role="img" aria-label="客卫按比例空间校核图">
+<style>
+  .title{font:800 31px system-ui,'Microsoft YaHei';fill:#16342e} .sub{font:500 16px system-ui,'Microsoft YaHei';fill:#65706b}
+  .dim{font:700 15px system-ui,'Microsoft YaHei';fill:#087567} .fixture{font:700 11px system-ui,'Microsoft YaHei';fill:#183b34}
+  .door-label{font:700 12px system-ui,'Microsoft YaHei';fill:#a44925} .note{font:600 15px system-ui,'Microsoft YaHei';fill:#31423d}
+  .status{font:800 18px system-ui,'Microsoft YaHei';fill:#fff} .meta{font:600 14px system-ui,'Microsoft YaHei';fill:#6a746f}
+</style>
+<rect width="1100" height="650" fill="#f5f1e8"/><text x="55" y="57" class="title">客卫</text>
+<text x="55" y="87" class="sub">净尺寸约2530×1210 · 3.1㎡模型值</text>
+<rect x="35" y="108" width="580" height="500" rx="24" fill="#fffdfa" stroke="#ddd6c9"/>
+<polygon points="55.0,230.9 595.0,230.9 595.0,489.1 55.0,489.1" fill="#eee1cd" stroke="#193a33" stroke-width="9" stroke-linejoin="round"/>
+<rect x="55.0" y="270.4" width="128.1" height="154.7" fill="#e5a46a" fill-opacity=".12" stroke="#c25d31" stroke-width="2" stroke-dasharray="8 6"/><text x="119.0" y="347.7" text-anchor="middle" dominant-baseline="middle" class="door-label">入口净空</text><rect x="55.0" y="425.1" width="85.4" height="64.0" rx="6" fill="#e7e5df" stroke="#183b34" stroke-width="2"/><text x="97.7" y="457.1" text-anchor="middle" dominant-baseline="middle" class="fixture">角盆</text><rect x="215.1" y="237.3" width="76.8" height="123.8" rx="6" fill="#e7e5df" stroke="#183b34" stroke-width="2"/><text x="253.5" y="299.2" text-anchor="middle" dominant-baseline="middle" class="fixture">壁挂马桶</text><rect x="396.5" y="241.5" width="187.8" height="236.9" rx="6" fill="#a9cbc8" stroke="#183b34" stroke-width="2"/><text x="490.4" y="360.0" text-anchor="middle" dominant-baseline="middle" class="fixture">淋浴区</text><line x1="55.0" y1="270.4" x2="55.0" y2="430.4" stroke="#f7f4ed" stroke-width="12"/><line x1="55.0" y1="270.4" x2="55.0" y2="430.4" stroke="#c25d31" stroke-width="4" stroke-dasharray="10 6"/><text x="55.0" y="341.4" text-anchor="middle" class="door-label">外开/移门750</text>
+<line x1="55.0" y1="206.9" x2="595.0" y2="206.9" stroke="#087567" stroke-width="2"/>
+<text x="325.0" y="196.9" text-anchor="middle" class="dim">2530 mm</text>
+<line x1="31.0" y1="230.9" x2="31.0" y2="489.1" stroke="#087567" stroke-width="2"/>
+<text x="18.0" y="360.0" transform="rotate(-90 18.0 360.0)" text-anchor="middle" class="dim">1210 mm</text>
+<text x="55" y="633" class="meta">模型净面积 3.1㎡ · 家具投影与Sweet Home 3D使用同一厘米坐标</text>
+<rect x="650" y="115" width="410" height="94" rx="18" fill="#123c35"/><text x="675" y="151" class="status">平面校核结论</text>
+<text x="675" y="184" class="status">勉强成立（取消650浴室柜）</text>
+<text x="665" y="258" class="title" style="font-size:23px">成立条件 / 风险</text><g transform="translate(665 330)"><circle cx="10" cy="-5" r="5" fill="#087567"/><text x="28" y="0" class="note">只能用400×300角盆，不能放效果图中的650柜</text></g><g transform="translate(665 404)"><circle cx="10" cy="-5" r="5" fill="#087567"/><text x="28" y="0" class="note">壁挂马桶靠北，东端880×1110淋浴</text></g><g transform="translate(665 478)"><circle cx="10" cy="-5" r="5" fill="#087567"/><text x="28" y="0" class="note">玻璃必须可折叠并留约670入口；管位不符则方案作废</text></g>
+<text x="665" y="585" class="meta">绿色家具＝按比例固定投影</text><text x="665" y="611" class="meta">橙色虚线＝门洞 / 必须保持的通行净空</text>
+</svg>

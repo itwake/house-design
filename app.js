@@ -9,102 +9,103 @@ const SVG_NS = "http://www.w3.org/2000/svg";
 
 const DESIGN_ROOMS = [
   {
-    index: "01", title: "客厅 + 餐厅", eyebrow: "约36.6㎡ · 恢复连续公共区",
-    image: "assets/design/01-living-dining.jpg",
-    summary: "拆除自如新增第四房，重新建立从入户、餐厅到客厅和侧向窗的完整光路。电视墙做薄、沙发做低，高柜不占采光面。",
-    specs: ["2200沙发", "320–350薄电视柜", "主通道≥900", "3000K / Ra≥90"],
+    index: "01", title: "客厅 + 餐厅", eyebrow: "模型净面积约35.0㎡ · 已做投影碰撞检查",
+    image: "assets/verified/01-living-dining.svg",
+    summary: "保留连续公共区，但把餐桌缩至1200×700，取消端头餐椅，避免侵进入户门落脚区；客厅家具按同一厘米坐标核对。",
+    specs: ["2200沙发", "1200×700餐桌", "东侧主通道≈1200", "平面校核：成立"],
     details: [
-      ["空间与收纳", "浅橡木电视背板结合悬浮低柜；餐边柜与玄关柜集中在实体墙，开放格控制在20%以内。"],
+      ["校核结论", "沙发—电视净距约2590mm；餐桌东侧保留约1200mm主通道。四把餐椅只能布置在长边。"],
       ["照明与电气", "基础、电视/阅读、餐桌吊灯和柜下灯至少4组回路；窗帘电机双侧预留。"],
       ["临路策略", "北向外窗先做夜间噪声实测，再决定夹胶中空窗、密封和新风；不要只靠厚窗帘。"],
     ],
   },
   {
-    index: "02", title: "玄关 + 餐厅", eyebrow: "入户先收纳，再进入公共空间",
-    image: "assets/design/02-entry-dining.jpg",
-    summary: "350mm深玄关柜承担鞋、雨具、扫地机和弱电散热；1400餐桌靠近厨房，餐边柜兼水吧，避免把杂物带入客厅。",
-    specs: ["玄关柜深350", "餐桌1400×800", "餐边柜深350", "底部感应灯"],
+    index: "02", title: "玄关 + 餐厅", eyebrow: "3180mm宽局部 · 已检查入户门落脚区",
+    image: "assets/verified/02-entry-dining.svg",
+    summary: "350mm深玄关柜和餐边柜保留；餐桌改为1200×700，四椅只放南北长边，东侧作为去厨房和卧室的主要通道。",
+    specs: ["玄关柜深350", "餐桌1200×700", "餐边柜深350", "平面校核：条件成立"],
     details: [
-      ["玄关柜", "底部悬空、换鞋位、全身镜和临时置物台整合；柜门开启不得碰入户门。"],
+      ["校核结论", "1400×800餐桌加端头椅会挤进入户区，已经删除；新桌型的东侧无端头椅，保持连续通行。"],
       ["餐边水吧", "台上五孔×4，净饮、咖啡机按设备分路；高温蒸汽与吊柜保持安全距离。"],
-      ["动线", "餐椅拉出后仍保证卧室方向净通道，入户视线不正对杂物台面。"],
+      ["待复尺", "入户门确切中心、门扇开启方向和墙垛宽度决定南侧餐椅能否长期摆放。"],
     ],
   },
   {
-    index: "03", title: "厨房", eyebrow: "约6.2㎡ · 可闭合高效率厨房",
-    image: "assets/design/03-kitchen.jpg",
+    index: "03", title: "厨房", eyebrow: "模型净尺寸约2870×2620 · 7.5㎡",
+    image: "assets/verified/03-kitchen.svg",
     summary: "黑框玻璃门打开时连接餐厅、关闭时控制油烟；两侧连续台面整合冰箱、蒸烤、洗碗机、水槽和灶具。",
-    specs: ["净通道850–950", "地柜深600", "吊柜深320–350", "任务光3500K"],
+    specs: ["双排柜净通道≈1360", "地柜深600", "门洞约900待复尺", "平面校核：成立"],
     details: [
-      ["设备顺序", "入口侧冰箱与蒸烤高柜；水槽和洗碗机同侧；灶具下优先大抽屉。"],
+      ["校核结论", "两排600mm地柜后净通道约1360mm；冰箱和蒸烤高柜集中东墙，不占900mm移门。"],
       ["柜体", "吊柜做到顶并留烟机检修口；先锁冰箱、洗碗机、蒸烤箱和烟机型号再下单。"],
       ["燃气与安全", "玻璃门、燃气表、报警器、通风和烟道必须经物业及燃气专业确认。"],
     ],
   },
   {
-    index: "04", title: "主卧 A", eyebrow: "约10.8㎡ · 安静克制的睡眠空间",
-    image: "assets/design/04-master-bedroom.jpg",
+    index: "04", title: "主卧 A", eyebrow: "模型净尺寸约3500×3100 · 10.9㎡",
+    image: "assets/verified/04-master-bedroom.svg",
     summary: "采用1500床而非强塞1800床，把空间优先给2400到顶衣柜、可用过道和临路侧隔声睡眠。",
-    specs: ["床1500×2000", "衣柜2400×600", "主侧过道争取650", "窗帘盒协调空调"],
+    specs: ["床1500×2000", "衣柜2400×550", "床柜净距≈1025", "平面校核：成立"],
     details: [
-      ["收纳", "衣柜按长衣、短衣、抽屉、行李与床品分区，减少开放格和难清洁转角。"],
+      ["校核结论", "床已移到北侧，床尾至南墙约1020mm，门后落脚区不再与床角重叠。"],
       ["床侧", "单侧通道不低于550mm；床头照明与双控、USB/Type-C插座一次定位。"],
       ["安静", "空调、新风口避开床头直吹；窗密封、玻璃组合与新风噪声作为采购指标。"],
     ],
   },
   {
-    index: "05", title: "次卧 B", eyebrow: "约10.7㎡ · 儿童 / 长辈均可转换",
-    image: "assets/design/05-second-bedroom.jpg",
+    index: "05", title: "次卧 B", eyebrow: "模型净尺寸约3010×3100 · 9.3㎡",
+    image: "assets/verified/05-second-bedroom.svg",
     summary: "中性硬装、1350独立床、标准衣柜和独立书桌。未来在儿童房、长辈房或客房之间转换时无需拆固定柜。",
-    specs: ["床1350×2000", "衣柜1750×550", "书桌900×520", "家具防倾倒"],
+    specs: ["床1350×2000", "衣柜1750×550", "床柜通道≈990", "平面校核：成立"],
     details: [
-      ["可成长", "墙柜保持中性，颜色只在床品和座椅出现；避免固定榻榻米锁死用途。"],
+      ["校核结论", "床、书桌和衣柜均在3010×3100净框内；850门洞止于分墙内侧，门后区域无固定家具。"],
       ["学习", "书桌侧面自然光，桌面照度目标500lx，插座与网口不被柜体遮挡。"],
       ["安全", "柜体防倾倒、家具圆角；儿童使用时补充窗锁和防坠措施。"],
     ],
   },
   {
-    index: "06", title: "书房 / 客卧 C", eyebrow: "约7.2㎡ · 高频办公，低频留宿",
-    image: "assets/design/06-study-guest-room.jpg",
-    summary: "1000抽屉日床、1600书桌与小衣柜形成弹性房间；以后可直接更换标准单人床，不拆整屋木作。",
-    specs: ["日床1000×2000", "书桌1600×550", "客衣柜850×500", "开放格≤30%"],
+    index: "06", title: "书房 / 客卧 C", eyebrow: "模型净尺寸约2530×2860 · 7.2㎡",
+    image: "assets/verified/06-study-guest-room.svg",
+    summary: "原1600书桌会覆盖东墙门洞，现改为1100书桌；保留1000日床和850客衣柜，门洞区不再有固定家具。",
+    specs: ["日床1000×2000", "书桌1100×550", "客衣柜850×500", "平面校核：条件成立"],
     details: [
+      ["校核结论", "日床—书桌净距约875mm；书桌在门洞上缘前结束。衣柜与门洞仅约75mm，必须现场复尺。"],
       ["办公", "视频会议补充正面柔光；有线网口、显示器和桌下理线槽同步定位。"],
-      ["留宿", "日床下抽屉存放被褥，中央净空目标≥700mm，保证拉椅和铺床。"],
-      ["柜体", "上柜只放在书桌上方，深300–350mm；不在床上方堆满吊柜。"],
+      ["柜体", "上柜只放在1100书桌上方，深300–350mm；不在床上方设置重型吊柜。"],
     ],
   },
   {
-    index: "07", title: "主卫", eyebrow: "完整淋浴 + 900悬空浴室柜",
-    image: "assets/design/07-master-bathroom.jpg",
-    summary: "保留原湿区和窗口，用大规格哑光浅灰米砖、抽屉浴室柜、镜柜和透明淋浴玻璃获得明亮感。",
-    specs: ["浴室柜900×480", "镜柜深120–150", "防滑目标R10", "镜前光3500K"],
+    index: "07", title: "主卫", eyebrow: "模型净尺寸约2530×1530 · 3.9㎡",
+    image: "assets/verified/07-master-bathroom.svg",
+    summary: "原900浴室柜和完整封闭玻璃房会压缩入口，现改800悬空柜、壁挂坐便和东端900×1410淋浴区，只设600固定玻璃。",
+    specs: ["浴室柜800×450", "淋浴900×1410", "门须外开/移门", "平面校核：条件成立"],
     details: [
-      ["排水", "排污、地漏和沉箱尽量原位；悬空柜不等于可以随意改墙排。"],
+      ["校核结论", "三件设备能沿2530宽度排开，但成立前提是卫生间门外开或采用合规移门。"],
+      ["排水", "排污、地漏和沉箱尽量原位；若现有坑距不支持壁挂坐便，必须按原排污点重排。"],
       ["电气", "镜柜内吹风机/牙刷插座，智能坐便专用防溅插座，保留等电位连接。"],
       ["通风", "暖风、排风和照明分控；排风止逆、窗扇开启和检修口互不冲突。"],
     ],
   },
   {
-    index: "08", title: "客卫", eyebrow: "紧凑但不追求网红三分离",
-    image: "assets/design/08-public-bathroom.jpg",
-    summary: "650悬空浴室柜、坐便和每日淋浴都保证可用；透明玻璃和均匀照明减少小空间压迫。",
-    specs: ["浴室柜650×440", "透明淋浴玻璃", "排水原位", "夜灯独立"],
+    index: "08", title: "客卫", eyebrow: "模型净尺寸约2530×1210 · 3.1㎡",
+    image: "assets/verified/08-public-bathroom.svg",
+    summary: "原效果图不成立。1210mm进深放不下650浴室柜、常规坐便和完整淋浴房，现改400×300角盆、壁挂坐便及880×1110淋浴区。",
+    specs: ["角盆400×300", "淋浴880×1110", "可折叠玻璃", "平面校核：勉强成立"],
     details: [
-      ["尺度优先", "门口净宽有限，浴室柜不过深；门扇、坐便使用区和淋浴门开启需在复尺图模拟。"],
-      ["耐用", "壁龛需确认墙体和防水节点；不能做时改用可拆卸金属置物架。"],
-      ["控制", "智能坐便、暖风和镜柜电源提前定位，夜灯不与主照明强制联动。"],
+      ["校核结论", "这里只能做紧凑三件式湿卫，不能复制原深进深效果图；门须外开/移门，玻璃只做可折叠屏。"],
+      ["一票否决", "若现场坑距、立管或地漏不在本方案允许区域，客卫应优先保留原排水布局，不能强行追求图示。"],
+      ["使用取舍", "400角盆只满足洗手，不适合大量洗漱收纳；主要洗漱功能应由主卫承担。"],
     ],
   },
   {
-    index: "09", title: "家政阳台", eyebrow: "约2.0㎡ · 洗、烘、晾、清洁集中",
-    image: "assets/design/09-utility-balcony.jpg",
-    summary: "不做休闲阳台。单侧布置洗烘塔和350mm深耐潮家政柜，窗前保持低矮，把城市视野和采光留出来。",
-    specs: ["洗烘塔650×700", "家政柜深350", "耐潮板+铝踢脚", "电动晾衣架"],
+    index: "09", title: "家政阳台", eyebrow: "模型净尺寸约1420×1490 · 2.1㎡",
+    image: "assets/verified/09-utility-balcony.svg",
+    summary: "原单侧高柜会把洗烘塔前通道压到约350mm，现把700×350家政柜移到南墙，洗烘塔留在东北角。",
+    specs: ["洗烘塔650×700", "南墙浅柜700×350", "主通道≈775", "平面校核：成立"],
     details: [
       ["给排水", "若原阳台无合法给排水，不新增排水穿越客厅或外墙；水槽仅作为条件允许时的备选。"],
       ["防潮", "柜体底部离地或设防水台，插座避开溅水区，并保留设备散热与检修距离。"],
-      ["通行", "柜门、窗扇、晾衣架和灯具不得碰撞；清洁柜集中单侧。"],
+      ["校核结论", "柜体调整后西侧主通道最窄约775mm；原效果图中的宽阔地面和整排高柜不再作为依据。"],
     ],
   },
 ];
@@ -154,7 +155,7 @@ function openDesignDialog(item) {
   const dialog = document.getElementById("designDialog");
   const image = document.getElementById("dialogImage");
   image.src = item.image;
-  image.alt = `${item.title}概念效果参考`;
+  image.alt = `${item.title}按比例空间校核图`;
   document.getElementById("dialogEyebrow").textContent = `${item.index} / ${item.eyebrow}`;
   document.getElementById("dialogTitle").textContent = item.title;
   document.getElementById("dialogSummary").textContent = item.summary;
@@ -169,15 +170,15 @@ function renderDesign() {
     const card = document.createElement("article");
     card.className = "design-card";
     card.innerHTML = `
-      <button class="design-card-media" type="button" aria-label="查看${item.title}设计详情">
-        <img src="${item.image}" alt="${item.title}概念效果参考" loading="lazy" />
+      <button class="design-card-media" type="button" aria-label="查看${item.title}平面校核详情">
+        <img src="${item.image}" alt="${item.title}按比例空间校核图" loading="lazy" />
         <span class="design-card-index">${item.index}</span>
       </button>
       <div class="design-card-body">
         <h3>${item.title}</h3>
         <p>${item.summary}</p>
-        <div class="spec-chips">${item.specs.slice(0, 3).map((spec) => `<span>${spec}</span>`).join("")}</div>
-        <button class="design-card-link" type="button">查看尺寸、收纳与灯光 →</button>
+        <div class="spec-chips">${item.specs.map((spec) => `<span>${spec}</span>`).join("")}</div>
+        <button class="design-card-link" type="button">查看平面校核、成立条件与风险 →</button>
       </div>`;
     card.querySelectorAll("button").forEach((button) => button.addEventListener("click", () => openDesignDialog(item)));
     grid.append(card);
@@ -256,6 +257,13 @@ function renderPlan(model) {
   const walls = svg("g", { id: "walls" });
   model.walls.forEach(([x1, y1, x2, y2]) => walls.append(svg("line", { x1, y1, x2, y2, class: "wall-line" })));
   root.append(walls);
+
+  const doors = svg("g", { id: "doorOpenings" });
+  model.doors.forEach((door) => {
+    doors.append(svg("line", { x1: door.x1, y1: door.y1, x2: door.x2, y2: door.y2, class: "door-opening-cut" }));
+    doors.append(svg("line", { x1: door.x1, y1: door.y1, x2: door.x2, y2: door.y2, class: "door-opening-line" }));
+  });
+  root.append(doors);
 
   const dims = svg("g", { id: "dimensions" });
   addHorizontalDimension(dims, 0, 687, 0, -62, "6,870 mm · A");
@@ -360,7 +368,7 @@ function initViewer() {
   try {
     state.homeComponent = viewHome(
       "viewerCanvas",
-      "models/huiyayuan-104-calibrated.sh3d?v=1.1.0",
+      "models/huiyayuan-104-calibrated.sh3d?v=2.0.0",
       onerror,
       onprogression,
       {
@@ -394,7 +402,7 @@ async function start() {
   document.getElementById("fullscreenButton").addEventListener("click", () => document.getElementById("viewerShell").requestFullscreen?.());
   window.addEventListener("resize", resizeViewer);
 
-  const response = await fetch("models/model-data.json?v=1.1.0");
+  const response = await fetch("models/model-data.json?v=2.0.0");
   if (!response.ok) throw new Error(`模型坐标读取失败：HTTP ${response.status}`);
   state.model = await response.json();
   renderPlan(state.model);

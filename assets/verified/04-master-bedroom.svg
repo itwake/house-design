@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 650" role="img" aria-label="主卧 A按比例空间校核图">
+<style>
+  .title{font:800 31px system-ui,'Microsoft YaHei';fill:#16342e} .sub{font:500 16px system-ui,'Microsoft YaHei';fill:#65706b}
+  .dim{font:700 15px system-ui,'Microsoft YaHei';fill:#087567} .fixture{font:700 11px system-ui,'Microsoft YaHei';fill:#183b34}
+  .door-label{font:700 12px system-ui,'Microsoft YaHei';fill:#a44925} .note{font:600 15px system-ui,'Microsoft YaHei';fill:#31423d}
+  .status{font:800 18px system-ui,'Microsoft YaHei';fill:#fff} .meta{font:600 14px system-ui,'Microsoft YaHei';fill:#6a746f}
+</style>
+<rect width="1100" height="650" fill="#f5f1e8"/><text x="55" y="57" class="title">主卧 A</text>
+<text x="55" y="87" class="sub">净尺寸约3500×3100 · 10.9㎡模型值</text>
+<rect x="35" y="108" width="580" height="500" rx="24" fill="#fffdfa" stroke="#ddd6c9"/>
+<polygon points="82.3,145.0 567.7,145.0 567.7,575.0 82.3,575.0" fill="#eee1cd" stroke="#193a33" stroke-width="9" stroke-linejoin="round"/>
+<rect x="83.6" y="450.2" width="124.8" height="124.8" fill="#e5a46a" fill-opacity=".12" stroke="#c25d31" stroke-width="2" stroke-dasharray="8 6"/><text x="146.1" y="512.6" text-anchor="middle" dominant-baseline="middle" class="door-label">门后落脚区</text><rect x="137.7" y="156.1" width="208.1" height="277.4" rx="6" fill="#a8a39a" stroke="#183b34" stroke-width="2"/><text x="241.8" y="294.8" text-anchor="middle" dominant-baseline="middle" class="fixture">主卧1500床</text><rect x="488.0" y="190.8" width="76.3" height="332.9" rx="6" fill="#c8a77e" stroke="#183b34" stroke-width="2"/><text x="526.1" y="357.2" text-anchor="middle" dominant-baseline="middle" class="fixture">主卧衣柜</text><line x1="83.6" y1="575.0" x2="208.5" y2="575.0" stroke="#f7f4ed" stroke-width="12"/><line x1="83.6" y1="575.0" x2="208.5" y2="575.0" stroke="#c25d31" stroke-width="4" stroke-dasharray="10 6"/><text x="146.1" y="566.0" text-anchor="middle" class="door-label">门900</text>
+<line x1="82.3" y1="121.0" x2="567.7" y2="121.0" stroke="#087567" stroke-width="2"/>
+<text x="325.0" y="111.0" text-anchor="middle" class="dim">3500 mm</text>
+<line x1="58.3" y1="145.0" x2="58.3" y2="575.0" stroke="#087567" stroke-width="2"/>
+<text x="45.3" y="360.0" transform="rotate(-90 45.3 360.0)" text-anchor="middle" class="dim">3100 mm</text>
+<text x="55" y="633" class="meta">模型净面积 10.8㎡ · 家具投影与Sweet Home 3D使用同一厘米坐标</text>
+<rect x="650" y="115" width="410" height="94" rx="18" fill="#123c35"/><text x="675" y="151" class="status">平面校核结论</text>
+<text x="675" y="184" class="status">成立（门后留1020落脚区）</text>
+<text x="665" y="258" class="title" style="font-size:23px">成立条件 / 风险</text><g transform="translate(665 330)"><circle cx="10" cy="-5" r="5" fill="#087567"/><text x="28" y="0" class="note">1500床，不采用1800床</text></g><g transform="translate(665 404)"><circle cx="10" cy="-5" r="5" fill="#087567"/><text x="28" y="0" class="note">床—衣柜净距约1025</text></g><g transform="translate(665 478)"><circle cx="10" cy="-5" r="5" fill="#087567"/><text x="28" y="0" class="note">床尾至南墙约1020，避开门洞落脚区</text></g>
+<text x="665" y="585" class="meta">绿色家具＝按比例固定投影</text><text x="665" y="611" class="meta">橙色虚线＝门洞 / 必须保持的通行净空</text>
+</svg>
