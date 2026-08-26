@@ -6,10 +6,10 @@
     <meta name="theme-color" content="#123c35" />
     <meta
       name="description"
-      content="广州荟雅苑 104.83㎡ 三房两卫逐空间比例校核设计，含十一张模型渲染设计图、九张同坐标平面校核图、Sweet Home 3D JS 在线模型与复尺清单。"
+      content="广州荟雅苑 104.83㎡ 三房两卫完整设计，含九张同布局材质概念效果图、十一张模型尺度渲染、九张同坐标平面校核图、Sweet Home 3D JS 在线模型与复尺清单。"
     />
-    <title>荟雅苑 104.83㎡ · 三房两卫逐空间比例校核</title>
-    <link rel="stylesheet" href="styles.css?v=2.3.3" />
+    <title>荟雅苑 104.83㎡ · 同布局材质概念与比例校核</title>
+    <link rel="stylesheet" href="styles.css?v=2.4.0" />
     <script defer src="vendor/big.min.js"></script>
     <script defer src="vendor/gl-matrix-min.js"></script>
     <script defer src="vendor/jszip.min.js"></script>
@@ -21,7 +21,7 @@
     <script defer src="vendor/triangulator.min.js"></script>
     <script defer src="vendor/viewmodel.min.js"></script>
     <script defer src="vendor/viewhome.min.js"></script>
-    <script defer src="app.js?v=2.3.3"></script>
+    <script defer src="app.js?v=2.4.0"></script>
   </head>
   <body>
     <header class="site-header">
@@ -33,8 +33,8 @@
         </span>
       </a>
       <div class="header-actions">
-        <span class="status-pill"><i></i> V2.3 模型渲染视角版</span>
-        <a class="button button-ghost" href="models/huiyayuan-104-calibrated.sh3d?v=2.3.3" download>下载 .sh3d</a>
+        <span class="status-pill"><i></i> V2.4 同布局材质概念版</span>
+        <a class="button button-ghost" href="models/huiyayuan-104-calibrated.sh3d?v=2.4.0" download>下载 .sh3d</a>
       </div>
     </header>
 
@@ -47,9 +47,9 @@
             在比例底模上落实“现代自然”的完整方案：拆除第四房，恢复连续客餐厅；三卧、双卫、可闭合厨房和家政阳台均加入真实尺寸柜体、家具、设备与分层照明。
           </p>
           <div class="hero-actions">
-            <a class="button button-primary" href="#renders">查看模型渲染图</a>
+            <a class="button button-primary" href="#concepts">查看材质效果图</a>
+            <a class="button button-secondary" href="#renders">查看模型尺度图</a>
             <a class="button button-secondary" href="#design">查看逐房间设计</a>
-            <button class="button button-secondary" data-open-tab="viewer">进入 3D 模型</button>
           </div>
         </div>
         <div class="hero-metrics" aria-label="模型主要尺寸">
@@ -109,6 +109,67 @@
 
         <div class="design-grid" id="designGrid" aria-live="polite"></div>
         <p class="render-note"><strong>设计没有删除。</strong>家具、柜体、配色、灯光和厨卫设备仍完整保留在3D模型中；九张比例图专门负责证明这些设计能否放得下。门位、开向、排污、烟道、窗扇和结构仍须交房复尺，条件不满足时调整设计而不是隐藏问题。</p>
+      </section>
+
+      <section class="concept-section" id="concepts">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">同布局 / 现代自然 / 材质概念</p>
+            <h2>同一个空间底盘，换成真实的光与材质</h2>
+          </div>
+          <p>以下效果图以校核后的3D相机截图为结构底图，只设计暖白、浅橡木、暖灰织物、鼠尾草绿、哑黑金属和分层灯光。</p>
+        </div>
+
+        <div class="concept-guardrail">
+          <span><b>01</b> 墙体与湿区锁定</span>
+          <span><b>02</b> 门窗位置锁定</span>
+          <span><b>03</b> 主要家具占位锁定</span>
+          <span><b>04</b> 只深化材质、灯光与软装</span>
+        </div>
+
+        <div class="concept-notice">
+          <strong>效果图与施工图的边界</strong>
+          <p>这是由准确模型视角约束的材质概念图，用来判断风格、色温和空间气质；生成图仍可能在小五金、柜缝和软装细节上出现偏差。任何与下方模型渲染、2D比例图冲突的地方，一律以模型和复尺结果为准。</p>
+        </div>
+
+        <div class="concept-gallery">
+          <figure class="concept-card concept-card-wide">
+            <a href="assets/concepts/living-dining-photoreal.png" target="_blank"><img src="assets/concepts/living-dining-photoreal.png" alt="保持电视墙、沙发和西窗关系的现代自然客厅概念效果图" decoding="async" fetchpriority="high" /></a>
+            <figcaption><span>01 · 客厅</span><strong>电视墙不挡窗的现代自然客厅</strong><p>暖白矿物墙、浅橡木电视背板、暖灰布艺和少量鼠尾草绿；电视仍在双卫南侧实墙。</p><details class="concept-compare"><summary>展开同机位模型底图</summary><img src="assets/renders/living-tv.png" alt="客厅同机位Sweet Home 3D模型底图" /></details></figcaption>
+          </figure>
+          <figure class="concept-card">
+            <a href="assets/concepts/entry-dining-photoreal.png" target="_blank"><img src="assets/concepts/entry-dining-photoreal.png" alt="保持玄关和餐桌动线的现代自然餐厅概念效果图" loading="lazy" decoding="async" /></a>
+            <figcaption><span>02 · 玄关餐厅</span><strong>轻薄收纳与暖光餐桌</strong><p>保留1200×700四人桌、350深玄关柜和去厨房/卧室的连续动线。</p><details class="concept-compare"><summary>展开同机位模型底图</summary><img src="assets/renders/dining.png" alt="玄关餐厅同机位Sweet Home 3D模型底图" /></details></figcaption>
+          </figure>
+          <figure class="concept-card">
+            <a href="assets/concepts/master-bedroom-photoreal.png" target="_blank"><img src="assets/concepts/master-bedroom-photoreal.png" alt="保持1500床和东侧衣柜布局的主卧概念效果图" loading="lazy" decoding="async" /></a>
+            <figcaption><span>03 · 主卧</span><strong>安静、克制的临路侧睡眠空间</strong><p>1500床、单床头柜和东侧2400衣柜不动，以织物、木色和柔和间接光改善睡眠感。</p><details class="concept-compare"><summary>展开同机位模型底图</summary><img src="assets/renders/master.png" alt="主卧同机位Sweet Home 3D模型底图" /></details></figcaption>
+          </figure>
+          <figure class="concept-card">
+            <a href="assets/concepts/bedroom-b-photoreal.png" target="_blank"><img src="assets/concepts/bedroom-b-photoreal.png" alt="保持床书桌衣柜位置的次卧概念效果图" loading="lazy" decoding="async" /></a>
+            <figcaption><span>04 · 次卧 B</span><strong>可成长的中性卧室</strong><p>1350独立床、书桌和衣柜原位保留，未来切换儿童房、长辈房或客房无需拆固定结构。</p><details class="concept-compare"><summary>展开同机位模型底图</summary><img src="assets/renders/bedroom-b.png" alt="次卧B同机位Sweet Home 3D模型底图" /></details></figcaption>
+          </figure>
+          <figure class="concept-card">
+            <a href="assets/concepts/study-guest-photoreal.png" target="_blank"><img src="assets/concepts/study-guest-photoreal.png" alt="保持日床书桌和客衣柜布局的书房客卧概念效果图" loading="lazy" decoding="async" /></a>
+            <figcaption><span>05 · 书房客卧</span><strong>工作日是书房，偶住时是客卧</strong><p>独立日床、1100书桌和客衣柜不改成固定榻榻米，保留后续调整能力。</p><details class="concept-compare"><summary>展开同机位模型底图</summary><img src="assets/renders/study.png" alt="书房客卧同机位Sweet Home 3D模型底图" /></details></figcaption>
+          </figure>
+          <figure class="concept-card">
+            <a href="assets/concepts/kitchen-photoreal.png" target="_blank"><img src="assets/concepts/kitchen-photoreal.png" alt="保持双排橱柜与设备位置的厨房概念效果图" loading="lazy" decoding="async" /></a>
+            <figcaption><span>06 · 厨房</span><strong>浅木、暖石材与哑黑玻璃门</strong><p>双排柜、东侧电器高柜、水槽、洗碗机和灶具位置全部沿用已校核布局。</p><details class="concept-compare"><summary>展开同机位模型底图</summary><img src="assets/renders/kitchen.png" alt="厨房同机位Sweet Home 3D模型底图" /></details></figcaption>
+          </figure>
+          <figure class="concept-card">
+            <a href="assets/concepts/master-bath-photoreal.png" target="_blank"><img src="assets/concepts/master-bath-photoreal.png" alt="保持800浴室柜壁挂马桶淋浴区的主卫概念效果图" loading="lazy" decoding="async" /></a>
+            <figcaption><span>07 · 主卫</span><strong>小尺度里的完整淋浴体验</strong><p>800悬空柜、壁挂马桶、东端淋浴和必要固定玻璃保持原位，不把卫生间画大。</p><details class="concept-compare"><summary>展开同机位模型底图</summary><img src="assets/renders/master-bath.png" alt="主卫同机位Sweet Home 3D模型底图" /></details></figcaption>
+          </figure>
+          <figure class="concept-card">
+            <a href="assets/concepts/guest-bath-photoreal.png" target="_blank"><img src="assets/concepts/guest-bath-photoreal.png" alt="保持角盆壁挂马桶折叠屏布局的紧凑客卫概念效果图" loading="lazy" decoding="async" /></a>
+            <figcaption><span>08 · 客卫</span><strong>承认紧凑，才会真正好用</strong><p>400角盆、壁挂马桶和东端淋浴/折叠屏不变，以浅色连续材质减轻局促感。</p><details class="concept-compare"><summary>展开同机位模型底图</summary><img src="assets/renders/guest-bath.png" alt="客卫同机位Sweet Home 3D模型底图" /></details></figcaption>
+          </figure>
+          <figure class="concept-card">
+            <a href="assets/concepts/utility-balcony-photoreal.png" target="_blank"><img src="assets/concepts/utility-balcony-photoreal.png" alt="保持洗烘塔浅柜晾衣架布局的家政阳台概念效果图" loading="lazy" decoding="async" /></a>
+            <figcaption><span>09 · 家政阳台</span><strong>耐潮、整洁、能真正做家务</strong><p>东侧洗烘塔、南墙浅柜和顶部晾衣架沿用模型位置，主通道保持畅通。</p><details class="concept-compare"><summary>展开同机位模型底图</summary><img src="assets/renders/balcony.png" alt="家政阳台同机位Sweet Home 3D模型底图" /></details></figcaption>
+          </figure>
+        </div>
       </section>
 
       <section class="render-section" id="renders">
@@ -214,7 +275,7 @@
           </div>
           <div class="viewer-caption">
             <p><strong>V2.3 增加十一张可复现的预设渲染视角。</strong>电视转至双卫南侧实墙，沙发正向观看，客厅西窗前保留600mm净空；窗宽与窗台仍为C级假设，必须现场复尺。</p>
-            <a href="models/huiyayuan-104-calibrated.sh3d?v=2.3.3" download>下载并在桌面版继续编辑 →</a>
+            <a href="models/huiyayuan-104-calibrated.sh3d?v=2.4.0" download>下载并在桌面版继续编辑 →</a>
           </div>
         </div>
 
@@ -316,7 +377,7 @@
     </dialog>
 
     <footer>
-      <p>荟雅苑 104.83㎡ 模型渲染视角 V2.3 · Sweet Home 3D JS Viewer 7.5.2</p>
+      <p>荟雅苑 104.83㎡ 同布局材质概念 V2.4 · Sweet Home 3D JS Viewer 7.5.2</p>
       <a href="https://www.sweethome3d.com/SweetHome3DJSOnline.jsp" target="_blank" rel="noreferrer">官方 Sweet Home 3D JS</a>
     </footer>
   </body>

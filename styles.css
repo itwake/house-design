@@ -181,6 +181,34 @@ h1 { margin-bottom: 26px; font-size: clamp(48px, 6.5vw, 92px); line-height: .98;
 .dialog-detail strong { display: block; margin-bottom: 6px; font-size: 12px; }
 .dialog-detail p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.7; }
 
+.concept-section {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 82px clamp(14px, 4vw, 60px) 88px;
+  border-top: 1px solid rgba(23,37,33,.1);
+}
+.concept-guardrail { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+.concept-guardrail span { display: flex; gap: 10px; align-items: center; padding: 14px 15px; border: 1px solid #cbd8d3; border-radius: 13px; color: var(--green-dark); background: var(--green-soft); font-size: 11px; font-weight: 750; }
+.concept-guardrail b { color: var(--green); font-size: 9px; }
+.concept-notice { display: grid; grid-template-columns: 190px 1fr; gap: 24px; margin-bottom: 24px; padding: 20px 23px; border: 1px solid #e3c9b8; border-radius: 17px; background: var(--orange-soft); }
+.concept-notice p { margin: 0; color: #715342; font-size: 12px; line-height: 1.75; }
+.concept-gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.concept-card { margin: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 22px; background: var(--card); box-shadow: 0 15px 38px rgba(36,47,43,.08); }
+.concept-card-wide { grid-column: 1 / -1; }
+.concept-card a { display: block; overflow: hidden; background: #d5cec2; }
+.concept-card img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; transition: transform .5s; }
+.concept-card-wide img { aspect-ratio: 16 / 8.2; }
+.concept-card:hover img { transform: scale(1.018); }
+.concept-card figcaption { padding: 20px 22px 23px; }
+.concept-card figcaption span, .concept-card figcaption strong { display: block; }
+.concept-card figcaption span { margin-bottom: 8px; color: var(--green); font-size: 10px; font-weight: 850; letter-spacing: .08em; }
+.concept-card figcaption strong { margin-bottom: 8px; font-size: 20px; letter-spacing: -.02em; }
+.concept-card figcaption p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.7; }
+.concept-compare { margin-top: 15px; border-top: 1px solid var(--line); }
+.concept-compare summary { padding: 13px 0 0; color: var(--green); cursor: pointer; font-size: 10px; font-weight: 800; list-style-position: inside; }
+.concept-compare img { width: 100%; margin-top: 12px; border: 1px solid var(--line); border-radius: 12px; aspect-ratio: 16 / 9; object-fit: cover; background: #ddd8cd; transition: none; }
+.concept-card:hover .concept-compare img { transform: none; }
+
 .render-section {
   max-width: 1380px;
   margin: 0 auto;
@@ -359,6 +387,8 @@ footer a { color: var(--green); }
   .design-manifesto { grid-template-columns: 1fr; }
   .design-grid { grid-template-columns: repeat(2, 1fr); }
   .design-dialog[open] { grid-template-columns: 1fr 1fr; }
+  .concept-guardrail { grid-template-columns: repeat(2, 1fr); }
+  .concept-card-wide img { aspect-ratio: 3 / 2; }
   .render-card-wide img { aspect-ratio: 16 / 9; }
   .plan-layout { grid-template-columns: 1fr; }
   .plan-sidebar { grid-template-columns: repeat(3, 1fr); }
@@ -385,6 +415,10 @@ footer a { color: var(--green); }
   .dialog-media { min-height: 0; height: 48vh; }
   .dialog-media img { height: 100%; }
   .dialog-copy { max-height: none; padding: 28px 22px 40px; }
+  .concept-section { padding-top: 62px; }
+  .concept-guardrail, .concept-gallery { grid-template-columns: 1fr; }
+  .concept-notice { grid-template-columns: 1fr; gap: 8px; }
+  .concept-card-wide { grid-column: auto; }
   .render-section { padding-top: 62px; }
   .render-callout { grid-template-columns: 1fr; gap: 8px; }
   .render-gallery { grid-template-columns: 1fr; }
