@@ -14,6 +14,7 @@ import math
 import struct
 import zlib
 from pathlib import Path
+from xml.etree import ElementTree
 from xml.sax.saxutils import escape, quoteattr
 from zipfile import ZIP_DEFLATED, ZipFile
 
@@ -28,7 +29,7 @@ WALL_HEIGHT = 270.0
 WALL_THICKNESS = 12.0
 
 MODEL_NOTES = {
-    "model.status": "V2.0逐空间比例校核；九个空间按净框、门洞和通道重排，不是现场竣工测量图",
+    "model.status": "V2.1门窗同源校核；2D与3D由同一套墙线、房间和开口坐标生成，不是现场竣工测量图",
     "model.units": "Sweet Home 3D 内部单位为厘米；网页尺寸标注为毫米",
     "source.top_width": "6870mm，目标房源现状尺寸图",
     "source.bottom_width": "6410mm，目标房源现状尺寸图",
@@ -36,16 +37,87 @@ MODEL_NOTES = {
     "source.clear_spans_top": "3010+120墙体+3500，并用两侧各120墙体闭合到6870",
     "source.clear_spans_bottom": "3180+120墙体+2870，并用两侧各120墙体闭合到6410",
     "assumption.wall_thickness": "统一120mm；承重墙/剪力墙厚度须现场复尺并查原始结构图",
-    "assumption.openings": "门窗宽度、窗台高和梁位按户型图示意，须现场复尺",
+    "assumption.openings": "门窗宽度、窗台高和梁位均须现场复尺；客厅西窗按同户型图确认存在，暂按2000mm宽、窗台900mm建模（C级）",
     "assumption.lower_offset": "下部体块相对上部向东偏移2000mm，按两张户型图比例校准",
     "design.layout": "现代自然：暖白+浅橡木+暖灰；恢复三房两卫与连续客餐厅",
     "design.lighting": "公共区3000K，厨卫任务光3500K，Ra≥90；灯位为概念布置",
     "design.scope": "已加入定制柜体、软装、厨卫设备、家政与照明；仍需复尺深化",
 }
 
+
+ROOM_SPECS = [
+    {"id": "room_b", "name": "次卧 B", "modelName": "次卧 B · 可成长", "tone": "bedroom", "floorColor": "FFD9BD98", "points": [(12, 12), (313, 12), (313, 322), (12, 322)]},
+    {"id": "room_a", "name": "主卧 A", "modelName": "主卧 A · 1500床", "tone": "bedroom", "floorColor": "FFD7BB95", "points": [(325, 12), (675, 12), (675, 322), (325, 322)]},
+    {"id": "room_c", "name": "小卧 C", "modelName": "书房 / 偶住客卧", "tone": "bedroom", "floorColor": "FFD6B990", "points": [(12, 334), (265, 334), (265, 620), (12, 620)]},
+    {"id": "bath_1", "name": "主卫", "modelName": "主卫 · 完整淋浴", "tone": "wet", "floorColor": "FFC9CDC8", "points": [(422, 334), (675, 334), (675, 487), (422, 487)]},
+    {"id": "bath_2", "name": "客卫", "modelName": "客卫 · 紧凑好用", "tone": "wet", "floorColor": "FFC8CCC7", "points": [(422, 499), (675, 499), (675, 620), (422, 620)]},
+    {"id": "living", "name": "客餐厅 / 过道", "modelName": "连续客餐厅 / 玄关", "tone": "living", "floorColor": "FFD8BC93", "points": [(277, 334), (410, 334), (410, 632), (675, 632), (675, 1115), (530, 1115), (530, 1389), (212, 1389), (212, 632), (277, 632)]},
+    {"id": "balcony", "name": "阳台", "modelName": "家政阳台", "tone": "balcony", "floorColor": "FFC7D2CB", "points": [(687, 966), (829, 966), (829, 1115), (687, 1115)]},
+    {"id": "kitchen", "name": "厨房", "modelName": "双排厨房", "tone": "kitchen", "floorColor": "FFD0D2CC", "points": [(542, 1127), (829, 1127), (829, 1389), (542, 1389)]},
+]
+
+
+WALL_SPECS = [
+    # External envelope. Outer dimensions close exactly to 6870 × 14010 mm.
+    {"id": "w_north", "coords": (6, 6, 681, 6)},
+    {"id": "w_west_upper", "coords": (6, 6, 6, 626)},
+    {"id": "w_upper_step", "coords": (6, 626, 206, 626)},
+    {"id": "w_west_lower", "coords": (206, 626, 206, 1395)},
+    {"id": "w_south", "coords": (206, 1395, 835, 1395)},
+    {"id": "w_east_lower", "coords": (835, 960, 835, 1395)},
+    {"id": "w_east_step", "coords": (681, 960, 835, 960)},
+    {"id": "w_east_upper", "coords": (681, 6, 681, 960)},
+    # Bedrooms and wet core.
+    {"id": "w_bed_partition", "coords": (319, 6, 319, 328)},
+    {"id": "w_bed_b_south", "coords": (6, 328, 319, 328)},
+    {"id": "w_bed_a_south", "coords": (319, 328, 681, 328)},
+    {"id": "w_bed_c_east", "coords": (271, 328, 271, 626)},
+    {"id": "w_bath_west", "coords": (416, 328, 416, 626), "color": "FFE1DED7"},
+    {"id": "w_bath_middle", "coords": (416, 493, 681, 493), "color": "FFE1DED7"},
+    {"id": "w_bath_south", "coords": (416, 626, 681, 626), "color": "FFE1DED7"},
+    # Balcony and kitchen.
+    {"id": "w_balcony_west", "coords": (681, 960, 681, 1121), "color": "FFE3E1DA"},
+    {"id": "w_balcony_south", "coords": (681, 1121, 835, 1121), "color": "FFE3E1DA"},
+    {"id": "w_kitchen_north", "coords": (536, 1121, 681, 1121), "color": "FFE3DFD7"},
+    {"id": "w_kitchen_west", "coords": (536, 1121, 536, 1395), "color": "FFE3DFD7"},
+]
+
+
+# Every opening below drives both model-data.json (2D) and Home.xml (3D).
+# Coordinates use the Sweet Home 3D centimetre system; angle 0 is horizontal.
+OPENING_SPECS = [
+    {"id": "window_b", "name": "次卧北窗（待复尺）", "kind": "window", "x": 155, "y": 6, "width": 130, "depth": 12, "height": 140, "elevation": 90, "grade": "C"},
+    {"id": "window_a", "name": "主卧北窗（待复尺）", "kind": "window", "x": 505, "y": 6, "width": 150, "depth": 12, "height": 140, "elevation": 90, "grade": "C"},
+    {"id": "window_c", "name": "小卧西窗（待复尺）", "kind": "window", "x": 6, "y": 470, "width": 110, "depth": 12, "height": 140, "elevation": 90, "angle": math.pi / 2, "grade": "C"},
+    {"id": "window_living_west", "name": "客厅西窗（同户型图确认，宽高待复尺）", "kind": "window", "x": 206, "y": 747, "width": 200, "depth": 12, "height": 140, "elevation": 90, "angle": math.pi / 2, "grade": "C"},
+    {"id": "balcony_door", "name": "客厅阳台玻璃门（待复尺）", "kind": "glass-door", "x": 681, "y": 1035, "width": 150, "depth": 12, "height": 220, "elevation": 0, "angle": math.pi / 2, "grade": "C"},
+    {"id": "entry_door", "name": "入户门（待复尺）", "kind": "entry-door", "x": 440, "y": 1395, "width": 100, "depth": 12, "height": 220, "elevation": 0, "grade": "C"},
+    {"id": "door_a", "name": "主卧门（待复尺）", "kind": "interior-door", "x": 371, "y": 328, "width": 90, "depth": 12, "height": 215, "elevation": 0, "grade": "C"},
+    {"id": "door_b", "name": "次卧门（待复尺）", "kind": "interior-door", "x": 270.5, "y": 328, "width": 85, "depth": 12, "height": 215, "elevation": 0, "grade": "C"},
+    {"id": "door_c", "name": "小卧门（待复尺）", "kind": "interior-door", "x": 271, "y": 500, "width": 85, "depth": 12, "height": 215, "elevation": 0, "angle": math.pi / 2, "grade": "C"},
+    {"id": "door_bath_1", "name": "主卫门（外开/移门条件）", "kind": "interior-door", "x": 416, "y": 410, "width": 75, "depth": 12, "height": 210, "elevation": 0, "angle": math.pi / 2, "grade": "C"},
+    {"id": "door_bath_2", "name": "客卫门（外开/移门条件）", "kind": "interior-door", "x": 416, "y": 555, "width": 75, "depth": 12, "height": 210, "elevation": 0, "angle": math.pi / 2, "grade": "C"},
+    {"id": "door_kitchen", "name": "厨房玻璃移门（待复尺）", "kind": "glass-door", "x": 536, "y": 1220, "width": 90, "depth": 12, "height": 220, "elevation": 0, "angle": math.pi / 2, "grade": "C"},
+]
+
+
+def opening_plan_record(spec: dict[str, object]) -> dict[str, object]:
+    """Convert one centre/width opening definition into an exact 2D segment."""
+    x = float(spec["x"])
+    y = float(spec["y"])
+    half = float(spec["width"]) / 2
+    vertical = abs(math.sin(float(spec.get("angle", 0)))) > 0.5
+    x1, y1, x2, y2 = (x, y - half, x, y + half) if vertical else (x - half, y, x + half, y)
+    return {
+        "id": spec["id"], "name": spec["name"], "kind": spec["kind"],
+        "x1": x1, "y1": y1, "x2": x2, "y2": y2,
+        "widthMm": round(float(spec["width"]) * 10), "grade": spec["grade"],
+    }
+
+
 MODEL_DATA = {
     "name": "荟雅苑 104.83㎡ · 28F",
-    "version": "V2.0 逐空间比例校核版",
+    "version": "V2.1 门窗同源校核版",
     "unit": "cm",
     "north": "图上方（临道路侧）",
     "palette": [
@@ -64,33 +136,12 @@ MODEL_DATA = {
         {"id": "bottomRooms", "label": "下部两跨", "valueMm": "3180 / 2870", "grade": "A", "source": "目标房源现状尺寸图"},
         {"id": "wall", "label": "统一墙厚", "valueMm": 120, "grade": "C", "source": "为闭合尺寸链所作建模假设，必须现场核对"},
         {"id": "offset", "label": "下部向东偏移", "valueMm": 2000, "grade": "B", "source": "按两张户型图轮廓比例校准"},
+        {"id": "livingWindow", "label": "客厅西窗暂定净宽", "valueMm": 2000, "grade": "C", "source": "同户型原始图确认存在与大致位置；目标房源必须现场复尺"},
     ],
-    "rooms": [
-        {"id": "room_b", "name": "次卧 B", "tone": "bedroom", "points": [[12, 12], [313, 12], [313, 322], [12, 322]]},
-        {"id": "room_a", "name": "主卧 A", "tone": "bedroom", "points": [[325, 12], [675, 12], [675, 322], [325, 322]]},
-        {"id": "room_c", "name": "小卧 C", "tone": "bedroom", "points": [[12, 334], [265, 334], [265, 620], [12, 620]]},
-        {"id": "bath_1", "name": "主卫", "tone": "wet", "points": [[422, 334], [675, 334], [675, 487], [422, 487]]},
-        {"id": "bath_2", "name": "客卫", "tone": "wet", "points": [[422, 499], [675, 499], [675, 620], [422, 620]]},
-        {"id": "living", "name": "客餐厅 / 过道", "tone": "living", "points": [[277, 334], [410, 334], [410, 632], [675, 632], [675, 1115], [530, 1115], [530, 1389], [212, 1389], [212, 632], [277, 632]]},
-        {"id": "balcony", "name": "阳台", "tone": "balcony", "points": [[687, 966], [829, 966], [829, 1115], [687, 1115]]},
-        {"id": "kitchen", "name": "厨房", "tone": "kitchen", "points": [[542, 1127], [829, 1127], [829, 1389], [542, 1389]]},
-    ],
-    "walls": [
-        [6, 6, 681, 6], [6, 6, 6, 626], [6, 626, 206, 626], [206, 626, 206, 1395],
-        [206, 1395, 835, 1395], [835, 960, 835, 1395], [681, 960, 835, 960], [681, 6, 681, 960],
-        [319, 6, 319, 328], [6, 328, 319, 328], [319, 328, 681, 328], [271, 328, 271, 626],
-        [416, 328, 416, 626], [416, 493, 681, 493], [416, 626, 681, 626],
-        [681, 960, 681, 1121], [681, 1121, 835, 1121], [536, 1121, 681, 1121], [536, 1121, 536, 1395],
-    ],
-    "doors": [
-        {"name": "次卧门", "x1": 228, "y1": 328, "x2": 313, "y2": 328, "widthMm": 850, "grade": "C"},
-        {"name": "主卧门", "x1": 326, "y1": 328, "x2": 416, "y2": 328, "widthMm": 900, "grade": "C"},
-        {"name": "书房门", "x1": 271, "y1": 457.5, "x2": 271, "y2": 542.5, "widthMm": 850, "grade": "C"},
-        {"name": "主卫门（外开/移门条件）", "x1": 416, "y1": 372.5, "x2": 416, "y2": 447.5, "widthMm": 750, "grade": "C"},
-        {"name": "客卫门（外开/移门条件）", "x1": 416, "y1": 517.5, "x2": 416, "y2": 592.5, "widthMm": 750, "grade": "C"},
-        {"name": "厨房移门", "x1": 536, "y1": 1175, "x2": 536, "y2": 1265, "widthMm": 900, "grade": "C"},
-        {"name": "入户门", "x1": 390, "y1": 1395, "x2": 490, "y2": 1395, "widthMm": 1000, "grade": "C"},
-    ],
+    "rooms": [{"id": item["id"], "name": item["name"], "tone": item["tone"], "points": item["points"]} for item in ROOM_SPECS],
+    "walls": [list(item["coords"]) for item in WALL_SPECS],
+    "windows": [opening_plan_record(item) for item in OPENING_SPECS if item["kind"] == "window"],
+    "doors": [opening_plan_record(item) for item in OPENING_SPECS if item["kind"] != "window"],
     "furniture": [
         {"name": "次卧1350床", "x": 24, "y": 20, "w": 135, "d": 200, "a": 0, "tone": "fabric"},
         {"name": "次卧书桌", "x": 165, "y": 20, "w": 90, "d": 52, "a": 0, "tone": "wood"},
@@ -256,6 +307,19 @@ def interior_door(opening_id: str, name: str, x: float, y: float,
     )
 
 
+def opening_from_spec(spec: dict[str, object]) -> str:
+    """Build the 3D opening from the same record used by the 2D plan."""
+    kind = str(spec["kind"])
+    model = "models/glass-opening.obj" if kind in {"window", "glass-door"} else "models/door.obj"
+    return opening(
+        str(spec["id"]), str(spec["name"]),
+        float(spec["x"]), float(spec["y"]), float(spec["width"]),
+        float(spec["depth"]), float(spec["height"]), None,
+        angle=float(spec.get("angle", 0)), elevation=float(spec.get("elevation", 0)),
+        model=model,
+    )
+
+
 def dimension(dim_id: str, x1: float, y1: float, x2: float, y2: float,
               offset: float, color: str = "FF136F63") -> str:
     return f"  <dimensionLine {attrs(id=dim_id, level='level0', xStart=x1, yStart=y1, xEnd=x2, yEnd=y2, offset=offset, endMarkSize=9, color=color)}/>"
@@ -373,7 +437,7 @@ def design_lights() -> list[str]:
 def build_home_xml() -> str:
     lines: list[str] = [
         "<?xml version='1.0' encoding='UTF-8'?>",
-        f"<home {attrs(version='7500', name='荟雅苑104.83㎡_三房两卫_逐空间比例校核V2.sh3d', camera='topCamera', wallHeight=WALL_HEIGHT, basePlanLocked='true')}>",
+        f"<home {attrs(version='7500', name='荟雅苑104.83㎡_三房两卫_门窗同源校核V2.1.sh3d', camera='topCamera', wallHeight=WALL_HEIGHT, basePlanLocked='true')}>",
     ]
     for key, value in MODEL_NOTES.items():
         lines.append(f"  <property {attrs(name=key, value=value)}/>")
@@ -397,59 +461,20 @@ def build_home_xml() -> str:
     pieces = design_pieces()
     lights = design_lights()
 
-    openings = [
-        opening("window_b", "次卧北窗（待复尺）", 155, 6, 130, 12, 140, "FF8EC7D8", elevation=90),
-        opening("window_a", "主卧北窗（待复尺）", 505, 6, 150, 12, 140, "FF8EC7D8", elevation=90),
-        opening("window_c", "小卧西窗（待复尺）", 6, 470, 110, 12, 140, "FF8EC7D8", angle=1.5707963, elevation=90),
-        opening("balcony_door", "客厅阳台门（待复尺）", 681, 1035, 150, 12, 220, "FF7FB5C5", angle=1.5707963),
-        opening("entry_door", "入户门（待复尺）", 440, 1395, 100, 12, 220, "FF805F49"),
-        interior_door("door_a", "主卧门（待复尺）", 371, 328, 90),
-        interior_door("door_b", "次卧门（待复尺）", 270.5, 328, 85),
-        interior_door("door_c", "小卧门（待复尺）", 271, 500, 85, angle=1.5707963),
-        interior_door("door_bath_1", "主卫门（待复尺）", 416, 410, 75, angle=1.5707963, height=210),
-        interior_door("door_bath_2", "客卫门（待复尺）", 416, 555, 75, angle=1.5707963, height=210),
-        interior_door("door_kitchen", "厨房门（待复尺）", 536, 1220, 90, angle=1.5707963),
-    ]
+    openings = [opening_from_spec(item) for item in OPENING_SPECS]
     lines.extend(pieces)
     lines.extend(openings)
     lines.extend(lights)
 
     walls = [
-        # External envelope. Outer dimensions close exactly to 6870 × 14010 mm,
-        # with the lower block 6410 mm wide and shifted east by 2000 mm.
-        wall("w_north", 6, 6, 681, 6),
-        wall("w_west_upper", 6, 6, 6, 626),
-        wall("w_upper_step", 6, 626, 206, 626),
-        wall("w_west_lower", 206, 626, 206, 1395),
-        wall("w_south", 206, 1395, 835, 1395),
-        wall("w_east_lower", 835, 960, 835, 1395),
-        wall("w_east_step", 681, 960, 835, 960),
-        wall("w_east_upper", 681, 6, 681, 960),
-        # Bedrooms and wet core.
-        wall("w_bed_partition", 319, 6, 319, 328),
-        wall("w_bed_b_south", 6, 328, 319, 328),
-        wall("w_bed_a_south", 319, 328, 681, 328),
-        wall("w_bed_c_east", 271, 328, 271, 626),
-        wall("w_bath_west", 416, 328, 416, 626, color="FFE1DED7"),
-        wall("w_bath_middle", 416, 493, 681, 493, color="FFE1DED7"),
-        wall("w_bath_south", 416, 626, 681, 626, color="FFE1DED7"),
-        # Balcony and kitchen.
-        wall("w_balcony_west", 681, 960, 681, 1121, color="FFE3E1DA"),
-        wall("w_balcony_south", 681, 1121, 835, 1121, color="FFE3E1DA"),
-        wall("w_kitchen_north", 536, 1121, 681, 1121, color="FFE3DFD7"),
-        wall("w_kitchen_west", 536, 1121, 536, 1395, color="FFE3DFD7"),
+        wall(str(item["id"]), *item["coords"], color=str(item.get("color", "FFE7E1D7")))
+        for item in WALL_SPECS
     ]
     lines.extend(walls)
 
     rooms = [
-        room("room_a", "主卧 A · 1500床", [(325, 12), (675, 12), (675, 322), (325, 322)], "FFD7BB95"),
-        room("room_b", "次卧 B · 可成长", [(12, 12), (313, 12), (313, 322), (12, 322)], "FFD9BD98"),
-        room("room_c", "书房 / 偶住客卧", [(12, 334), (265, 334), (265, 620), (12, 620)], "FFD6B990"),
-        room("bath_1", "主卫 · 完整淋浴", [(422, 334), (675, 334), (675, 487), (422, 487)], "FFC9CDC8"),
-        room("bath_2", "客卫 · 紧凑好用", [(422, 499), (675, 499), (675, 620), (422, 620)], "FFC8CCC7"),
-        room("living", "连续客餐厅 / 玄关", [(277, 334), (410, 334), (410, 632), (675, 632), (675, 1115), (530, 1115), (530, 1389), (212, 1389), (212, 632), (277, 632)], "FFD8BC93"),
-        room("balcony", "洗烘家政阳台", [(687, 966), (829, 966), (829, 1115), (687, 1115)], "FFC5CCC6"),
-        room("kitchen", "可闭合玻璃厨房", [(542, 1127), (829, 1127), (829, 1389), (542, 1389)], "FFC8C6BF"),
+        room(str(item["id"]), str(item["modelName"]), item["points"], str(item["floorColor"]))
+        for item in ROOM_SPECS
     ]
     lines.extend(rooms)
 
@@ -468,7 +493,7 @@ def build_home_xml() -> str:
     lines.extend(dims)
     lines.extend([
         label("note_north", "北 / 临道路侧", 345, -82, "FF0B6A5D"),
-        label("note_accuracy", "V2逐空间校核：家具/洁具/门洞已复核；绿色尺寸=图纸锚点", 315, 1460, "FFB45D2A"),
+        label("note_accuracy", "V2.1同源校核：2D/3D共用墙线、房间和门窗；客厅西窗为C级待复尺", 315, 1460, "FFB45D2A"),
     ])
     lines.append("</home>")
     return "\n".join(lines) + "\n"
@@ -513,6 +538,59 @@ Kd 0.17 0.18 0.17
 Ks 0.45 0.45 0.42
 Ns 80
 """
+
+
+GLASS_OPENING_MTL = """# Materials for windows and glazed doors
+newmtl graphite_frame
+Ka 0.08 0.09 0.09
+Kd 0.18 0.21 0.21
+Ks 0.48 0.50 0.48
+Ns 85
+
+newmtl clear_glass
+Ka 0.18 0.25 0.27
+Kd 0.58 0.76 0.80
+Ks 0.85 0.88 0.86
+Ns 125
+d 0.30
+illum 4
+"""
+
+
+def build_glass_opening_obj() -> str:
+    """Build a framed two-pane opening; X=width, Y=height and Z=depth."""
+    lines = [
+        "# Framed glass window / sliding door",
+        "mtllib glass-opening.mtl",
+        "o GlassOpening",
+        "vt 0 0", "vt 1 0", "vt 1 1", "vt 0 1",
+    ]
+    vertex_count = 0
+
+    def add_box(name: str, bounds: tuple[float, float, float, float, float, float],
+                material: str) -> None:
+        nonlocal vertex_count
+        x1, y1, z1, x2, y2, z2 = bounds
+        vertices = [
+            (x1, y1, z1), (x2, y1, z1), (x2, y2, z1), (x1, y2, z1),
+            (x1, y1, z2), (x2, y1, z2), (x2, y2, z2), (x1, y2, z2),
+        ]
+        lines.extend([f"g {name}", f"usemtl {material}"])
+        lines.extend(f"v {x} {y} {z}" for x, y, z in vertices)
+        base = vertex_count + 1
+        for a, b, c, d in ((0, 1, 2, 3), (4, 7, 6, 5), (0, 4, 5, 1),
+                           (1, 5, 6, 2), (2, 6, 7, 3), (4, 0, 3, 7)):
+            lines.append(f"f {base+a}/1 {base+b}/2 {base+c}/3 {base+d}/4")
+        vertex_count += 8
+
+    add_box("left_frame", (-.50, 0, -.12, -.455, 1, .12), "graphite_frame")
+    add_box("right_frame", (.455, 0, -.12, .50, 1, .12), "graphite_frame")
+    add_box("bottom_frame", (-.455, 0, -.12, .455, .045, .12), "graphite_frame")
+    add_box("top_frame", (-.455, .955, -.12, .455, 1, .12), "graphite_frame")
+    add_box("centre_mullion", (-.018, .045, -.10, .018, .955, .10), "graphite_frame")
+    add_box("left_glass", (-.45, .05, -.018, -.023, .95, .018), "clear_glass")
+    add_box("right_glass", (.023, .05, -.018, .45, .95, .018), "clear_glass")
+    return "\n".join(lines) + "\n"
 
 
 def build_door_obj() -> str:
@@ -593,9 +671,45 @@ def build_cylinder_obj(segments: int = 24) -> str:
     return "\n".join(lines) + "\n"
 
 
+def audit_shared_geometry(xml: str) -> None:
+    """Fail generation if 2D JSON and 3D XML ever drift apart again."""
+    root = ElementTree.fromstring(xml)
+    xml_walls = {node.attrib["id"]: node.attrib for node in root.findall("wall")}
+    xml_rooms = {node.attrib["id"]: node for node in root.findall("room")}
+    xml_openings = {node.attrib["id"]: node.attrib for node in root.findall("doorOrWindow")}
+
+    assert len(xml_walls) == len(WALL_SPECS) == len(MODEL_DATA["walls"])
+    assert len(xml_rooms) == len(ROOM_SPECS) == len(MODEL_DATA["rooms"])
+    assert len(xml_openings) == len(OPENING_SPECS) == len(MODEL_DATA["windows"]) + len(MODEL_DATA["doors"])
+
+    for index, spec in enumerate(WALL_SPECS):
+        coords = tuple(float(value) for value in spec["coords"])
+        node = xml_walls[str(spec["id"])]
+        xml_coords = tuple(float(node[key]) for key in ("xStart", "yStart", "xEnd", "yEnd"))
+        assert coords == xml_coords == tuple(float(value) for value in MODEL_DATA["walls"][index])
+
+    for spec in ROOM_SPECS:
+        expected = [(float(x), float(y)) for x, y in spec["points"]]
+        node = xml_rooms[str(spec["id"])]
+        actual = [(float(point.attrib["x"]), float(point.attrib["y"])) for point in node.findall("point")]
+        plan_room = next(item for item in MODEL_DATA["rooms"] if item["id"] == spec["id"])
+        plan_points = [(float(x), float(y)) for x, y in plan_room["points"]]
+        assert expected == actual == plan_points
+
+    plan_openings = {item["id"]: item for item in MODEL_DATA["windows"] + MODEL_DATA["doors"]}
+    for spec in OPENING_SPECS:
+        opening_id = str(spec["id"])
+        node = xml_openings[opening_id]
+        assert float(node["x"]) == float(spec["x"])
+        assert float(node["y"]) == float(spec["y"])
+        assert float(node["width"]) == float(spec["width"])
+        assert plan_openings[opening_id] == opening_plan_record(spec)
+
+
 def main() -> None:
     MODEL_DIR.mkdir(parents=True, exist_ok=True)
     xml = build_home_xml()
+    audit_shared_geometry(xml)
     HOME_XML_OUTPUT.write_text(xml, encoding="utf-8")
     MODEL_DATA_OUTPUT.write_text(
         json.dumps(MODEL_DATA, ensure_ascii=False, indent=2) + "\n",
@@ -613,9 +727,12 @@ def main() -> None:
         archive.writestr("models/door.obj", build_door_obj())
         archive.writestr("models/door.mtl", DOOR_MTL)
         archive.writestr("models/wood-door.png", build_wood_texture_png())
+        archive.writestr("models/glass-opening.obj", build_glass_opening_obj())
+        archive.writestr("models/glass-opening.mtl", GLASS_OPENING_MTL)
         archive.write(plan, "plan-original.webp")
 
     print(f"Generated {OUTPUT.relative_to(ROOT)} ({OUTPUT.stat().st_size:,} bytes)")
+    print(f"Audited shared geometry: {len(WALL_SPECS)} walls, {len(ROOM_SPECS)} rooms, {len(OPENING_SPECS)} openings")
     from generate_verified_plans import main as generate_verified_plans
     generate_verified_plans()
 

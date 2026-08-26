@@ -258,10 +258,24 @@ function renderPlan(model) {
   model.walls.forEach(([x1, y1, x2, y2]) => walls.append(svg("line", { x1, y1, x2, y2, class: "wall-line" })));
   root.append(walls);
 
+  const windows = svg("g", { id: "windowOpenings" });
+  model.windows.forEach((window) => {
+    const group = svg("g", { role: "img", "aria-label": `${window.name}，${window.widthMm}毫米，${window.grade}级` });
+    group.append(svg("title", {}, `${window.name} · ${window.widthMm} mm · ${window.grade}级`));
+    group.append(svg("line", { x1: window.x1, y1: window.y1, x2: window.x2, y2: window.y2, class: "window-opening-cut" }));
+    group.append(svg("line", { x1: window.x1, y1: window.y1, x2: window.x2, y2: window.y2, class: "window-opening-line" }));
+    windows.append(group);
+  });
+  root.append(windows);
+
   const doors = svg("g", { id: "doorOpenings" });
   model.doors.forEach((door) => {
-    doors.append(svg("line", { x1: door.x1, y1: door.y1, x2: door.x2, y2: door.y2, class: "door-opening-cut" }));
-    doors.append(svg("line", { x1: door.x1, y1: door.y1, x2: door.x2, y2: door.y2, class: "door-opening-line" }));
+    const glass = door.kind === "glass-door";
+    const group = svg("g", { role: "img", "aria-label": `${door.name}，${door.widthMm}毫米，${door.grade}级` });
+    group.append(svg("title", {}, `${door.name} · ${door.widthMm} mm · ${door.grade}级`));
+    group.append(svg("line", { x1: door.x1, y1: door.y1, x2: door.x2, y2: door.y2, class: "door-opening-cut" }));
+    group.append(svg("line", { x1: door.x1, y1: door.y1, x2: door.x2, y2: door.y2, class: glass ? "glass-door-opening-line" : "door-opening-line" }));
+    doors.append(group);
   });
   root.append(doors);
 
@@ -368,7 +382,7 @@ function initViewer() {
   try {
     state.homeComponent = viewHome(
       "viewerCanvas",
-      "models/huiyayuan-104-calibrated.sh3d?v=2.0.0",
+      "models/huiyayuan-104-calibrated.sh3d?v=2.1.0",
       onerror,
       onprogression,
       {
@@ -402,7 +416,7 @@ async function start() {
   document.getElementById("fullscreenButton").addEventListener("click", () => document.getElementById("viewerShell").requestFullscreen?.());
   window.addEventListener("resize", resizeViewer);
 
-  const response = await fetch("models/model-data.json?v=2.0.0");
+  const response = await fetch("models/model-data.json?v=2.1.0");
   if (!response.ok) throw new Error(`模型坐标读取失败：HTTP ${response.status}`);
   state.model = await response.json();
   renderPlan(state.model);
