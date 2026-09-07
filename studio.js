@@ -1,5 +1,7 @@
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
+const ASSET_REVISION = '3.0.1';
+const revisedAsset = path => {const url=new URL(path,document.baseURI);url.searchParams.set('v',ASSET_REVISION);return url.href};
 const icons = {
   cube:'<path d="m8 2 6 3.5v5L8 14l-6-3.5v-5L8 2Z M2 5.5 8 9l6-3.5 M8 9v5 M5 3.8l6 3.5"/>',
   plan:'<path d="M2 2h12v12H2z M2 8h5V2 M7 11v3 M10 8h4"/>',
@@ -45,9 +47,9 @@ const areaOf = points => Math.abs(points.reduce((sum,p,i)=>{const q=points[(i+1)
 const centroid = points => [points.reduce((s,p)=>s+p[0],0)/points.length,points.reduce((s,p)=>s+p[1],0)/points.length];
 const roomById = id => rooms.find(r=>r.id===id);
 const roomDescription = id => descriptions[id] || descriptions.overall;
-const renderPath = id => id==='overall' ? (manifest?.overallRender || 'assets/blender-renders/overall.jpg') : (roomById(id)?.render || `assets/blender-renders/${roomDescription(id).render}.jpg`);
+const renderPath = id => revisedAsset(id==='overall' ? (manifest?.overallRender || 'assets/blender-renders/overall.jpg') : (roomById(id)?.render || `assets/blender-renders/${roomDescription(id).render}.jpg`));
 const escapeHTML = value => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
-async function getJSON(url){const response=await fetch(url);if(!response.ok)throw new Error(`${url}: ${response.status}`);return response.json()}
+async function getJSON(url){const response=await fetch(revisedAsset(url));if(!response.ok)throw new Error(`${url}: ${response.status}`);return response.json()}
 async function getDesignData(){return getJSON('models/design-data.json')}
 
 function makeNavigation(){
@@ -148,7 +150,7 @@ async function buildScene(){
     const sun=new THREE.DirectionalLight(0xfff6e7,2.4);sun.position.set(-5,14,-4);sun.castShadow=false;sun.shadow.mapSize.set(1024,1024);scene.add(sun);
     const fill=new THREE.DirectionalLight(0xfffbf2,1.0);fill.position.set(12,8,18);scene.add(fill);
     const loader=new GLTFLoader();
-    const gltf=await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error('Model load timeout')),45000);loader.load(manifest?.model || 'models/huiyayuan-wood.glb',result=>{clearTimeout(timer);resolve(result)},event=>{
+    const gltf=await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error('Model load timeout')),45000);loader.load(revisedAsset(manifest?.model || 'models/huiyayuan-wood.glb'),result=>{clearTimeout(timer);resolve(result)},event=>{
       const p=event.total?Math.min(98,Math.round(event.loaded/event.total*100)):Math.min(93,10+Math.round(event.loaded/1024/100));$('#loading-progress').style.width=p+'%';$('#loading-status').textContent=event.total?`正在载入模型 · ${p}%`:`正在载入模型 · ${(event.loaded/1024/1024).toFixed(1)} MB`;
     },error=>{clearTimeout(timer);reject(error)})});
     model=optimizeStaticModel(gltf.scene,THREE,mergeGeometries);

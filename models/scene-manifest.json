@@ -4,7 +4,7 @@
   "blend": "models/huiyayuan-wood.blend",
   "units": "m",
   "source": "models/design-data.json",
-  "sourceSha256": "e799973bd70e031eb2724ad7cc3f2917056c9c71b57940f83cb188356a25a2a0",
+  "sourceSha256": "592f12cc741b9920fec5626f7be82709b792d7c60776ed621bed75fc3aa136e7",
   "bounds": {
     "min": [
       0,

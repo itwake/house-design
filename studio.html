@@ -6,9 +6,9 @@
   <meta name="theme-color" content="#f4f1eb" />
   <meta name="description" content="荟雅苑三房两卫现代原木设计。按原户型尺寸制作的 Blender 模型、逐房渲染与可交互 Three.js 全屋漫游。" />
   <title>木光之间 · 荟雅苑的家</title>
-  <link rel="stylesheet" href="studio.css?v=3.0.0" />
+  <link rel="stylesheet" href="studio.css?v=3.0.1" />
   <script type="importmap">{"imports":{"three":"./vendor/three/three.module.js","three/addons/":"./vendor/three/addons/"}}</script>
-  <script type="module" src="studio.js?v=3.0.0"></script>
+  <script type="module" src="studio.js?v=3.0.1"></script>
 </head>
 <body>
   <div class="app-shell">
@@ -24,8 +24,8 @@
         <div class="download-menu">
           <button class="text-button" id="download-toggle" aria-expanded="false" aria-controls="download-popover" data-icon="download">下载模型</button>
           <div id="download-popover" class="popover" hidden>
-            <a href="models/huiyayuan-wood.blend" download><b>Blender 源文件</b><span>材质、家具与渲染相机</span></a>
-            <a href="models/huiyayuan-wood.glb" download><b>通用 3D 模型 · GLB</b><span>可导入支持 glTF 的设计工具</span></a>
+            <a href="models/huiyayuan-wood.blend?v=3.0.1" download><b>Blender 源文件</b><span>材质、家具与渲染相机</span></a>
+            <a href="models/huiyayuan-wood.glb?v=3.0.1" download><b>通用 3D 模型 · GLB</b><span>可导入支持 glTF 的设计工具</span></a>
             <a href="legacy.html"><b>历史方案归档</b><span>旧概念图 / 门厅几何有局限</span></a>
           </div>
         </div>
@@ -56,7 +56,7 @@
         <div id="model-canvas" class="model-canvas" aria-label="可旋转和缩放的全屋三维模型"></div>
         <div id="room-labels" class="room-labels"></div>
         <div id="model-loading" class="model-loading" aria-live="polite"><div class="loading-house"><span></span><span></span><span></span></div><strong>正在打开这个家</strong><span id="loading-status">载入材质与空间模型…</span><div class="loading-track"><i id="loading-progress"></i></div></div>
-        <div id="model-fallback" class="model-fallback" hidden><img src="assets/blender-renders/overall.jpg" alt="全屋 Blender 俯视渲染" /><div><strong>当前暂时无法打开交互模型</strong><p id="fallback-message">可以先查看平面与空间渲染。</p><button class="primary-button" id="fallback-renders">查看效果图 <span>↗</span></button></div></div>
+        <div id="model-fallback" class="model-fallback" hidden><img src="assets/blender-renders/overall.jpg?v=3.0.1" alt="全屋 Blender 俯视渲染" /><div><strong>当前暂时无法打开交互模型</strong><p id="fallback-message">可以先查看平面与空间渲染。</p><button class="primary-button" id="fallback-renders">查看效果图 <span>↗</span></button></div></div>
         <div class="compass" title="图上方为北"><span>N</span><svg viewBox="0 0 28 34" aria-hidden="true"><path d="m14 3 8 24-8-5-8 5Z"/><path d="M14 3v19"/></svg></div>
         <div id="model-hint" class="model-hint"><span class="hint-desktop">拖动旋转 · 右键平移 · 滚轮缩放</span><span class="hint-mobile">单指旋转 · 双指缩放与平移</span></div>
         <div class="viewer-controls" aria-label="模型控制">
@@ -72,7 +72,7 @@
 
       <section id="renders-view" class="view-panel" role="tabpanel" aria-labelledby="tab-renders" hidden><div class="render-stage"><figure><img id="active-render" alt="当前空间 Blender 渲染" /><figcaption><span><b id="render-name">全屋概览</b><small>由同一 Blender 模型直接渲染</small></span><button class="icon-button" id="enlarge-render" aria-label="放大效果图" data-icon="expand"></button></figcaption></figure><div class="render-unavailable" id="render-unavailable" hidden>这个视角暂时未能加载，请选择其他空间。</div><div class="render-strip" id="render-strip" aria-label="空间效果图"></div></div></section>
 
-      <aside class="room-card" id="room-card"><button class="room-card-toggle" id="room-card-toggle" aria-expanded="true" aria-label="收起或展开空间设计说明"><i></i></button><div class="room-card-body"><img id="room-preview" src="assets/blender-renders/overall.jpg" alt="全屋渲染预览" /><div class="room-card-copy"><p class="card-kicker" id="card-kicker">THE ENTIRE HOME</p><h2 id="card-title">木色里的日常</h2><p class="card-description" id="card-description">原木、暖白与柔和织物，让紧凑的空间也有从容的生活。</p><div class="room-tags" id="room-tags"></div><button class="primary-button" id="enter-room">探索客厅 <span>↗</span></button><button class="secondary-link" id="view-room-render">查看空间效果图 <span>→</span></button></div></div></aside>
+      <aside class="room-card" id="room-card"><button class="room-card-toggle" id="room-card-toggle" aria-expanded="true" aria-label="收起或展开空间设计说明"><i></i></button><div class="room-card-body"><img id="room-preview" src="assets/blender-renders/overall.jpg?v=3.0.1" alt="全屋渲染预览" /><div class="room-card-copy"><p class="card-kicker" id="card-kicker">THE ENTIRE HOME</p><h2 id="card-title">木色里的日常</h2><p class="card-description" id="card-description">原木、暖白与柔和织物，让紧凑的空间也有从容的生活。</p><div class="room-tags" id="room-tags"></div><button class="primary-button" id="enter-room">探索客厅 <span>↗</span></button><button class="secondary-link" id="view-room-render">查看空间效果图 <span>→</span></button></div></div></aside>
       <div class="space-footer"><span>荟雅苑 / 28F</span><span>BLENDER × THREE.JS</span></div>
     </main>
   </div>
