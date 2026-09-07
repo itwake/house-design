@@ -1,0 +1,1335 @@
+{
+  "name": "荟雅苑 104.83㎡ · 28F",
+  "version": "V3 Blender 原木风 · 共享几何校核",
+  "unit": "cm",
+  "north": "图上方（临道路侧）",
+  "palette": [
+    {
+      "name": "暖白墙面",
+      "value": "#F2EEE5"
+    },
+    {
+      "name": "浅橡木",
+      "value": "#C8A77E"
+    },
+    {
+      "name": "暖灰织物",
+      "value": "#A9A39A"
+    },
+    {
+      "name": "鼠尾草绿",
+      "value": "#7C9485"
+    },
+    {
+      "name": "哑黑金属",
+      "value": "#303533"
+    }
+  ],
+  "envelope": [
+    [
+      0,
+      0
+    ],
+    [
+      687,
+      0
+    ],
+    [
+      687,
+      954
+    ],
+    [
+      841,
+      954
+    ],
+    [
+      841,
+      1401
+    ],
+    [
+      200,
+      1401
+    ],
+    [
+      200,
+      632
+    ],
+    [
+      0,
+      632
+    ]
+  ],
+  "anchors": [
+    {
+      "id": "top",
+      "label": "北侧总宽",
+      "valueMm": 6870,
+      "grade": "A",
+      "source": "目标房源现状尺寸图"
+    },
+    {
+      "id": "height",
+      "label": "西侧总长",
+      "valueMm": 14010,
+      "grade": "A",
+      "source": "目标房源现状尺寸图"
+    },
+    {
+      "id": "bottom",
+      "label": "南侧下部总宽",
+      "valueMm": 6410,
+      "grade": "A",
+      "source": "目标房源现状尺寸图"
+    },
+    {
+      "id": "topRooms",
+      "label": "北侧卧室净跨",
+      "valueMm": "3010 / 3500",
+      "grade": "A",
+      "source": "目标房源现状尺寸图"
+    },
+    {
+      "id": "bottomRooms",
+      "label": "下部两跨",
+      "valueMm": "3180 / 2870",
+      "grade": "A",
+      "source": "目标房源现状尺寸图"
+    },
+    {
+      "id": "wall",
+      "label": "统一墙厚",
+      "valueMm": 120,
+      "grade": "C",
+      "source": "为闭合尺寸链所作建模假设，必须现场核对"
+    },
+    {
+      "id": "offset",
+      "label": "下部向东偏移",
+      "valueMm": 2000,
+      "grade": "B",
+      "source": "按两张户型图轮廓比例校准"
+    },
+    {
+      "id": "livingWindow",
+      "label": "客厅西窗暂定净宽",
+      "valueMm": 2000,
+      "grade": "C",
+      "source": "同户型原始图确认存在与大致位置；目标房源必须现场复尺"
+    },
+    {
+      "id": "bcVestibule",
+      "label": "B东南门厅 / C东北凹口",
+      "valueMm": "净900×1000",
+      "grade": "B",
+      "source": "两张参考户型图均显示B东南延伸/C东北内凹；具体坐标以比例重建，未经现场复尺"
+    },
+    {
+      "id": "hallWidth",
+      "label": "北部走廊暂定净宽",
+      "valueMm": 850,
+      "grade": "B",
+      "source": "由B/C东墙x319cm与湿区西墙x416cm、墙厚120mm推算；须现场核验"
+    },
+    {
+      "id": "wallHeight",
+      "label": "暂定室内净高",
+      "valueMm": 2700,
+      "grade": "C",
+      "source": "概念建模假设，非测量值"
+    },
+    {
+      "id": "bathWindows",
+      "label": "两卫东向窄窗",
+      "valueMm": "主卫700 / 客卫600",
+      "grade": "C",
+      "source": "原始同户型图可见两卫东窗；位置、净宽、窗台1500和窗高800均为待复尺占位"
+    }
+  ],
+  "rooms": [
+    {
+      "id": "room_b",
+      "name": "次卧 B",
+      "tone": "bedroom",
+      "points": [
+        [
+          12,
+          12
+        ],
+        [
+          313,
+          12
+        ],
+        [
+          313,
+          422
+        ],
+        [
+          223,
+          422
+        ],
+        [
+          223,
+          322
+        ],
+        [
+          12,
+          322
+        ]
+      ],
+      "grade": "B",
+      "notes": "恢复东南门厅，门位于其东侧；门厅净900×1000是图像比例推算",
+      "modelAreaM2": 10.231
+    },
+    {
+      "id": "room_a",
+      "name": "主卧 A",
+      "tone": "bedroom",
+      "points": [
+        [
+          325,
+          12
+        ],
+        [
+          675,
+          12
+        ],
+        [
+          675,
+          322
+        ],
+        [
+          325,
+          322
+        ]
+      ],
+      "modelAreaM2": 10.85
+    },
+    {
+      "id": "room_c",
+      "name": "小卧 C",
+      "tone": "bedroom",
+      "points": [
+        [
+          12,
+          334
+        ],
+        [
+          211,
+          334
+        ],
+        [
+          211,
+          434
+        ],
+        [
+          313,
+          434
+        ],
+        [
+          313,
+          620
+        ],
+        [
+          12,
+          620
+        ]
+      ],
+      "grade": "B",
+      "notes": "恢复东北凹口；最大净宽3010、凹口深1000按图形比例推算",
+      "modelAreaM2": 7.589
+    },
+    {
+      "id": "bath_1",
+      "name": "主卫",
+      "tone": "wet",
+      "points": [
+        [
+          422,
+          334
+        ],
+        [
+          675,
+          334
+        ],
+        [
+          675,
+          487
+        ],
+        [
+          422,
+          487
+        ]
+      ],
+      "modelAreaM2": 3.871
+    },
+    {
+      "id": "bath_2",
+      "name": "客卫",
+      "tone": "wet",
+      "points": [
+        [
+          422,
+          499
+        ],
+        [
+          675,
+          499
+        ],
+        [
+          675,
+          620
+        ],
+        [
+          422,
+          620
+        ]
+      ],
+      "modelAreaM2": 3.061
+    },
+    {
+      "id": "living",
+      "name": "客餐厅 / 过道",
+      "tone": "living",
+      "points": [
+        [
+          325,
+          334
+        ],
+        [
+          410,
+          334
+        ],
+        [
+          410,
+          632
+        ],
+        [
+          675,
+          632
+        ],
+        [
+          675,
+          1115
+        ],
+        [
+          530,
+          1115
+        ],
+        [
+          530,
+          1389
+        ],
+        [
+          212,
+          1389
+        ],
+        [
+          212,
+          632
+        ],
+        [
+          325,
+          632
+        ]
+      ],
+      "modelAreaM2": 33.609
+    },
+    {
+      "id": "balcony",
+      "name": "阳台",
+      "tone": "balcony",
+      "points": [
+        [
+          687,
+          966
+        ],
+        [
+          829,
+          966
+        ],
+        [
+          829,
+          1115
+        ],
+        [
+          687,
+          1115
+        ]
+      ],
+      "modelAreaM2": 2.116
+    },
+    {
+      "id": "kitchen",
+      "name": "厨房",
+      "tone": "kitchen",
+      "points": [
+        [
+          542,
+          1127
+        ],
+        [
+          829,
+          1127
+        ],
+        [
+          829,
+          1389
+        ],
+        [
+          542,
+          1389
+        ]
+      ],
+      "modelAreaM2": 7.519
+    }
+  ],
+  "walls": [
+    [
+      6,
+      6,
+      681,
+      6
+    ],
+    [
+      6,
+      6,
+      6,
+      626
+    ],
+    [
+      6,
+      626,
+      206,
+      626
+    ],
+    [
+      206,
+      626,
+      206,
+      1395
+    ],
+    [
+      206,
+      1395,
+      835,
+      1395
+    ],
+    [
+      835,
+      960,
+      835,
+      1395
+    ],
+    [
+      681,
+      960,
+      835,
+      960
+    ],
+    [
+      681,
+      6,
+      681,
+      960
+    ],
+    [
+      319,
+      6,
+      319,
+      626
+    ],
+    [
+      6,
+      328,
+      217,
+      328
+    ],
+    [
+      319,
+      328,
+      681,
+      328
+    ],
+    [
+      416,
+      328,
+      416,
+      626
+    ],
+    [
+      416,
+      493,
+      681,
+      493
+    ],
+    [
+      416,
+      626,
+      681,
+      626
+    ],
+    [
+      681,
+      960,
+      681,
+      1121
+    ],
+    [
+      681,
+      1121,
+      835,
+      1121
+    ],
+    [
+      536,
+      1121,
+      681,
+      1121
+    ],
+    [
+      536,
+      1121,
+      536,
+      1395
+    ],
+    [
+      217,
+      328,
+      217,
+      428
+    ],
+    [
+      217,
+      428,
+      319,
+      428
+    ]
+  ],
+  "windows": [
+    {
+      "id": "window_b",
+      "name": "次卧北窗（待复尺）",
+      "kind": "window",
+      "x1": 90,
+      "y1": 6,
+      "x2": 220,
+      "y2": 6,
+      "widthMm": 1300,
+      "grade": "C",
+      "sillCm": 90,
+      "heightCm": 140
+    },
+    {
+      "id": "window_a",
+      "name": "主卧北窗（待复尺）",
+      "kind": "window",
+      "x1": 430,
+      "y1": 6,
+      "x2": 580,
+      "y2": 6,
+      "widthMm": 1500,
+      "grade": "C",
+      "sillCm": 90,
+      "heightCm": 140
+    },
+    {
+      "id": "window_c",
+      "name": "小卧西窗（待复尺）",
+      "kind": "window",
+      "x1": 6,
+      "y1": 415,
+      "x2": 6,
+      "y2": 525,
+      "widthMm": 1100,
+      "grade": "C",
+      "sillCm": 90,
+      "heightCm": 140
+    },
+    {
+      "id": "window_living_west",
+      "name": "客厅西窗（同户型图确认，宽高待复尺）",
+      "kind": "window",
+      "x1": 206,
+      "y1": 647,
+      "x2": 206,
+      "y2": 847,
+      "widthMm": 2000,
+      "grade": "C",
+      "sillCm": 90,
+      "heightCm": 140
+    },
+    {
+      "id": "window_bath_1_east",
+      "name": "主卫东窗（原图有窗，尺寸待复尺）",
+      "kind": "window",
+      "x1": 681,
+      "y1": 365,
+      "x2": 681,
+      "y2": 435,
+      "widthMm": 700,
+      "sillCm": 150,
+      "heightCm": 80,
+      "grade": "C",
+      "source": "assets/original-plan.webp 主卫东墙可见外窗，目标尺寸图同侧也有开口符号；宽高和精确位置未标注"
+    },
+    {
+      "id": "window_bath_2_east",
+      "name": "客卫东窗（同户型图有窗，目标须复尺）",
+      "kind": "window",
+      "x1": 681,
+      "y1": 530,
+      "x2": 681,
+      "y2": 590,
+      "widthMm": 600,
+      "sillCm": 150,
+      "heightCm": 80,
+      "grade": "C",
+      "source": "assets/original-plan.webp 客卫东墙可见窄窗；目标房源该处缺少明确宽高标注，存在与尺寸均须现场确认"
+    }
+  ],
+  "doors": [
+    {
+      "id": "balcony_door",
+      "name": "客厅阳台玻璃门（待复尺）",
+      "kind": "glass-door",
+      "x1": 681,
+      "y1": 960,
+      "x2": 681,
+      "y2": 1110,
+      "widthMm": 1500,
+      "grade": "C",
+      "sillCm": 0,
+      "heightCm": 220
+    },
+    {
+      "id": "entry_door",
+      "name": "入户门（待复尺）",
+      "kind": "entry-door",
+      "x1": 390,
+      "y1": 1395,
+      "x2": 490,
+      "y2": 1395,
+      "widthMm": 1000,
+      "grade": "C",
+      "sillCm": 0,
+      "heightCm": 220
+    },
+    {
+      "id": "door_a",
+      "name": "主卧门800（避开过道端墙，待复尺）",
+      "kind": "interior-door",
+      "x1": 327.5,
+      "y1": 328,
+      "x2": 407.5,
+      "y2": 328,
+      "widthMm": 800,
+      "grade": "C",
+      "sillCm": 0,
+      "heightCm": 215,
+      "notes": "旧900门与湿区墙端相交；按当前850净走廊暂用800门洞，不代表现场门宽"
+    },
+    {
+      "id": "door_b",
+      "name": "次卧B门厅东门（比例复原，待复尺）",
+      "kind": "interior-door",
+      "x1": 319,
+      "y1": 335.5,
+      "x2": 319,
+      "y2": 420.5,
+      "widthMm": 850,
+      "grade": "B",
+      "swing": "向B房内开，避开走廊",
+      "sillCm": 0,
+      "heightCm": 215
+    },
+    {
+      "id": "door_c",
+      "name": "书房C东门（待复尺）",
+      "kind": "interior-door",
+      "x1": 319,
+      "y1": 457.5,
+      "x2": 319,
+      "y2": 542.5,
+      "widthMm": 850,
+      "grade": "B",
+      "swing": "向C房内开，门后850×850无家具",
+      "sillCm": 0,
+      "heightCm": 215
+    },
+    {
+      "id": "door_bath_1",
+      "name": "主卫门（外开/移门条件）",
+      "kind": "interior-door",
+      "x1": 416,
+      "y1": 372.5,
+      "x2": 416,
+      "y2": 447.5,
+      "widthMm": 750,
+      "grade": "C",
+      "sillCm": 0,
+      "heightCm": 210
+    },
+    {
+      "id": "door_bath_2",
+      "name": "客卫门（外开/移门条件）",
+      "kind": "interior-door",
+      "x1": 416,
+      "y1": 517.5,
+      "x2": 416,
+      "y2": 592.5,
+      "widthMm": 750,
+      "grade": "C",
+      "sillCm": 0,
+      "heightCm": 210
+    },
+    {
+      "id": "door_kitchen",
+      "name": "厨房玻璃移门（待复尺）",
+      "kind": "glass-door",
+      "x1": 536,
+      "y1": 1175,
+      "x2": 536,
+      "y2": 1265,
+      "widthMm": 900,
+      "grade": "C",
+      "sillCm": 0,
+      "heightCm": 220
+    }
+  ],
+  "clearances": [
+    {
+      "id": "living_window_clear",
+      "name": "客厅西窗前600净空",
+      "x": 212,
+      "y": 647,
+      "w": 60,
+      "d": 200,
+      "grade": "C"
+    },
+    {
+      "id": "bed_b_entry",
+      "name": "B门厅净空",
+      "x": 223,
+      "y": 334,
+      "w": 90,
+      "d": 88,
+      "grade": "B"
+    },
+    {
+      "id": "bed_c_entry",
+      "name": "C门内850×850落脚区",
+      "x": 228,
+      "y": 457.5,
+      "w": 85,
+      "d": 85,
+      "grade": "B"
+    },
+    {
+      "id": "hall_north",
+      "name": "北走廊850净宽",
+      "x": 325,
+      "y": 334,
+      "w": 85,
+      "d": 298,
+      "grade": "B"
+    }
+  ],
+  "furniture": [
+    {
+      "name": "次卧1350床",
+      "x": 24,
+      "y": 20,
+      "w": 135,
+      "d": 200,
+      "a": 0,
+      "tone": "fabric"
+    },
+    {
+      "name": "次卧书桌",
+      "x": 165,
+      "y": 20,
+      "w": 90,
+      "d": 52,
+      "a": 0,
+      "tone": "wood",
+      "face": "south",
+      "notes": "移除旧模型北侧书桌上柜，避免遮住次卧北窗"
+    },
+    {
+      "name": "次卧书椅",
+      "x": 188,
+      "y": 82,
+      "w": 44,
+      "d": 46,
+      "a": 0,
+      "tone": "fabric",
+      "face": "north"
+    },
+    {
+      "name": "次卧衣柜",
+      "x": 258,
+      "y": 25,
+      "w": 55,
+      "d": 175,
+      "a": 0,
+      "tone": "wood",
+      "face": "west"
+    },
+    {
+      "name": "主卧1500床",
+      "x": 365,
+      "y": 20,
+      "w": 150,
+      "d": 200,
+      "a": 0,
+      "tone": "fabric"
+    },
+    {
+      "name": "主卧衣柜",
+      "x": 617.5,
+      "y": 45,
+      "w": 55,
+      "d": 240,
+      "a": 0,
+      "tone": "wood",
+      "face": "west"
+    },
+    {
+      "name": "书房日床",
+      "x": 20,
+      "y": 350,
+      "w": 100,
+      "d": 200,
+      "a": 0,
+      "tone": "fabric"
+    },
+    {
+      "name": "1100书桌",
+      "x": 135,
+      "y": 565,
+      "w": 110,
+      "d": 55,
+      "a": 0,
+      "tone": "wood",
+      "face": "north",
+      "notes": "因C东北凹口恢复，书桌移南墙"
+    },
+    {
+      "name": "书房办公椅",
+      "x": 160,
+      "y": 500,
+      "w": 58,
+      "d": 58,
+      "a": 0,
+      "tone": "fabric",
+      "face": "south"
+    },
+    {
+      "name": "书房客衣柜",
+      "x": 128,
+      "y": 334,
+      "w": 80,
+      "d": 40,
+      "a": 0,
+      "tone": "wood",
+      "face": "south",
+      "notes": "800宽400深浅储物柜；适合折叠衣物/客用收纳，非标准侧挂衣柜"
+    },
+    {
+      "name": "三人沙发",
+      "x": 435,
+      "y": 911,
+      "w": 220,
+      "d": 88,
+      "a": 0,
+      "tone": "fabric",
+      "face": "north"
+    },
+    {
+      "name": "电视薄柜",
+      "x": 435,
+      "y": 633,
+      "w": 220,
+      "d": 34,
+      "a": 0,
+      "tone": "wood"
+    },
+    {
+      "name": "茶几",
+      "x": 485,
+      "y": 789,
+      "w": 120,
+      "d": 62,
+      "a": 0,
+      "tone": "wood"
+    },
+    {
+      "name": "窗边矮柜",
+      "x": 212.5,
+      "y": 860,
+      "w": 35,
+      "d": 80,
+      "a": 0,
+      "tone": "wood"
+    },
+    {
+      "name": "窗边绿植",
+      "x": 253,
+      "y": 863,
+      "w": 34,
+      "d": 34,
+      "a": 0,
+      "tone": "plant"
+    },
+    {
+      "name": "四人餐桌",
+      "x": 290,
+      "y": 1150,
+      "w": 120,
+      "d": 70,
+      "a": 0,
+      "tone": "wood"
+    },
+    {
+      "name": "餐椅北1",
+      "x": 298,
+      "y": 1092.5,
+      "w": 44,
+      "d": 45,
+      "a": 0,
+      "tone": "fabric",
+      "face": "south"
+    },
+    {
+      "name": "餐椅北2",
+      "x": 358,
+      "y": 1092.5,
+      "w": 44,
+      "d": 45,
+      "a": 0,
+      "tone": "fabric",
+      "face": "south"
+    },
+    {
+      "name": "餐椅南1",
+      "x": 298,
+      "y": 1232.5,
+      "w": 44,
+      "d": 45,
+      "a": 0,
+      "tone": "fabric",
+      "face": "north"
+    },
+    {
+      "name": "餐椅南2",
+      "x": 358,
+      "y": 1232.5,
+      "w": 44,
+      "d": 45,
+      "a": 0,
+      "tone": "fabric",
+      "face": "north"
+    },
+    {
+      "name": "玄关柜",
+      "x": 212.5,
+      "y": 1130,
+      "w": 35,
+      "d": 180,
+      "a": 0,
+      "tone": "wood",
+      "face": "east"
+    },
+    {
+      "name": "餐边柜",
+      "x": 212.5,
+      "y": 960,
+      "w": 35,
+      "d": 140,
+      "a": 0,
+      "tone": "wood",
+      "face": "east"
+    },
+    {
+      "name": "厨房南侧地柜",
+      "x": 542,
+      "y": 1329,
+      "w": 287,
+      "d": 60,
+      "a": 0,
+      "tone": "cabinet",
+      "face": "north"
+    },
+    {
+      "name": "厨房北侧地柜",
+      "x": 590,
+      "y": 1127,
+      "w": 239,
+      "d": 60,
+      "a": 0,
+      "tone": "cabinet",
+      "face": "south"
+    },
+    {
+      "name": "冰箱高柜",
+      "x": 765,
+      "y": 1188,
+      "w": 60,
+      "d": 70,
+      "a": 0,
+      "tone": "metal",
+      "face": "west"
+    },
+    {
+      "name": "蒸烤高柜",
+      "x": 765,
+      "y": 1259,
+      "w": 60,
+      "d": 70,
+      "a": 0,
+      "tone": "cabinet",
+      "face": "west"
+    },
+    {
+      "name": "洗烘塔",
+      "x": 764,
+      "y": 966,
+      "w": 65,
+      "d": 70,
+      "a": 0,
+      "tone": "metal",
+      "face": "west"
+    },
+    {
+      "name": "阳台家政柜",
+      "x": 687,
+      "y": 1080,
+      "w": 70,
+      "d": 35,
+      "a": 0,
+      "tone": "cabinet",
+      "face": "north"
+    },
+    {
+      "name": "主卫800浴室柜",
+      "x": 432,
+      "y": 337,
+      "w": 80,
+      "d": 45,
+      "a": 0,
+      "tone": "sanitary",
+      "face": "south"
+    },
+    {
+      "name": "主卫壁挂马桶",
+      "x": 525,
+      "y": 337,
+      "w": 38,
+      "d": 62,
+      "a": 0,
+      "tone": "sanitary",
+      "face": "south"
+    },
+    {
+      "name": "主卫淋浴区",
+      "x": 581,
+      "y": 340,
+      "w": 90,
+      "d": 141,
+      "a": 0,
+      "tone": "wet"
+    },
+    {
+      "name": "客卫角盆",
+      "x": 422,
+      "y": 590,
+      "w": 40,
+      "d": 30,
+      "a": 0,
+      "tone": "sanitary"
+    },
+    {
+      "name": "客卫壁挂马桶",
+      "x": 497,
+      "y": 502,
+      "w": 36,
+      "d": 58,
+      "a": 0,
+      "tone": "sanitary",
+      "face": "south"
+    },
+    {
+      "name": "客卫淋浴区",
+      "x": 582,
+      "y": 504,
+      "w": 88,
+      "d": 111,
+      "a": 0,
+      "tone": "wet"
+    }
+  ],
+  "geometryRevision": "2026-09-07-bc-vestibule",
+  "coordinateSystem": {
+    "unit": "cm",
+    "x": "向东（图右）",
+    "y": "向南（图下）",
+    "z": "向上",
+    "furnitureOrigin": "x,y为平面包围盒左上角；w,d是沿全局x,y的占位，不是局部模型宽深",
+    "faceSemantics": "柜体face=门板朝向；座椅face=坐者视线；桌face=主要使用者位于哪一侧。桌/椅面对方向通常相反。",
+    "blenderMapping": "(X,Y,Z)=(x/100,-y/100,z/100)，米；局部平面旋转angle取负号",
+    "sourceModel": "model-data.json / Home.xml 保留为 V2.3 归档"
+  },
+  "wallSpecs": [
+    {
+      "id": "w_north",
+      "coords": [
+        6,
+        6,
+        681,
+        6
+      ],
+      "thicknessCm": 12,
+      "heightCm": 270,
+      "grade": "C"
+    },
+    {
+      "id": "w_west_upper",
+      "coords": [
+        6,
+        6,
+        6,
+        626
+      ],
+      "thicknessCm": 12,
+      "heightCm": 270,
+      "grade": "C"
+    },
+    {
+      "id": "w_upper_step",
+      "coords": [
+        6,
+        626,
+        206,
+        626
+      ],
+      "thicknessCm": 12,
+      "heightCm": 270,
+      "grade": "C"
+    },
+    {
+      "id": "w_west_lower",
+      "coords": [
+        206,
+        626,
+        206,
+        1395
+      ],
+      "thicknessCm": 12,
+      "heightCm": 270,
+      "grade": "C"
+    },
+    {
+      "id": "w_south",
+      "coords": [
+        206,
+        1395,
+        835,
+        1395
+      ],
+      "thicknessCm": 12,
+      "heightCm": 270,
+      "grade": "C"
+    },
+    {
+      "id": "w_east_lower",
+      "coords": [
+        835,
+        960,
+        835,
+        1395
+      ],
+      "thicknessCm": 12,
+      "heightCm": 270,
+      "grade": "C"
+    },
+    {
+      "id": "w_east_step",
+      "coords": [
+        681,
+        960,
+        835,
+        960
+      ],
+      "thicknessCm": 12,
+      "heightCm": 270,
+      "grade": "C"
+    },
+    {
+      "id": "w_east_upper",
+      "coords": [
+        681,
+        6,
+        681,
+        960
+      ],
+      "thicknessCm": 12,
+      "heightCm": 270,
+      "grade": "C"
+    },
+    {
+      "id": "w_bed_partition",
+      "coords": [
+        319,
+        6,
+        319,
+        626
+      ],
+      "thicknessCm": 12,
+      "heightCm": 270,
+      "grade": "C"
+    },
+    {
+      "id": "w_bed_b_south",
+      "coords": [
+        6,
+        328,
+        217,
+        328
+      ],
+      "thicknessCm": 12,
+      "heightCm": 270,
+      "grade": "C"
+    },
+    {
+      "id": "w_bed_a_south",
+      "coords": [
+        319,
+        328,
+        681,
+        328
+      ],
+      "thicknessCm": 12,
+      "heightCm": 270,
+      "grade": "C"
+    },
+    {
+      "id": "w_bath_west",
+      "coords": [
+        416,
+        328,
+        416,
+        626
+      ],
+      "thicknessCm": 12,
+      "heightCm": 270,
+      "grade": "C"
+    },
+    {
+      "id": "w_bath_middle",
+      "coords": [
+        416,
+        493,
+        681,
+        493
+      ],
+      "thicknessCm": 12,
+      "heightCm": 270,
+      "grade": "C"
+    },
+    {
+      "id": "w_bath_south",
+      "coords": [
+        416,
+        626,
+        681,
+        626
+      ],
+      "thicknessCm": 12,
+      "heightCm": 270,
+      "grade": "C"
+    },
+    {
+      "id": "w_balcony_west",
+      "coords": [
+        681,
+        960,
+        681,
+        1121
+      ],
+      "thicknessCm": 12,
+      "heightCm": 270,
+      "grade": "C"
+    },
+    {
+      "id": "w_balcony_south",
+      "coords": [
+        681,
+        1121,
+        835,
+        1121
+      ],
+      "thicknessCm": 12,
+      "heightCm": 270,
+      "grade": "C"
+    },
+    {
+      "id": "w_kitchen_north",
+      "coords": [
+        536,
+        1121,
+        681,
+        1121
+      ],
+      "thicknessCm": 12,
+      "heightCm": 270,
+      "grade": "C"
+    },
+    {
+      "id": "w_kitchen_west",
+      "coords": [
+        536,
+        1121,
+        536,
+        1395
+      ],
+      "thicknessCm": 12,
+      "heightCm": 270,
+      "grade": "C"
+    },
+    {
+      "id": "w_b_vestibule_west",
+      "coords": [
+        217,
+        328,
+        217,
+        428
+      ],
+      "thicknessCm": 12,
+      "heightCm": 270,
+      "grade": "B"
+    },
+    {
+      "id": "w_b_vestibule_south",
+      "coords": [
+        217,
+        428,
+        319,
+        428
+      ],
+      "thicknessCm": 12,
+      "heightCm": 270,
+      "grade": "B"
+    }
+  ],
+  "geometryNotes": [
+    "V3为可复核的概念建模，A仅指参考图有尺寸，不代表现场实测。",
+    "B/C拓扑已按两张图恢复；B门厅900×1000、C东北凹口及北走廊850净宽均为比例推算。",
+    "北侧房间统一3100深：目标图B标3090、A标3100；C目标图2850、旧模型2860，10mm级差异暂作制图取整，待复尺。",
+    "两卫标注为主卫/客卫仅为方案命名；二者均从公共过道进入，不代表主卧套内独卫。",
+    "两卫门宽750，当前北走廊仅850：本版门关闭展示，未证明外开门互不冲突；实际开启方案需复尺深化。",
+    "两卫东窗仅恢复参考图中存在的开口，精确位置、宽高、外墙状态均待核。",
+    "阳台外侧是否封窗、栏杆高度及厨房外窗不清楚，本次不虚构新增开口，详见geometry-v3.md。",
+    "已知约104.83平方米是房源建筑面积，模型房间净面积合计不应冒充证载面积。",
+    "旧V2 AI卧室图误把俯视地面视为后墙，不作为V3构造或照明依据。"
+  ]
+}

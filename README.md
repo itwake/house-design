@@ -1,65 +1,76 @@
-# 荟雅苑 104.83㎡ · 三房两卫逐空间比例校核
+# 木光之间 · 荟雅苑的家
 
-基于 Sweet Home 3D JS Viewer 的静态网页。V2.4 在2D/3D同源墙线、房间和门窗基础上，同时提供十一张由模型直接导出的尺度视角与九张以这些视角为几何约束生成的现代自然材质概念图。客厅电视位于双卫南侧实墙，2200mm沙发横向面对电视，西窗前保留600mm净空；客厅西窗暂按2000mm宽、900mm窗台建模，仍为C级待复尺。
+104.83㎡ / 28F / 三房两卫。按照原户型重建的现代原木设计：Blender 源模型、真实模型渲染和 Three.js 交互网站使用同一套几何数据。
 
-- 可旋转、缩放和漫游的 `.sh3d` 三维设计模型；
-- 客餐厅、玄关、厨房、主卧、次卧、书房、双卫和生活阳台共九个空间的按比例校核图；
-- 140 个参数化家具、柜体、洁具与设备构件，以及 14 组设计灯光；
-- 现代自然风材质方向：暖白、浅橡木、暖灰、鼠尾草绿和少量黑色线条；
-- 模型内预设客餐厅、三间卧室、厨房、双卫和阳台观察视角；
-- 十一张从同一 `.sh3d` 模型预设相机导出的尺度渲染图（非AI装修照片）；
-- 九张以模型截图为结构底图的写实材质概念图，只深化材质、灯光与软装；如细节与模型冲突，以模型和现场复尺为准；
-- 与三维模型共用坐标的 2D 比例核对图；
-- 图纸尺寸、比例校准值和待复尺假设的分级清单；
-- 原始三房两卫图与目标房源自如改造现状图对照。
+**在线查看：[itwake.github.io/house-design](https://itwake.github.io/house-design/)**
 
-## 设计主线
+![全屋Blender模型实际渲染](assets/blender-renders/overall.jpg)
 
-- 拆除自如隔出的第四间房，恢复连续客餐厅；
-- 玄关设置薄柜和开放格，餐边柜兼水吧；
-- 厨房采用玻璃移门与高低柜组合，落实冰箱、洗碗机、烟机灶具和烤箱塔位；
-- 主卧按 1500 mm 床与整墙衣柜组织；次卧兼顾儿童、长辈或客房；书房采用 1100 mm 书桌与日床；
-- 主卫采用 800 mm 浴室柜与局部固定玻璃；客卫只采用 400 mm 角盆和可折叠玻璃屏；
-- 生活阳台集中洗烘、南墙浅柜与晾晒系统，主通道不再被高柜压缩。
+## 这一版有什么
 
-## 尺寸口径
+- 温暖的浅橡木、暖白、亚麻与石材配色，细化家具、灯具、柜体和生活用品。
+- 全屋立体浏览、逐房镜头、平面核对、墙体剖切、尺寸与房间标签。
+- 全屋、客厅、餐厅、主卧、次卧B、书房兼客卧C、厨房、主卫、客卫、生活阳台共10个 Blender 渲染视角。
+- 可下载 `.blend` 源文件及带贴图的 `.glb` 模型。
+- 低负载按需绘制；不支持 WebGL 时仍可看平面与效果图。
 
-Sweet Home 3D 内部使用厘米，本项目网页展示毫米。以下图纸锚点按 1:1 录入：
+效果图由实际模型直接渲染，不使用生成式图片重新解释空间。模型适用于方案讨论，**不是施工图，也不是现场实测成果**。
 
-- 北侧总宽：6870 mm
-- 西侧总长：14010 mm
-- 南侧下部总宽：6410 mm
-- 北侧两跨：3010 / 3500 mm
-- 南侧两跨：3180 / 2870 mm
+## 设计与几何修正
 
-当前墙厚统一按 120 mm 闭合尺寸链，下部体块偏移按两张图比例校准。门窗位置、梁柱、烟道、立管、下沉区和层高尚未经过现场复尺。模型适合用于空间关系、家具尺度和设计方向讨论，不能直接作为拆改、水电或施工放线图。
+拆除出租隔出的第四间房，恢复客餐厅。客厅电视在双卫南侧实墙，保留西侧窗；主卧与次卧采用真实家具占地，书房兼第三卧室。两个小卫生间按紧凑洁具与固定淋浴玻璃组织，不虚构宽敞空间。
+
+这一版还根据原始平面恢复次卧B的门前凹口及书房C的对应缺角，纠正旧版简化矩形导致的进门关系错误。窗帘、床头、浴室镜及淋浴入口经过复核。
+
+详细证据、尺寸等级及尚未确定的事项见 [几何校核记录](docs/geometry-v3.md)。
+
+渲染中发现的问题、修正和网页检查范围见 [V3检查记录](docs/qa-v3.md)。
+
+## 尺寸边界
+
+已知图纸锚点：北侧总宽6870mm、全长14010mm、南侧下部总宽6410mm。数据内部单位为厘米；Blender使用米，坐标映射为 `(x/100, -y/100, z)`，glTF导出后为Y轴向上。
+
+墙厚120mm、层高2700mm，以及部分门窗尺寸、窗台高度与凹口位置是待复尺的建模假设。模型室内区域合计约78.85㎡，不能作为产权套内面积或得房率结论。阳台外侧开口和厨房外窗证据不足，不作已核实结构展示；梁、柱、烟道、立管和承重属性仍需现场调查。
+
+## 文件
+
+| 文件 | 用途 |
+|---|---|
+| `models/design-data.json` | 新版墙线、房间、家具的共用坐标 |
+| `models/blender-overrides.json` | 修正后的门窗开口定义 |
+| `tools/build_blender.py` | 参数化建模、贴图、导出及渲染 |
+| `models/huiyayuan-wood.blend` | Blender源模型，内嵌贴图与相机 |
+| `models/huiyayuan-wood.glb` | 网页使用的3D模型 |
+| `models/scene-manifest.json` | 房间、相机与效果图索引 |
+| `assets/blender-renders/` | 同一模型的10张实际渲染 |
+| `studio.js` / `studio.css` | Three.js交互与页面样式 |
+| `legacy.html` | 已标记局限的旧版归档，不作新版几何依据 |
 
 ## 本地运行
-
-静态资源需要通过 HTTP 访问（不能直接双击 `index.html`）：
 
 ```powershell
 python -m http.server 8080
 ```
 
-然后访问 `http://localhost:8080/`。
+访问 `http://localhost:8080/`。不能直接双击HTML使用模型加载器。
 
-重新生成 `.sh3d` 和网页坐标数据：
+## 重建与验证
+
+使用 Blender 4.5 LTS（构建环境为4.5.9），将 `blender` 替换为实际程序路径：
 
 ```powershell
-python tools/generate_model.py
+blender --background --threads 2 --python tools/build_blender.py -- --only-build
+blender --background models/huiyayuan-wood.blend --threads 2 --python tools/build_blender.py -- --reuse --render all --samples 32 --resolution 1600
+python tools/validate_studio.py --assets
+node --check studio.js
 ```
 
-生成文件：
+渲染默认使用 Cycles CPU 与去噪。可用 `--render overall,living` 仅渲染选定镜头。修改几何或相机后必须重新构建，不能仅 `--reuse`。
 
-- `models/huiyayuan-104-calibrated.sh3d`
-- `models/Home.xml`（便于审计）
-- `models/model-data.json`
-- `assets/verified/*.svg`（九张由同一坐标生成并自动检查越界/重叠的校核图）
-- `assets/renders/*.png`（十一张由 Sweet Home 3D JS 当前模型直接导出的设计视角）
-- `assets/concepts/*.png`（九张由模型视角约束的写实材质概念图）
-- `assets/concepts/README.md`（生成边界、共用提示词和逐图附加约束）
+网页交付图为1200×800像素、Cycles 16采样加去噪。上面的32采样/1600像素命令可用于更高质量导出。浏览器复测可使用 `tools/qa_studio.mjs`（传入本机调试端口和本项目标签页ID），会记录运行异常、移动端溢出并保存截图到被Git忽略的`tmp/`。
 
-## 第三方组件
+## 历史版本与许可
 
-网页查看器来自 Sweet Home 3D JS 7.5.2。详见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+旧版 Sweet Home 3D 文件和概念图保留供追溯；其中部分AI概念图曾误读空间与窗口，不能用于施工或新版几何核对。新版改为实际 Blender 渲染。
+
+Three.js采用MIT许可；Blender用于离线制作，不打包进网站。更多信息见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。

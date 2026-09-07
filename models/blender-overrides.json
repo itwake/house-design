@@ -1,0 +1,309 @@
+{
+  "version": "3.0",
+  "geometryData": "models/design-data.json",
+  "description": "V3重建使用design-data作为墙、房间、开口和家具投影唯一来源；此文件列出旧Home.xml至V3的修正语义。",
+  "openings": [
+    {
+      "id": "window_b",
+      "name": "次卧北窗（待复尺）",
+      "kind": "window",
+      "x1": 90,
+      "y1": 6,
+      "x2": 220,
+      "y2": 6,
+      "sillCm": 90,
+      "heightCm": 140,
+      "grade": "C"
+    },
+    {
+      "id": "window_a",
+      "name": "主卧北窗（待复尺）",
+      "kind": "window",
+      "x1": 430,
+      "y1": 6,
+      "x2": 580,
+      "y2": 6,
+      "sillCm": 90,
+      "heightCm": 140,
+      "grade": "C"
+    },
+    {
+      "id": "window_c",
+      "name": "小卧西窗（待复尺）",
+      "kind": "window",
+      "x1": 6,
+      "y1": 415,
+      "x2": 6,
+      "y2": 525,
+      "sillCm": 90,
+      "heightCm": 140,
+      "grade": "C"
+    },
+    {
+      "id": "window_living_west",
+      "name": "客厅西窗（同户型图确认，宽高待复尺）",
+      "kind": "window",
+      "x1": 206,
+      "y1": 647,
+      "x2": 206,
+      "y2": 847,
+      "sillCm": 90,
+      "heightCm": 140,
+      "grade": "C"
+    },
+    {
+      "id": "window_bath_1_east",
+      "name": "主卫东窗（原图有窗，尺寸待复尺）",
+      "kind": "window",
+      "x1": 681,
+      "y1": 365,
+      "x2": 681,
+      "y2": 435,
+      "sillCm": 150,
+      "heightCm": 80,
+      "grade": "C"
+    },
+    {
+      "id": "window_bath_2_east",
+      "name": "客卫东窗（同户型图有窗，目标须复尺）",
+      "kind": "window",
+      "x1": 681,
+      "y1": 530,
+      "x2": 681,
+      "y2": 590,
+      "sillCm": 150,
+      "heightCm": 80,
+      "grade": "C"
+    },
+    {
+      "id": "balcony_door",
+      "name": "客厅阳台玻璃门（待复尺）",
+      "kind": "glass-door",
+      "x1": 681,
+      "y1": 960,
+      "x2": 681,
+      "y2": 1110,
+      "sillCm": 0,
+      "heightCm": 220,
+      "grade": "C"
+    },
+    {
+      "id": "entry_door",
+      "name": "入户门（待复尺）",
+      "kind": "entry-door",
+      "x1": 390,
+      "y1": 1395,
+      "x2": 490,
+      "y2": 1395,
+      "sillCm": 0,
+      "heightCm": 220,
+      "grade": "C"
+    },
+    {
+      "id": "door_a",
+      "name": "主卧门800（避开过道端墙，待复尺）",
+      "kind": "interior-door",
+      "x1": 327.5,
+      "y1": 328,
+      "x2": 407.5,
+      "y2": 328,
+      "sillCm": 0,
+      "heightCm": 215,
+      "grade": "C"
+    },
+    {
+      "id": "door_b",
+      "name": "次卧B门厅东门（比例复原，待复尺）",
+      "kind": "interior-door",
+      "x1": 319,
+      "y1": 335.5,
+      "x2": 319,
+      "y2": 420.5,
+      "sillCm": 0,
+      "heightCm": 215,
+      "grade": "B"
+    },
+    {
+      "id": "door_c",
+      "name": "书房C东门（待复尺）",
+      "kind": "interior-door",
+      "x1": 319,
+      "y1": 457.5,
+      "x2": 319,
+      "y2": 542.5,
+      "sillCm": 0,
+      "heightCm": 215,
+      "grade": "B"
+    },
+    {
+      "id": "door_bath_1",
+      "name": "主卫门（外开/移门条件）",
+      "kind": "interior-door",
+      "x1": 416,
+      "y1": 372.5,
+      "x2": 416,
+      "y2": 447.5,
+      "sillCm": 0,
+      "heightCm": 210,
+      "grade": "C"
+    },
+    {
+      "id": "door_bath_2",
+      "name": "客卫门（外开/移门条件）",
+      "kind": "interior-door",
+      "x1": 416,
+      "y1": 517.5,
+      "x2": 416,
+      "y2": 592.5,
+      "sillCm": 0,
+      "heightCm": 210,
+      "grade": "C"
+    },
+    {
+      "id": "door_kitchen",
+      "name": "厨房玻璃移门（待复尺）",
+      "kind": "glass-door",
+      "x1": 536,
+      "y1": 1175,
+      "x2": 536,
+      "y2": 1265,
+      "sillCm": 0,
+      "heightCm": 220,
+      "grade": "C"
+    }
+  ],
+  "geometryPolicy": "replace: use rooms/walls from design-data.json, do not overlay these on the V2 wall mesh",
+  "furniturePlacementSource": "design-data.json furniture (x,y left-top bounding box, w,d world footprint; face is the functional front)",
+  "removeIds": [
+    "desk_b_upper",
+    "desk_c_upper",
+    "master_curtain"
+  ],
+  "pieceOverrides": [
+    {
+      "id": "desk_c_top",
+      "centerCm": [
+        190,
+        592.5
+      ],
+      "footprintCm": [
+        110,
+        55
+      ],
+      "face": "north",
+      "reason": "C东北凹口恢复后，桌子改至南墙"
+    },
+    {
+      "id": "chair_c",
+      "centerCm": [
+        189,
+        529
+      ],
+      "footprintCm": [
+        58,
+        58
+      ],
+      "face": "south",
+      "reason": "对准南墙书桌，避开C门后净空"
+    },
+    {
+      "id": "wardrobe_c_body",
+      "centerCm": [
+        168,
+        354
+      ],
+      "footprintCm": [
+        80,
+        40
+      ],
+      "face": "south",
+      "reason": "移到C西北段，改浅储物柜；关联门板必须一起重建"
+    },
+    {
+      "id": "entry_body",
+      "centerCm": [
+        230,
+        1220
+      ],
+      "footprintCm": [
+        35,
+        180
+      ],
+      "face": "east",
+      "reason": "旧门板朝西墙；重建柜门至东面"
+    },
+    {
+      "id": "hob",
+      "centerCm": [
+        670,
+        1359
+      ],
+      "footprintCm": [
+        74,
+        42
+      ],
+      "reason": "旧灶北缘比台面悬出135mm，居中移回台面"
+    }
+  ],
+  "facingOverrides": [
+    {
+      "id": "dining_chair_0",
+      "face": "south"
+    },
+    {
+      "id": "dining_chair_1",
+      "face": "south"
+    },
+    {
+      "id": "dining_chair_2",
+      "face": "north"
+    },
+    {
+      "id": "dining_chair_3",
+      "face": "north"
+    },
+    {
+      "id": "wardrobe_a",
+      "face": "west"
+    },
+    {
+      "id": "wardrobe_b",
+      "face": "west"
+    },
+    {
+      "id": "wardrobe_c",
+      "face": "south"
+    },
+    {
+      "id": "entry",
+      "face": "east"
+    }
+  ],
+  "windowTreatment": {
+    "master": "旧solid master_curtain不应当整块封住北窗；用窗侧收拢布帘/透明纱帘重建，窗洞保持可见",
+    "bedroomB": "删除覆盖北窗的书桌上柜；台面高750mm低于暂定900mm窗台",
+    "balcony": "外窗/封阳台范围缺少可靠尺寸，本次未新增外侧开口；外墙表现仍为待核概念，不可据此认定无采光"
+  },
+  "cameraPolicy": {
+    "units": "metres in exported Blender scene",
+    "interiorEyeHeightM": 1.55,
+    "recommendedLensMm": [
+      24,
+      28,
+      35
+    ],
+    "topView": "明确标注俯视/剖切；小空间用去顶或斜俯视，避免将旧86°俯视机位解释为立视",
+    "doNotUseAsGeometry": [
+      "assets/concepts/*.png",
+      "assets/design/*.jpg"
+    ],
+    "reason": "旧AI主卧图把俯视地面当后墙、床头柜当小窗，窗位/视角不可用"
+  },
+  "assumptions": [
+    "B/C凹口900×1000mm、两房东墙位置与850mm过道均为B级比例推算。",
+    "主卧门暂调800mm，避免旧900mm门撞湿区墙端；C级待复尺。",
+    "两卫窗存在由参考图支持，但窗宽/位置/1500mm窗台/800mm窗高为C级占位。",
+    "三房床仍以现有占位为基础；旧床垫是水平构件，模型的2D长轴不是竖立姿态。",
+    "两卫门开启方案未获现场条件核验；不使用已通过所有碰撞检查等绝对表述。"
+  ]
+}

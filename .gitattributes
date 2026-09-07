@@ -1,0 +1,2 @@
+# Preserve the vendored upstream distribution; do not lint its original whitespace.
+vendor/three/** linguist-vendored -whitespace
