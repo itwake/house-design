@@ -20,7 +20,7 @@
 
 拆除出租隔出的第四间房，恢复客餐厅。客厅电视在双卫南侧实墙，保留西侧窗；主卧与次卧采用真实家具占地，书房兼第三卧室。两个小卫生间按紧凑洁具与固定淋浴玻璃组织，不虚构宽敞空间。
 
-这一版还根据原始平面恢复次卧B的门前凹口及书房C的对应缺角，纠正旧版简化矩形导致的进门关系错误。窗帘、床头、浴室镜及淋浴入口经过复核。
+V3.0.3恢复两卫阶梯共墙与客卫西北盆位，主卫改为从主卧进入。主卧床头朝东、次卧B朝西，并同步移动衣柜及洁具；此前恢复的三处飘窗和书房南墙继续保留。阳台新门标为拟改造；原门改窗的具体边界待确认，不作为已核实原结构。
 
 详细证据、尺寸等级及尚未确定的事项见 [几何校核记录](docs/geometry-v3.md)。
 
@@ -30,7 +30,7 @@
 
 已知图纸锚点：北侧总宽6870mm、全长14010mm、南侧下部总宽6410mm。数据内部单位为厘米；Blender使用米，坐标映射为 `(x/100, -y/100, z)`，glTF导出后为Y轴向上。
 
-墙厚120mm、层高2700mm，以及部分门窗尺寸、窗台高度与凹口位置是待复尺的建模假设。模型室内区域合计约78.85㎡，不能作为产权套内面积或得房率结论。阳台外侧开口和厨房外窗证据不足，不作已核实结构展示；梁、柱、烟道、立管和承重属性仍需现场调查。
+墙厚120mm、层高2700mm，以及部分门窗尺寸、窗台高度与凹口位置是待复尺的建模假设。模型室内区域合计约78.82㎡，不能作为产权套内面积或得房率结论。阳台外侧开口和厨房外窗证据不足，不作已核实结构展示；梁、柱、烟道、立管和承重属性仍需现场调查。
 
 ## 文件
 
@@ -62,12 +62,15 @@ python -m http.server 8080
 blender --background --threads 2 --python tools/build_blender.py -- --only-build
 blender --background models/huiyayuan-wood.blend --threads 2 --python tools/build_blender.py -- --reuse --render all --samples 32 --resolution 1600
 python tools/validate_studio.py --assets
+node tools/test_plan_geometry.mjs
 node --check studio.js
 ```
 
 渲染默认使用 Cycles CPU 与去噪。可用 `--render overall,living` 仅渲染选定镜头。修改几何或相机后必须重新构建，不能仅 `--reuse`。
 
 网页交付图为1200×800像素、Cycles 16采样加去噪。上面的32采样/1600像素命令可用于更高质量导出。浏览器复测可使用 `tools/qa_studio.mjs`（传入本机调试端口和本项目标签页ID），会记录运行异常、移动端溢出并保存截图到被Git忽略的`tmp/`。
+
+`test_plan_geometry.mjs`直接运行网页的平面绘制函数，核对床架/床垫/头板、阶梯双卫、套卫门、飘窗与盆柜方向。发布后可运行 `node tools/verify_published.mjs 本机CDP端口 项目标签页ID`，检查Pages资源以及线上模型和本地GLB的SHA一致性；仅接受本项目的已发布标签页。
 
 ## 历史版本与许可
 

@@ -22,7 +22,7 @@ from xml.etree import ElementTree as ET
 
 import bpy
 import numpy as np
-from mathutils import Vector
+from mathutils import Matrix, Vector
 
 ROOT = Path(__file__).resolve().parents[1]
 MODEL_DIR = ROOT / "models"
@@ -527,51 +527,102 @@ def framed_art(x,y,z,w=.5,h=.66,orient="north"):
 
 
 def bed(f,daybed=False):
-    x,y,w,d=[f[k]/100 for k in ("x","y","w","d")]
+    # The plan bbox and the physical bed sizes are different concepts: an
+    # east/west 160x210 cm frame occupies 210x160 cm in the shared 2D plan.
+    # Build the entire rig north-facing in local coordinates, then rotate all
+    # its meshes as one rigid assembly; mattress/pillows never swap sizes.
+    x,y,bbox_w,bbox_d=[f[k]/100 for k in ("x","y","w","d")]
+    head=f.get("headDirection","north")
+    angles={"north":0,"east":-math.pi/2,"south":math.pi,"west":math.pi/2}
+    if head not in angles:raise ValueError(f"Unsupported bed head direction: {head}")
+    w=float(f.get("frameWidthCm",f["d"] if head in ("east","west") else f["w"]))/100
+    d=float(f.get("frameLengthCm",f["w"] if head in ("east","west") else f["d"]))/100
+    mw=float(f.get("mattressWidthCm",w*100-5))/100
+    md=float(f.get("mattressLengthCm",d*100-8.5))/100
+    expected=(d,w) if head in ("east","west") else (w,d)
+    if abs(bbox_w-expected[0])>.0001 or abs(bbox_d-expected[1])>.0001:
+        raise ValueError(f"{f['name']}: plan bbox does not match the rotated physical frame")
+    head_depth=.075
+    if mw>w or md+head_depth>d+.0001:
+        raise ValueError(f"{f['name']}: mattress does not fit behind the headboard")
+    before=set(bpy.context.scene.objects)
     prefix=f["name"]
-    block(prefix+" solid oak plinth",x+.025,y+.025,.05,w-.05,d-.05,.18,mat="Oak",bevel=.035)
+    block(prefix+" recessed supporting base",.08,.12,0,w-.16,d-.24,.10,mat="Walnut",bevel=.015)
+    block(prefix+" solid oak plinth",0,0,.05,w,d,.18,mat="Oak",bevel=.035)
     head_height=.75 if CURRENT_ROOM in ("room_a","room_b") else .84
-    block(prefix+" upholstered headboard",x,y,.13,w,.075,head_height,mat="Linen",bevel=.033)
-    block(prefix+" mattress",x+.025,y+.065,.23,w-.05,d-.085,.20,mat="WhiteLinen",bevel=.075)
-    block(prefix+" rounded duvet",x+.015,y+.52,.424,w-.03,d-.55,.095,mat="Cream",bevel=.06)
-    block(prefix+" sage throw",x+.01,y+d-.47,.521,w-.02,.35,.026,mat="Sage",bevel=.012)
-    count=1 if w<1.15 else 2
+    block(prefix+" upholstered headboard",0,0,.13,w,head_depth,head_height,mat="Linen",bevel=.033)
+    mx,my=(w-mw)/2,head_depth
+    block(prefix+" mattress",mx,my,.23,mw,md,.20,mat="WhiteLinen",bevel=.075)
+    block(prefix+" rounded duvet",mx-.008,my+.43,.424,mw+.016,md-.43,.095,mat="Cream",bevel=.06)
+    throw_width=min(w-.02,mw+.02)
+    block(prefix+" sage throw",(w-throw_width)/2,my+md-.42,.521,throw_width,.35,.026,mat="Sage",bevel=.012)
+    count=1 if mw<1.15 else 2
     for i in range(count):
-        pw=(w-.15)/count
-        ob=box("Soft sleeping pillow",x+.075+pw*(i+.5),y+.31,.444,pw-.04,.38,.12,"WhiteLinen",.085)
+        pw=(mw-.10)/count
+        ob=box("Soft sleeping pillow",mx+.05+pw*(i+.5),my+.25,.431,pw-.025,.38,.12,"WhiteLinen",.065)
         ob.rotation_euler.x=.06
     if daybed:
-        block("Daybed side upholstered rail",x,y+.05,.20,.07,d-.07,.43,mat="Linen",bevel=.03)
+        block("Daybed side upholstered rail",0,.05,.20,.07,d-.07,.43,mat="Linen",bevel=.03)
         for off in (.8,1.3):
-            ob=box("Daybed sage cushion",x+.17,y+off,.44,.14,.40,.36,"Sage",.055)
+            ob=box("Daybed sage cushion",.17,off,.44,.14,.40,.36,"Sage",.055)
             ob.rotation_euler.y=-.18
-    else:
-        # Tiny wall shelf only when it remains inside the room envelope.
-        sx=x+w+.15
-        if (CURRENT_ROOM=="room_a" and sx+.14<6.16):
-            box("Oak bedside floating shelf",sx,y+.33,.43,.28,.33,.045,"Oak",.018)
-            lamp(sx,y+.33,.475,True)
+    # Bedside shelves/lamps require their own verified placement records;
+    # there is deliberately no room-coordinate threshold or implicit fixture.
+    transform=(Matrix.Translation(Vector((x+bbox_w/2,-(y+bbox_d/2),0)))
+               @ Matrix.Rotation(angles[head],4,"Z")
+               @ Matrix.Translation(Vector((-w/2,d/2,0))))
+    bpy.context.view_layer.update()
+    for obj in set(bpy.context.scene.objects)-before:
+        obj.matrix_world=transform @ obj.matrix_world
+        obj["bedHeadDirection"]=head
+        obj["frameWidthCm"]=round(w*100,4)
+        obj["frameLengthCm"]=round(d*100,4)
+        obj["mattressWidthCm"]=round(mw*100,4)
+        obj["mattressLengthCm"]=round(md*100,4)
 
 
 def cabinet(f, h=2.35, style="wardrobe"):
     x,y,w,d=[f[k]/100 for k in ("x","y","w","d")]
     name=f["name"]
+    face=f.get("face","west" if d>w*1.4 and x>5 else "east" if d>w*1.4 else "south")
+    if face not in ("north","south","east","west"):
+        raise ValueError(f"Unsupported cabinet face: {face}")
+    vertical=face in ("east","west")
+    span=d if vertical else w
+    depth=w if vertical else d
+    def frontal(label,along,inset,z,width,thickness,height,mat="Oak",bevel=.004):
+        # inset measures inward from the declared footprint's front edge.
+        if face=="west":px,py=x+inset,y+along
+        elif face=="east":px,py=x+w-inset,y+along
+        elif face=="north":px,py=x+along,y+inset
+        else:px,py=x+along,y+d-inset
+        return box(name+" "+label,px,py,z,thickness if vertical else width,width if vertical else thickness,height,mat,bevel)
     block(name+" recessed plinth",x+.025,y+.025,.015,w-.05,d-.05,.065,mat="Walnut",bevel=.005)
-    block(name+" carcass",x,y,.08,w,d,h-.08,mat="Oak",bevel=.006)
-    # Deep thin cupboards running north/south face east or west; wardrobes at
-    # the east wall face west. Normal horizontal units face south.
-    if d>w*1.4:
-        facewest=f.get("face", "west" if x>5 else "east")=="west"
-        fx=x-.009 if facewest else x+w+.009
-        n=max(2,round(d/.48))
+    block(name+" carcass bottom",x,y,.08,w,d,.025,mat="Oak",bevel=.004)
+    block(name+" carcass top",x,y,h-.025,w,d,.025,mat="Oak",bevel=.004)
+    for along in (.01,span-.01):
+        frontal("carcass side",along,depth/2,.105,.02,depth,h-.13)
+    frontal("carcass back",span/2,depth-.009,.105,span-.04,.018,h-.13)
+    frontal("upper shelf",span/2,(depth+.035)/2,1.73,span-.04,depth-.095,.022)
+    sliding=f.get("doorStyle")=="sliding"
+    if sliding:
+        n=max(2,int(f.get("doorPanels",2)))
+        overlap=.035
+        panel=(span-.012+overlap*(n-1))/n
+        step=panel-overlap
+        for z in (.106,h-.043):
+            for lane in (0,1):
+                frontal("sliding door track",span/2,.014+lane*.024,z,span-.02,.014,.008,"Brass",.002)
         for i in range(n):
-            box(name+" door",fx,y+(i+.5)*d/n,.085,.019,d/n-.006,h-.095,"Cream" if style=="entry" else "Oak",.004)
-            box(name+" brass pull",fx+(-.016 if facewest else .016),y+(i+.83)*d/n,.94,.017,.012,.18,"Brass",.004)
+            along=.006+panel/2+i*step
+            inset=.014+(i%2)*.024
+            frontal("sliding door",along,inset,.116,panel,.018,h-.168,"Oak",.004)
+            frontal("recessed sliding pull",along+(panel*.38 if i==0 else -panel*.38),inset-.010,.94,.016,.002,.20,"Walnut",.002)
     else:
-        n=max(2,round(w/.48))
+        n=max(2,round(span/.48))
         for i in range(n):
-            box(name+" door",x+(i+.5)*w/n,y+d+.009,.085,w/n-.006,.019,h-.095,"Oak",.004)
-            box(name+" brass pull",x+(i+.82)*w/n,y+d+.025,.94,.012,.017,.18,"Brass",.004)
+            frontal("door",(i+.5)*span/n,.035,.108,span/n-.006,.018,h-.148,"Cream" if style=="entry" else "Oak",.004)
+            frontal("brass pull",(i+.82)*span/n,.014,.94,.012,.017,.18,"Brass",.004)
 
 
 def low_cabinet(f,height=.65):
@@ -590,12 +641,27 @@ def low_cabinet(f,height=.65):
     return x,y,w,d,height
 
 
+def desk_lamp_position(f):
+    x,y,w,d=[f[k]/100 for k in ("x","y","w","d")]
+    px,py=x+w*.75,y+d*(.75 if f.get("face")=="north" else .25)
+    if f.get("face","south")=="south":
+        # A south-facing desk backs onto the north wall. Keep its 140 mm
+        # lampshade radius plus 5 mm clear within the desktop. Other desk
+        # orientations retain their established placement in this correction.
+        margin=.14+.005
+        if min(w,d)<2*margin:
+            raise ValueError(f"{f['name']}: desktop is too small for this table lamp")
+        px=min(max(px,x+margin),x+w-margin)
+        py=min(max(py,y+margin),y+d-margin)
+    return px,py
+
+
 def desk(f):
     x,y,w,d=[f[k]/100 for k in ("x","y","w","d")]
     block("Oak desk desktop",x,y,.73,w,d,.035,mat="Oak",bevel=.012)
     for px,py in ((x+.04,y+.04),(x+w-.04,y+.04),(x+.04,y+d-.04),(x+w-.04,y+d-.04)):
         cylinder("Desk turned leg",px,py,.02,.023,.71,"Oak",vertices=16)
-    lamp(x+w*.75,y+d*(.75 if f.get("face")=="north" else .25),.765,True)
+    lamp(*desk_lamp_position(f),.765,True)
     if w>d:
         block("Desk linen notebook",x+.08,y+.13,.767,.24,.17,.016,mat="Sage")
     else:
@@ -702,23 +768,39 @@ def tall_appliance(f, oven=False):
         box("Fridge recessed pull",fx-.013,y+.08,.88,.022,.018,.60,"Walnut",.005)
 
 
-def basin(x,y,w,d,corner=False):
+def basin(x,y,w,d,corner=False,face="south"):
+    angles={"south":0,"east":math.pi/2,"north":math.pi,"west":-math.pi/2}
+    if face not in angles:raise ValueError(f"Unsupported vanity face: {face}")
+    bw,bd=(d,w) if face in ("east","west") else (w,d)
+    before=set(bpy.context.scene.objects)
+    # All countertop, drawer, mirror and tap geometry stays within the
+    # recorded footprint; the compact east-facing vanity has no hidden
+    # counter overhang or handle consuming its carefully checked passage.
     z=.81
     if not corner:
-        block("Floating oak vanity",x,y,.34,w,d,.43,mat="Oak",bevel=.018)
+        block("Floating oak vanity",.005,.005,.34,bw-.01,bd-.045,.43,mat="Oak",bevel=.018)
         for i in range(2):
-            box("Vanity drawer front",x+w/2,y+d+.004,.35+i*.20,w-.01,.018,.19,"Oak",.006)
-        block("Vanity pale stone top",x-.005,y-.005,.77,w+.01,d+.01,.035,mat="Stone",bevel=.01)
-    box("Ceramic basin",x+w/2,y+d/2,z,w*.82,d*.85,.08,"Ceramic",.04)
-    box("Basin hollow",x+w/2,y+d/2+.012,z+.071,w*.63,d*.54,.014,"Stone",.025)
-    tapy=y+.045 if not corner else y+d-.04
-    rod("Basin tap stem",(x+w*.70,tapy,z+.03),(x+w*.70,tapy,z+.21),.012,"Chrome")
-    rod("Basin tap spout",(x+w*.70,tapy,z+.21),(x+w*.70,tapy+(.08 if not corner else -.07),z+.21),.010,"Chrome")
+            box("Vanity drawer front",bw/2,bd-.014,.35+i*.20,bw-.01,.018,.19,"Oak",.006)
+        block("Vanity pale stone top",0,0,.77,bw,bd,.035,mat="Stone",bevel=.01)
+    box("Ceramic basin",bw/2,bd/2,z,bw*.82,bd*.85,.08,"Ceramic",.04)
+    box("Basin hollow",bw/2,bd/2+.012,z+.071,bw*.63,bd*.54,.014,"Stone",.025)
+    tapy=.045 if not corner else bd-.04
+    rod("Basin tap stem",(bw*.70,tapy,z+.03),(bw*.70,tapy,z+.21),.012,"Chrome")
+    rod("Basin tap spout",(bw*.70,tapy,z+.21),(bw*.70,tapy+(.08 if not corner else -.07),z+.21),.010,"Chrome")
     if not corner:
-        box("Oak mirror frame",x+w/2,y-.012,1.03,w-.06,.04,.77,"Oak",.05)
-        box("Vanity mirror",x+w/2,y+.011,1.055,w-.10,.005,.72,"Mirror",.04)
+        box("Oak mirror frame",bw/2,.020,1.03,bw-.06,.032,.77,"Oak",.015)
+        box("Vanity mirror",bw/2,.038,1.055,bw-.10,.004,.72,"Mirror",.015)
     else:
-        box("Compact mirror",x+w/2,y+d-.012,1.06,w-.035,.012,.65,"Mirror",.025)
+        box("Compact mirror",bw/2,bd-.012,1.06,bw-.035,.012,.65,"Mirror",.006)
+    transform=(Matrix.Translation(Vector((x+w/2,-(y+d/2),0)))
+               @ Matrix.Rotation(angles[face],4,"Z")
+               @ Matrix.Translation(Vector((-bw/2,bd/2,0))))
+    bpy.context.view_layer.update()
+    for obj in set(bpy.context.scene.objects)-before:
+        obj.matrix_world=transform @ obj.matrix_world
+        obj["vanityFace"]=face
+        obj["vanityWidthCm"]=round(bw*100,4)
+        obj["vanityDepthCm"]=round(bd*100,4)
 
 
 def toilet(f):
@@ -781,6 +863,7 @@ def furnish(data):
         x,y,w,d=[f[k]/100 for k in ("x","y","w","d")]
         CURRENT_ROOM=f.get("roomId") or room_at(x+w/2,y+d/2,data["rooms"])
         n=f["name"]
+        before=set(bpy.context.scene.objects)
         if "床" in n and "柜" not in n:
             bed(f,"日床" in n)
         elif "沙发" in n:
@@ -817,9 +900,9 @@ def furnish(data):
         elif "家政柜" in n:
             low_cabinet(f,.86)
         elif "浴室柜" in n:
-            basin(x,y,w,d)
+            basin(x,y,w,d,face=f.get("face","south"))
         elif "角盆" in n:
-            basin(x,y,w,d,True)
+            basin(x,y,w,d,True,face=f.get("face","south"))
         elif "马桶" in n:
             toilet(f)
         elif "淋浴" in n:
@@ -828,6 +911,11 @@ def furnish(data):
             plant(x+w/2,y+d/2)
         else:
             block(n,x,y,0,w,d,.70,mat="Oak")
+        for obj in set(bpy.context.scene.objects)-before:
+            obj["furnitureId"]=str(f.get("id") or f.get("furnitureId") or n)
+            obj["furnitureName"]=n
+            if "face" in f:obj["furnitureFace"]=f["face"]
+            if "doorStyle" in f:obj["doorStyle"]=f["doorStyle"]
     CURRENT_ROOM="living"
     lamp(6.48,8.98)
     # Pendant group over dining table, compact and true to the 1.20 m table.
@@ -843,12 +931,12 @@ VIEWS = {
     "overall": ((15.5,21.5,16.5),(4.2,7.0,.3),48),
     "living": ((6.32,10.81,1.60),(4.38,7.60,1.05),23),
     "dining": ((4.87,13.62,1.62),(3.03,11.50,1.05),23),
-    "master": ((5.80,2.88,1.60),(4.36,1.28,.92),22),
-    "bedroom-b": ((2.93,2.98,1.59),(1.10,1.18,.91),21),
+    "master": ((5.50,3.02,1.58),(5.33,1.27,1.00),18),
+    "bedroom-b": ((2.96,2.58,1.60),(1.55,1.20,.97),20),
     "study": ((3.00,4.50,1.62),(1.30,5.15,1.02),20),
     "kitchen": ((5.73,12.45,1.58),(7.67,12.82,1.10),20),
-    "master-bath": ((4.34,4.64,1.58),(6.02,3.99,1.10),18),
-    "guest-bath": ((4.35,6.035,1.58),(6.02,5.49,1.10),17),
+    "master-bath": ((6.57,4.65,1.60),(4.85,3.95,1.12),18),
+    "guest-bath": ((6.54,6.03,1.60),(4.95,5.36,1.06),17),
     "balcony": ((5.60,10.70,1.45),(7.72,10.35,1.18),20),
 }
 
@@ -920,8 +1008,8 @@ def polygon_area(pts):
 
 BAY_DESCRIPTIONS = {
     "living":"奶油布艺、浅橡木与圆形双茶几；电视位于北侧实墙，西侧恢复向外凸出的飘窗。外挑 600 mm、窗台 900 mm 暂定待复尺，不预设为坐榻。",
-    "master":"1.50 米床、轻薄床头和浅橡木衣柜；北侧恢复向外凸出的飘窗。外挑 600 mm、窗台 900 mm 与窗高均待复尺，不预设为坐榻。",
-    "bedroom-b":"1.35 米床与书桌保留紧凑布局；北侧恢复向外凸出的飘窗，门厅按修订平面保留。外挑深度与窗台高度待复尺。",
+    "master":"1500×2000 mm 床垫配 1600×2100 mm 床架，床头向东、脚向西；西墙衣柜朝东，南侧套内门进入主卫。北侧保留外凸飘窗，深度与窗高待复尺，不预设为坐榻。",
+    "bedroom-b":"1350×2000 mm 床垫配 1450×2100 mm 床架，床头向西、脚向东；南墙采用北向移门衣柜，东北保留书桌。北侧飘窗深度与窗高待复尺。",
 }
 BAY_NOTE="主卧、次卧与客厅三处为外凸飘窗；600 mm 外挑、900 mm 窗台及实心侧返边均是待复尺的 C 级暂定表达，不增加房间净面积。"
 
@@ -929,7 +1017,17 @@ BAY_NOTE="主卧、次卧与客厅三处为外凸飘窗；600 mm 外挑、900 mm
 def manifest(data, openings, src):
     rooms=[]
     mapping=[("living","living","客厅"),("dining","living","餐厅与玄关"),("master","room_a","主卧"),("bedroom-b","room_b","次卧 B"),("study","room_c","书房 · 客卧"),("kitchen","kitchen","厨房"),("master-bath","bath_1","主卫"),("guest-bath","bath_2","客卫"),("balcony","balcony","家政阳台")]
-    desc={"living":"奶油布艺与浅橡木，圆形双茶几保留宽松动线；电视位于北侧实墙，西窗完整保留。","dining":"1.20 米实木餐桌与轻盈餐椅，浅木玄关储物及暖色吊灯。","master":"1.50 米床、轻薄床头和浅橡木整墙衣柜；保留图示北窗位置，窗高待现场复尺。","bedroom-b":"1.35 米床与书桌组成紧凑而完整的卧室，门口与走廊按修订平面核对。","study":"1.00 米日床、独立书桌和客用衣柜，在实有空间里兼顾办公与偶住。","kitchen":"双排地柜、集成冰箱及蒸烤高柜，暖白石材台面与浅橡木门板。","master-bath":"800 mm 浴室柜、壁挂马桶和东侧淋浴屏，石材与木色呼应。","guest-bath":"400 mm 角盆、紧凑壁挂马桶和 440 mm 局部固定淋浴玻璃，维持狭小湿区边界。","balcony":"洗烘叠放与家政收纳；阳台外侧封窗或开口尚未核实，外侧边界为建模占位。"}
+    desc={
+        "living":"奶油布艺与浅橡木，圆形双茶几保留宽松动线；电视位于北侧实墙，西窗完整保留。",
+        "dining":"1.20 米实木餐桌与轻盈餐椅，浅木玄关储物及暖色吊灯。",
+        "master":"1500×2000 mm 床垫配 1600×2100 mm 床架，床头向东；西墙衣柜朝东，南侧套内门进入主卫。",
+        "bedroom-b":"1350×2000 mm 床垫配 1450×2100 mm 床架，床头向西；南墙设北向移门衣柜，东北保留书桌。",
+        "study":"1.00 米日床、独立书桌和客用衣柜，在实有空间里兼顾办公与偶住。",
+        "kitchen":"双排地柜、集成冰箱及蒸烤高柜，暖白石材台面与浅橡木门板。",
+        "master-bath":"750 mm 宽、400 mm 深盆柜靠西墙朝东；北侧套内门通主卧，阶梯共墙保留东侧淋浴。通路紧凑，非无障碍方案。",
+        "guest-bath":"600 mm 宽、350 mm 深浅盆柜置于西北凹位，保留公共过道入口、壁挂马桶及 440 mm 局部固定淋浴玻璃。",
+        "balcony":"洗烘叠放与家政收纳为拟改造方案；保留西侧门，南侧窗位及外侧封窗尚未核实，边界为建模占位。",
+    }
     if any(op.get("windowType")=="bay" for op in openings):
         desc.update(BAY_DESCRIPTIONS)
     for view,rid,name in mapping:

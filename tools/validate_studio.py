@@ -5,13 +5,24 @@ import itertools
 import json
 import math
 import struct
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from geometry_paths import GUEST_PATH, MASTER_PATH, path_clearance, solid_footprints
+
 BAY_DIRECTIONS = {'window_b': [0, -1], 'window_a': [0, -1], 'window_living_west': [-1, 0]}
-ROOM_AREAS_BEFORE_BAYS = {'room_b': 10.231, 'room_a': 10.850, 'room_c': 7.589,
-                         'bath_1': 3.871, 'bath_2': 3.061, 'living': 33.609,
-                         'balcony': 2.116, 'kitchen': 7.519}
+EXPECTED_ROOM_AREAS = {'room_b': 10.231, 'room_a': 10.850, 'room_c': 7.5886,
+                       'bath_1': 3.6309, 'bath_2': 3.2725, 'living': 33.6091,
+                       'balcony': 2.1158, 'kitchen': 7.5194}
+BATH_WALLS = {'w_bath_middle': (12, [416, 469, 516, 469]),
+              'w_bath_middle_step': (21, [516, 469, 516, 493]),
+              'w_bath_middle_east': (22, [516, 493, 681, 493])}
+BED_SPECS = {'bed_a': {'bbox': [465, 60, 210, 160], 'headDirection': 'east',
+                       'frameWidthCm': 160, 'frameLengthCm': 210, 'mattressWidthCm': 150, 'mattressLengthCm': 200},
+             'bed_b': {'bbox': [20, 55, 210, 145], 'headDirection': 'west',
+                       'frameWidthCm': 145, 'frameLengthCm': 210, 'mattressWidthCm': 135, 'mattressLengthCm': 200}}
 
 
 def contains(point, polygon):
@@ -54,8 +65,8 @@ def check_study_south_wall(data, errors, checks):
         errors.append('wallSpecs has duplicate wall ids')
     expected = [206, 626, 319, 626]
     wall_index = next((i for i, s in enumerate(specs) if s.get('id') == 'w_bed_c_south'), None)
-    if wall_index is None or wall_index != len(specs) - 1 or specs[wall_index].get('coords') != expected:
-        errors.append('Study south infill must be the last wallSpec at [206,626,319,626] cm')
+    if wall_index != 20 or specs[wall_index].get('coords') != expected:
+        errors.append('Study south infill must retain wallSpec id w_bed_c_south, index 20, and [206,626,319,626] cm')
     spans = [(w[0], w[2]) for w in walls if abs(w[1] - 626) < 1e-6 and abs(w[3] - 626) < 1e-6]
     if not intervals_cover(spans, 6, 319):
         errors.append('Study south boundary is not continuously walled at y=626, x=6..319 cm')
@@ -111,12 +122,73 @@ def check_bay_plan(data, errors, checks):
             errors.append(f'Bay front is not at the agreed exterior plane: {identity}: {front} m')
         geometry[identity] = {'axis': axis, 'front': front, 'original': original}
     for room in data['rooms']:
-        before = ROOM_AREAS_BEFORE_BAYS.get(room['id'])
+        before = EXPECTED_ROOM_AREAS.get(room['id'])
         if before is None or abs(polygon_area(room['points']) / 10000 - before) > .0006:
-            errors.append(f"Bay work changed the indoor room floor area: {room['id']}")
+            errors.append(f"Indoor room floor area differs from the approved topology: {room['id']}")
     if len(geometry) == 3:
         checks.append('Bays: 3 outward projections; north front=-0.60 m, west front=1.40 m; indoor areas unchanged')
     return geometry
+
+
+def check_bath_revision(data, errors, checks):
+    specs = data.get('wallSpecs', [])
+    for identity, (index, coordinates) in BATH_WALLS.items():
+        if index >= len(specs) or specs[index].get('id') != identity or specs[index].get('coords') != coordinates:
+            errors.append(f'Bathroom stepped wall differs at stable index {index}: {identity}')
+    polygons = {'bath_1': [[422, 334], [675, 334], [675, 487], [522, 487], [522, 463], [422, 463]],
+                'bath_2': [[422, 475], [510, 475], [510, 499], [675, 499], [675, 620], [422, 620]]}
+    for identity, points in polygons.items():
+        room = next((r for r in data['rooms'] if r['id'] == identity), {})
+        if room.get('points') != points:
+            errors.append(f'Bathroom floor must follow its stepped shared wall: {identity}')
+    door = next((d for d in data['doors'] if d['id'] == 'door_bath_1'), {})
+    if [door.get(k) for k in ('x1', 'y1', 'x2', 'y2')] != [432, 328, 507, 328]:
+        errors.append('Master bathroom entrance must stay on its north wall into room A')
+    for opening in data['doors'] + data['windows']:
+        if opening['x1'] == opening['x2'] == 416 and min(opening['y1'], opening['y2']) < 487 and max(opening['y1'], opening['y2']) > 334:
+            errors.append(f"Old corridor opening remains in master bathroom west wall: {opening['id']}")
+    total = sum(polygon_area(r['points']) / 10000 for r in data['rooms'])
+    if abs(total - 78.8173) > .0001:
+        errors.append(f'Indoor total must be 78.8173 m2 after adding the 0.0288 m2 step-wall footprint: {total}')
+    checks.append(f'Bathroom step: master 3.6309 m2, guest 3.2725 m2; indoor total {total:.4f} m2 (not 104.83 m2 gross area)')
+
+
+def check_bed_plan(data, errors, checks):
+    beds = {}
+    for identity, expected in BED_SPECS.items():
+        matches = [f for f in data['furniture'] if f.get('id') == identity]
+        if len(matches) != 1:
+            errors.append(f'Expected one bed with stable furniture id: {identity}')
+            continue
+        bed = beds[identity] = matches[0]
+        if [bed.get(k) for k in ('x', 'y', 'w', 'd')] != expected['bbox'] or bed.get('a') != 0:
+            errors.append(f'Bed global footprint or extra 2D rotation differs: {identity}')
+        for key, value in expected.items():
+            if key != 'bbox' and bed.get(key) != value:
+                errors.append(f'Bed physical dimension/orientation differs: {identity}.{key}')
+        for other in data['furniture']:
+            if other is bed:
+                continue
+            overlap_x = min(bed['x'] + bed['w'], other['x'] + other['w']) - max(bed['x'], other['x'])
+            overlap_y = min(bed['y'] + bed['d'], other['y'] + other['d']) - max(bed['y'], other['y'])
+            if overlap_x > .01 and overlap_y > .01:
+                errors.append(f"Bed overlaps furniture after rotation: {identity} / {other['name']}")
+        checks.append(f"{identity}: head={bed.get('headDirection')}; global bbox={expected['bbox']}; mattress remains {expected['mattressWidthCm']}x200 cm")
+    return beds
+
+
+def check_bath_paths(data, errors, checks):
+    try:
+        obstacles = solid_footprints(data, door_trim_cm=6)
+        for name, path, radius in (('master', MASTER_PATH, 30), ('guest', GUEST_PATH, 25)):
+            distance, obstacle, a, b = path_clearance(path, obstacles)
+            if distance < radius - 1e-6:
+                errors.append(f'{name} bathroom continuous {radius * 2} cm body path is blocked: {obstacle}, radius clearance {distance:.3f} at {a}..{b}')
+            else:
+                checks.append(f'{name} bathroom: continuous {radius * 2} cm body path; minimum radius {distance:.3f} cm, actual 6 cm door jambs each side')
+        checks.append('Guest bathroom is compact: WC front-to-south-wall is only 60 cm; a 60 cm body would have zero tolerance, so only the 50 cm route is accepted.')
+    except (KeyError, ValueError) as error:
+        errors.append(f'Cannot verify bathroom circulation: {error}')
 
 
 def multiply_matrices(a, b):
@@ -186,6 +258,63 @@ def check_study_wall_asset(glb, wall_index, errors, checks):
         checks.append('GLB study wall: POSITION bounds + world transform verify [2.06,0,6.20]..[3.19,2.70,6.32] m')
 
 
+def check_revision_assets(glb, beds, errors, checks):
+    meshes = list(world_mesh_bounds(glb))
+    for identity, (index, coordinates) in BATH_WALLS.items():
+        x1, y1, x2, y2 = [value / 100 for value in coordinates]
+        horizontal = y1 == y2
+        low = [min(x1, x2) - (0 if horizontal else .06), 0, min(y1, y2) - (.06 if horizontal else 0)]
+        high = [max(x1, x2) + (0 if horizontal else .06), 2.7, max(y1, y2) + (.06 if horizontal else 0)]
+        walls = [m for m in meshes if m[1].get('kind') == 'wall' and m[1].get('wallIndex') == index and m[3][1] - m[2][1] > 1]
+        if not any(all(abs(actual - expected) < .002 for actual, expected in zip(m[2] + m[3], low + high)) for m in walls):
+            errors.append(f'GLB stepped bathroom wall has no matching actual world geometry: {identity}, {low}..{high}')
+    closed_west = any(metadata.get('kind') == 'wall' and metadata.get('wallIndex') == 11 and
+                      low[0] <= 4.10 + .002 and high[0] >= 4.22 - .002 and
+                      low[1] <= .002 and high[1] >= 2.1 and low[2] <= 3.725 and high[2] >= 4.475
+                      for _, metadata, low, high in meshes)
+    if not closed_west:
+        errors.append('GLB still lacks solid wall across the former west master-bath doorway')
+    jambs = [m for m in meshes if m[1].get('openingId') == 'door_bath_1' and 'jamb' in m[0].lower()]
+    for center_x in (4.35, 5.04):
+        if not any(abs((m[2][0] + m[3][0]) / 2 - center_x) < .003 and
+                   abs((m[2][2] + m[3][2]) / 2 - 3.28) < .003 and m[3][1] - m[2][1] > 1.9 for m in jambs):
+            errors.append(f'GLB north master-bath door jamb missing or misplaced at x={center_x}, plan-y=3.28 m')
+    for x in (4.42, 4.52, 4.695, 4.88, 4.97):
+        for height in (.15, 1, 2):
+            if any(metadata.get('kind') == 'wall' and
+                   low[0] < x < high[0] and low[1] < height < high[1] and low[2] < 3.28 < high[2]
+                   for _, metadata, low, high in meshes):
+                errors.append(f'GLB wall still seals the new master-bath door at x={x}, height={height} m')
+    for identity, bed in beds.items():
+        parts = [m for m in meshes if m[1].get('furnitureId') == identity]
+        if not parts:
+            errors.append(f'GLB bed has no furnitureId-linked geometry: {identity}')
+            continue
+        for name, metadata, low, high in parts:
+            if metadata.get('bedHeadDirection') != bed['headDirection']:
+                errors.append(f'GLB bed orientation metadata differs: {name}')
+            if any(metadata.get(key) != bed[key] for key in ('frameWidthCm', 'frameLengthCm', 'mattressWidthCm', 'mattressLengthCm')):
+                errors.append(f'GLB physical bed dimensions differ: {name}')
+            if low[0] < bed['x'] / 100 - .003 or high[0] > (bed['x'] + bed['w']) / 100 + .003 or low[2] < bed['y'] / 100 - .003 or high[2] > (bed['y'] + bed['d']) / 100 + .003:
+                errors.append(f'GLB bed rig escapes its shared footprint: {name}')
+        plinths = [m for m in parts if 'solid oak plinth' in m[0].lower()]
+        expected = [bed['x'] / 100, bed['y'] / 100, (bed['x'] + bed['w']) / 100, (bed['y'] + bed['d']) / 100]
+        if not any(all(abs(a - b) < .002 for a, b in zip([m[2][0], m[2][2], m[3][0], m[3][2]], expected)) for m in plinths):
+            errors.append(f'GLB bed base does not occupy its exact shared global bbox: {identity}')
+        east = bed['headDirection'] == 'east'
+        head_min = (bed['x'] + bed['w'] - 7.5) / 100 if east else bed['x'] / 100
+        head_max = (bed['x'] + bed['w']) / 100 if east else (bed['x'] + 7.5) / 100
+        heads = [m for m in parts if 'headboard' in m[0].lower()]
+        if not any(abs(m[2][0] - head_min) < .002 and abs(m[3][0] - head_max) < .002 and
+                   abs(m[3][2] - m[2][2] - bed['frameWidthCm'] / 100) < .002 for m in heads):
+            errors.append(f'GLB actual headboard is not on the {bed["headDirection"]} side: {identity}')
+        mattresses = [m for m in parts if m[0].lower().endswith('mattress')]
+        if not any(abs(m[3][0] - m[2][0] - bed['mattressLengthCm'] / 100) < .002 and
+                   abs(m[3][2] - m[2][2] - bed['mattressWidthCm'] / 100) < .002 for m in mattresses):
+            errors.append(f'GLB mattress was stretched/swapped instead of rotating rigidly: {identity}')
+    checks.append('GLB revision: actual stepped walls, sealed old bath doorway, north doorway and rigid east/west beds checked')
+
+
 def check_bay_assets(glb, geometry, manifest, errors, checks):
     """Check displaced geometry and reject leftover glazing in the old wall plane."""
     bounds = manifest.get('bounds', {})
@@ -225,6 +354,9 @@ def run(require_assets=False):
     errors, checks = [], []
     study_wall_index = check_study_south_wall(data, errors, checks)
     bay_geometry = check_bay_plan(data, errors, checks)
+    check_bath_revision(data, errors, checks)
+    beds = check_bed_plan(data, errors, checks)
+    check_bath_paths(data, errors, checks)
     room_ids = {r['id'] for r in rooms}
     assert {'room_a', 'room_b', 'room_c', 'bath_1', 'bath_2', 'living', 'kitchen', 'balcony'} <= room_ids
     for r in rooms:
@@ -232,6 +364,8 @@ def run(require_assets=False):
         area = polygon_area(points) / 10000
         if area <= 0:
             errors.append(f"Invalid area: {r['id']}")
+        if r.get('modelAreaM2') is not None and abs(r['modelAreaM2'] - area) > .0006:
+            errors.append(f"Shared room area label differs from its actual polygon: {r['id']}")
         checks.append(f"{r['id']}: {area:.3f} m2")
     # Grid sampling catches accidental overlaps in the concave B/C vestibule.
     for x in range(15, 841, 10):
@@ -267,6 +401,8 @@ def run(require_assets=False):
             errors.append(f"Door {door['id']} does not connect two rooms across its width ({valid}/5)")
         if door['id'] == 'door_c' and (valid != 5 or pairs != {('living', 'room_c')}):
             errors.append('Study east door must connect C and the public corridor over all five samples')
+        if door['id'] == 'door_bath_1' and (valid != 5 or pairs != {('bath_1', 'room_a')}):
+            errors.append('Master bathroom north door must connect only bath_1 and room_a over all five samples, not living')
     # All furniture footprints must lie on room floors, including concave corners.
     for f in data['furniture']:
         found = []
@@ -286,6 +422,7 @@ def run(require_assets=False):
         assert kind == 0x4E4F534A
         glb = json.loads(raw[20:20 + size])
         check_study_wall_asset(glb, study_wall_index, errors, checks)
+        check_revision_assets(glb, beds, errors, checks)
         mesh_count = len(glb.get('meshes', []))
         textures = len(glb.get('textures', []))
         checks.append(f'GLB: {len(raw) / 1e6:.2f} MB, {mesh_count} meshes, {textures} textures')

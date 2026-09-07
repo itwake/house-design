@@ -1,6 +1,6 @@
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
-const ASSET_REVISION = '3.0.2';
+const ASSET_REVISION = '3.0.3';
 const revisedAsset = path => {const url=new URL(path,document.baseURI);url.searchParams.set('v',ASSET_REVISION);return url.href};
 const icons = {
   cube:'<path d="m8 2 6 3.5v5L8 14l-6-3.5v-5L8 2Z M2 5.5 8 9l6-3.5 M8 9v5 M5 3.8l6 3.5"/>',
@@ -33,8 +33,8 @@ const descriptions = {
   room_b:{name:'次卧 B',en:'SECOND BEDROOM',title:'留有成长的余地',icon:'bed',render:'bedroom-b',description:'紧凑床、书桌与衣柜各有位置，避免满屋固定柜体。卧室入口保留开门空间，浅色材质减轻压迫感。',features:['1350 mm 床','独立书桌','门口留空']},
   room_c:{name:'书房 · 客卧',en:'STUDY & GUEST',title:'一个人的安静时刻',icon:'study',render:'study',description:'独立日床与书桌适应工作、阅读和偶尔留宿。紧凑尺度用轻巧家具表达，西窗为书房引入自然光。',features:['独立日床','灵活使用','西侧窗光']},
   kitchen:{name:'厨房',en:'KITCHEN',title:'让料理有条不紊',icon:'kitchen',render:'kitchen',description:'沿原厨房湿区组织操作台和电器，暖白柜门搭配浅木。以可闭合玻璃门兼顾光线与油烟控制。',features:['保留湿区','清晰操作台','可闭合厨房']},
-  bath_1:{name:'主卫',en:'MAIN BATHROOM',title:'石色里的松弛',icon:'bath',render:'master-bath',description:'浅暖石材统一小空间，浴室柜、马桶和东侧淋浴依原尺寸排布，用镜面和均匀灯光增加清爽感。',features:['暖色石材','紧凑布局','东侧淋浴']},
-  bath_2:{name:'客卫',en:'GUEST BATHROOM',title:'小空间，也要好用',icon:'bath',render:'guest-bath',description:'按窄进深安排角盆、紧凑马桶与东侧淋浴。轻薄的屏风和浅色砖让功能完整，卫浴选型需现场复核。',features:['紧凑角盆','窄进深','轻薄淋浴屏']},
+  bath_1:{name:'主卫',en:'MAIN BATHROOM',title:'石色里的松弛',icon:'bath',render:'master-bath',description:'浅暖石材统一小空间，浴室柜、马桶和淋浴依阶梯边界布置，用镜面和均匀灯光增加清爽感。',features:['主卧套内','暖色石材','阶梯边界']},
+  bath_2:{name:'客卫',en:'GUEST BATHROOM',title:'小空间，也要好用',icon:'bath',render:'guest-bath',description:'西北扩出的盆位安排浅盆柜，保留紧凑马桶与东侧淋浴。轻薄屏风和浅色砖让功能完整，卫浴选型需现场复核。',features:['凹位浅盆柜','阶梯边界','轻薄淋浴屏']},
   balcony:{name:'家政阳台',en:'UTILITY BALCONY',title:'把琐碎收得漂亮',icon:'leaf',render:'balcony',description:'洗烘与家政收纳集中在原阳台。浅木柜面呼应室内，预留维护、开门及日常操作空间。',features:['洗烘叠放','家政收纳','日常留白']}
 };
 const order = Object.keys(descriptions);
@@ -51,6 +51,35 @@ const renderPath = id => revisedAsset(id==='overall' ? (manifest?.overallRender 
 const escapeHTML = value => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 async function getJSON(url){const response=await fetch(revisedAsset(url));if(!response.ok)throw new Error(`${url}: ${response.status}`);return response.json()}
 async function getDesignData(){return getJSON('models/design-data.json')}
+
+function sourceNotes(value,roomId=null){
+  if(typeof value==='string')return value.trim()?[{text:value.trim(),roomId}]:[];
+  if(Array.isArray(value))return value.flatMap(note=>sourceNotes(note,roomId));
+  if(value&&typeof value==='object'){
+    const text=value.text||value.note||value.description||value.message||value.title;
+    if(typeof text==='string')return [{text:(value.title&&value.title!==text?value.title+'：':'')+text,roomId:value.roomId||roomId}];
+    if('roomId' in value||'status' in value)return [];
+    return Object.entries(value).flatMap(([key,note])=>sourceNotes(note,descriptions[key]?key:roomId));
+  }
+  return [];
+}
+function designNotes(){const seen=new Set();return [...sourceNotes(data?.renovationNotes),...sourceNotes(data?.geometryNotes)].filter(note=>{const key=note.roomId+'|'+note.text;if(seen.has(key))return false;seen.add(key);return true})}
+function renderDesignNotes(){const notes=designNotes();$('#source-notes').hidden=!notes.length;$('#source-notes-list').innerHTML=notes.map(note=>`<li>${note.roomId?escapeHTML(roomDescription(note.roomId).name)+'：':''}${escapeHTML(note.text)}</li>`).join('')}
+function bathroomDescription(id){
+  if(!['bath_1','bath_2'].includes(id))return '';
+  const vanity=data?.furniture?.find(item=>item.id===(id==='bath_1'?'vanity_main':'vanity_guest'));if(!vanity)return roomDescription(id).description;
+  const horizontal=['east','west'].includes(vanity.face),width=(horizontal?vanity.d:vanity.w)*10,depth=(horizontal?vanity.w:vanity.d)*10;
+  const back={east:'西',west:'东',south:'北',north:'南'}[vanity.face]||'墙';
+  return id==='bath_1'?`${width} mm宽、${depth} mm深浴室柜依${back}墙布置，镜面靠${back}；马桶和淋浴按阶梯边界安排。`:`${width} mm宽、${depth} mm深浅盆柜设在西北扩出位置，镜面靠${back}，保留紧凑马桶与东侧淋浴；选型及安装余量待复尺。`;
+}
+function bedroomSpecification(id){
+  const bedId=id==='room_a'?'bed_a':id==='room_b'?'bed_b':null;
+  const bed=bedId&&data?.furniture?.find(item=>item.id===bedId);if(!bed)return null;
+  const head={east:'东',west:'西',north:'北',south:'南'}[bed.headDirection];if(!head)return null;
+  const mattress=`${Number(bed.mattressWidthCm)*10}×${Number(bed.mattressLengthCm)*10}`,frame=`${Number(bed.frameWidthCm)*10}×${Number(bed.frameLengthCm)*10}`;
+  const bay=data.windows?.find(window=>window.id===(id==='room_a'?'window_a':'window_b'))?.windowType==='bay';
+  return {description:`床头朝${head}；床垫${mattress} mm，床架外包${frame} mm。浅木衣柜与柔和织物延续全屋配色${bay?'，北侧飘窗尺寸待复尺。':'。'}`,features:[`床头朝${head}`,`${Number(bed.mattressWidthCm)*10} mm床垫`,bay?'北侧飘窗':'柔和织物']};
+}
 
 function makeNavigation(){
   $('#room-nav').innerHTML=order.map((id,index)=>{const item=roomDescription(id),r=roomById(id);return `${index===1?'<p class="nav-divider">生活空间 / SPACES</p>':''}<button data-room="${id}" class="${id==='overall'?'active':''}" aria-current="${id==='overall'?'true':'false'}">${icon(item.icon)}<span class="nav-title"><b>${item.name}</b><small>${item.en}</small></span><span class="nav-area">${id==='overall'?'9 个空间':id==='living'?'公共区':r?.area&&id!=='dining'?Number(r.area).toFixed(1)+' ㎡':''}</span></button>`}).join('');
@@ -69,8 +98,10 @@ function selectRoom(id,{updateHash=true,animate=true}={}){
   const areaText=id==='dining'?'与客厅共享公共区 · ':r?.area?Number(r.area).toFixed(1)+(id==='living'?' ㎡（客餐厅及过道合计） · ':' ㎡ · '):'';
   $('#room-subtitle').textContent=id==='overall'?'把每一天，安放在光与木色之间。':`${areaText}现代原木 / ${content.title}`;
   $('#card-kicker').textContent=content.en;$('#card-title').textContent=content.title;
-  $('#card-description').textContent=r?.description || content.description;
-  $('#room-tags').innerHTML=(r?.features || content.features).slice(0,3).map(t=>`<span>${escapeHTML(t)}</span>`).join('');
+  const accessNote=id==='bath_1'?'主卫北门通主卧，按套内卫生间使用；门宽与侧面构造待复尺。':id==='bath_2'?'客卫从公共走廊进入；门宽与侧面构造待复尺。':'';
+  const bedroom=bedroomSpecification(id);
+  $('#card-description').textContent=[bedroom?.description || bathroomDescription(id) || r?.description || content.description,accessNote,...designNotes().filter(note=>note.roomId===id).map(note=>note.text)].filter(Boolean).join(' ');
+  $('#room-tags').innerHTML=(bedroom?.features || ((id==='bath_1'||id==='bath_2')?content.features:(r?.features || content.features))).slice(0,3).map(t=>`<span>${escapeHTML(t)}</span>`).join('');
   $('#room-preview').src=renderPath(id);$('#room-preview').alt=`${content.name} Blender 渲染预览`;
   $('#enter-room').innerHTML=`${id==='overall'?'探索客厅':'走进'+content.name} <span>↗</span>`;
   $$('#room-nav [data-room]').forEach(btn=>{btn.classList.toggle('active',btn.dataset.room===id);btn.setAttribute('aria-current',String(btn.dataset.room===id))});
@@ -95,6 +126,40 @@ function updateRender(){
   $('#render-name').textContent=roomDescription(state.room).name;
 }
 
+function planFurniture(f){
+  const direction=f.headDirection,isBed=['east','west','north','south'].includes(direction);
+  const frame=`<rect data-furniture-frame x="${f.x}" y="${f.y}" width="${f.w}" height="${f.d}" rx="${f.tone==='fabric'?6:2}" fill="${({wood:'#d2b791',cabinet:'#d4c9b4',fabric:'#f8f3e8',sanitary:'#faf9f3',wet:'#d5dedb',metal:'#babbb0'})[f.tone]||'#e3d9c5'}" stroke="#b4a68e" stroke-width="1.5"${!isBed&&f.a?` transform="rotate(${f.a} ${f.x+f.w/2} ${f.y+f.d/2})"`:''}/>`;
+  if(!isBed){
+    if((/^vanity_/.test(f.id||'')||/浴室柜/.test(f.name||''))&&['east','west','north','south'].includes(f.face)){
+      const horizontal=['east','west'].includes(f.face),cx=f.x+f.w/2,cy=f.y+f.d/2;
+      const back={east:'west',west:'east',south:'north',north:'south'}[f.face];
+      const mirror=back==='west'?`x1="${f.x+1.5}" y1="${f.y+5}" x2="${f.x+1.5}" y2="${f.y+f.d-5}"`:back==='east'?`x1="${f.x+f.w-1.5}" y1="${f.y+5}" x2="${f.x+f.w-1.5}" y2="${f.y+f.d-5}"`:back==='north'?`x1="${f.x+5}" y1="${f.y+1.5}" x2="${f.x+f.w-5}" y2="${f.y+1.5}"`:`x1="${f.x+5}" y1="${f.y+f.d-1.5}" x2="${f.x+f.w-5}" y2="${f.y+f.d-1.5}"`;
+      const faucetX=back==='west'?f.x+f.w*.15:back==='east'?f.x+f.w*.85:cx,faucetY=back==='north'?f.y+f.d*.15:back==='south'?f.y+f.d*.85:cy;
+      const towards={east:[1,0],west:[-1,0],north:[0,-1],south:[0,1]}[f.face];
+      const handle=horizontal?`x1="${f.face==='east'?f.x+f.w-2:f.x+2}" y1="${cy-8}" x2="${f.face==='east'?f.x+f.w-2:f.x+2}" y2="${cy+8}"`:`x1="${cx-8}" y1="${f.face==='south'?f.y+f.d-2:f.y+2}" x2="${cx+8}" y2="${f.face==='south'?f.y+f.d-2:f.y+2}"`;
+      const names={east:'东',west:'西',north:'北',south:'南'};
+      return `<g data-vanity-id="${escapeHTML(f.id||f.name)}" data-vanity-face="${f.face}" data-vanity-back="${back}" pointer-events="none"><title>${escapeHTML(f.name)} · 柜面朝${names[f.face]} / 镜靠${names[back]} · 沿墙${(horizontal?f.d:f.w)*10}×进深${(horizontal?f.w:f.d)*10}mm</title>${frame}<ellipse data-vanity-bowl cx="${cx+towards[0]*2}" cy="${cy+towards[1]*2}" rx="${Math.min(f.w*(horizontal?.28:.3),horizontal?15:24)}" ry="${Math.min(f.d*(horizontal?.3:.28),horizontal?24:15)}" fill="#fffef9" stroke="#b7beb7" stroke-width="1.4"/><line data-vanity-mirror ${mirror} stroke="#8aabad" stroke-width="3.5"/><circle cx="${faucetX}" cy="${faucetY}" r="2.3" fill="#919a94"/><line data-vanity-faucet x1="${faucetX}" y1="${faucetY}" x2="${faucetX+towards[0]*7}" y2="${faucetY+towards[1]*7}" stroke="#919a94" stroke-width="2.3"/><line data-vanity-front ${handle} stroke="#b09774" stroke-width="2"/></g>`;
+    }
+    return `<g pointer-events="none">${frame}</g>`;
+  }
+  const horizontal=direction==='east'||direction==='west';
+  const mattressWidth=Number(f.mattressWidthCm)||(horizontal?f.d-10:f.w-10),mattressLength=Number(f.mattressLengthCm)||200;
+  const headboardDepth=Number(f.headboardDepthCm)||7.5;
+  const mw=horizontal?mattressLength:mattressWidth,md=horizontal?mattressWidth:mattressLength;
+  // Keep the final frame bbox fixed. The mattress starts immediately after
+  // the headboard, matching the Blender bed component rather than centering it.
+  const mx=direction==='east'?f.x+f.w-headboardDepth-mw:direction==='west'?f.x+headboardDepth:f.x+(f.w-mw)/2;
+  const my=direction==='south'?f.y+f.d-headboardDepth-md:direction==='north'?f.y+headboardDepth:f.y+(f.d-md)/2;
+  const rect=(x,y,w,d,attrs)=>`<rect x="${x}" y="${y}" width="${w}" height="${d}" rx="4" ${attrs}/>`;
+  const mattress=rect(mx,my,mw,md,'data-bed-mattress fill="#f4eee2" stroke="#c7bca8" stroke-width="1"');
+  const pillows=[0,1].map(i=>horizontal?rect(direction==='east'?mx+mw-53:mx+8,my+i*md/2+6,45,md/2-12,'data-bed-pillow fill="#fffdf7" stroke="#cfbfa8" stroke-width="1"'):rect(mx+i*mw/2+6,direction==='south'?my+md-53:my+8,mw/2-12,45,'data-bed-pillow fill="#fffdf7" stroke="#cfbfa8" stroke-width="1"')).join('');
+  const hx=direction==='east'?f.x+f.w-headboardDepth/2:direction==='west'?f.x+headboardDepth/2:f.x+f.w/2,hy=direction==='south'?f.y+f.d-headboardDepth/2:direction==='north'?f.y+headboardDepth/2:f.y+f.d/2;
+  const head=horizontal?`x1="${hx}" y1="${f.y+3}" x2="${hx}" y2="${f.y+f.d-3}"`:`x1="${f.x+3}" y1="${hy}" x2="${f.x+f.w-3}" y2="${hy}"`;
+  const directionName={east:'东',west:'西',north:'北',south:'南'}[direction],arrow={east:'床头 →',west:'← 床头',north:'床头 ↑',south:'床头 ↓'}[direction];
+  const labelX=horizontal?(direction==='east'?mx+mw-7:mx+7):mx+mw/2,labelY=horizontal?my+md/2:(direction==='north'?my+21:my+md-17);
+  return `<g data-bed-direction="${direction}" data-bed-name="${escapeHTML(f.name)}" pointer-events="none"><title>${escapeHTML(f.name)} · 床头${directionName} · 床垫${mattressWidth*10}×${mattressLength*10}mm · 外包${(Number(f.frameWidthCm)||(horizontal?f.d:f.w))*10}×${(Number(f.frameLengthCm)||(horizontal?f.w:f.d))*10}mm</title>${frame}${mattress}${pillows}<line data-bed-headboard ${head} stroke="#af9776" stroke-width="${headboardDepth}"/><text data-bed-head-label x="${labelX}" y="${labelY}" text-anchor="${horizontal?(direction==='east'?'end':'start'):'middle'}" dominant-baseline="middle" font-size="10" fill="#978267">${arrow}</text></g>`;
+}
+
 function makePlan(){
   const e=data.envelope||[[0,0],[841,0],[841,1401],[0,1401]],xs=e.map(p=>p[0]),ys=e.map(p=>p[1]);
   const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
@@ -113,12 +178,12 @@ function makePlan(){
   const fills={bedroom:'#eee5d5',living:'#eee8da',wet:'#e5e8e2',kitchen:'#e4e0d6',balcony:'#e6e9df'};
   const labels=[];
   const polygons=(data.rooms||[]).filter(r=>r.id!=='dining').map(r=>{
-    const [cx,cy]=r.id==='living'?[410,925]:centroid(r.points);labels.push(`<text x="${cx}" y="${cy}" text-anchor="middle" font-size="23" fill="#776d5b">${r.id==='living'?'客餐厅 · 过道':roomDescription(r.id).name}</text><text x="${cx}" y="${cy+30}" text-anchor="middle" font-size="16" fill="#a2937b">${(areaOf(r.points)/10000).toFixed(1)} ㎡${r.id==='living'?'（公共区合计）':''}</text>`);
+    const [cx,cy]=r.id==='living'?[410,925]:r.id==='bath_1'?[535,419]:r.id==='bath_2'?[488,578]:centroid(r.points);labels.push(`<text x="${cx}" y="${cy}" text-anchor="middle" font-size="23" fill="#776d5b">${r.id==='living'?'客餐厅 · 过道':roomDescription(r.id).name}</text><text x="${cx}" y="${cy+30}" text-anchor="middle" font-size="16" fill="#a2937b">${(areaOf(r.points)/10000).toFixed(1)} ㎡${r.id==='living'?'（公共区合计）':''}</text>`);
     return `<polygon class="plan-room" data-plan-room="${r.id}" tabindex="0" role="button" aria-label="查看${roomDescription(r.id).name}" points="${r.points.map(p=>p.join(',')).join(' ')}" fill="${fills[r.tone]||'#ece3d5'}"/>`;
   }).join('');
-  const furniture=(data.furniture||[]).map(f=>`<rect x="${f.x}" y="${f.y}" width="${f.w}" height="${f.d}" rx="${f.tone==='fabric'?6:2}" fill="${({wood:'#d2b791',cabinet:'#d4c9b4',fabric:'#f8f3e8',sanitary:'#faf9f3',wet:'#d5dedb',metal:'#babbb0'})[f.tone]||'#e3d9c5'}" stroke="#b4a68e" stroke-width="1.5" pointer-events="none" ${f.a?`transform="rotate(${f.a} ${f.x+f.w/2} ${f.y+f.d/2})"`:''}/>`).join('');
+  const furniture=(data.furniture||[]).map(planFurniture).join('');
   const walls=(data.walls||[]).map(w=>`<line x1="${w[0]}" y1="${w[1]}" x2="${w[2]}" y2="${w[3]}" stroke="#8c887b" stroke-width="${wallThickness}" stroke-linecap="square"/>`).join('');
-  const opening=(items,color)=>(items||[]).map(w=>`<line x1="${w.x1}" y1="${w.y1}" x2="${w.x2}" y2="${w.y2}" stroke="#fcf8ee" stroke-width="15"/><line x1="${w.x1}" y1="${w.y1}" x2="${w.x2}" y2="${w.y2}" stroke="${color}" stroke-width="4"/>`).join('');
+  const opening=(items,color)=>(items||[]).map(w=>`<line x1="${w.x1}" y1="${w.y1}" x2="${w.x2}" y2="${w.y2}" stroke="#fcf8ee" stroke-width="15"/><line data-opening-id="${escapeHTML(w.id)}" x1="${w.x1}" y1="${w.y1}" x2="${w.x2}" y2="${w.y2}" stroke="${color}" stroke-width="4"/>`).join('');
   const bayWindows=bays.map(b=>`<g data-bay-window="${b.window.id}" aria-label="${escapeHTML(b.window.name)}：外凸窗台投影，尺寸待复尺"><line x1="${b.window.x1}" y1="${b.window.y1}" x2="${b.window.x2}" y2="${b.window.y2}" stroke="#fcf8ee" stroke-width="${wallThickness+3}"/><polygon data-bay-sill points="${b.sill.map(p=>p.join(',')).join(' ')}" fill="#e6dac1" stroke="#c5b497" stroke-width="1.5"/>${b.returns.map(points=>`<polygon data-bay-return points="${points.map(p=>p.join(',')).join(' ')}" fill="#8c887b"/>`).join('')}<polygon data-bay-front-frame points="${b.frame.map(p=>p.join(',')).join(' ')}" fill="#c9b28c"/><line data-bay-glass x1="${b.frontA[0]}" y1="${b.frontA[1]}" x2="${b.frontB[0]}" y2="${b.frontB[1]}" stroke="#8fa6a8" stroke-width="4"/><text x="${b.label[0]}" y="${b.label[1]}" text-anchor="middle" dominant-baseline="middle" font-size="16" fill="#958165"${b.vertical?` transform="rotate(-90 ${b.label[0]} ${b.label[1]})"`:''}>飘窗台</text></g>`).join('');
   const topDimensionY=planMinY-52,leftDimensionX=planMinX-55;
   const dimensions=`<g stroke="#b4a58e" stroke-width="1.5" fill="none"><path d="M0 ${topDimensionY}H687 M0 ${topDimensionY-14}v28 M687 ${topDimensionY-14}v28 M${leftDimensionX} 0v1401 M${leftDimensionX-14} 0h28 M${leftDimensionX-14} 1401h28 M200 1455h641 M200 1441v28 M841 1441v28"/></g><g fill="#9c8d73" font-size="19" text-anchor="middle"><text x="343" y="${topDimensionY-17}">6,870</text><text x="520" y="1484">6,410</text><text x="${leftDimensionX-20}" y="700" transform="rotate(-90 ${leftDimensionX-20} 700)">14,010</text><text x="793" y="${topDimensionY-2}" font-size="23">N ↑</text></g>`;
@@ -360,7 +425,7 @@ async function init(){
     const base=rawRooms.find(r=>r.id===(id==='dining'?'living':id))||{},extra=manifest.rooms?.find(r=>r.id===id)||{};
     return {...base,...extra,id,name:roomDescription(id).name};
   });
-  makeNavigation();makePlan();selectRoom(descriptions[location.hash.slice(1)]?location.hash.slice(1):'overall',{updateHash:false,animate:false});switchView('model');
+  makeNavigation();makePlan();renderDesignNotes();selectRoom(descriptions[location.hash.slice(1)]?location.hash.slice(1):'overall',{updateHash:false,animate:false});switchView('model');
   buildScene();
 }
 init();
