@@ -4,12 +4,12 @@
   "blend": "models/huiyayuan-wood.blend",
   "units": "m",
   "source": "models/design-data.json",
-  "sourceSha256": "592f12cc741b9920fec5626f7be82709b792d7c60776ed621bed75fc3aa136e7",
+  "sourceSha256": "3649f28790c529d3864810d82cffa980ad14fae8c06aa23ceff39f68472da367",
   "bounds": {
     "min": [
-      0,
+      0.0,
       -0.012,
-      0
+      -0.65
     ],
     "max": [
       8.41,
@@ -104,7 +104,7 @@
         "fov": 55.11
       },
       "render": "assets/blender-renders/living.jpg",
-      "description": "奶油布艺与浅橡木，圆形双茶几保留宽松动线；电视位于北侧实墙，西窗完整保留。",
+      "description": "奶油布艺、浅橡木与圆形双茶几；电视位于北侧实墙，西侧恢复向外凸出的飘窗。外挑 600 mm、窗台 900 mm 暂定待复尺，不预设为坐榻。",
       "features": [
         "同一 Blender 场景生成模型和渲染",
         "原木 · 奶油白 · 亚麻",
@@ -240,7 +240,7 @@
         "fov": 57.22
       },
       "render": "assets/blender-renders/master.jpg",
-      "description": "1.50 米床、轻薄床头和浅橡木整墙衣柜；保留图示北窗位置，窗高待现场复尺。",
+      "description": "1.50 米床、轻薄床头和浅橡木衣柜；北侧恢复向外凸出的飘窗。外挑 600 mm、窗台 900 mm 与窗高均待复尺，不预设为坐榻。",
       "features": [
         "同一 Blender 场景生成模型和渲染",
         "原木 · 奶油白 · 亚麻",
@@ -304,7 +304,7 @@
         "fov": 59.49
       },
       "render": "assets/blender-renders/bedroom-b.jpg",
-      "description": "1.35 米床与书桌组成紧凑而完整的卧室，门口与走廊按修订平面核对。",
+      "description": "1.35 米床与书桌保留紧凑布局；北侧恢复向外凸出的飘窗，门厅按修订平面保留。外挑深度与窗台高度待复尺。",
       "features": [
         "同一 Blender 场景生成模型和渲染",
         "原木 · 奶油白 · 亚麻",
@@ -603,8 +603,21 @@
   "openings": [
     {
       "id": "window_b",
-      "name": "次卧北窗（待复尺）",
+      "name": "次卧北飘窗（存在确认，尺寸待复尺）",
       "kind": "window",
+      "windowType": "bay",
+      "bay": {
+        "projectionCm": 60,
+        "outward": [
+          0,
+          -1
+        ],
+        "returnThicknessCm": 10,
+        "slabThicknessCm": 10,
+        "sideStyle": "solid",
+        "grade": "C",
+        "source": "2026-09-07用户圈图与原户型图确认向北外凸；外凸600mm从外墙外表面至前框中心暂定，侧面构造、板厚和全部窗尺寸待复尺"
+      },
       "x1": 90,
       "y1": 6,
       "x2": 220,
@@ -612,13 +625,27 @@
       "sillCm": 90,
       "heightCm": 140,
       "grade": "C",
+      "widthMm": 1300,
       "sill": 0.9,
       "height": 1.4
     },
     {
       "id": "window_a",
-      "name": "主卧北窗（待复尺）",
+      "name": "主卧北飘窗（存在确认，尺寸待复尺）",
       "kind": "window",
+      "windowType": "bay",
+      "bay": {
+        "projectionCm": 60,
+        "outward": [
+          0,
+          -1
+        ],
+        "returnThicknessCm": 10,
+        "slabThicknessCm": 10,
+        "sideStyle": "solid",
+        "grade": "C",
+        "source": "2026-09-07用户圈图与原户型图确认向北外凸；外凸600mm从外墙外表面至前框中心暂定，侧面构造、板厚和全部窗尺寸待复尺"
+      },
       "x1": 430,
       "y1": 6,
       "x2": 580,
@@ -626,6 +653,7 @@
       "sillCm": 90,
       "heightCm": 140,
       "grade": "C",
+      "widthMm": 1500,
       "sill": 0.9,
       "height": 1.4
     },
@@ -640,13 +668,27 @@
       "sillCm": 90,
       "heightCm": 140,
       "grade": "C",
+      "widthMm": 1100,
       "sill": 0.9,
       "height": 1.4
     },
     {
       "id": "window_living_west",
-      "name": "客厅西窗（同户型图确认，宽高待复尺）",
+      "name": "客厅西飘窗（存在确认，尺寸待复尺）",
       "kind": "window",
+      "windowType": "bay",
+      "bay": {
+        "projectionCm": 60,
+        "outward": [
+          -1,
+          0
+        ],
+        "returnThicknessCm": 10,
+        "slabThicknessCm": 10,
+        "sideStyle": "solid",
+        "grade": "C",
+        "source": "2026-09-07用户圈图与目标户型图确认向西外凸；外凸600mm从外墙外表面至前框中心暂定，侧面构造、板厚和全部窗尺寸待复尺"
+      },
       "x1": 206,
       "y1": 647,
       "x2": 206,
@@ -654,6 +696,7 @@
       "sillCm": 90,
       "heightCm": 140,
       "grade": "C",
+      "widthMm": 2000,
       "sill": 0.9,
       "height": 1.4
     },
@@ -668,6 +711,8 @@
       "sillCm": 150,
       "heightCm": 80,
       "grade": "C",
+      "widthMm": 700,
+      "source": "assets/original-plan.webp 主卫东墙可见外窗，目标尺寸图同侧也有开口符号；宽高和精确位置未标注",
       "sill": 1.5,
       "height": 0.8
     },
@@ -682,6 +727,8 @@
       "sillCm": 150,
       "heightCm": 80,
       "grade": "C",
+      "widthMm": 600,
+      "source": "assets/original-plan.webp 客卫东墙可见窄窗；目标房源该处缺少明确宽高标注，存在与尺寸均须现场确认",
       "sill": 1.5,
       "height": 0.8
     },
@@ -696,6 +743,7 @@
       "sillCm": 0,
       "heightCm": 220,
       "grade": "C",
+      "widthMm": 1500,
       "sill": 0.0,
       "height": 2.2
     },
@@ -710,6 +758,7 @@
       "sillCm": 0,
       "heightCm": 220,
       "grade": "C",
+      "widthMm": 1000,
       "sill": 0.0,
       "height": 2.2
     },
@@ -724,6 +773,8 @@
       "sillCm": 0,
       "heightCm": 215,
       "grade": "C",
+      "widthMm": 800,
+      "notes": "旧900门与湿区墙端相交；按当前850净走廊暂用800门洞，不代表现场门宽",
       "sill": 0.0,
       "height": 2.15
     },
@@ -738,6 +789,8 @@
       "sillCm": 0,
       "heightCm": 215,
       "grade": "B",
+      "widthMm": 850,
+      "swing": "向B房内开，避开走廊",
       "sill": 0.0,
       "height": 2.15
     },
@@ -752,6 +805,8 @@
       "sillCm": 0,
       "heightCm": 215,
       "grade": "B",
+      "widthMm": 850,
+      "swing": "向C房内开，门后850×850无家具",
       "sill": 0.0,
       "height": 2.15
     },
@@ -766,6 +821,7 @@
       "sillCm": 0,
       "heightCm": 210,
       "grade": "C",
+      "widthMm": 750,
       "sill": 0.0,
       "height": 2.1
     },
@@ -780,6 +836,7 @@
       "sillCm": 0,
       "heightCm": 210,
       "grade": "C",
+      "widthMm": 750,
       "sill": 0.0,
       "height": 2.1
     },
@@ -794,6 +851,7 @@
       "sillCm": 0,
       "heightCm": 220,
       "grade": "C",
+      "widthMm": 900,
       "sill": 0.0,
       "height": 2.2
     }
@@ -811,6 +869,7 @@
   "notes": [
     "真实网格由厘米平面数据转换为米；渲染与交互使用同一 Blender 场景。",
     "整体与房间鸟瞰采用可拆墙展示；室内机位使用完整墙体与实际开口。",
-    "C 级门窗、层高与统一墙厚仍为待现场复尺的建模假设。"
+    "C 级门窗、层高与统一墙厚仍为待现场复尺的建模假设。",
+    "主卧、次卧与客厅三处为外凸飘窗；600 mm 外挑、900 mm 窗台及实心侧返边均是待复尺的 C 级暂定表达，不增加房间净面积。"
   ]
 }

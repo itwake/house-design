@@ -280,22 +280,109 @@ def floors(data):
 def load_openings(data):
     xml = ET.parse(MODEL_DIR / "Home.xml").getroot()
     heights = {e.get("id"): (float(e.get("elevation", 0))/100, float(e.get("height", 215))/100) for e in xml.findall("doorOrWindow")}
-    openings = []
+    shared = {}
     for src in data.get("windows", []) + data.get("doors", []) + data.get("openings", []):
-        op = dict(src)
+        shared.setdefault(src["id"], {}).update(src)
+    overrides = {}
+    override_file = MODEL_DIR / "blender-overrides.json"
+    if override_file.exists():
+        overrides = {op["id"]: op for op in json.loads(override_file.read_text(encoding="utf-8")).get("openings", [])}
+    openings = []
+    for oid in list(shared) + [key for key in overrides if key not in shared]:
+        # Explicit shared geometry wins over legacy overrides. Merge bay
+        # metadata as well, so its type/projection cannot silently disappear.
+        op = dict(overrides.get(oid, {}))
+        op.update(shared.get(oid, {}))
+        if "bay" in op:
+            op["bay"] = {**overrides.get(oid, {}).get("bay", {}), **shared.get(oid, {}).get("bay", {})}
         default = (.9, 1.4) if op["kind"] == "window" else (0, 2.15)
         op["sill"], op["height"] = heights.get(op["id"], default)
         op["sill"] = float(op.get("sillCm", op["sill"]*100))/100
         op["height"] = float(op.get("heightCm", op["height"]*100))/100
         openings.append(op)
-    override_file = MODEL_DIR / "blender-overrides.json"
-    if override_file.exists():
-        for op in json.loads(override_file.read_text(encoding="utf-8")).get("openings", []):
-            openings = [p for p in openings if p["id"] != op["id"]]
-            op["sill"] = float(op.get("sillCm", 90))/100
-            op["height"] = float(op.get("heightCm", 140))/100
-            openings.append(op)
     return openings
+
+
+def geometry_bounds(data, openings):
+    """Three-space bounds include projecting bay shells, not room floor area."""
+    plan_points = [[x/100,y/100] for x,y in data["envelope"]]
+    highest = float(data.get("wallHeightCm",270))/100
+    thickness = float(data.get("wallThicknessCm",12))/100
+    for op in openings:
+        if op.get("windowType")!="bay":continue
+        b=op["bay"]
+        x1,y1,x2,y2=[op[k]/100 for k in ("x1","y1","x2","y2")]
+        length=math.hypot(x2-x1,y2-y1)
+        tangent=((x2-x1)/length,(y2-y1)/length)
+        outward=b["outward"]
+        halfwidth=length/2+float(b.get("returnThicknessCm",10))/100
+        front=thickness/2+float(b["projectionCm"])/100+.05
+        for along in (-halfwidth,halfwidth):
+            for depth in (thickness/2,front):
+                plan_points.append([(x1+x2)/2+tangent[0]*along+outward[0]*depth,(y1+y2)/2+tangent[1]*along+outward[1]*depth])
+        highest=max(highest,op["sill"]+op["height"]+float(b.get("slabThicknessCm",10))/100)
+    return {"min":[round(min(p[0] for p in plan_points),5),-.012,round(min(p[1] for p in plan_points),5)],"max":[round(max(p[0] for p in plan_points),5),round(highest,5),round(max(p[1] for p in plan_points),5)]}
+
+
+def bay_opening_details(op):
+    """Build a true hollow outward bay, retaining the original wall opening.
+
+    White side returns are an explicitly unverified solid-side assumption.
+    They sit outside the aperture ends, so the original clear width survives.
+    The 900 mm sill remains a dimensional assumption, not a seating design.
+    """
+    x1,y1,x2,y2=[op[k]/100 for k in ("x1","y1","x2","y2")]
+    length=math.hypot(x2-x1,y2-y1)
+    cx,cy=(x1+x2)/2,(y1+y2)/2
+    tx,ty=(x2-x1)/length,(y2-y1)/length
+    b=op["bay"]
+    nx,ny=b["outward"]
+    if abs(nx*tx+ny*ty)>.0001 or abs(nx*nx+ny*ny-1)>.0001:
+        raise ValueError(f"Invalid perpendicular unit bay direction for {op['id']}")
+    if b.get("sideStyle","solid")!="solid":
+        raise ValueError("Only explicitly provisional solid return walls are modeled")
+    projection=float(b["projectionCm"])/100
+    returns=float(b.get("returnThicknessCm",10))/100
+    slab=float(b.get("slabThicknessCm",10))/100
+    sill,h=op["sill"],op["height"]
+    outer=THICK/2
+    front=outer+projection
+    edge=front+.05
+    frame=.038
+    def part(label,along,depth,z,width,depth_size,height,mat,role,bevel=.003):
+        px,py=cx+tx*along+nx*depth,cy+ty*along+ny*depth
+        ob=box(op["id"]+" / bay "+label,px,py,z,width if abs(tx)>.5 else depth_size,depth_size if abs(tx)>.5 else width,height,mat,bevel,"window")
+        ob["openingId"]=op["id"]
+        ob["windowType"]="bay"
+        ob["bayRole"]=role
+        ob["bayProjectionCm"]=float(b["projectionCm"])
+        return ob
+    # Jambs, head, and sill meet rather than overlapping coplanar surfaces.
+    for sign in (-1,1):
+        part("front jamb",sign*(length/2-frame/2),front,sill+frame,frame,.10,h-2*frame,"Oak","frontFrame")
+    part("front head",0,front,sill+h-frame,length,.10,frame,"Oak","frontFrame")
+    part("front sill frame",0,front,sill,length,.10,frame,"Oak","frontFrame")
+    count=3 if length>1.7 else 2
+    for i in range(1,count):
+        part("front mullion",-length/2+i*length/count,front,sill+frame,.028,.080,h-2*frame,"Oak","frontFrame")
+    part("front transom",0,front,sill+h*.78,length-2*frame,.070,.025,"Oak","frontFrame")
+    part("front clear glazing",0,front,sill+frame,length-2*frame,.007,h-2*frame,"Glass","frontGlazing",.001)
+    for sign in (-1,1):
+        ob=part("solid return",sign*(length/2+returns/2),(outer+edge)/2,sill-.02,returns,edge-outer,h+.02,"Wall","return",.001)
+        ob["baySide"]="left" if sign<0 else "right"
+        ob["assumptionGrade"]=b.get("grade","C")
+    part("cantilever bottom slab",0,(outer+edge)/2,sill-.02-slab,length+2*returns,edge-outer,slab,"Wall","bottomSlab",.001)
+    part("top slab",0,(outer+edge)/2,sill+h,length+2*returns,edge-outer,slab,"Wall","topSlab",.001)
+    # Outside stone rests between side returns; the thin indoor finish sits
+    # 0.5 mm above the existing structural sill to avoid a coplanar black face.
+    part("deep exterior stone sill",0,(outer+edge)/2,sill-.02,length,edge-outer,.02,"Stone","stoneSill",.001)
+    inner=-THICK/2-.025
+    part("connected indoor stone finish",0,(inner+outer)/2,sill+.0005,length,outer-inner,.0005,"Stone","stoneSill",0)
+    # Curtains remain at the room side of the original opening, not in the bay.
+    for sign in (-1,1):
+        for fold in range(5):
+            along=sign*(length/2+.028+fold*.033)
+            part("indoor linen curtain",along,-(THICK/2+.04),.12,.030,.070,2.35,"WhiteLinen","curtain",.003)
 
 
 def wall_and_openings(data, openings):
@@ -348,6 +435,9 @@ def opening_details(op, data):
     sill, h = op["sill"], op["height"]
     roommap = {"window_b":"room_b","window_a":"room_a","window_c":"room_c","door_b":"room_b","door_a":"room_a","door_c":"room_c","door_bath_1":"bath_1","door_bath_2":"bath_2","door_kitchen":"kitchen","balcony_door":"balcony"}
     CURRENT_ROOM = op.get("roomId") or roommap.get(op["id"], room_at(cx-.1,cy+.1,data["rooms"]))
+    if op.get("windowType")=="bay":
+        bay_opening_details(op)
+        return
     kind = "window" if op["kind"]=="window" else "door"
     glass = kind=="window" or "glass" in op["kind"]
     def part(label, u, z, w, d, height, mat="Oak"):
@@ -828,10 +918,20 @@ def polygon_area(pts):
     return abs(sum(pts[i][0]*pts[(i+1)%len(pts)][1]-pts[(i+1)%len(pts)][0]*pts[i][1] for i in range(len(pts))))/20000
 
 
+BAY_DESCRIPTIONS = {
+    "living":"奶油布艺、浅橡木与圆形双茶几；电视位于北侧实墙，西侧恢复向外凸出的飘窗。外挑 600 mm、窗台 900 mm 暂定待复尺，不预设为坐榻。",
+    "master":"1.50 米床、轻薄床头和浅橡木衣柜；北侧恢复向外凸出的飘窗。外挑 600 mm、窗台 900 mm 与窗高均待复尺，不预设为坐榻。",
+    "bedroom-b":"1.35 米床与书桌保留紧凑布局；北侧恢复向外凸出的飘窗，门厅按修订平面保留。外挑深度与窗台高度待复尺。",
+}
+BAY_NOTE="主卧、次卧与客厅三处为外凸飘窗；600 mm 外挑、900 mm 窗台及实心侧返边均是待复尺的 C 级暂定表达，不增加房间净面积。"
+
+
 def manifest(data, openings, src):
     rooms=[]
     mapping=[("living","living","客厅"),("dining","living","餐厅与玄关"),("master","room_a","主卧"),("bedroom-b","room_b","次卧 B"),("study","room_c","书房 · 客卧"),("kitchen","kitchen","厨房"),("master-bath","bath_1","主卫"),("guest-bath","bath_2","客卫"),("balcony","balcony","家政阳台")]
     desc={"living":"奶油布艺与浅橡木，圆形双茶几保留宽松动线；电视位于北侧实墙，西窗完整保留。","dining":"1.20 米实木餐桌与轻盈餐椅，浅木玄关储物及暖色吊灯。","master":"1.50 米床、轻薄床头和浅橡木整墙衣柜；保留图示北窗位置，窗高待现场复尺。","bedroom-b":"1.35 米床与书桌组成紧凑而完整的卧室，门口与走廊按修订平面核对。","study":"1.00 米日床、独立书桌和客用衣柜，在实有空间里兼顾办公与偶住。","kitchen":"双排地柜、集成冰箱及蒸烤高柜，暖白石材台面与浅橡木门板。","master-bath":"800 mm 浴室柜、壁挂马桶和东侧淋浴屏，石材与木色呼应。","guest-bath":"400 mm 角盆、紧凑壁挂马桶和 440 mm 局部固定淋浴玻璃，维持狭小湿区边界。","balcony":"洗烘叠放与家政收纳；阳台外侧封窗或开口尚未核实，外侧边界为建模占位。"}
+    if any(op.get("windowType")=="bay" for op in openings):
+        desc.update(BAY_DESCRIPTIONS)
     for view,rid,name in mapping:
         room=next(r for r in data["rooms"] if r["id"]==rid)
         pos,target,lens=VIEWS[view]
@@ -842,6 +942,9 @@ def manifest(data, openings, src):
         if view=="living":cx,cy=4.5,8.8
         rooms.append({"id":"dining" if view=="dining" else rid,"name":name,"area":round(polygon_area(pts),2),"points":[[x/100,y/100] for x,y in pts],"camera":{"position":[cx+3.0,5.2,cy+4],"target":[cx,.65,cy]},"interiorCamera":{"position":three(pos),"target":three(target),"horizontalFov":round(math.degrees(2*math.atan(36/(2*lens))),2),"fov":round(math.degrees(2*math.atan(24/(2*lens))),2)},"render":f"assets/blender-renders/{view}.jpg","description":desc[view],"features":["同一 Blender 场景生成模型和渲染","原木 · 奶油白 · 亚麻","门窗尺寸现场复尺"]})
     result={"version":"3.0 Blender 原木实景模型","model":"models/huiyayuan-wood.glb","blend":"models/huiyayuan-wood.blend","units":"m","source":str(src.relative_to(ROOT)).replace("\\","/"),"sourceSha256":hashlib.sha256(src.read_bytes().replace(b"\r\n", b"\n")).hexdigest(),"bounds":{"min":[0,-.012,0],"max":[8.41,2.7,14.01]},"overviewCamera":{"position":three(VIEWS["overall"][0]),"target":three(VIEWS["overall"][1])},"overallRender":"assets/blender-renders/overall.jpg","rooms":rooms,"openings":openings,"design":{"style":"现代原木","palette":["#eee9df","#bb956b","#d4c9b5","#758364","#b98165"]},"notes":["真实网格由厘米平面数据转换为米；渲染与交互使用同一 Blender 场景。","整体与房间鸟瞰采用可拆墙展示；室内机位使用完整墙体与实际开口。","C 级门窗、层高与统一墙厚仍为待现场复尺的建模假设。"]}
+    result["bounds"]=geometry_bounds(data,openings)
+    if any(op.get("windowType")=="bay" for op in openings):
+        result["notes"].append(BAY_NOTE)
     (MODEL_DIR/"scene-manifest.json").write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding="utf-8")
 
 

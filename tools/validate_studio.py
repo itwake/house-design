@@ -8,6 +8,10 @@ import struct
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+BAY_DIRECTIONS = {'window_b': [0, -1], 'window_a': [0, -1], 'window_living_west': [-1, 0]}
+ROOM_AREAS_BEFORE_BAYS = {'room_b': 10.231, 'room_a': 10.850, 'room_c': 7.589,
+                         'bath_1': 3.871, 'bath_2': 3.061, 'living': 33.609,
+                         'balcony': 2.116, 'kitchen': 7.519}
 
 
 def contains(point, polygon):
@@ -72,6 +76,49 @@ def check_study_south_wall(data, errors, checks):
     return wall_index
 
 
+def check_bay_plan(data, errors, checks):
+    """The three confirmed bays project out of the facade, not into floor area."""
+    bays = [o for o in data['windows'] if o.get('windowType') == 'bay']
+    if len(bays) != 3 or {o['id'] for o in bays} != set(BAY_DIRECTIONS):
+        errors.append('Exactly the two north bedroom windows and west living window must be bays')
+    thickness = data.get('wallThicknessCm', 12)
+    geometry = {}
+    for opening in bays:
+        bay, identity = opening.get('bay', {}), opening['id']
+        direction = bay.get('outward')
+        if identity not in BAY_DIRECTIONS or direction != BAY_DIRECTIONS[identity]:
+            errors.append(f'Bay points in the wrong direction: {identity}')
+            continue
+        projection = bay.get('projectionCm', 0)
+        if not isinstance(projection, (int, float)) or projection <= 0:
+            errors.append(f'Bay has no positive outward projection: {identity}')
+            continue
+        if bay.get('grade') != 'C':
+            errors.append(f'Unmeasured bay projection must remain C-grade: {identity}')
+        if bay.get('sideStyle') != 'solid' or any(bay.get(k, 0) <= 0 for k in ('returnThicknessCm', 'slabThicknessCm')):
+            errors.append(f'Bay lacks the specified solid returns and slabs: {identity}')
+        north = direction == [0, -1]
+        axis, original = (2, opening['y1'] / 100) if north else (0, opening['x1'] / 100)
+        other = opening['y2'] / 100 if north else opening['x2'] / 100
+        if abs(original - other) > 1e-6:
+            errors.append(f'Bay opening is not on an axis-aligned facade: {identity}')
+        if abs(original - (.06 if north else 2.06)) > 1e-6:
+            errors.append(f'Bay work moved the original wall opening plane: {identity}')
+        front = original - (thickness / 2 + projection) / 100
+        # Projection is measured from the outer wall face: north y=0, west x=2m.
+        expected_front = -.60 if north else 1.40
+        if abs(front - expected_front) > 1e-6:
+            errors.append(f'Bay front is not at the agreed exterior plane: {identity}: {front} m')
+        geometry[identity] = {'axis': axis, 'front': front, 'original': original}
+    for room in data['rooms']:
+        before = ROOM_AREAS_BEFORE_BAYS.get(room['id'])
+        if before is None or abs(polygon_area(room['points']) / 10000 - before) > .0006:
+            errors.append(f"Bay work changed the indoor room floor area: {room['id']}")
+    if len(geometry) == 3:
+        checks.append('Bays: 3 outward projections; north front=-0.60 m, west front=1.40 m; indoor areas unchanged')
+    return geometry
+
+
 def multiply_matrices(a, b):
     return [[sum(a[r][k] * b[k][c] for k in range(4)) for c in range(4)] for r in range(4)]
 
@@ -100,14 +147,17 @@ def world_mesh_bounds(glb):
         metadata = {**inherited, **node.get('extras', {})}
         if 'mesh' in node:
             points = []
+            material_names = set()
             for primitive in glb['meshes'][node['mesh']]['primitives']:
+                if 'material' in primitive:
+                    material_names.add(glb['materials'][primitive['material']].get('name', ''))
                 accessor = glb['accessors'][primitive['attributes']['POSITION']]
                 if 'min' not in accessor or 'max' not in accessor:
                     raise ValueError(f"POSITION bounds missing for {node.get('name', index)}")
                 for corner in itertools.product(*zip(accessor['min'], accessor['max'])):
                     points.append([sum(matrix[r][c] * corner[c] for c in range(3)) + matrix[r][3] for r in range(3)])
             if points:
-                yield node.get('name', str(index)), metadata, [min(p[i] for p in points) for i in range(3)], [max(p[i] for p in points) for i in range(3)]
+                yield node.get('name', str(index)), {**metadata, '_materialNames': sorted(material_names)}, [min(p[i] for p in points) for i in range(3)], [max(p[i] for p in points) for i in range(3)]
         for child in node.get('children', []):
             yield from walk(child, matrix, metadata)
 
@@ -136,11 +186,45 @@ def check_study_wall_asset(glb, wall_index, errors, checks):
         checks.append('GLB study wall: POSITION bounds + world transform verify [2.06,0,6.20]..[3.19,2.70,6.32] m')
 
 
+def check_bay_assets(glb, geometry, manifest, errors, checks):
+    """Check displaced geometry and reject leftover glazing in the old wall plane."""
+    bounds = manifest.get('bounds', {})
+    bound_min, bound_max = bounds.get('min', []), bounds.get('max', [])
+    if len(bound_min) != 3 or len(bound_max) != 3:
+        errors.append('Manifest is missing 3D bounds for the projected bays')
+        return
+    meshes = list(world_mesh_bounds(glb))
+    for identity, expectation in geometry.items():
+        axis, front, original = (expectation[k] for k in ('axis', 'front', 'original'))
+        parts = [m for m in meshes if m[1].get('openingId') == identity]
+        role_counts = {}
+        for name, metadata, low, high in parts:
+            role = metadata.get('bayRole')
+            if metadata.get('windowType') == 'bay':
+                role_counts[role] = role_counts.get(role, 0) + 1
+                if any(low[i] < bound_min[i] - .003 or high[i] > bound_max[i] + .003 for i in range(3)):
+                    errors.append(f'Manifest bounds crop projected bay geometry: {name}: {low}..{high}')
+            center = (low[axis] + high[axis]) / 2
+            if role in ('frontFrame', 'frontGlazing'):
+                if abs(center - front) > .002:
+                    errors.append(f'Bay front geometry is in the wrong world plane: {name}: {center} instead of {front} m')
+            if role == 'return' and (low[axis] > front + .01 or high[axis] < original - .07):
+                errors.append(f'Bay side return does not connect facade to projected front: {name}')
+            glass = role == 'frontGlazing' or 'glaz' in name.lower() or any('glass' in m.lower() for m in metadata.get('_materialNames', []))
+            if glass and high[1] - low[1] > .20 and high[axis] - low[axis] < .04 and abs(center - original) < .015:
+                errors.append(f'Old flat glazing still closes the bay opening in the original wall plane: {name}')
+        for role, minimum in (('frontFrame', 2), ('frontGlazing', 1), ('return', 2), ('bottomSlab', 1), ('topSlab', 1)):
+            if role_counts.get(role, 0) < minimum:
+                errors.append(f'GLB bay is missing actual tagged {role} mesh geometry: {identity}')
+        checks.append(f'{identity}: projected front={front:.2f} m; roles={role_counts}')
+
+
 def run(require_assets=False):
     data = json.loads((ROOT / 'models/design-data.json').read_text(encoding='utf-8'))
     rooms = data['rooms']
     errors, checks = [], []
     study_wall_index = check_study_south_wall(data, errors, checks)
+    bay_geometry = check_bay_plan(data, errors, checks)
     room_ids = {r['id'] for r in rooms}
     assert {'room_a', 'room_b', 'room_c', 'bath_1', 'bath_2', 'living', 'kitchen', 'balcony'} <= room_ids
     for r in rooms:
@@ -213,6 +297,7 @@ def run(require_assets=False):
                 errors.append(f'GLB misses tagged {expected_kind} objects')
         assert (ROOT / 'models/huiyayuan-wood.blend').stat().st_size > 100000
         manifest = json.loads((ROOT / 'models/scene-manifest.json').read_text(encoding='utf-8'))
+        check_bay_assets(glb, bay_geometry, manifest, errors, checks)
         assert len(manifest['rooms']) >= 8
         source_hash = hashlib.sha256((ROOT / 'models/design-data.json').read_bytes().replace(b'\r\n', b'\n')).hexdigest()
         if manifest.get('sourceSha256') != source_hash:
@@ -226,7 +311,7 @@ def run(require_assets=False):
         common_openings = {o['id']: o for o in data['doors'] + data['windows']}
         for o in overrides['openings']:
             same = common_openings.get(o['id'], {})
-            if any(same.get(k) != o.get(k) for k in ('x1', 'y1', 'x2', 'y2')):
+            if any(same.get(k) != o.get(k) for k in ('x1', 'y1', 'x2', 'y2', 'windowType', 'bay')):
                 errors.append(f"Blender opening differs from the plan: {o['id']}")
         for view in ('overall', 'living', 'dining', 'master', 'bedroom-b', 'study', 'kitchen', 'master-bath', 'guest-bath', 'balcony'):
             p = ROOT / 'assets/blender-renders' / f'{view}.jpg'

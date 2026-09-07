@@ -1,6 +1,6 @@
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
-const ASSET_REVISION = '3.0.1';
+const ASSET_REVISION = '3.0.2';
 const revisedAsset = path => {const url=new URL(path,document.baseURI);url.searchParams.set('v',ASSET_REVISION);return url.href};
 const icons = {
   cube:'<path d="m8 2 6 3.5v5L8 14l-6-3.5v-5L8 2Z M2 5.5 8 9l6-3.5 M8 9v5 M5 3.8l6 3.5"/>',
@@ -98,6 +98,18 @@ function updateRender(){
 function makePlan(){
   const e=data.envelope||[[0,0],[841,0],[841,1401],[0,1401]],xs=e.map(p=>p[0]),ys=e.map(p=>p[1]);
   const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
+  const wallThickness=Number(data.wallThicknessCm)||12;
+  const bays=(data.windows||[]).filter(w=>w.windowType==='bay'&&w.bay).map(w=>{
+    const length=Math.hypot(w.x2-w.x1,w.y2-w.y1),t=[(w.x2-w.x1)/length,(w.y2-w.y1)/length];
+    const raw=w.bay.outward||[0,-1],normalLength=Math.hypot(...raw),n=raw.map(value=>value/normalLength);
+    const projection=Number(w.bay.projectionCm)||60,side=Number(w.bay.returnThicknessCm)||10,half=wallThickness/2,frontHalf=(Number(w.bay.frontFrameDepthCm)||10)/2;
+    const shift=(p,along,out)=>[p[0]+t[0]*along+n[0]*out,p[1]+t[1]*along+n[1]*out];
+    const a=[w.x1,w.y1],b=[w.x2,w.y2],frontA=shift(a,0,half+projection),frontB=shift(b,0,half+projection);
+    const outerA=shift(a,-side,-half),outerB=shift(b,side,-half),farA=shift(a,-side,half+projection+frontHalf),farB=shift(b,side,half+projection+frontHalf);
+    const endA=shift(a,0,half+projection+frontHalf),endB=shift(b,0,half+projection+frontHalf);
+    return {window:w,frontA,frontB,sill:[outerA,outerB,farB,farA],returns:[[outerA,shift(a,0,-half),endA,farA],[shift(b,0,-half),outerB,farB,endB]],frame:[shift(a,0,half+projection-frontHalf),shift(b,0,half+projection-frontHalf),endB,endA],label:shift([(a[0]+b[0])/2,(a[1]+b[1])/2],0,projection/2),vertical:Math.abs(t[1])>.5};
+  });
+  const planMinX=Math.min(minX,...bays.flatMap(b=>b.sill.map(p=>p[0]))),planMinY=Math.min(minY,...bays.flatMap(b=>b.sill.map(p=>p[1])));
   const fills={bedroom:'#eee5d5',living:'#eee8da',wet:'#e5e8e2',kitchen:'#e4e0d6',balcony:'#e6e9df'};
   const labels=[];
   const polygons=(data.rooms||[]).filter(r=>r.id!=='dining').map(r=>{
@@ -105,10 +117,12 @@ function makePlan(){
     return `<polygon class="plan-room" data-plan-room="${r.id}" tabindex="0" role="button" aria-label="查看${roomDescription(r.id).name}" points="${r.points.map(p=>p.join(',')).join(' ')}" fill="${fills[r.tone]||'#ece3d5'}"/>`;
   }).join('');
   const furniture=(data.furniture||[]).map(f=>`<rect x="${f.x}" y="${f.y}" width="${f.w}" height="${f.d}" rx="${f.tone==='fabric'?6:2}" fill="${({wood:'#d2b791',cabinet:'#d4c9b4',fabric:'#f8f3e8',sanitary:'#faf9f3',wet:'#d5dedb',metal:'#babbb0'})[f.tone]||'#e3d9c5'}" stroke="#b4a68e" stroke-width="1.5" pointer-events="none" ${f.a?`transform="rotate(${f.a} ${f.x+f.w/2} ${f.y+f.d/2})"`:''}/>`).join('');
-  const walls=(data.walls||[]).map(w=>`<line x1="${w[0]}" y1="${w[1]}" x2="${w[2]}" y2="${w[3]}" stroke="#8c887b" stroke-width="12" stroke-linecap="square"/>`).join('');
+  const walls=(data.walls||[]).map(w=>`<line x1="${w[0]}" y1="${w[1]}" x2="${w[2]}" y2="${w[3]}" stroke="#8c887b" stroke-width="${wallThickness}" stroke-linecap="square"/>`).join('');
   const opening=(items,color)=>(items||[]).map(w=>`<line x1="${w.x1}" y1="${w.y1}" x2="${w.x2}" y2="${w.y2}" stroke="#fcf8ee" stroke-width="15"/><line x1="${w.x1}" y1="${w.y1}" x2="${w.x2}" y2="${w.y2}" stroke="${color}" stroke-width="4"/>`).join('');
-  const dimensions=`<g stroke="#b4a58e" stroke-width="1.5" fill="none"><path d="M0 -52H687 M0 -66v28 M687 -66v28 M-55 0v1401 M-69 0h28 M-69 1401h28 M200 1455h641 M200 1441v28 M841 1441v28"/></g><g fill="#9c8d73" font-size="19" text-anchor="middle"><text x="343" y="-69">6,870</text><text x="520" y="1484">6,410</text><text x="-75" y="700" transform="rotate(-90 -75 700)">14,010</text><text x="793" y="-54" font-size="23">N ↑</text></g>`;
-  $('#floor-plan').innerHTML=`<svg viewBox="${minX-115} ${minY-110} ${maxX-minX+160} ${maxY-minY+215}" role="img" aria-label="由同源尺寸数据绘制的三房两卫平面图">${polygons}${furniture}${walls}${opening(data.windows,'#8fa6a8')}${opening(data.doors,'#c2a071')}${labels.join('')}${dimensions}</svg>`;
+  const bayWindows=bays.map(b=>`<g data-bay-window="${b.window.id}" aria-label="${escapeHTML(b.window.name)}：外凸窗台投影，尺寸待复尺"><line x1="${b.window.x1}" y1="${b.window.y1}" x2="${b.window.x2}" y2="${b.window.y2}" stroke="#fcf8ee" stroke-width="${wallThickness+3}"/><polygon data-bay-sill points="${b.sill.map(p=>p.join(',')).join(' ')}" fill="#e6dac1" stroke="#c5b497" stroke-width="1.5"/>${b.returns.map(points=>`<polygon data-bay-return points="${points.map(p=>p.join(',')).join(' ')}" fill="#8c887b"/>`).join('')}<polygon data-bay-front-frame points="${b.frame.map(p=>p.join(',')).join(' ')}" fill="#c9b28c"/><line data-bay-glass x1="${b.frontA[0]}" y1="${b.frontA[1]}" x2="${b.frontB[0]}" y2="${b.frontB[1]}" stroke="#8fa6a8" stroke-width="4"/><text x="${b.label[0]}" y="${b.label[1]}" text-anchor="middle" dominant-baseline="middle" font-size="16" fill="#958165"${b.vertical?` transform="rotate(-90 ${b.label[0]} ${b.label[1]})"`:''}>飘窗台</text></g>`).join('');
+  const topDimensionY=planMinY-52,leftDimensionX=planMinX-55;
+  const dimensions=`<g stroke="#b4a58e" stroke-width="1.5" fill="none"><path d="M0 ${topDimensionY}H687 M0 ${topDimensionY-14}v28 M687 ${topDimensionY-14}v28 M${leftDimensionX} 0v1401 M${leftDimensionX-14} 0h28 M${leftDimensionX-14} 1401h28 M200 1455h641 M200 1441v28 M841 1441v28"/></g><g fill="#9c8d73" font-size="19" text-anchor="middle"><text x="343" y="${topDimensionY-17}">6,870</text><text x="520" y="1484">6,410</text><text x="${leftDimensionX-20}" y="700" transform="rotate(-90 ${leftDimensionX-20} 700)">14,010</text><text x="793" y="${topDimensionY-2}" font-size="23">N ↑</text></g>`;
+  $('#floor-plan').innerHTML=`<svg viewBox="${planMinX-115} ${planMinY-110} ${maxX-planMinX+160} ${maxY-planMinY+215}" role="img" aria-label="由同源尺寸数据绘制的三房两卫平面图，三处飘窗为窗台投影、不计入房间面积">${polygons}${furniture}${walls}${opening((data.windows||[]).filter(w=>w.windowType!=='bay'),'#8fa6a8')}${bayWindows}${opening(data.doors,'#c2a071')}${labels.join('')}${dimensions}</svg>`;
   $$('#floor-plan [data-plan-room]').forEach(p=>{p.addEventListener('click',()=>selectRoom(p.dataset.planRoom));p.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectRoom(p.dataset.planRoom)}})});
 }
 
@@ -116,15 +130,17 @@ function exportPlan(openInTab=false){
   const source=$('#floor-plan svg');if(!source){toast('平面数据尚未载入');return}
   const svg=source.cloneNode(true),namespace='http://www.w3.org/2000/svg';
   const [x,y,width,height]=svg.getAttribute('viewBox').split(/\s+/).map(Number);
-  svg.setAttribute('xmlns',namespace);svg.setAttribute('viewBox',`${x} ${y-110} ${width} ${height+170}`);svg.setAttribute('width','1200');svg.setAttribute('height',String(Math.ceil(1200*(height+170)/width)));
+  svg.setAttribute('xmlns',namespace);svg.setAttribute('viewBox',`${x} ${y-110} ${width} ${height+250}`);svg.setAttribute('width','1200');svg.setAttribute('height',String(Math.ceil(1200*(height+250)/width)));
   svg.removeAttribute('role');svg.removeAttribute('aria-label');
   svg.querySelectorAll('[tabindex],[role]').forEach(node=>{node.removeAttribute('tabindex');node.removeAttribute('role')});
   const title=document.createElementNS(namespace,'title');title.textContent='荟雅苑 · 同源模型平面示意（非施工图）';svg.prepend(title);
-  const background=document.createElementNS(namespace,'rect');Object.entries({x,y:y-110,width,height:height+170,fill:'#fffcf6'}).forEach(([key,value])=>background.setAttribute(key,String(value)));svg.insertBefore(background,title.nextSibling);
+  const background=document.createElementNS(namespace,'rect');Object.entries({x,y:y-110,width,height:height+250,fill:'#fffcf6'}).forEach(([key,value])=>background.setAttribute(key,String(value)));svg.insertBefore(background,title.nextSibling);
   const addText=(text,atY,size,color)=>{const node=document.createElementNS(namespace,'text');Object.entries({x:x+24,y:atY,'font-size':size,fill:color,'font-family':'Microsoft YaHei, PingFang SC, sans-serif'}).forEach(([key,value])=>node.setAttribute(key,String(value)));node.textContent=text;svg.appendChild(node)};
   addText('荟雅苑 · 三房两卫 / 同源模型平面',y-57,26,'#615943');
   addText('模型示意，非施工图 · 单位：mm · 墙体、门窗与管井需现场复尺',y-20,16,'#96856a');
-  addText('公共区面积含客厅、餐厅及过道；房间面积依模型计算。',y+height+30,15,'#96856a');
+  addText('公共区面积含客厅、餐厅及过道；飘窗仅为窗台投影，不计入房间面积。',y+height+30,15,'#96856a');
+  addText('3处飘窗存在已确认；暂按外凸600mm / 窗台900mm，宽高与侧面构造待复尺。',y+height+62,15,'#96856a');
+  addText('图中尺寸链为主体墙身尺寸，不含飘窗外包络。',y+height+94,15,'#96856a');
   svg.querySelectorAll('text').forEach(node=>node.setAttribute('font-family','Microsoft YaHei, PingFang SC, sans-serif'));
   const url=URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(svg)],{type:'image/svg+xml;charset=utf-8'}));
   if(openInTab){const tab=window.open(url,'_blank');if(tab){tab.opener=null;toast('已打开高清平面，可滚动查看或用浏览器缩放')}else toast('新标签未能打开，请允许弹窗或点击 SVG 下载')}

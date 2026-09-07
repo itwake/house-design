@@ -6,9 +6,9 @@
   <meta name="theme-color" content="#f4f1eb" />
   <meta name="description" content="荟雅苑三房两卫现代原木设计。按原户型尺寸制作的 Blender 模型、逐房渲染与可交互 Three.js 全屋漫游。" />
   <title>木光之间 · 荟雅苑的家</title>
-  <link rel="stylesheet" href="studio.css?v=3.0.1" />
+  <link rel="stylesheet" href="studio.css?v=3.0.2" />
   <script type="importmap">{"imports":{"three":"./vendor/three/three.module.js","three/addons/":"./vendor/three/addons/"}}</script>
-  <script type="module" src="studio.js?v=3.0.1"></script>
+  <script type="module" src="studio.js?v=3.0.2"></script>
 </head>
 <body>
   <div class="app-shell">
@@ -24,8 +24,8 @@
         <div class="download-menu">
           <button class="text-button" id="download-toggle" aria-expanded="false" aria-controls="download-popover" data-icon="download">下载模型</button>
           <div id="download-popover" class="popover" hidden>
-            <a href="models/huiyayuan-wood.blend?v=3.0.1" download><b>Blender 源文件</b><span>材质、家具与渲染相机</span></a>
-            <a href="models/huiyayuan-wood.glb?v=3.0.1" download><b>通用 3D 模型 · GLB</b><span>可导入支持 glTF 的设计工具</span></a>
+            <a href="models/huiyayuan-wood.blend?v=3.0.2" download><b>Blender 源文件</b><span>材质、家具与渲染相机</span></a>
+            <a href="models/huiyayuan-wood.glb?v=3.0.2" download><b>通用 3D 模型 · GLB</b><span>可导入支持 glTF 的设计工具</span></a>
             <a href="legacy.html"><b>历史方案归档</b><span>旧概念图 / 门厅几何有局限</span></a>
           </div>
         </div>
@@ -56,7 +56,7 @@
         <div id="model-canvas" class="model-canvas" aria-label="可旋转和缩放的全屋三维模型"></div>
         <div id="room-labels" class="room-labels"></div>
         <div id="model-loading" class="model-loading" aria-live="polite"><div class="loading-house"><span></span><span></span><span></span></div><strong>正在打开这个家</strong><span id="loading-status">载入材质与空间模型…</span><div class="loading-track"><i id="loading-progress"></i></div></div>
-        <div id="model-fallback" class="model-fallback" hidden><img src="assets/blender-renders/overall.jpg?v=3.0.1" alt="全屋 Blender 俯视渲染" /><div><strong>当前暂时无法打开交互模型</strong><p id="fallback-message">可以先查看平面与空间渲染。</p><button class="primary-button" id="fallback-renders">查看效果图 <span>↗</span></button></div></div>
+        <div id="model-fallback" class="model-fallback" hidden><img src="assets/blender-renders/overall.jpg?v=3.0.2" alt="全屋 Blender 俯视渲染" /><div><strong>当前暂时无法打开交互模型</strong><p id="fallback-message">可以先查看平面与空间渲染。</p><button class="primary-button" id="fallback-renders">查看效果图 <span>↗</span></button></div></div>
         <div class="compass" title="图上方为北"><span>N</span><svg viewBox="0 0 28 34" aria-hidden="true"><path d="m14 3 8 24-8-5-8 5Z"/><path d="M14 3v19"/></svg></div>
         <div id="model-hint" class="model-hint"><span class="hint-desktop">拖动旋转 · 右键平移 · 滚轮缩放</span><span class="hint-mobile">单指旋转 · 双指缩放与平移</span></div>
         <div class="viewer-controls" aria-label="模型控制">
@@ -68,16 +68,16 @@
         </div>
       </section>
 
-      <section id="plan-view" class="view-panel" role="tabpanel" aria-labelledby="tab-plan" hidden><div class="plan-paper"><div class="plan-caption"><span>FLOOR PLAN · mm</span><div class="plan-actions"><button id="open-plan" data-icon="expand">放大平面</button><button id="download-plan" data-icon="download" aria-label="下载同源平面SVG">SVG</button></div></div><div id="floor-plan"></div><div class="plan-key"><i></i> 窗洞 <i></i> 门洞 <span>模型示意，非施工图 · 点击空间查看</span></div></div></section>
+      <section id="plan-view" class="view-panel" role="tabpanel" aria-labelledby="tab-plan" hidden><div class="plan-paper"><div class="plan-caption"><span>FLOOR PLAN · mm</span><div class="plan-actions"><button id="open-plan" data-icon="expand">放大平面</button><button id="download-plan" data-icon="download" aria-label="下载同源平面SVG">SVG</button></div></div><div id="floor-plan"></div><div class="plan-key"><i></i> 窗洞 <i></i> 门洞 <span>模型示意，非施工图 · 点击空间查看</span></div><p class="plan-bay-note">3处飘窗存在已确认；暂按外凸600mm / 窗台900mm，宽高与侧面构造待复尺。窗台投影不计房间面积，尺寸链仅计主体墙身。</p></div></section>
 
       <section id="renders-view" class="view-panel" role="tabpanel" aria-labelledby="tab-renders" hidden><div class="render-stage"><figure><img id="active-render" alt="当前空间 Blender 渲染" /><figcaption><span><b id="render-name">全屋概览</b><small>由同一 Blender 模型直接渲染</small></span><button class="icon-button" id="enlarge-render" aria-label="放大效果图" data-icon="expand"></button></figcaption></figure><div class="render-unavailable" id="render-unavailable" hidden>这个视角暂时未能加载，请选择其他空间。</div><div class="render-strip" id="render-strip" aria-label="空间效果图"></div></div></section>
 
-      <aside class="room-card" id="room-card"><button class="room-card-toggle" id="room-card-toggle" aria-expanded="true" aria-label="收起或展开空间设计说明"><i></i></button><div class="room-card-body"><img id="room-preview" src="assets/blender-renders/overall.jpg?v=3.0.1" alt="全屋渲染预览" /><div class="room-card-copy"><p class="card-kicker" id="card-kicker">THE ENTIRE HOME</p><h2 id="card-title">木色里的日常</h2><p class="card-description" id="card-description">原木、暖白与柔和织物，让紧凑的空间也有从容的生活。</p><div class="room-tags" id="room-tags"></div><button class="primary-button" id="enter-room">探索客厅 <span>↗</span></button><button class="secondary-link" id="view-room-render">查看空间效果图 <span>→</span></button></div></div></aside>
+      <aside class="room-card" id="room-card"><button class="room-card-toggle" id="room-card-toggle" aria-expanded="true" aria-label="收起或展开空间设计说明"><i></i></button><div class="room-card-body"><img id="room-preview" src="assets/blender-renders/overall.jpg?v=3.0.2" alt="全屋渲染预览" /><div class="room-card-copy"><p class="card-kicker" id="card-kicker">THE ENTIRE HOME</p><h2 id="card-title">木色里的日常</h2><p class="card-description" id="card-description">原木、暖白与柔和织物，让紧凑的空间也有从容的生活。</p><div class="room-tags" id="room-tags"></div><button class="primary-button" id="enter-room">探索客厅 <span>↗</span></button><button class="secondary-link" id="view-room-render">查看空间效果图 <span>→</span></button></div></div></aside>
       <div class="space-footer"><span>荟雅苑 / 28F</span><span>BLENDER × THREE.JS</span></div>
     </main>
   </div>
 
-  <dialog id="project-dialog" class="project-dialog"><button class="dialog-close icon-button" aria-label="关闭设计说明" data-icon="close"></button><p class="eyebrow">ABOUT THIS HOME</p><h2>设计有温度，<br />空间有依据。</h2><p>以原户型的三房两卫、门窗和厨卫位置为基础，恢复连贯客餐厅。浅橡木、暖白墙面与亚麻质感贯穿全屋，每个空间使用同一份几何模型呈现。</p><div class="dialog-grid"><article><span>01 / 结构</span><b>原有空间的真实关系</b><p>建筑面积 104.83㎡；净面积依模型计算，不能替代产权测绘。公共区面积包含客厅、餐厅和过道，餐厅没有重复计算独立面积。</p></article><article><span>02 / 材质</span><b>现代原木与暖色生活</b><p>克制的木色柜体、奶油白墙面、柔软织物与石材。通过照明和收纳丰富设计。</p></article><article><span>03 / 表达</span><b>模型与效果图同源</b><p>Blender 构建家具、材质和灯光，Three.js 用于在线交互。效果图由该模型直接渲染。</p></article><article><span>04 / 复尺</span><b>施工前仍需现场深化</b><p>现有图纸未完整标注墙体性质、窗高、梁和管井。统一墙厚及门窗尺寸含假设，开工前需设计师复核。</p></article></div><p>阳台外侧封窗及厨房外窗资料不足，模型暂用边界占位，不能据此判断真实采光。“主卫”和“客卫”是用途命名，两处卫生间均从公共过道进入。</p><p>效果图采用设计展示照明，不代表本房实测日照、采光或隔声表现。</p><p>历史归档保留了旧概念图和前版模型。旧模型未恢复次卧门厅与书房凹口，部分概念图与实际尺寸不一致；当前空间核对请使用本页模型和平面。</p><a class="primary-button" href="legacy.html">查看历史方案归档 <span>↗</span></a></dialog>
+  <dialog id="project-dialog" class="project-dialog"><button class="dialog-close icon-button" aria-label="关闭设计说明" data-icon="close"></button><p class="eyebrow">ABOUT THIS HOME</p><h2>设计有温度，<br />空间有依据。</h2><p>以原户型的三房两卫、门窗和厨卫位置为基础，恢复连贯客餐厅。浅橡木、暖白墙面与亚麻质感贯穿全屋，每个空间使用同一份几何模型呈现。</p><div class="dialog-grid"><article><span>01 / 结构</span><b>原有空间的真实关系</b><p>建筑面积 104.83㎡；净面积依模型计算，不能替代产权测绘。公共区面积包含客厅、餐厅和过道，餐厅没有重复计算独立面积。</p></article><article><span>02 / 材质</span><b>现代原木与暖色生活</b><p>克制的木色柜体、奶油白墙面、柔软织物与石材。通过照明和收纳丰富设计。</p></article><article><span>03 / 表达</span><b>模型与效果图同源</b><p>Blender 构建家具、材质和灯光，Three.js 用于在线交互。效果图由该模型直接渲染。</p></article><article><span>04 / 复尺</span><b>施工前仍需现场深化</b><p>现有图纸未完整标注墙体性质、窗高、梁和管井。统一墙厚及门窗尺寸含假设，开工前需设计师复核。</p></article></div><p>次卧B北窗、主卧北窗及客厅西窗这3处飘窗存在已确认；暂按外凸600mm / 窗台900mm，宽高与侧面构造待复尺，均非施工尺寸。平面以外凸窗台投影表达，不扩大房间面积；尺寸链仍为主体墙身尺寸，不含飘窗外包络。</p><p>阳台外侧封窗及厨房外窗资料不足，模型暂用边界占位，不能据此判断真实采光。“主卫”和“客卫”是用途命名，两处卫生间均从公共过道进入。</p><p>效果图采用设计展示照明，不代表本房实测日照、采光或隔声表现。</p><p>历史归档保留了旧概念图和前版模型。旧模型未恢复次卧门厅与书房凹口，部分概念图与实际尺寸不一致；当前空间核对请使用本页模型和平面。</p><a class="primary-button" href="legacy.html">查看历史方案归档 <span>↗</span></a></dialog>
   <dialog id="image-dialog" class="image-dialog"><button class="dialog-close icon-button" aria-label="关闭效果图" data-icon="close"></button><img id="large-render" alt="空间大图" /><p id="large-render-caption"></p></dialog>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 </body>

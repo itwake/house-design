@@ -5,8 +5,18 @@
   "openings": [
     {
       "id": "window_b",
-      "name": "次卧北窗（待复尺）",
+      "name": "次卧北飘窗（存在确认，尺寸待复尺）",
       "kind": "window",
+      "windowType": "bay",
+      "bay": {
+        "projectionCm": 60,
+        "outward": [0, -1],
+        "returnThicknessCm": 10,
+        "slabThicknessCm": 10,
+        "sideStyle": "solid",
+        "grade": "C",
+        "source": "2026-09-07用户圈图与原户型图确认向北外凸；外凸600mm从外墙外表面至前框中心暂定，侧面构造、板厚和全部窗尺寸待复尺"
+      },
       "x1": 90,
       "y1": 6,
       "x2": 220,
@@ -17,8 +27,18 @@
     },
     {
       "id": "window_a",
-      "name": "主卧北窗（待复尺）",
+      "name": "主卧北飘窗（存在确认，尺寸待复尺）",
       "kind": "window",
+      "windowType": "bay",
+      "bay": {
+        "projectionCm": 60,
+        "outward": [0, -1],
+        "returnThicknessCm": 10,
+        "slabThicknessCm": 10,
+        "sideStyle": "solid",
+        "grade": "C",
+        "source": "2026-09-07用户圈图与原户型图确认向北外凸；外凸600mm从外墙外表面至前框中心暂定，侧面构造、板厚和全部窗尺寸待复尺"
+      },
       "x1": 430,
       "y1": 6,
       "x2": 580,
@@ -41,8 +61,18 @@
     },
     {
       "id": "window_living_west",
-      "name": "客厅西窗（同户型图确认，宽高待复尺）",
+      "name": "客厅西飘窗（存在确认，尺寸待复尺）",
       "kind": "window",
+      "windowType": "bay",
+      "bay": {
+        "projectionCm": 60,
+        "outward": [-1, 0],
+        "returnThicknessCm": 10,
+        "slabThicknessCm": 10,
+        "sideStyle": "solid",
+        "grade": "C",
+        "source": "2026-09-07用户圈图与目标户型图确认向西外凸；外凸600mm从外墙外表面至前框中心暂定，侧面构造、板厚和全部窗尺寸待复尺"
+      },
       "x1": 206,
       "y1": 647,
       "x2": 206,
