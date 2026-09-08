@@ -1,5 +1,5 @@
 {
-  "version": "3.0.4",
+  "version": "3.0.5",
   "geometryData": "models/design-data.json",
   "description": "V3重建使用design-data作为墙、房间、开口和家具投影唯一来源；此文件列出旧Home.xml至V3的修正语义。",
   "openings": [

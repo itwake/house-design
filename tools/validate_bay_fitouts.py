@@ -8,6 +8,8 @@ import itertools
 import math
 import struct
 
+from geometry_paths import path_clearance, solid_footprints
+
 
 FITOUT_LINKS = {
     'bay_a_office_vanity': ('window_a', 'room_a', 'bay-master'),
@@ -15,12 +17,10 @@ FITOUT_LINKS = {
     'bay_living_family': ('window_living_west', 'living', 'bay-living'),
 }
 PART_SPECS = {
-    'a_desktop': ('desktop', [383, 12, 80, 60, 72, 3], 'south'),
-    'a_support': ('desk_support', [383, 12, 80, 60, 0, 72], 'south'),
-    'a_accessories': ('desk_accessories', [386, 17, 74, 48, 75, 43], 'south'),
-    'a_chair': ('chair', [395, 77, 50, 48, 0, 80], 'north'),
-    'a_ledge': ('raised_ledge', [432, -53, 146, 62, 90.1, 1.8], None),
-    'a_ledge_objects': ('ledge_objects', [440, -43, 125, 42, 91.9, 20], None),
+    'a_desktop': ('desktop', [432, -53, 146, 130, 90.1, 3], 'west'),
+    'a_support': ('desk_support', [432, 12, 146, 65, 0, 90.1], 'west'),
+    'a_accessories': ('desk_accessories', [443, 16, 122, 52, 93.1, 43], 'west'),
+    'a_chair': ('chair', [380, 17, 50, 52, 0, 100], 'east'),
     'b_cushion': ('seat_cushion', [95, -50, 85, 55, 43.2, 4.8], None),
     'b_tea_tray': ('tea_tray', [185, -45, 28, 32, 43.2, 16.3], None),
     'b_back_cushion': ('back_cushion', [97, -49, 43, 12, 48, 26], None),
@@ -31,13 +31,16 @@ PART_SPECS = {
     'l_child_chair': ('chair', [285, 775, 52, 52, 0, 80], 'west'),
     'l_ledge': ('raised_ledge', [147, 649, 62, 196, 90.1, 1.8], None),
 }
-# Each working position has 60 cm foot depth; support members may occur above
-# 69 cm, beside the clear central width, but never inside these open volumes.
+# Each working position has 60 cm foot depth. The master is a conditional
+# counter-height seat: 85 cm vertical void, not a conventional 75 cm desk.
+# Supports may occur above / beside these voids, never inside them.
 KNEE_VOLUMES_CM = {
-    'a_support': [([393, 0, 12], [453, 69, 72])],
+    'a_support': [([432, 0, 20], [492, 85, 72])],
     'l_support': [([219, 0, 657], [279, 69, 737]),
                   ([219, 0, 757], [279, 69, 837])],
 }
+MASTER_SEAT_PATH = [(425, 280), (425, 125), (408.5, 91), (403, 67), (403, 43)]
+REMOVED_FURNITURE = {'次卧书桌', '次卧书椅'}
 
 
 def part_bounds(part):
@@ -65,6 +68,28 @@ def rect_on_floor(part, polygon):
     axes = [sorted({low[i], high[i], *(p[i] for p in polygon if low[i] < p[i] < high[i])}) for i in range(2)]
     samples = [[*axis, *((a + b) / 2 for a, b in zip(axis, axis[1:]))] for axis in axes]
     return all(inside(p, polygon) for p in itertools.product(*samples))
+
+
+def part_in_legal_volume(part, polygon, bay_rect, window):
+    """Partition a continuous board across bay / wall reveal / room floor.
+
+    Only its ABOVE-SILL portion may cross the original wall plane. This is
+    not permission to carve an unverified void into the solid sill below it.
+    """
+    low, high = [part['x'], part['y']], [part['x']+part['w'], part['y']+part['d']]
+    axes = []
+    for i in range(2):
+        cuts = [p[i] for p in polygon] + [bay_rect[i], bay_rect[i+2]]
+        edges = sorted({low[i], high[i], *(v for v in cuts if low[i] < v < high[i])})
+        axes.append([(a+b)/2 for a, b in zip(edges, edges[1:])])
+    above_sill = (part['zCm'] >= window['sillCm'] and
+                  part['zCm']+part['hCm'] <= window['sillCm']+window['heightCm'])
+    for x, y in itertools.product(*axes):
+        if inside((x, y), polygon):
+            continue
+        if not (above_sill and bay_rect[0] <= x <= bay_rect[2] and bay_rect[1] <= y <= bay_rect[3]):
+            return False
+    return 0 <= part['zCm'] < part['zCm']+part['hCm'] <= 270
 
 
 def check_fitout_plan(data, errors, checks):
@@ -107,21 +132,46 @@ def check_fitout_plan(data, errors, checks):
             expected_part = PART_SPECS.get(identity)
             if expected_part is None or (part.get('role'), values, part.get('face')) != expected_part:
                 errors.append(f'Bay part differs from approved position, height, role or orientation: {identity}')
-            indoor = rect_on_floor(part, rooms[fitout['roomId']])
             if window['bay']['outward'] == [0, -1]:
                 bay_rect = (window['x1'], -55, window['x2'], 12)
             else:
                 bay_rect = (145, window['y1'], 212, window['y2'])
-            in_bay = (part['x'] >= bay_rect[0] and part['y'] >= bay_rect[1] and
-                      part['x'] + part['w'] <= bay_rect[2] and part['y'] + part['d'] <= bay_rect[3] and
-                      part['zCm'] >= window['sillCm'] and part['zCm'] + part['hCm'] <= window['sillCm'] + window['heightCm'])
-            if not (indoor or in_bay) or not (0 <= part['zCm'] < part['zCm'] + part['hCm'] <= 270):
+            if not part_in_legal_volume(part, rooms[fitout['roomId']], bay_rect, window):
                 errors.append(f'Bay part leaves its legal floor / high ledge opening volume: {identity}')
     if set(parts) != set(PART_SPECS):
-        errors.append('Bay fitout parts differ from the approved 15 explicitly bounded components')
+        errors.append('Bay fitout parts differ from the approved 13 explicitly bounded components')
     wardrobe = next((f for f in data['furniture'] if f['name'] == '主卧衣柜'), {})
-    if [wardrobe.get(k) for k in ('x', 'y', 'w', 'd', 'face', 'doorStyle')] != [325, 80, 60, 160, 'east', 'sliding']:
-        errors.append('Master wardrobe must give up its north 60 cm and remain a 160 cm sliding-front unit')
+    if [wardrobe.get(k) for k in ('x', 'y', 'w', 'd', 'face', 'doorStyle')] != [325, 105, 60, 160, 'east', 'sliding']:
+        errors.append('Master wardrobe must begin at y=105 and remain a 160 cm sliding-front unit to permit side seating')
+    a_parts = by_id.get('bay_a_office_vanity', {}).get('parts', [])
+    if {p['id'] for p in a_parts} != {'a_desktop', 'a_support', 'a_accessories', 'a_chair'} or sum(p['role'] == 'desktop' for p in a_parts) != 1 or sum(p['role'] == 'chair' for p in a_parts) != 1:
+        errors.append('Master must retain just one continuous bay tabletop and one chair, not a detached desk or duplicate ledge')
+    for f in data['furniture']:
+        if f['name'] in REMOVED_FURNITURE or (rect_on_floor(f, rooms['room_b']) and ('桌' in f['name'] or '椅' in f['name'])):
+            errors.append(f'Second bedroom independent desk / chair must be deleted: {f["name"]}')
+        if rect_on_floor(f, rooms['room_a']) and ('桌' in f['name'] or '椅' in f['name']):
+            errors.append(f'Master ordinary furniture must not reintroduce a detached desk / chair: {f["name"]}')
+    desktop, chair = parts.get('a_desktop', {}), parts.get('a_chair', {})
+    if desktop and not (desktop['y'] < 0 < 12 < desktop['y']+desktop['d'] and
+                         desktop['x'] >= windows['window_a']['x1'] and desktop['x']+desktop['w'] <= windows['window_a']['x2']):
+        errors.append('Master tabletop must physically connect the bay and interior, not remain a separate indoor desk')
+    if [chair.get(k) for k in ('seatHeightCm', 'footrest', 'footrestHeightCm')] != [64, True, 25]:
+        errors.append('Master counter chair must declare 64 cm finished seat and a 25 cm foot support')
+    if parts.get('a_accessories', {}).get('preset') != 'office_vanity':
+        errors.append('Master accessories must retain office/vanity preset for west-side operation')
+    if desktop and wardrobe:
+        diagonal = math.hypot(desktop['x']-wardrobe['x']-wardrobe['w'],
+                              wardrobe['y']-desktop['y']-desktop['d'])
+        if diagonal < 50:
+            errors.append(f'Master side-entry diagonal is narrower than a 50 cm body: {diagonal:.3f} cm')
+        obstacles = solid_footprints(data) + [('master continuous high tabletop', (desktop['x'], desktop['y'], desktop['x']+desktop['w'], desktop['y']+desktop['d']))]
+        clearance, obstacle, a, b = path_clearance(MASTER_SEAT_PATH, obstacles)
+        if clearance < 25:
+            errors.append(f'Master continuous side-seating 50 cm body path blocked by {obstacle}: radius {clearance:.3f} cm at {a}..{b}')
+        checks.append(f'Master side entry: {diagonal:.3f} cm diagonal, continuous 50 cm body path radius {clearance:.3f} cm; swiveling/side-entry target chair is not counted as a fixed obstacle')
+    master_bed = next((f for f in data['furniture'] if f.get('id') == 'bed_a'), {})
+    if master_bed and abs(322-master_bed['y']-master_bed['d']-80) > .01:
+        errors.append('Master bed must keep east head and leave the new 80 cm south clearance')
     aisle = next((c for c in data.get('clearances', []) if c['id'] == 'living_desk_aisle'), {})
     if [aisle.get(k) for k in ('x', 'y', 'w', 'd', 'grade')] != [344, 647, 80, 200, 'C'] or any(c['id'] == 'living_window_clear' for c in data.get('clearances', [])):
         errors.append('Living desk must replace the old window clearance with the conditional 80 cm chair-back aisle')
@@ -133,7 +183,7 @@ def check_fitout_plan(data, errors, checks):
         for f in data['furniture']:
             if min(part['x'] + part['w'], f['x'] + f['w']) > max(part['x'], f['x']) + .01 and min(part['y'] + part['d'], f['y'] + f['d']) > max(part['y'], f['y']) + .01:
                 errors.append(f'New floor fitout collides with existing furniture: {identity} / {f["name"]}')
-    checks.append('Bay source: 15 legal 3D part envelopes; A 80x60 desk / 2 cm bed gap, B conditional 48 cm cushion, living 200x65 desk / 80 cm conditional aisle')
+    checks.append('Bay source: 13 legal part envelopes; A continuous 146x130 high bay table / one east-facing counter chair, B tea only, living 200x65 desk')
     return parts
 
 
@@ -183,7 +233,8 @@ def point_in_mesh(point, triangles):
     return len(distances) % 2 == 1
 
 
-def support_triangles(glb, raw, node_matrix, multiply_matrices):
+def support_triangles(glb, raw, node_matrix, multiply_matrices, part_ids=None):
+    selected = set(KNEE_VOLUMES_CM) if part_ids is None else set(part_ids)
     binary = None
     offset = 12
     while offset + 8 <= len(raw):
@@ -208,7 +259,7 @@ def support_triangles(glb, raw, node_matrix, multiply_matrices):
         node = glb['nodes'][index]
         matrix = multiply_matrices(parent, node_matrix(node))
         metadata = {**inherited, **node.get('extras', {})}
-        if metadata.get('fitoutPartId') in KNEE_VOLUMES_CM and 'mesh' in node:
+        if metadata.get('fitoutPartId') in selected and 'mesh' in node:
             triangles = []
             for primitive in glb['meshes'][node['mesh']]['primitives']:
                 if primitive.get('mode', 4) != 4:
@@ -226,10 +277,58 @@ def support_triangles(glb, raw, node_matrix, multiply_matrices):
         yield from walk(root, identity, {})
 
 
+def check_counter_back_connection(part, meshes, triangles, errors, checks):
+    """Only the explicit master counter chair needs this new connection.
+
+    Match real 20 mm posts and world-space overlap, then verify shared solid
+    material at the two joints. Renaming disconnected objects cannot pass.
+    """
+    previous_error_count = len(errors)
+    geometry = {name: tris for name, _, tris in triangles}
+    back_x = part['x']/100+.045  # East-facing chair: the rear is its west side.
+    distinct = set()
+    for plan_y in (part['y']/100+.035, (part['y']+part['d'])/100-.035):
+        low_expected, high_expected = [back_x-.01, .57, plan_y-.01], [back_x+.01, .70, plan_y+.01]
+        posts = [m for m in meshes if all(abs(a-b) <= .002 for a, b in zip(m[2]+m[3], low_expected+high_expected))]
+        if len(posts) != 1:
+            errors.append(f'GLB counter chair lacks a real 20x20 mm rear post at x={back_x:.3f} m, plan-y={plan_y:.3f} m, z=57..70 cm')
+            continue
+        post = posts[0]
+        distinct.add(post[0])
+        for label, marker, minimum_overlap in (('rear leg', 'slim metal leg', .008), ('back panel', 'backrest', .018)):
+            connected = False
+            for other in meshes:
+                if other[0] == post[0] or marker not in other[0].lower():
+                    continue
+                low = [max(post[2][i], other[2][i]) for i in range(3)]
+                high = [min(post[3][i], other[3][i]) for i in range(3)]
+                if high[1]-low[1] < minimum_overlap-1e-6 or any(high[i]-low[i] < .006 for i in (0, 2)):
+                    continue
+                # The bevels are evaluated geometry. Seek actual common solid
+                # material within the intersection, not just overlapping AABBs.
+                samples = itertools.product((.25, .5, .75), repeat=3)
+                for weights in samples:
+                    point = [low[i]+(high[i]-low[i])*weights[i] for i in range(3)]
+                    if point_in_mesh(point, geometry.get(post[0], [])) and point_in_mesh(point, geometry.get(other[0], [])):
+                        connected = True
+                        break
+                if connected:
+                    break
+            if not connected:
+                errors.append(f'GLB counter chair rear post has no actual vertically overlapping solid connection to its {label}: {post[0]}')
+    if len(distinct) != 2:
+        errors.append('GLB master counter chair must have two distinct actual back-to-leg connecting posts')
+    if len(errors) == previous_error_count:
+        checks.append('Counter chair: two actual 20 mm rear posts at z57..70 cm, with real solid overlap into the rear legs and back panel')
+
+
 def check_fitout_assets(data, glb, raw, manifest, root, world_mesh_bounds, node_matrix, multiply_matrices, errors, checks):
     fitouts = {f['id']: f for f in data.get('bayFitouts', [])}
     parts = {p['id']: (f, p) for f in fitouts.values() for p in f['parts']}
     meshes, linked = list(world_mesh_bounds(glb)), {}
+    for name, meta, _, _ in meshes:
+        if meta.get('furnitureId') in REMOVED_FURNITURE:
+            errors.append(f'GLB still contains deleted B desk / chair geometry: {name}')
     # A conditional low seat is only visually truthful when its physical
     # window sill changes with the scenario; a source-only height label is
     # insufficient. A/living must still model their retained high sill.
@@ -275,11 +374,21 @@ def check_fitout_assets(data, glb, raw, manifest, root, world_mesh_bounds, node_
             if any(abs(a-b) > .002 for a, b in zip(union_lo+union_hi, lo+hi)):
                 errors.append(f'GLB tabletop / ledge / cushion fails exact real dimensions: {identity}')
         if part['role'] == 'chair':
-            backs = [m for m in actual if 'backrest' in m[0].lower()]
-            axis = 2 if part['face'] == 'north' else 0
-            edge = ((part['y']+part['d']) if axis == 2 else (part['x']+part['w']))/100
-            if len(backs) != 1 or not (edge-.07 <= backs[0][2][axis] <= backs[0][3][axis] <= edge+.002) or backs[0][3][axis]-backs[0][2][axis] > .07:
+            backs = [m for m in actual if 'rounded backrest' in m[0].lower()]
+            axis = 2 if part['face'] in ('north', 'south') else 0
+            positive = part['face'] in ('north', 'west')
+            start, span = (part['y'], part['d']) if axis == 2 else (part['x'], part['w'])
+            edge = (start+(span if positive else 0))/100
+            interval = (edge-.07, edge+.002) if positive else (edge-.002, edge+.07)
+            if len(backs) != 1 or not (interval[0] <= backs[0][2][axis] <= backs[0][3][axis] <= interval[1]) or backs[0][3][axis]-backs[0][2][axis] > .07:
                 errors.append(f'GLB actual chair back faces away from specified {part["face"]}: {identity}')
+            if identity == 'a_chair':
+                seats = [m for m in actual if 'padded seat' in m[0].lower()]
+                rests = [m for m in actual if 'foot support' in m[0].lower()]
+                if len(seats) != 1 or abs(seats[0][3][1]-.64) > .002:
+                    errors.append('GLB master counter chair finished seat is not actually 64 cm high')
+                if len(rests) != 1 or abs(rests[0][3][1]-.25) > .002:
+                    errors.append('GLB master counter chair lacks its actual 25 cm foot support')
     try:
         supports = list(support_triangles(glb, raw, node_matrix, multiply_matrices))
         for name, identity, triangles in supports:
@@ -291,6 +400,18 @@ def check_fitout_assets(data, glb, raw, manifest, root, world_mesh_bounds, node_
                     errors.append(f'GLB actual support enters required knee / foot space: {name}, {low_cm}..{high_cm} cm')
         if any(not any(identity == expected for _, identity, _ in supports) for expected in KNEE_VOLUMES_CM):
             errors.append('GLB lacks actual support triangles for one of the two desks')
+        top_meshes = list(support_triangles(glb, raw, node_matrix, multiply_matrices, {'a_desktop'}))
+        top_triangles = [t for _, _, triangles in top_meshes for t in triangles]
+        # A single world envelope can hide a missing reveal strip. Test actual
+        # solid material through the bay, the original wall plane and the
+        # indoor overhang, not only the tabletop's extrema or its source tags.
+        for x_cm in (440, 505, 570):
+            for y_cm in (-40, -10, 0, 6, 12, 20, 60):
+                if not point_in_mesh((x_cm/100, .916, y_cm/100), top_triangles):
+                    errors.append(f'GLB master tabletop lacks continuous actual material across bay/reveal/room: x={x_cm}, y={y_cm}, z=91.6 cm')
+        chair_meshes = list(support_triangles(glb, raw, node_matrix, multiply_matrices, {'a_chair'}))
+        if 'a_chair' in parts:
+            check_counter_back_connection(parts['a_chair'][1], linked.get('a_chair', []), chair_meshes, errors, checks)
     except (KeyError, ValueError, struct.error) as error:
         errors.append(f'Cannot verify real desk knee space: {error}')
     # Compare real component mesh boxes in all THREE axes, never aggregate a
@@ -318,4 +439,4 @@ def check_fitout_assets(data, glb, raw, manifest, root, world_mesh_bounds, node_
         path = root / expected_render
         if not path.exists() or path.stat().st_size < 10000:
             errors.append(f'Missing / empty source-model bay detail render: {view}')
-    checks.append(f'Bay GLB: {len(linked)}/15 tagged parts; exact table / cushion sizes, real triangle knee voids and north/west chair backs checked')
+    checks.append(f'Bay GLB: {len(linked)}/13 tagged parts; exact continuous high table / counter-seat heights, real triangle knee voids, east/west chair backs and B desk deletion checked')

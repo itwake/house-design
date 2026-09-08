@@ -2,12 +2,15 @@
 // node tools/qa_bay_ui.mjs PORT TAB_ID [--images]
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import path from 'node:path';
+import {createHash} from 'node:crypto';
 
 const [port,tabId,...flags]=process.argv.slice(2),requireImages=flags.includes('--images');
 if(!/^\d+$/.test(port||'')||!tabId)throw new Error('Pass a dedicated local debugging port and project tab ID');
 const target=(await(await fetch(`http://127.0.0.1:${port}/json/list`)).json()).find(t=>t.id===tabId);
 if(!target||!/^http:\/\/127\.0\.0\.1:4173\//.test(target.url))throw new Error('Refusing to operate a non-project tab');
 const source=JSON.parse(await readFile('models/design-data.json','utf8'));
+const appSource=await readFile('studio.js','utf8'),assetRevision=appSource.match(/ASSET_REVISION = '([^']+)'/)[1],screenshotPrefix='v'+assetRevision.replaceAll('.','');
+const imageHashes=requireImages?Object.fromEntries(await Promise.all(['overall','master','bedroom-b','bay-master','bay-tea','bay-living'].map(async name=>{const file=`assets/blender-renders/${name}.jpg`;return[file,createHash('sha256').update(await readFile(file)).digest('hex')]}))):{};
 const ws=new WebSocket(target.webSocketDebuggerUrl);
 await new Promise((resolve,reject)=>{ws.addEventListener('open',resolve,{once:true});ws.addEventListener('error',reject,{once:true})});
 let nextId=0;const pending=new Map(),exceptions=[],checks=[],screenshots=[];
@@ -17,7 +20,7 @@ async function evaluate(expression){const r=await call('Runtime.evaluate',{expre
 const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 function check(name,pass,detail){checks.push({name,pass:!!pass,...(detail===undefined?{}:{detail})});console.log(`${pass?'PASS':'FAIL'} ${name}${!pass&&detail?' '+JSON.stringify(detail):''}`)}
 async function click(selector){await evaluate(`document.querySelector(${JSON.stringify(selector)}).click()`);await pause(100)}
-async function shot(name){const r=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});const out=path.resolve(`tmp/v304-${name}.png`);await writeFile(out,Buffer.from(r.data,'base64'));screenshots.push(out)}
+async function shot(name){const r=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});const out=path.resolve(`tmp/${screenshotPrefix}-${name}.png`);await writeFile(out,Buffer.from(r.data,'base64'));screenshots.push(out)}
 async function waitFor(expression,timeout=45000){const until=Date.now()+timeout;while(Date.now()<until){if(await evaluate(expression))return true;await pause(300)}return false}
 async function layout(selector){return evaluate(`(()=>{const e=document.querySelector(${JSON.stringify(selector)}),r=e.getBoundingClientRect();return{left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width,height:r.height,overflow:e.scrollWidth>e.clientWidth+2,visible:!!e.getClientRects().length,inside:r.left>=0&&r.right<=innerWidth+1&&r.top>=0&&r.bottom<=innerHeight+1}})()`)}
 async function closeDialogs(){await evaluate(`document.querySelectorAll('dialog[open]').forEach(d=>d.close())`)}
@@ -32,14 +35,18 @@ async function validateSVG(text,label){
 
 await mkdir('tmp',{recursive:true});
 try{
-  await call('Runtime.enable');await call('Page.enable');await call('Performance.enable');
+  await call('Runtime.enable');await call('Page.enable');await call('Performance.enable');await call('Network.enable');await call('Network.setCacheDisabled',{cacheDisabled:true});
   for(const mode of ['desktop','mobile']){
     await closeDialogs();
     await call('Emulation.setDeviceMetricsOverride',{width:mode==='mobile'?390:1440,height:mode==='mobile'?844:1000,deviceScaleFactor:1,mobile:mode==='mobile'});
-    await evaluate(`history.replaceState(null,'',location.pathname+'?v=3.0.4')`);
+    await evaluate(`history.replaceState(null,'',location.pathname+'?v=${assetRevision}')`);
     await call('Page.reload',{ignoreCache:true});
     const ready=await waitFor(`document.querySelector('#model-loading')?.hidden===true&&document.querySelectorAll('[data-fitout-card]').length===3`);
     check(`${mode}: 3D loaded without fallback`,ready&&await evaluate(`document.querySelector('#model-fallback').hidden`));
+    if(requireImages){
+      const actualHashes=await evaluate(`(async()=>Object.fromEntries(await Promise.all(${JSON.stringify(Object.keys(imageHashes))}.map(async path=>{const u=new URL(path,document.baseURI);u.searchParams.set('v',${JSON.stringify(assetRevision)});const response=await fetch(u,{cache:'no-store'});const bytes=await response.arrayBuffer();return[path,[...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(n=>n.toString(16).padStart(2,'0')).join('')]}))))()`);
+      for(const [file,hash]of Object.entries(imageHashes))check(`${mode}: browser/disk SHA ${file}`,actualHashes[file]===hash,{expected:hash,actual:actualHashes[file]});
+    }
     await pause(1000);
     check(`${mode}: no document overflow`,await evaluate(`document.documentElement.scrollWidth<=innerWidth+2`));
     check(`${mode}: bay room-card entry in viewport`,(await layout('#view-bay-fitout')).inside,await layout('#view-bay-fitout'));
@@ -58,7 +65,9 @@ try{
     const initial=await layout('#bay-dialog');check(`${mode}: dialog fits viewport`,initial.inside&&!initial.overflow,initial);
     const refs=await evaluate(`([...document.querySelectorAll('#bay-dialog a[href]')].map(a=>({href:a.href,target:a.target,rel:a.rel})))`);
     check(`${mode}: all ten original links safe/exact`,refs.length===source.designReferences.length&&source.designReferences.every(r=>refs.some(a=>a.href===r.url&&a.target==='_blank'&&a.rel.includes('noopener')&&a.rel.includes('noreferrer'))),refs);
-    check(`${mode}: main room tradeoff visible in text`,await evaluate(`(()=>{const t=document.querySelector('[data-fitout-card="bay_a_office_vanity"]').textContent;return t.includes('600')&&t.includes('20mm')&&t.includes('代价')})()`));
+    const masterFitout=source.bayFitouts.find(f=>f.roomId==='room_a');
+    check(`${mode}: current master summary and conditions shown`,await evaluate(`(()=>{const t=document.querySelector('[data-fitout-card="${masterFitout.id}"]').textContent;return ${JSON.stringify([masterFitout.summary,...masterFitout.dimensions,...masterFitout.conditions])}.every(text=>t.includes(text))})()`));
+    check(`${mode}: master has one desktop and chair`,await evaluate(`(()=>{const p=[...document.querySelectorAll('#floor-plan [data-fitout-id="${masterFitout.id}"]')];return p.filter(e=>e.dataset.fitoutRole==='desktop').length===1&&p.filter(e=>e.dataset.fitoutRole==='chair').length===1})()`));
     check(`${mode}: low tea seat clearly conditional`,await evaluate(`(()=>{const t=document.querySelector('[data-fitout-card="bay_b_tea"]').textContent;return t.includes('430')&&t.includes('900')&&t.includes('取消坐人')&&t.includes('条件')})()`));
     if(requireImages){
       const visibleImages=`[...document.querySelectorAll('#bay-fitout-cards img')].filter(i=>{const r=i.getBoundingClientRect();return r.bottom>0&&r.top<innerHeight})`;
@@ -79,6 +88,8 @@ try{
       await shot(`${mode}-${fitout.id}-conditions`);
       await click(`[data-fitout-room="${fitout.roomId}"]`);await pause(1000);
       check(`${mode}: ${fitout.id} returns to matching model`,await evaluate(`!document.querySelector('#bay-dialog').open&&location.hash==='#${fitout.roomId}'&&document.querySelector('#workspace').dataset.view==='model'`));
+      if(fitout.roomId==='room_a')check(`${mode}: master room card follows source summary`,await evaluate(`document.querySelector('#card-description').textContent.includes(${JSON.stringify(fitout.summary)})`));
+      if(fitout.roomId==='room_b')check(`${mode}: B room card confirms ordinary desk removal`,await evaluate(`document.querySelector('#card-description').textContent.includes('取消独立书桌和办公椅')&&!document.querySelector('#card-description').textContent.includes('独立书桌保留')`));
       check(`${mode}: ${fitout.id} room card action visible`,(await layout('#view-bay-fitout')).inside,await layout('#view-bay-fitout'));
       await click('#view-bay-fitout');
       check(`${mode}: matching card expanded`,await evaluate(`document.querySelector('[data-fitout-card="${fitout.id}"]').classList.contains('is-current')&&document.querySelector('[data-fitout-card="${fitout.id}"] details').open`));
@@ -93,7 +104,7 @@ try{
   check('no uncaught browser exceptions',exceptions.length===0,exceptions);
 }catch(error){checks.push({name:'test runner completed',pass:false,detail:error.stack});console.error(error.stack)}
 finally{
-  await closeDialogs().catch(()=>{});await call('Emulation.clearDeviceMetricsOverride').catch(()=>{});ws.close();
-  const report={at:new Date().toISOString(),port,tabId,requireImages,passed:checks.every(c=>c.pass),checks,exceptions,screenshots};
+  await closeDialogs().catch(()=>{});await call('Emulation.clearDeviceMetricsOverride').catch(()=>{});await call('Network.setCacheDisabled',{cacheDisabled:false}).catch(()=>{});ws.close();
+  const report={at:new Date().toISOString(),version:assetRevision,port,tabId,requireImages,passed:checks.every(c=>c.pass),checks,exceptions,screenshots};
   const reportPath=path.resolve(`tmp/qa-bay-ui${requireImages?'-images':''}.json`);await writeFile(reportPath,JSON.stringify(report,null,2));console.log(JSON.stringify({passed:report.passed,checks:checks.length,failures:checks.filter(c=>!c.pass),report:reportPath,screenshots},null,2));if(!report.passed)process.exitCode=1;
 }

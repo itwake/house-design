@@ -20,7 +20,7 @@ EXPECTED_ROOM_AREAS = {'room_b': 10.231, 'room_a': 10.850, 'room_c': 7.5886,
 BATH_WALLS = {'w_bath_middle': (12, [416, 469, 516, 469]),
               'w_bath_middle_step': (21, [516, 469, 516, 493]),
               'w_bath_middle_east': (22, [516, 493, 681, 493])}
-BED_SPECS = {'bed_a': {'bbox': [465, 60, 210, 160], 'headDirection': 'east',
+BED_SPECS = {'bed_a': {'bbox': [465, 82, 210, 160], 'headDirection': 'east',
                        'frameWidthCm': 160, 'frameLengthCm': 210, 'mattressWidthCm': 150, 'mattressLengthCm': 200},
              'bed_b': {'bbox': [20, 55, 210, 145], 'headDirection': 'west',
                        'frameWidthCm': 145, 'frameLengthCm': 210, 'mattressWidthCm': 135, 'mattressLengthCm': 200}}

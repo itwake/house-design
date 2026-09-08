@@ -757,15 +757,31 @@ def bay_fitout_part(p):
         # Build all chair parts facing north, then rotate the whole assembly.
         vertical=face in ("east","west")
         cw,cd=(d,w) if vertical else (w,d)
-        seat_z=min(.445,h*.56)
+        seat_thickness=.06
+        # seatHeightCm denotes the FINISHED cushion top, not its bottom.
+        # Existing unconfigured chairs keep their previously audited height.
+        seat_top=float(p["seatHeightCm"])/100 if "seatHeightCm" in p else min(.445,h*.56)+seat_thickness
+        seat_z=seat_top-seat_thickness
+        if seat_z<=.10 or h-seat_z-.10<=.10:
+            raise ValueError(f"{name}: seat height leaves no credible legs/backrest inside its envelope")
         before=set(bpy.context.scene.objects)
-        box(name+" padded seat",cw/2,cd/2,z+seat_z,cw-.045,cd-.045,.06,"Linen",.025)
+        box(name+" padded seat",cw/2,cd/2,z+seat_z,cw-.045,cd-.045,seat_thickness,"Linen",.025)
         box(name+" rounded backrest",cw/2,cd-.033,z+seat_z+.10,cw-.035,.044,h-seat_z-.10,"OakLight",.021)
         for sx in (.035,cw-.035):
             for sy in (.045,cd-.045):
                 box(name+" slim metal leg",sx,sy,z,.020,.020,seat_z,"WarmGrayMetal",.002)
+        if "seatHeightCm" in p:
+            # This explicitly configured counter chair needs a real back-to-
+            # seat connection. Overlap its rear legs by 10 mm and its back
+            # panel by 20 mm; ordinary previously rendered chairs are kept.
+            for sx in (.035,cw-.035):
+                box(name+" rear backrest connecting post",sx,cd-.045,z+seat_z-.010,.020,.020,.130,"WarmGrayMetal",.002)
         if role=="child_chair" or p.get("footrest"):
-            block(name+" illustrative foot support",.045,.035,z+.17,cw-.09,.15,.025,mat="OakLight",bevel=.008)
+            # The configurable dimension is also a finished TOP elevation.
+            foot_top=float(p.get("footrestHeightCm",19.5))/100
+            if not .05<foot_top<seat_z-.08:
+                raise ValueError(f"{name}: footrest height is incompatible with the finished seat height")
+            block(name+" illustrative foot support",.045,.035,z+foot_top-.025,cw-.09,.15,.025,mat="OakLight",bevel=.008)
         angle={"north":0,"south":math.pi,"east":-math.pi/2,"west":math.pi/2}[face]
         transform=(Matrix.Translation(Vector((x+w/2,-(y+d/2),0)))
                    @ Matrix.Rotation(angle,4,"Z")
@@ -855,7 +871,17 @@ def bay_desk_accessories(p):
     def small(suffix,role,along,cross,sw,sd,sh):
         child={"id":p["id"]+" / "+suffix,"role":role,"x":x+cross if vertical else x+along,"y":y+along if vertical else y+cross,"w":sd if vertical else sw,"d":sw if vertical else sd,"zCm":z,"hCm":min(h,sh),"face":face}
         bay_small_object(child)
-    if span>140:
+    preset=p.get("preset")
+    if preset=="office_vanity":
+        # One side-facing workstation on a deep continuous bay counter.
+        # Do not infer two users merely because its cross-depth is 1.22 m.
+        if span<50 or depth<95:
+            raise ValueError(f"{p['id']}: single-user side-facing accessory envelope is too small")
+        small("single user laptop","laptop",8,3,34,25,24)
+        small("single task light","task_lamp",2,36,13,13,29)
+        small("movable vanity mirror","mirror",span-22,30,20,13,28)
+        small("linen notebook","notebook",8,70,24,18,1.6)
+    elif preset=="family_desk" or span>140:
         # Two stations, one notebook-based: this is not a claimed ergonomic
         # prescription for any child's age/size or prolonged screen use.
         small("adult laptop","laptop",18,13,34,25,24)
@@ -890,6 +916,9 @@ def bay_fitouts(data):
                 obj["fitoutType"]=fitout["type"]
                 obj["designStatus"]=str(fitout.get("status","conditional design proposal"))
                 if "face" in p:obj["furnitureFace"]=p["face"]
+                for dimension in ("seatHeightCm","footrestHeightCm"):
+                    if dimension in p:obj[dimension]=float(p[dimension])
+                if "preset" in p:obj["fitoutPreset"]=p["preset"]
                 if obj.type=="MESH":
                     for point in obj.bound_box:
                         q=obj.matrix_world @ Vector(point)
@@ -1229,10 +1258,10 @@ def polygon_area(pts):
 
 BAY_DESCRIPTIONS = {
     "living":"奶油布艺、浅橡木与圆形双茶几；电视仍在北侧实墙，西侧为外凸飘窗及并肩学习办公条件方案。",
-    "master":"1500×2000 mm 床垫配 1600×2100 mm 床架，床头向东、脚向西；南侧套内门进入主卫，北端让位给窗侧办公梳妆桌。",
-    "bedroom-b":"1350×2000 mm 床垫配 1450×2100 mm 床架，床头向西、脚向东；南墙北向移门衣柜及东北独立书桌均保留。北飘窗低台茶座是附条件展示，非实测现状。",
+    "master":"1500×2000 mm 床垫配 1600×2100 mm 床架，床头向东、脚向西；北飘窗仅设一张连续高台和一把匹配椅，取消独立书桌，不挖原台借腿位。南侧套内门进入主卫。",
+    "bedroom-b":"1350×2000 mm 床垫配 1450×2100 mm 床架，床头向西、脚向东；南墙北向移门衣柜保留，普通书桌与书椅已取消。北飘窗低台茶座仍为附条件展示，非实测现状。",
 }
-BAY_NOTE="三处飘窗的 600 mm 外挑和实心侧返边均为待复尺暂定表达，不增加房间净面积。主卧、客厅台高暂按 900 mm；次卧茶座的 430 mm 低台仅在结构、承载与防坠条件通过时成立，不表示可以降低原结构。细金属框和无绳卷帘为拟更换设计，外立面许可与窗扇活动范围未核验。"
+BAY_NOTE="三处飘窗的 600 mm 外挑和实心侧返边均为待复尺暂定表达，不增加房间净面积。主卧以未实测的 900 mm 原台为条件，做约 930 mm 完成面（模型 931 mm）的一体连续高台，仅配一把完成座高 640 mm、脚踏高 250 mm 的椅；不是 750 mm 普通书桌，原台不挖腿洞。室内内挑及支撑承载需厂家和结构核验。客厅原台仍暂按 900 mm；次卧茶座的 430 mm 低台仅在结构、承载与防坠条件通过时成立，不表示可以降低原结构。细金属框和无绳卷帘为拟更换设计，外立面许可与窗扇活动范围未核验。"
 
 
 def manifest(data, openings, src):

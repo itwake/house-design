@@ -30,7 +30,7 @@ const coordinates = (tag, names) => names.map(name => Number(attribute(tag, name
 const one = (html, marker) => { const found = tags(html, marker); assert.equal(found.length, 1, marker); return found[0]; };
 
 for (const expected of [
-  { id: 'bed_a', direction: 'east', mattress: [467.5, 65, 200, 150], headX: 671.25 },
+  { id: 'bed_a', direction: 'east', mattress: [467.5, 87, 200, 150], headX: 671.25 },
   { id: 'bed_b', direction: 'west', mattress: [27.5, 60, 200, 135], headX: 23.75 },
 ]) {
   const item = data.furniture.find(f => f.id === expected.id);
@@ -61,7 +61,7 @@ assert.equal(attribute(one(svg, 'data-vanity-id="vanity_main"'), 'data-vanity-ba
 assert.equal(attribute(one(svg, 'data-vanity-id="vanity_guest"'), 'data-vanity-back'), 'north');
 assert.equal(tags(svg, 'data-plan-room=').length, data.rooms.filter(r => r.id !== 'dining').length);
 const fitoutParts = data.bayFitouts.flatMap(fitout => fitout.parts.map(part => ({fitout,part})));
-assert.equal(fitoutParts.length,15,'Three bay functions retain fifteen explicit 3D component envelopes');
+assert.equal(fitoutParts.length,13,'Three bay functions retain thirteen explicit 3D component envelopes');
 assert.equal(tags(svg,'data-part-id=').length,fitoutParts.length,'Each actual part has exactly one source rectangle');
 for(const {fitout,part} of fitoutParts){
   const rect=one(svg,`data-part-id="${part.id}"`);
@@ -75,8 +75,8 @@ for(const {fitout,part} of fitoutParts){
   if(part.role==='chair'){
     const lines=tags(actual,'<line');
     assert.equal(lines.length,1,`${part.id} one actual backrest line`);
-    const expected=part.face==='north'?[part.x+5,part.y+part.d-3,part.x+part.w-5,part.y+part.d-3]:[part.x+part.w-3,part.y+5,part.x+part.w-3,part.y+part.d-5];
-    assert.deepEqual(coordinates(lines[0],['x1','y1','x2','y2']),expected,`${part.id} back is opposite north/west seating face`);
+    const expected=part.face==='east'?[part.x+3,part.y+5,part.x+3,part.y+part.d-5]:[part.x+part.w-3,part.y+5,part.x+part.w-3,part.y+part.d-5];
+    assert.deepEqual(coordinates(lines[0],['x1','y1','x2','y2']),expected,`${part.id} back is opposite east/west seating face`);
   }
   if(['desk_support','desk_accessories','ledge_objects'].includes(part.role)){
     assert.equal(attribute(rect,'fill'),'none',`${part.id} empty aggregate envelope is not drawn as solid storage`);
@@ -88,4 +88,15 @@ assert.deepEqual([teaWindow.sillCm,teaWindow.heightCm,teaWindow.baselineSillCm,t
 assert.ok(teaWindow.designScenario);
 assert.equal(data.bayDesign.measured,false);
 assert.ok(svg.includes('条件设计，非施工图'),'Actual SVG exports conditional-design limitations');
-console.log('PASS: actual planFurniture + makePlan; exact beds, stepped baths, suite north door, 3 bays, vanity orientation, 15 bay part dimensions / heights and three true chair orientations.');
+const masterParts=data.bayFitouts.find(f=>f.roomId==='room_a').parts;
+assert.deepEqual(masterParts.map(p=>p.id).sort(),['a_accessories','a_chair','a_desktop','a_support'],'No detached master desk or duplicate rear ledge');
+assert.equal(masterParts.filter(p=>p.role==='desktop').length,1);
+assert.equal(masterParts.filter(p=>p.role==='chair').length,1);
+const masterTop=one(svg,'data-part-id="a_desktop"');
+assert.deepEqual(coordinates(masterTop,['x','y','width','height','data-z-cm','data-h-cm']),[432,-53,146,130,90.1,3],'One actual SVG top connects bay to 65 cm interior overhang without lowering the solid sill');
+for(const removed of ['次卧书桌','次卧书椅']){
+  assert.ok(!data.furniture.some(f=>f.name===removed),`${removed} removed from shared source`);
+  assert.ok(!svg.includes(removed),`${removed} removed from actual generated SVG`);
+}
+assert.ok(!svg.includes('data-part-id="a_ledge"')&&!svg.includes('data-part-id="a_ledge_objects"'));
+console.log('PASS: actual planFurniture + makePlan; exact east/west beds, stepped baths, suite door, 3 bays, 13 bay parts, one continuous master high table / chair and B desk deletion.');
