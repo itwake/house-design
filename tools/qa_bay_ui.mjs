@@ -64,7 +64,8 @@ try{
     await click('[data-view="model"]');await click('#view-bay-fitout');
     const initial=await layout('#bay-dialog');check(`${mode}: dialog fits viewport`,initial.inside&&!initial.overflow,initial);
     const refs=await evaluate(`([...document.querySelectorAll('#bay-dialog a[href]')].map(a=>({href:a.href,target:a.target,rel:a.rel})))`);
-    check(`${mode}: all ten original links safe/exact`,refs.length===source.designReferences.length&&source.designReferences.every(r=>refs.some(a=>a.href===r.url&&a.target==='_blank'&&a.rel.includes('noopener')&&a.rel.includes('noreferrer'))),refs);
+    const storageRefIds=new Set((source.storageFitouts||[]).flatMap(f=>f.references||[])),bayRefs=source.designReferences.filter(r=>!storageRefIds.has(r.id));
+    check(`${mode}: bay references safe/exact, storage references separate`,refs.length===bayRefs.length&&bayRefs.every(r=>refs.some(a=>a.href===r.url&&a.target==='_blank'&&a.rel.includes('noopener')&&a.rel.includes('noreferrer'))),refs);
     const masterFitout=source.bayFitouts.find(f=>f.roomId==='room_a');
     check(`${mode}: current master summary and conditions shown`,await evaluate(`(()=>{const t=document.querySelector('[data-fitout-card="${masterFitout.id}"]').textContent;return ${JSON.stringify([masterFitout.summary,...masterFitout.dimensions,...masterFitout.conditions])}.every(text=>t.includes(text))})()`));
     check(`${mode}: master has one desktop and chair`,await evaluate(`(()=>{const p=[...document.querySelectorAll('#floor-plan [data-fitout-id="${masterFitout.id}"]')];return p.filter(e=>e.dataset.fitoutRole==='desktop').length===1&&p.filter(e=>e.dataset.fitoutRole==='chair').length===1})()`));

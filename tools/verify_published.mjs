@@ -9,14 +9,17 @@ const base = 'https://itwake.github.io/house-design/';
 const localData = await readFile(new URL('../models/design-data.json', import.meta.url), 'utf8');
 const sourceSha = createHash('sha256').update(localData.replace(/\r\n/g, '\n')).digest('hex');
 const modelSha = createHash('sha256').update(await readFile(new URL('../models/huiyayuan-wood.glb', import.meta.url))).digest('hex');
-const renderHashes=Object.fromEntries(await Promise.all(['overall','master','bedroom-b','bay-master','bay-tea','bay-living'].map(async name=>{const file=`assets/blender-renders/${name}.jpg`;return[file,createHash('sha256').update(await readFile(new URL('../'+file,import.meta.url))).digest('hex')]})));
+const renderNames=['overall','living','dining','master','bedroom-b','study','kitchen','master-bath','guest-bath','balcony','bay-master','bay-tea','bay-living','entry-storage','sideboard'];
+const renderHashes=Object.fromEntries(await Promise.all(renderNames.map(async name=>{const file=`assets/blender-renders/${name}.jpg`;return[file,createHash('sha256').update(await readFile(new URL('../'+file,import.meta.url))).digest('hex')]})));
+const localDesign=JSON.parse(localData);
+const storageSnapshot=JSON.stringify({design:localDesign.storageDesign,fitouts:localDesign.storageFitouts,furniture:localDesign.furniture.filter(f=>f.storageFitoutId||/^(四人餐桌|餐椅)/.test(f.name||''))});
 const source = await readFile(new URL('../studio.js', import.meta.url), 'utf8');
 const version = source.match(/ASSET_REVISION = '([^']+)'/)[1];
 const targets = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
 const target = targets.find(t => t.id === tabId && t.url.startsWith(base));
 if (!target) throw new Error('Refusing to inspect a non-project or unpublished tab');
 const paths = ['', 'studio.js', 'studio.css', 'models/huiyayuan-wood.glb', 'models/huiyayuan-wood.blend', 'models/design-data.json', 'models/scene-manifest.json',
-  ...['overall', 'living', 'dining', 'master', 'bedroom-b', 'study', 'kitchen', 'master-bath', 'guest-bath', 'balcony', 'bay-master', 'bay-tea', 'bay-living'].map(name => `assets/blender-renders/${name}.jpg`)];
+  ...renderNames.map(name => `assets/blender-renders/${name}.jpg`)];
 const expression = `(async () => {
   const url = path => { const u = new URL(path, ${JSON.stringify(base)}); u.searchParams.set('v', ${JSON.stringify(version)}); return u; };
   const checks = await Promise.all(${JSON.stringify(paths)}.map(async path => { try { const r = await fetch(url(path), {method:'HEAD', cache:'no-store', signal:AbortSignal.timeout(30000)}); return [path, r.status === 200]; } catch { return [path, false]; } }));
@@ -36,6 +39,8 @@ const expression = `(async () => {
   const ordinaryDeskOrChair=f=>/desk|chair|table/i.test([f.id,f.type,f.role].filter(Boolean).join(' '))||/桌|椅/.test(f.name||'');
   checks.push(['master has one integrated desktop', masterParts.filter(p=>p.role==='desktop').length===1], ['master has one chair', masterParts.filter(p=>p.role==='chair').length===1]);
   checks.push(['master has no extra ordinary desk/chair', !d.furniture.some(f=>ordinaryDeskOrChair(f)&&insideRoom(f,'room_a'))], ['bedroom B has no ordinary desk/chair', !d.furniture.some(f=>ordinaryDeskOrChair(f)&&insideRoom(f,'room_b'))]);
+  const storageActual=JSON.stringify({design:d.storageDesign,fitouts:d.storageFitouts,furniture:d.furniture.filter(f=>f.storageFitoutId||/^(四人餐桌|餐椅)/.test(f.name||''))});
+  checks.push(['storage data and furniture match local',storageActual===${JSON.stringify(storageSnapshot)}],['two storage fitouts / ten same-source parts',d.storageFitouts?.length===2&&d.storageFitouts.flatMap(f=>f.parts).length===10],['storage explicitly unmeasured',d.storageDesign?.measured===false],['two storage render cameras',m.storageDetails?.length===2&&m.storageDetails.every(x=>x.interiorCamera&&x.render)]);
   return {version:${JSON.stringify(version)}, checks};
 })()`;
 const ws = new WebSocket(target.webSocketDebuggerUrl);

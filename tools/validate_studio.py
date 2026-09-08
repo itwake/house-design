@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from geometry_paths import GUEST_PATH, MASTER_PATH, path_clearance, solid_footprints
 from validate_bay_fitouts import check_fitout_assets, check_fitout_plan
+from validate_storage_fitouts import check_storage_assets, check_storage_plan
 
 BAY_DIRECTIONS = {'window_b': [0, -1], 'window_a': [0, -1], 'window_living_west': [-1, 0]}
 EXPECTED_ROOM_AREAS = {'room_b': 10.231, 'room_a': 10.850, 'room_c': 7.5886,
@@ -362,6 +363,7 @@ def run(require_assets=False):
     beds = check_bed_plan(data, errors, checks)
     check_bath_paths(data, errors, checks)
     check_fitout_plan(data, errors, checks)
+    check_storage_plan(data, errors, checks)
     room_ids = {r['id'] for r in rooms}
     assert {'room_a', 'room_b', 'room_c', 'bath_1', 'bath_2', 'living', 'kitchen', 'balcony'} <= room_ids
     for r in rooms:
@@ -441,6 +443,7 @@ def run(require_assets=False):
         manifest = json.loads((ROOT / 'models/scene-manifest.json').read_text(encoding='utf-8'))
         check_bay_assets(glb, bay_geometry, manifest, errors, checks)
         check_fitout_assets(data, glb, raw, manifest, ROOT, world_mesh_bounds, node_matrix, multiply_matrices, errors, checks)
+        check_storage_assets(data, glb, raw, manifest, ROOT, world_mesh_bounds, node_matrix, multiply_matrices, errors, checks)
         assert len(manifest['rooms']) >= 8
         source_hash = hashlib.sha256((ROOT / 'models/design-data.json').read_bytes().replace(b'\r\n', b'\n')).hexdigest()
         if manifest.get('sourceSha256') != source_hash:

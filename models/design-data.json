@@ -1,6 +1,6 @@
 {
   "name": "荟雅苑 104.83㎡ · 28F",
-  "version": "V3.0.5 Blender 原木风 · 主卧一体飘窗桌、次卧无独立桌椅（条件方案）",
+  "version": "V3.0.6 Blender 原木风 · 玄关鞋柜与餐边柜专项设计（条件方案）",
   "unit": "cm",
   "north": "图上方（临道路侧）",
   "palette": [
@@ -949,8 +949,8 @@
     },
     {
       "name": "四人餐桌",
-      "x": 290,
-      "y": 1150,
+      "x": 330,
+      "y": 1110,
       "w": 120,
       "d": 70,
       "a": 0,
@@ -958,8 +958,8 @@
     },
     {
       "name": "餐椅北1",
-      "x": 298,
-      "y": 1092.5,
+      "x": 338,
+      "y": 1052.5,
       "w": 44,
       "d": 45,
       "a": 0,
@@ -968,8 +968,8 @@
     },
     {
       "name": "餐椅北2",
-      "x": 358,
-      "y": 1092.5,
+      "x": 398,
+      "y": 1052.5,
       "w": 44,
       "d": 45,
       "a": 0,
@@ -978,8 +978,8 @@
     },
     {
       "name": "餐椅南1",
-      "x": 298,
-      "y": 1232.5,
+      "x": 338,
+      "y": 1192.5,
       "w": 44,
       "d": 45,
       "a": 0,
@@ -988,8 +988,8 @@
     },
     {
       "name": "餐椅南2",
-      "x": 358,
-      "y": 1232.5,
+      "x": 398,
+      "y": 1192.5,
       "w": 44,
       "d": 45,
       "a": 0,
@@ -998,23 +998,48 @@
     },
     {
       "name": "玄关柜",
+      "id": "entry_storage",
+      "storageFitoutId": "entry_shoe_station",
       "x": 212.5,
       "y": 1130,
-      "w": 35,
-      "d": 180,
+      "w": 40,
+      "d": 175,
+      "heightCm": 250,
       "a": 0,
       "tone": "wood",
-      "face": "east"
+      "face": "east",
+      "doorStyle": "sliding",
+      "notes": "400mm外深、分层鞋柜与中部钥匙格；内部净深需扣除背板及移门轨道。底部常鞋区有落地侧板支撑，不伪装整柜无支承悬浮。"
     },
     {
       "name": "餐边柜",
+      "id": "dining_sideboard",
+      "storageFitoutId": "dining_sideboard_wall",
       "x": 212.5,
       "y": 960,
-      "w": 35,
+      "w": 40,
       "d": 140,
+      "heightCm": 250,
       "a": 0,
       "tone": "wood",
-      "face": "east"
+      "face": "east",
+      "doorStyle": "sliding",
+      "notes": "1400×400底柜、850高干式饮品台、1500起280深上柜。底柜移门，小抽屉伸出最多250mm；不默认放得下咖啡机、净饮机或蒸烤电器。"
+    },
+    {
+      "name": "玄关换鞋凳",
+      "id": "entry_bench",
+      "storageFitoutId": "entry_shoe_station",
+      "x": 212.5,
+      "y": 1305,
+      "w": 40,
+      "d": 80,
+      "heightCm": 235,
+      "seatHeightCm": 45,
+      "a": 0,
+      "tone": "fabric",
+      "face": "east",
+      "notes": "800×400单人软垫凳，完成坐高450mm，木背板配镜/挂钩至2350mm；凳下开放常鞋位，支撑与承载待厂家深化。"
     },
     {
       "name": "厨房南侧地柜",
@@ -1439,6 +1464,7 @@
     "旧V2 AI卧室图误把俯视地面视为后墙，不作为V3构造或照明依据。",
     "V3.0.4三处功能件均由bayFitouts厘米数据生成2D、Blender和GLB；保留墙体、三飘窗外凸、主卫套内门、两卫阶梯及东西向床头。桌下腿位全部在室内一侧，不计入实心台体。",
     "V3.0.5按用户要求删除主卧独立桌与次卧独立桌椅。主卧仅一块与飘窗连成整体的台面、一把西侧向东配椅；床南移220mm、衣柜南移250mm让位，床头方向及所有墙窗不变。主卧高台与高椅是未实测条件示意，非普通750mm书桌已核验。",
+    "V3.0.6参考设计师原作及业主日记优化玄关与餐边柜，网络尺寸不当作本户实测。餐桌及四椅统一东移400mm、北移400mm，吊灯随桌定位；鞋柜前至桌西775mm、桌东至厨房墙800mm。墙窗、两卧与三飘窗功能件不变。",
     "三飘窗细暖灰框和无绳卷帘为拟选内装/窗系统外观，窗框分格与开启方式未经物业、窗系统厂家或结构专业核准；卷帘及普通玻璃并非防坠设施。"
   ],
   "renovationNotes": [
@@ -1499,7 +1525,56 @@
       ]
     }
   ],
+  "storageDesign": {
+    "status":"条件收纳方案，非实测施工图", "units":"cm", "measured":false,
+    "palette":["奶白哑光柜门","浅橡木开放格","浅石色台面","少量暖灰五金"],
+    "referencesNote":"设计师原作、业主实拍与品牌方案图分别标注；借鉴造型和功能，不代表对品牌或施工质量的推荐。",
+    "assumptions":["柜深、高度、现场梁位、墙体承载、踢脚线及电箱/开关位置均待实测，不覆盖检修口。","入户门合页与开启方向未测；先保留两种内开扫门的共同包络，进出时优先推回近门餐椅。","鞋与杯盘是独立封闭柜腔，外观配色统一不等于混放或共用通风。","鞋长需与扣除门轨及背板后的净深核对；不承诺400mm外深能平放所有尺码。","台面仅示意干式饮品区；插座及走线由电气专业深化，电器尺寸、功率、散热与开盖空间逐台核对。"],
+    "clearances":[
+      {"id":"entry_door_sweep","x":390,"y":1295,"w":100,"d":100,"label":"入户两种内开方向的保守扫门包络（待复尺）"},
+      {"id":"shoe_bench_use","x":252.5,"y":1305,"w":60,"d":80,"label":"换鞋膝腿示意区，非额外固定家具"},
+      {"id":"sideboard_drawer_open","x":252.5,"y":960,"w":25,"d":140,"label":"餐边小抽屉最大250mm伸出示意"},
+      {"id":"sideboard_user","x":277.5,"y":960,"w":50,"d":140,"label":"抽屉打开后的单人取物示意带"}
+    ]
+  },
+  "storageFitouts": [
+    {
+      "id":"entry_shoe_station","roomId":"living","type":"entry","title":"玄关 · 回家后的收纳与换鞋",
+      "furnitureIds":["entry_storage","entry_bench"],
+      "summary":"奶白封闭鞋柜、浅木钥匙格与常穿鞋留空；末端加入一人换鞋凳和镜面挂物背板，把换鞋与随手置物留在进门附近。",
+      "dimensions":["鞋柜1750×400，高2500mm；下柜移门","底部200mm常鞋区，中部1000–1500mm置物格","换鞋凳800×400，完成坐高450mm","餐桌东移400、北移400mm后，柜前至桌边775mm"],
+      "conditions":["柜体外深400mm不等于内部净深；按实际鞋长及轨道厚度复核，必要时局部斜层板，暂不承诺鞋量。","凳体采用落地侧板支撑，软垫可拆洗；承载、尖角与墙面固定须厂家深化。","高柜和镜板不得遮电箱、门铃/对讲、开关及检修口；现场量清入户门合页和门套。","换鞋位避开暂定扫门区，但多人同时进出及餐椅退让仍需试摆；不是无障碍方案。","鞋柜独立存鞋，不与餐边杯盘柜共用内腔；图示灯带和插座是设计预留，不代表已确认电路。"],
+      "references":["entry-qiwu-50","entry-owner-61","entry-corten","entry-baili"],
+      "parts":[
+        {"id":"e_shoe_lower","role":"shoe_lower","x":212.5,"y":1130,"w":40,"d":175,"zCm":0,"hCm":100,"face":"east","openBaseCm":20,"doorStyle":"sliding","doorPanels":3},
+        {"id":"e_key_niche","role":"key_niche","x":212.5,"y":1130,"w":40,"d":175,"zCm":100,"hCm":50,"face":"east"},
+        {"id":"e_shoe_upper","role":"upper_cabinet","x":212.5,"y":1130,"w":32,"d":175,"zCm":150,"hCm":100,"face":"east","doorPanels":3},
+        {"id":"e_key_accessories","role":"entry_accessories","x":218,"y":1150,"w":26,"d":135,"zCm":100,"hCm":30,"face":"east"},
+        {"id":"e_bench","role":"shoe_bench","x":212.5,"y":1305,"w":40,"d":80,"zCm":0,"hCm":45,"face":"east","seatHeightCm":45},
+        {"id":"e_bench_back","role":"bench_back","x":212.5,"y":1305,"w":7,"d":80,"zCm":45,"hCm":190,"face":"east"}
+      ]
+    },
+    {
+      "id":"dining_sideboard_wall","roomId":"living","type":"sideboard","title":"餐边 · 杯盘收纳与干式饮品台",
+      "furnitureIds":["dining_sideboard"],
+      "summary":"浅石色留空台面、奶白推拉下柜和退进的浅上柜，加入餐具抽屉与少量开放杯格；用同一套木色和柜门语言连接玄关。",
+      "dimensions":["底柜1400×400，台面高850mm","上柜深280，离地1500至2500mm","中部净留650mm；小抽屉伸出最多250mm","餐桌东侧至厨房墙800mm；沿用1200×700四人桌"],
+      "conditions":["以杯盘、餐具、茶罐和干式备饮为主，没有新增水槽或擅改给排水。","400mm台面不能默认容纳咖啡机/净饮机；须扣后部插头、散热、开盖空间并按实物选型，热蒸汽不能直冲上柜。","下柜推拉门不向过道扫开；上柜门和抽屉动态、身高可达性仍待样板试用。","餐椅最多30cm后退是本轮校核情景；出入时推回近门椅，不能把80cm静态边距当成所有使用状态的通道。","上柜固定、灯带散热、插座回路、防潮易洁台面及柜腔通风须厂家/电气专业深化。"],
+      "references":["entry-qiwu-50","entry-corten","entry-quanyou"],
+      "parts":[
+        {"id":"d_base","role":"sideboard_base","x":212.5,"y":960,"w":40,"d":140,"zCm":0,"hCm":85,"face":"east","doorStyle":"sliding","doorPanels":2,"drawerExtensionCm":25},
+        {"id":"d_niche","role":"sideboard_niche","x":212.5,"y":960,"w":40,"d":140,"zCm":85,"hCm":65,"face":"east"},
+        {"id":"d_upper","role":"upper_cabinet","x":212.5,"y":960,"w":28,"d":140,"zCm":150,"hCm":100,"face":"east","doorPanels":2,"openEndCm":35},
+        {"id":"d_accessories","role":"dining_accessories","x":218,"y":967,"w":29,"d":124,"zCm":85,"hCm":40,"face":"east"}
+      ]
+    }
+  ],
   "designReferences": [
+    {"id":"entry-qiwu-50","title":"50平小暗室改造，打造都市童话小屋","platform":"设计师原作 · 设计本","author":"启物空间设计","url":"https://m.shejiben.com/sjs/2676815/case-4020692-1.html","borrow":"已读图文：白色浅鞋柜配钥匙格与底部常鞋位；餐边柜采用推拉门避让餐桌。原作标鞋柜约350mm深、餐柜1500×350mm。","avoid":"原作尺寸不是本户实测；不复制拆墙、窗下位置、小圆桌或电器适配结论。"},
+    {"id":"entry-owner-61","title":"61粑粑装修记 · 2021年7月11日鞋柜日记","platform":"业主日记 · 土巴兔","author":"61粑粑装修记","url":"https://www.to8to.com/riji/7064430/list_3.html","borrow":"业主实拍白柜、深色置物凹格与底部常鞋位；作者明确自家未做换鞋凳，可借对空间取舍的判断。","avoid":"不能将作者理想功能清单当作已全部落地，也不把350mm外深视为完整净深。"},
+    {"id":"entry-corten","title":"入户柜×餐边柜与多功能换鞋收纳","platform":"品牌官方方案图","author":"联邦高登","url":"https://www.lbcorten.com/article/182.html","borrow":"已看方案图：相同柜门与木色开放格形成整体；局部软垫凳、凳下鞋位与封闭收纳组合。","avoid":"未核实竣工实拍，不复制转角体量、玻璃屏风，也不据此推荐品牌施工服务。"},
+    {"id":"entry-baili","title":"杭州沈女士 · 玄关柜连接餐边柜","platform":"品牌案例图","author":"百丽爱家","url":"https://m.bailiaijia.com/wap/case-detail.aspx?Id=327","borrow":"已看图：浅木凹格、局部换鞋坐位与白柜相连的高低组合。","avoid":"图片不作为本户结构/施工尺寸依据；不复制转角柜、整面酒柜或玻璃隔断。"},
+    {"id":"entry-quanyou","title":"105㎡简约风 · 玄关餐厅一体","platform":"品牌原发布案例","author":"全友家居","url":"https://www.sohu.com/a/805899422_99996662","borrow":"已看官方案例图：鞋柜中部/底部留空，餐边柜用少量木色开放层，统一奶白配色。","avoid":"不照搬L形体量、整面玻璃酒柜；品牌文案不代表独立质量核验。"},
     {"id":"xhs-master-real","title":"卧室飘窗桌的真实使用感受｜附尺寸","platform":"小红书","author":"王子豪装修日记","url":"https://www.xiaohongshu.com/explore/694bd658000000001e015908","borrow":"实拍可见桌面与活动镜共用、理线和可调光帘。","avoid":"作者称有拆台、约900mm椅后通道；本户型不具同样条件，不照搬1920×620×780尺寸或拆台做法。"},
     {"id":"to8to-side-vanity","title":"芝士仙贝的家 · 飘窗侧接梳妆台","platform":"土巴兔装修日记","author":"芝士仙贝","url":"https://www.to8to.com/riji/7106585_6_asc","borrow":"2023-09-22实拍：飘台侧端延出桌面，小凳可收、窄侧收纳。","avoid":"房间尺度及作者不同帖尺寸不一致，仅借功能组织。"},
     {"id":"feimo-side-desk","title":"衣柜、书桌与飘窗一体设计","platform":"人民号","author":"飞墨设计师","url":"https://www.peopleapp.com/rmharticle/30013789490","borrow":"施工图文可见衣柜靠窗端退让，桌面局部借窗侧光。","avoid":"原案例约17㎡卧室，大于本案；不照搬体量及文章对拆改的描述。"},

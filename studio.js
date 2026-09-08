@@ -1,6 +1,6 @@
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
-const ASSET_REVISION = '3.0.5';
+const ASSET_REVISION = '3.0.6';
 const revisedAsset = path => {const url=new URL(path,document.baseURI);url.searchParams.set('v',ASSET_REVISION);return url.href};
 const icons = {
   cube:'<path d="m8 2 6 3.5v5L8 14l-6-3.5v-5L8 2Z M2 5.5 8 9l6-3.5 M8 9v5 M5 3.8l6 3.5"/>',
@@ -28,7 +28,7 @@ $$('[data-icon]').forEach(el => el.insertAdjacentHTML('afterbegin', icon(el.data
 const descriptions = {
   overall:{name:'全屋概览',en:'THE ENTIRE HOME',title:'木色里的日常',icon:'cube',render:'overall',description:'浅橡木、暖白与柔和织物串起三房两卫。恢复完整客餐厅，让自然光在家中连贯流动。',features:['现代原木','三房两卫','同源模型']},
   living:{name:'客厅',en:'LIVING ROOM',title:'窗边一起学习',icon:'sofa',render:'living',description:'西侧飘窗前布置双人长桌，办公与儿童学习共享自然光。电视仍落北侧实墙；桌椅、窗扇与通行空间待现场复核。',features:['双人长桌','窗侧学习','实墙电视']},
-  dining:{name:'玄关 · 餐厅',en:'ENTRY & DINING',title:'围坐，才是家的中心',icon:'dining',render:'dining',description:'餐区就近厨房，玄关收纳沿墙展开。细腿家具与温暖吊灯，让进门、就餐和通行各得其所。',features:['连贯动线','沿墙收纳','暖光餐区']},
+  dining:{name:'玄关 · 餐厅',en:'ENTRY & DINING',title:'把回家与围坐，收得妥帖',icon:'dining',render:'dining',description:'玄关鞋柜与换鞋凳、餐边杯盘柜与干式饮品台沿西墙分区。奶白柜门和浅木开放格保持连贯，鞋与杯盘独立收纳；尺寸与动态通行仍需现场复核。',features:['分层鞋柜','换鞋坐凳','干式饮品台']},
   room_a:{name:'主卧',en:'MASTER BEDROOM',title:'把喧嚣留在窗外',icon:'bed',render:'master',description:'柔和床头与浅木柜体营造安静背景，保留床侧通行。北窗的隔声与遮光，是舒适睡眠的重点。',features:['1500 mm 床','亚麻触感','北向采光']},
   room_b:{name:'次卧 B',en:'SECOND BEDROOM',title:'让睡眠与茶歇更从容',icon:'bed',render:'bedroom-b',description:'保留紧凑床、衣柜与条件飘窗茶座，取消独立书桌和办公椅。卧室入口保持通行，浅色材质减轻压迫感。',features:['1350 mm 床','条件茶座','不设独立书桌']},
   room_c:{name:'书房 · 客卧',en:'STUDY & GUEST',title:'一个人的安静时刻',icon:'study',render:'study',description:'独立日床与书桌适应工作、阅读和偶尔留宿。紧凑尺度用轻巧家具表达，西窗为书房引入自然光。',features:['独立日床','灵活使用','西侧窗光']},
@@ -87,7 +87,8 @@ function renderBayFitouts(){
     return `<article class="bay-fitout-card" data-fitout-card="${escapeHTML(fitout.id)}"><button class="bay-fitout-image" data-fitout-render="${escapeHTML(fitout.id)}" aria-label="放大${escapeHTML(fitout.title)}同源渲染"><img src="${bayRenderPath(fitout)}" alt="${escapeHTML(fitout.title)} · Blender 条件方案渲染" loading="lazy"/><span class="bay-render-pending" hidden>同源细节渲染暂未载入</span><span class="bay-image-label">BLENDER / 同源设计${icon('expand')}</span></button><div class="bay-fitout-copy"><p class="bay-fitout-kicker">0${index+1} / ${escapeHTML(roomDescription(fitout.roomId).name)}</p><h3>${escapeHTML(fitout.title)}</h3><p class="bay-fitout-summary">${escapeHTML(fitout.summary||'')}</p><ul class="bay-fitout-dimensions" aria-label="方案尺寸">${dims.map(text=>`<li>${escapeHTML(text)}</li>`).join('')}</ul><details><summary>适用条件与参考案例 <span>＋</span></summary><div class="bay-fitout-details"><h4>先确认，再落地</h4><ul>${conditions.map(text=>`<li>${escapeHTML(text)}</li>`).join('')}</ul>${refs.length?`<h4>原文参考 · 仅借鉴设计思路</h4><div class="bay-references">${refs.map(ref=>`<article><a href="${escapeHTML(referenceURL(ref.url))}" target="_blank" rel="noopener noreferrer">${escapeHTML(ref.title)} <span>↗</span></a><small>${escapeHTML([ref.platform,ref.author].filter(Boolean).join(' / '))}</small><p><b>借鉴</b>${escapeHTML(detailText(ref.borrow))}</p>${ref.avoid?`<p><b>不照搬</b>${escapeHTML(detailText(ref.avoid))}</p>`:''}</article>`).join('')}</div>`:''}</div></details><button class="bay-room-button" data-fitout-room="${escapeHTML(fitout.roomId)}">在模型中查看${escapeHTML(roomDescription(fitout.roomId).name)} <span>↗</span></button></div></article>`;
   }).join('')||'<p class="bay-empty">飘窗功能数据暂未载入，请稍后刷新。</p>';
   const usedReferences=new Set(fitouts.flatMap(fitout=>fitout.references||[]));
-  $('#bay-safety-references').innerHTML=references.filter(ref=>!usedReferences.has(ref.id)&&referenceURL(ref.url)).map(ref=>`<article><a href="${escapeHTML(referenceURL(ref.url))}" target="_blank" rel="noopener noreferrer">${escapeHTML(ref.author)} · ${escapeHTML(ref.title)} ↗</a><p>${escapeHTML(detailText(ref.borrow))} ${escapeHTML(detailText(ref.avoid))}</p></article>`).join('');
+  const storageReferences=new Set((data?.storageFitouts||[]).flatMap(fitout=>fitout.references||[]));
+  $('#bay-safety-references').innerHTML=references.filter(ref=>!usedReferences.has(ref.id)&&!storageReferences.has(ref.id)&&referenceURL(ref.url)).map(ref=>`<article><a href="${escapeHTML(referenceURL(ref.url))}" target="_blank" rel="noopener noreferrer">${escapeHTML(ref.author)} · ${escapeHTML(ref.title)} ↗</a><p>${escapeHTML(detailText(ref.borrow))} ${escapeHTML(detailText(ref.avoid))}</p></article>`).join('');
   $$('#bay-fitout-cards [data-fitout-room]').forEach(button=>button.addEventListener('click',()=>{$('#bay-dialog').close();selectRoom(button.dataset.fitoutRoom);switchView('model')}));
   $$('#bay-fitout-cards [data-fitout-render]').forEach(button=>button.addEventListener('click',()=>{
     const fitout=fitouts.find(item=>item.id===button.dataset.fitoutRender);if(!fitout||button.classList.contains('unavailable'))return;
@@ -100,6 +101,47 @@ function renderBayFitouts(){
     const failed=()=>{img.hidden=true;button.disabled=true;button.removeAttribute('aria-busy');button.classList.add('unavailable');placeholder.hidden=false;placeholder.textContent='同源细节渲染暂未载入'};
     img.addEventListener('error',failed);img.addEventListener('load',loaded);if(img.complete){if(img.naturalWidth)loaded();else failed()}
   });
+}
+const storageRenderPath=fitout=>revisedAsset(manifest?.storageDetails?.find(detail=>detail.fitoutId===fitout.id)?.render||fitout.render||`assets/blender-renders/${fitout.type==='entry'?'entry-storage':'sideboard'}.jpg`);
+const storageRoleName=role=>({shoe_lower:'闭门鞋柜',key_niche:'钥匙置物格',upper_cabinet:'浅上柜',entry_accessories:'随手置物占位',shoe_bench:'换鞋坐位',bench_back:'镜面 / 挂物背板',sideboard_base:'杯盘下柜',sideboard_niche:'干式饮品格',dining_accessories:'杯具 / 茶罐示意'})[role]||role;
+function storageElevation(fitout){
+  const parts=fitout.parts||[];if(!parts.length)return '';
+  const minY=Math.min(...parts.map(p=>p.y)),maxY=Math.max(...parts.map(p=>p.y+p.d)),top=Math.max(...parts.map(p=>p.zCm+p.hCm)),width=maxY-minY;
+  const shapes=[...parts].sort((a,b)=>a.x-b.x).map(p=>{
+    const x=maxY-p.y-p.d,y=top-p.zCm-p.hCm,open=p.role.includes('niche'),accessory=p.role.includes('accessories'),bench=p.role==='shoe_bench';
+    const fill=accessory?'none':open?'#ddc39c':p.role==='bench_back'?'#e6dcc8':bench?'none':'#f9f6ed';
+    const meta=`data-elevation-part-id="${escapeHTML(p.id)}" data-source-y="${p.y}" data-source-z-cm="${p.zCm}" data-depth-cm="${p.w}"`;
+    let detail='';
+    if(p.role==='shoe_lower'&&p.openBaseCm){const gap=Number(p.openBaseCm);detail+=`<rect x="${x+1}" y="${top-p.zCm-gap}" width="${p.d-2}" height="${gap-1}" fill="#ded4c2" stroke="none"/><line x1="${x}" y1="${top-p.zCm-gap}" x2="${x+p.d}" y2="${top-p.zCm-gap}" stroke="#baa482" stroke-width="1"/><text x="${x+p.d/2}" y="${top-p.zCm-gap/2+3}" text-anchor="middle" font-size="7" fill="#7d6d54">常鞋区 ${gap*10}</text>`}
+    const openEnd=p.role==='upper_cabinet'?Number(p.openEndCm||0):0;
+    if(openEnd){detail+=`<rect data-elevation-open-end x="${x}" y="${y+1}" width="${openEnd}" height="${p.hCm-2}" fill="#ddc39c" stroke="#bda98a" stroke-width=".8"/>`;for(const level of [34,67])detail+=`<line x1="${x+1}" y1="${top-p.zCm-level}" x2="${x+openEnd-1}" y2="${top-p.zCm-level}" stroke="#bda98a" stroke-width="1"/>`;detail+=`<text x="${x+openEnd/2}" y="${y+p.hCm/2}" text-anchor="middle" font-size="6.5" fill="#89795f">杯格 ${openEnd*10}</text>`}
+    if(p.doorPanels&&!open){for(let i=1;i<p.doorPanels;i++)detail+=`<line x1="${x+openEnd+(p.d-openEnd)*i/p.doorPanels}" y1="${y+1}" x2="${x+openEnd+(p.d-openEnd)*i/p.doorPanels}" y2="${top-p.zCm-(p.openBaseCm||0)}" stroke="#d7cbb7" stroke-width=".8"/>`}
+    // Internal drawer fronts follow storage_part() in build_blender.py:
+    // lower edge z+62 cm, front height h-65.5 cm, two closed fronts.
+    if(p.role==='sideboard_base'){for(let i=0;i<2;i++)detail+=`<rect data-elevation-drawer x="${x+p.d*i/2+.7}" y="${top-p.zCm-62-(p.hCm-65.5)}" width="${p.d/2-1.4}" height="${p.hCm-65.5}" fill="#fcfaf3" stroke="#d1c3ac" stroke-width=".8"/>`;detail+=`<text x="${x+p.d/2}" y="${top-p.zCm-70}" text-anchor="middle" font-size="7" fill="#89795f">浅抽屉 · 闭合状态</text>`}
+    if(bench)detail+=`<line x1="${x+1}" y1="${top-Number(p.seatHeightCm||p.hCm)}" x2="${x+p.d-1}" y2="${top-Number(p.seatHeightCm||p.hCm)}" stroke="#b6b498" stroke-width="3"/><text x="${x+p.d/2}" y="${y+17}" text-anchor="middle" font-size="8" fill="#89795f">坐高 ${(p.seatHeightCm||p.hCm)*10}</text>`;
+    const text=!accessory&&!bench?`<text x="${x+openEnd+(p.d-openEnd)/2}" y="${y+p.hCm/2+3}" text-anchor="middle" font-size="${p.d<90?7:9}" fill="#89795f">${storageRoleName(p.role)}</text>`:'';
+    return `<g><title>${escapeHTML(storageRoleName(p.role))}：沿墙${p.d*10}mm / 标高${p.zCm*10}–${(p.zCm+p.hCm)*10}mm / 深${p.w*10}mm</title><rect ${meta} x="${x}" y="${y}" width="${p.d}" height="${p.hCm}" fill="${fill}" stroke="${accessory?'none':'#bda98a'}" stroke-width="1"/>${detail}${text}</g>`;
+  }).join('');
+  return `<figure class="storage-elevation"><figcaption><b>沿墙分层 · 东侧正视</b><span>同源 y / z 投影 · mm</span></figcaption><svg viewBox="-28 -15 ${width+58} ${top+48}" role="img" aria-label="${escapeHTML(fitout.title)}分层正立面，按构件实际长度和标高投影，非施工图"><line x1="-6" y1="${top}" x2="${width+8}" y2="${top}" stroke="#b7aa94" stroke-width="1"/>${shapes}<line x1="0" y1="${top+14}" x2="${width}" y2="${top+14}" stroke="#ae9978" stroke-width=".7"/><text x="${width/2}" y="${top+27}" text-anchor="middle" font-size="9" fill="#8d7959">${width*10} mm · 沿墙总长</text><text x="${width+14}" y="${top/2}" transform="rotate(90 ${width+14} ${top/2})" text-anchor="middle" font-size="8" fill="#8d7959">最高 ${top*10} mm</text></svg><p>示意柜腔分层，不表达板厚、镜面开孔及五金加工；左南右北。</p></figure>`;
+}
+function showStorageFitouts(){const dialog=$('#storage-dialog');if(!dialog.open)dialog.showModal();dialog.scrollTop=0}
+function renderStorageFitouts(){
+  const fitouts=data?.storageFitouts||[],references=data?.designReferences||[];
+  $('#storage-fitout-cards').innerHTML=fitouts.map((fitout,index)=>{
+    const refs=(fitout.references||[]).map(id=>references.find(ref=>ref.id===id)).filter(ref=>ref&&referenceURL(ref.url));
+    return `<article class="bay-fitout-card storage-fitout-card" data-storage-card="${escapeHTML(fitout.id)}"><button class="bay-fitout-image" data-storage-render="${escapeHTML(fitout.id)}" aria-label="放大${escapeHTML(fitout.title)}同源渲染"><img src="${storageRenderPath(fitout)}" alt="${escapeHTML(fitout.title)} · Blender 条件收纳方案" loading="lazy"/><span class="bay-render-pending" hidden></span><span class="bay-image-label">BLENDER / 同源收纳设计${icon('expand')}</span></button><div class="bay-fitout-copy"><p class="bay-fitout-kicker">0${index+1} / ${fitout.type==='entry'?'ARRIVE & UNWIND':'STORE & SERVE'}</p><h3>${escapeHTML(fitout.title)}</h3><p class="bay-fitout-summary">${escapeHTML(fitout.summary||'')}</p><ul class="bay-fitout-dimensions" aria-label="方案尺寸">${(fitout.dimensions||[]).map(text=>`<li>${escapeHTML(detailText(text))}</li>`).join('')}</ul>${storageElevation(fitout)}<details><summary>适用条件与参考原文 <span>＋</span></summary><div class="bay-fitout-details"><h4>现场复核后，再深化下单</h4><ul>${(fitout.conditions||[]).map(text=>`<li>${escapeHTML(detailText(text))}</li>`).join('')}</ul><h4>参考原文 · 借鉴，不照搬</h4><div class="bay-references">${refs.map(ref=>`<article><a href="${escapeHTML(referenceURL(ref.url))}" target="_blank" rel="noopener noreferrer">${escapeHTML(ref.title)} <span>↗</span></a><small>${escapeHTML([ref.platform,ref.author].filter(Boolean).join(' / '))}</small><p><b>借鉴</b>${escapeHTML(detailText(ref.borrow))}</p><p><b>不照搬</b>${escapeHTML(detailText(ref.avoid))}</p></article>`).join('')}</div></div></details><button class="bay-room-button" data-storage-room="${escapeHTML(fitout.id)}">回到玄关 · 餐厅模型 <span>↗</span></button></div></article>`;
+  }).join('')||'<p class="bay-empty">收纳尺寸数据暂未载入，请稍后刷新。</p>';
+  $('#storage-assumptions').innerHTML=(data?.storageDesign?.assumptions||[]).map(text=>`<li>${escapeHTML(detailText(text))}</li>`).join('');
+  $('#storage-reference-note').textContent=data?.storageDesign?.referencesNote||'外部案例仅提供原文链接，不代表施工尺寸或品牌质量推荐。';
+  $$('#storage-fitout-cards [data-storage-room]').forEach(button=>button.addEventListener('click',()=>{$('#storage-dialog').close();selectRoom('dining');switchView('model')}));
+  $$('#storage-fitout-cards [data-storage-render]').forEach(button=>button.addEventListener('click',()=>{const fitout=fitouts.find(item=>item.id===button.dataset.storageRender);if(!fitout||button.disabled)return;$('#large-render').src=storageRenderPath(fitout);$('#large-render').alt=fitout.title+' · 条件收纳方案';$('#large-render-caption').textContent=fitout.title+' · Blender 同源模型 / 条件方案，非施工图';$('#image-dialog').showModal()}));
+  $$('#storage-fitout-cards img').forEach(img=>{const button=img.parentElement,placeholder=img.nextElementSibling;button.disabled=true;button.setAttribute('aria-busy','true');img.style.opacity='0';placeholder.hidden=false;placeholder.textContent='正在载入同源收纳渲染…';const loaded=()=>{img.hidden=false;img.style.opacity='1';button.disabled=false;button.removeAttribute('aria-busy');placeholder.hidden=true},failed=()=>{img.hidden=true;button.disabled=true;button.removeAttribute('aria-busy');placeholder.hidden=false;placeholder.textContent='同源收纳渲染暂未载入'};img.addEventListener('load',loaded);img.addEventListener('error',failed);if(img.complete){if(img.naturalWidth)loaded();else failed()}});
+}
+function diningSpecification(){
+  const fitouts=data?.storageFitouts||[];if(!fitouts.length)return '';
+  const entry=fitouts.find(f=>f.type==='entry'),sideboard=fitouts.find(f=>f.type==='sideboard');
+  return [entry?.summary,sideboard?.summary,entry?.dimensions?.[0],entry?.dimensions?.[2],sideboard?.dimensions?.[0],sideboard?.dimensions?.[1],'餐桌本轮东移400、北移400mm；柜深、通行及开启动态为设计校核，非现场实测。'].filter(Boolean).join(' ');
 }
 function bathroomDescription(id){
   if(!['bath_1','bath_2'].includes(id))return '';
@@ -137,10 +179,11 @@ function selectRoom(id,{updateHash=true,animate=true}={}){
   $('#card-kicker').textContent=content.en;$('#card-title').textContent=content.title;
   const accessNote=id==='bath_1'?'主卫北门通主卧，按套内卫生间使用；门宽与侧面构造待复尺。':id==='bath_2'?'客卫从公共走廊进入；门宽与侧面构造待复尺。':'';
   const bedroom=bedroomSpecification(id),fitout=bayFitoutFor(id);
-  $('#card-description').textContent=[bedroom?.description || bathroomDescription(id) || (fitout?content.description:'') || r?.description || content.description,accessNote,...designNotes().filter(note=>note.roomId===id).map(note=>note.text)].filter(Boolean).join(' ');
+  $('#card-description').textContent=[(id==='dining'?diningSpecification():'') || bedroom?.description || bathroomDescription(id) || (fitout?content.description:'') || r?.description || content.description,accessNote,...designNotes().filter(note=>note.roomId===id).map(note=>note.text)].filter(Boolean).join(' ');
   $('#view-bay-fitout').hidden=!(fitout||id==='overall');
   $('#view-bay-fitout').innerHTML=`${id==='overall'?'三处飘窗功能设计':'飘窗方案 · 尺寸 / 参考'} <span>↗</span>`;
-  $('#room-tags').innerHTML=(bedroom?.features || ((fitout||id==='bath_1'||id==='bath_2')?content.features:(r?.features || content.features))).slice(0,3).map(t=>`<span>${escapeHTML(t)}</span>`).join('');
+  $('#view-storage-fitout').hidden=!['overall','dining','living'].includes(id);
+  $('#room-tags').innerHTML=(bedroom?.features || ((fitout||id==='dining'||id==='bath_1'||id==='bath_2')?content.features:(r?.features || content.features))).slice(0,3).map(t=>`<span>${escapeHTML(t)}</span>`).join('');
   $('#room-preview').src=renderPath(id);$('#room-preview').alt=`${content.name} Blender 渲染预览`;
   $('#enter-room').innerHTML=`${id==='overall'?'探索客厅':'走进'+content.name} <span>↗</span>`;
   $$('#room-nav [data-room]').forEach(btn=>{btn.classList.toggle('active',btn.dataset.room===id);btn.setAttribute('aria-current',String(btn.dataset.room===id))});
@@ -211,6 +254,16 @@ function planFitoutPart(fitout,part){
   return `<g data-fitout-part="${escapeHTML(part.id)}" pointer-events="none"><title>${escapeHTML(fitout.title)} · ${escapeHTML(sourceRole)} · 占位${w*10}×${d*10}mm · 底标高${Number(part.zCm||0)*10}mm / 构件高${Number(part.hCm||0)*10}mm；条件设计，非施工图</title><rect data-fitout-id="${escapeHTML(fitout.id)}" data-part-id="${escapeHTML(part.id)}" data-fitout-role="${escapeHTML(sourceRole)}" data-z-cm="${Number(part.zCm||0)}" data-h-cm="${Number(part.hCm||0)}" x="${x}" y="${y}" width="${w}" height="${d}" rx="${['cushion','chair'].includes(role)?6:2}" fill="${fill}" stroke="${subordinate?'none':'#a38b67'}" stroke-width="1.5"/>${detail}</g>`;
 }
 
+function planStoragePart(fitout,part){
+  if(!['x','y','w','d'].every(key=>Number.isFinite(Number(part[key]))))return '';
+  const {x,y,w,d}=part,role=part.role||'',accessory=role.includes('accessories'),back=role==='bench_back',niche=role.includes('niche'),upper=role==='upper_cabinet',bench=role==='shoe_bench';
+  const fill=accessory||niche?'none':bench?'#b9bca7':back?'#d9c5a4':upper?'#f8f4e9':'#e8dcc6';
+  let detail='';
+  if(bench)detail=`<rect x="${x+3}" y="${y+4}" width="${w-6}" height="${d-8}" rx="4" fill="none" stroke="#f0f0e4" stroke-width="1.4" stroke-dasharray="4 3"/>`;
+  if(part.doorStyle==='sliding')detail+=`<line x1="${x+w-2}" y1="${y+3}" x2="${x+w-2}" y2="${y+d-3}" stroke="#a99069" stroke-width="2"/><path d="M${x+w-6} ${y+d*.3}v${d*.16}m-2-3 2 3 2-3 M${x+w-6} ${y+d*.7}v-${d*.16}m-2 3 2-3 2 3" fill="none" stroke="#a99069" stroke-width="1"/>`;
+  return `<g pointer-events="none"><title>${escapeHTML(fitout.title)} · ${escapeHTML(storageRoleName(role))} · 占位${w*10}×${d*10}mm / 标高${part.zCm*10}–${(part.zCm+part.hCm)*10}mm；设计示意，非施工图</title><rect data-storage-id="${escapeHTML(fitout.id)}" data-storage-part-id="${escapeHTML(part.id)}" data-storage-role="${escapeHTML(role)}" data-z-cm="${part.zCm}" data-h-cm="${part.hCm}" x="${x}" y="${y}" width="${w}" height="${d}" rx="${bench?4:0}" fill="${fill}" fill-opacity="${upper?.3:1}" stroke="${accessory||niche?'none':upper?'#b0a38b':'#b5a181'}" stroke-width="${upper?1:1.4}"${upper?' stroke-dasharray="4 3"':''}/>${detail}</g>`;
+}
+
 function makePlan(){
   const e=data.envelope||[[0,0],[841,0],[841,1401],[0,1401]],xs=e.map(p=>p[0]),ys=e.map(p=>p[1]);
   const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
@@ -233,8 +286,10 @@ function makePlan(){
     const [cx,cy]=r.id==='living'?[410,925]:r.id==='bath_1'?[535,419]:r.id==='bath_2'?[488,578]:centroid(r.points);labels.push(`<text x="${cx}" y="${cy}" text-anchor="middle" font-size="23" fill="#776d5b">${r.id==='living'?'客餐厅 · 过道':roomDescription(r.id).name}</text><text x="${cx}" y="${cy+30}" text-anchor="middle" font-size="16" fill="#a2937b">${(areaOf(r.points)/10000).toFixed(1)} ㎡${r.id==='living'?'（公共区合计）':''}</text>`);
     return `<polygon class="plan-room" data-plan-room="${r.id}" tabindex="0" role="button" aria-label="查看${roomDescription(r.id).name}" points="${r.points.map(p=>p.join(',')).join(' ')}" fill="${fills[r.tone]||'#ece3d5'}"/>`;
   }).join('');
-  const furniture=(data.furniture||[]).map(planFurniture).join('');
+  const storageIds=new Set((data.storageFitouts||[]).map(f=>f.id));
+  const furniture=(data.furniture||[]).filter(f=>!storageIds.has(f.storageFitoutId)).map(planFurniture).join('');
   const fitouts=(data.bayFitouts||[]).flatMap(fitout=>[...(fitout.parts||[])].sort((a,b)=>(a.zCm||0)-(b.zCm||0)).map(part=>planFitoutPart(fitout,part))).join('');
+  const storage=(data.storageFitouts||[]).flatMap(fitout=>[...(fitout.parts||[])].sort((a,b)=>(a.zCm||0)-(b.zCm||0)).map(part=>planStoragePart(fitout,part))).join('');
   const walls=(data.walls||[]).map(w=>`<line x1="${w[0]}" y1="${w[1]}" x2="${w[2]}" y2="${w[3]}" stroke="#8c887b" stroke-width="${wallThickness}" stroke-linecap="square"/>`).join('');
   const opening=(items,color)=>(items||[]).map(w=>`<line x1="${w.x1}" y1="${w.y1}" x2="${w.x2}" y2="${w.y2}" stroke="#fcf8ee" stroke-width="15"/><line data-opening-id="${escapeHTML(w.id)}" x1="${w.x1}" y1="${w.y1}" x2="${w.x2}" y2="${w.y2}" stroke="${color}" stroke-width="4"/>`).join('');
   const bayWindows=bays.map(b=>`<g data-bay-window="${b.window.id}" aria-label="${escapeHTML(b.window.name)}：外凸窗台投影，尺寸待复尺"><line x1="${b.window.x1}" y1="${b.window.y1}" x2="${b.window.x2}" y2="${b.window.y2}" stroke="#fcf8ee" stroke-width="${wallThickness+3}"/><polygon data-bay-sill points="${b.sill.map(p=>p.join(',')).join(' ')}" fill="#e6dac1" stroke="#c5b497" stroke-width="1.5"/>${b.returns.map(points=>`<polygon data-bay-return points="${points.map(p=>p.join(',')).join(' ')}" fill="#8c887b"/>`).join('')}<text x="${b.label[0]}" y="${b.label[1]}" text-anchor="middle" dominant-baseline="middle" font-size="16" fill="#958165"${b.vertical?` transform="rotate(-90 ${b.label[0]} ${b.label[1]})"`:''}>飘窗台</text></g>`).join('');
@@ -242,7 +297,7 @@ function makePlan(){
   const bayFrames=bays.map(b=>`<g data-bay-frame-layer="${escapeHTML(b.window.id)}"><polygon data-bay-front-frame data-frame-finish="${escapeHTML(bayFrameFinish)}" points="${b.frame.map(p=>p.join(',')).join(' ')}" fill="${bayFrameColor}"/><line data-bay-glass x1="${b.frontA[0]}" y1="${b.frontA[1]}" x2="${b.frontB[0]}" y2="${b.frontB[1]}" stroke="#8fa6a8" stroke-width="4"/></g>`).join('');
   const topDimensionY=planMinY-52,leftDimensionX=planMinX-55;
   const dimensions=`<g stroke="#b4a58e" stroke-width="1.5" fill="none"><path d="M0 ${topDimensionY}H687 M0 ${topDimensionY-14}v28 M687 ${topDimensionY-14}v28 M${leftDimensionX} 0v1401 M${leftDimensionX-14} 0h28 M${leftDimensionX-14} 1401h28 M200 1455h641 M200 1441v28 M841 1441v28"/></g><g fill="#9c8d73" font-size="19" text-anchor="middle"><text x="343" y="${topDimensionY-17}">6,870</text><text x="520" y="1484">6,410</text><text x="${leftDimensionX-20}" y="700" transform="rotate(-90 ${leftDimensionX-20} 700)">14,010</text><text x="793" y="${topDimensionY-2}" font-size="23">N ↑</text></g>`;
-  $('#floor-plan').innerHTML=`<svg viewBox="${planMinX-115} ${planMinY-110} ${maxX-planMinX+160} ${maxY-planMinY+215}" role="img" aria-label="由同源尺寸数据绘制的三房两卫平面图，含三处飘窗条件功能方案；窗台投影不计入房间面积">${polygons}${furniture}${walls}${opening((data.windows||[]).filter(w=>w.windowType!=='bay'),'#8fa6a8')}${bayWindows}${opening(data.doors,'#c2a071')}${fitouts}${bayFrames}${labels.join('')}${dimensions}</svg>`;
+  $('#floor-plan').innerHTML=`<svg viewBox="${planMinX-115} ${planMinY-110} ${maxX-planMinX+160} ${maxY-planMinY+215}" role="img" aria-label="由同源尺寸数据绘制的三房两卫平面图，含飘窗与玄关餐边收纳条件方案；窗台投影不计入房间面积">${polygons}${furniture}${storage}${walls}${opening((data.windows||[]).filter(w=>w.windowType!=='bay'),'#8fa6a8')}${bayWindows}${opening(data.doors,'#c2a071')}${fitouts}${bayFrames}${labels.join('')}${dimensions}</svg>`;
   $$('#floor-plan [data-plan-room]').forEach(p=>{p.addEventListener('click',()=>selectRoom(p.dataset.planRoom));p.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectRoom(p.dataset.planRoom)}})});
 }
 
@@ -457,6 +512,7 @@ function bindControls(){
   $('#fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await $('#workspace').requestFullscreen()}catch{toast('当前浏览器不支持全屏，可使用横屏查看')}});
   ['#open-project','#open-dimensions'].forEach(id=>$(id).addEventListener('click',()=>$('#project-dialog').showModal()));
   ['#open-bays','#view-bay-fitout','#project-bay-link'].forEach(id=>$(id).addEventListener('click',()=>{if($('#project-dialog').open)$('#project-dialog').close();showBayFitouts()}));
+  ['#open-storage','#view-storage-fitout','#project-storage-link'].forEach(id=>$(id).addEventListener('click',()=>{if($('#project-dialog').open)$('#project-dialog').close();showStorageFitouts()}));
   $$('.dialog-close').forEach(button=>button.addEventListener('click',()=>button.closest('dialog').close()));
   $$('dialog').forEach(dialog=>dialog.addEventListener('click',event=>{if(event.target===dialog){const rect=dialog.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)dialog.close()}}));
   $('#enlarge-render').addEventListener('click',()=>{$('#large-render').src=renderPath(state.room);$('#large-render').alt=$('#active-render').alt;$('#large-render-caption').textContent=roomDescription(state.room).name+' · Blender 同源模型渲染';$('#image-dialog').showModal()});
@@ -481,7 +537,7 @@ async function init(){
     const base=rawRooms.find(r=>r.id===(id==='dining'?'living':id))||{},extra=manifest.rooms?.find(r=>r.id===id)||{};
     return {...base,...extra,id,name:roomDescription(id).name};
   });
-  makeNavigation();makePlan();renderDesignNotes();renderBayFitouts();selectRoom(descriptions[location.hash.slice(1)]?location.hash.slice(1):'overall',{updateHash:false,animate:false});switchView('model');
+  makeNavigation();makePlan();renderDesignNotes();renderBayFitouts();renderStorageFitouts();selectRoom(descriptions[location.hash.slice(1)]?location.hash.slice(1):'overall',{updateHash:false,animate:false});switchView('model');
   buildScene();
 }
 init();

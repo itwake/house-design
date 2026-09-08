@@ -927,6 +927,182 @@ def bay_fitouts(data):
                             raise ValueError(f"{fitout['id']}/{p['id']}: {obj.name} escapes declared part bounds: {values} versus {lo}..{hi}")
 
 
+def storage_part(p):
+    """Panel-built storage, never a solid placeholder filling the niches.
+
+    Parts include their complete fronts/hardware/props inside declared bounds;
+    an extension allowance is metadata, not an already-open drawer.
+    """
+    x,y,w,d=[float(p[k])/100 for k in ("x","y","w","d")]
+    z,h=float(p.get("zCm",0))/100,float(p["hCm"])/100
+    face=p.get("face","east")
+    role,name=p["role"],p["id"]
+    vertical=face in ("east","west")
+    span,depth=(d,w) if vertical else (w,d)
+    def front(label,along,inset,bottom,width,thickness,height,mat="OakLight",bevel=.003):
+        if face=="east":px,py=x+w-inset,y+along
+        elif face=="west":px,py=x+inset,y+along
+        elif face=="north":px,py=x+along,y+inset
+        else:px,py=x+along,y+d-inset
+        return box(name+" / "+label,px,py,bottom,thickness if vertical else width,width if vertical else thickness,height,mat,bevel)
+    def slab(label,bottom,thickness,mat="OakLight"):
+        return rounded_fitout_slab(name+" / "+label,x,y,bottom,w,d,thickness,.008,mat)
+    def sides(bottom,height):
+        for along in (.010,span-.010):front("end support panel",along,depth/2,bottom,.020,depth,height)
+    def back(bottom,height):front("thin back panel",span/2,depth-.009,bottom,span-.040,.018,height)
+    def shoes(along,bottom=.006):
+        # Footwear is only an indicative pair, not a cabinet capacity claim.
+        for offset in (-.056,.056):
+            px,py=(x+w*.52,y+along+offset) if vertical else (x+along+offset,y+d*.52)
+            box(name+" / visible shoe sole",px,py,z+bottom,.27 if vertical else .095,.095 if vertical else .27,.014,"Cream",.006)
+            sphere(name+" / soft shoe upper",px,py,z+bottom+.048,.128 if vertical else .042,.042 if vertical else .128,.035,"Linen")
+    def sliding(bottom,top,count):
+        clear=span-.040
+        overlap=.026
+        panel=(clear+overlap*(count-1))/count
+        step=panel-overlap
+        for level in (bottom,bottom+top-bottom-.012):
+            for lane in (0,1):front("sliding track",span/2,.014+lane*.024,level,clear,.011,.008,"WarmGrayMetal",.001)
+        for idx in range(count):
+            along=.020+panel/2+idx*step
+            inset=.014+(idx%2)*.024
+            front("cream sliding door",along,inset,bottom+.009,panel,.018,top-bottom-.022,"Cream",.003)
+            front("inset finger pull",along+panel*.31,inset-.010,bottom+(top-bottom)*.57,.014,.002,.12,"WarmGrayMetal",.001)
+    if role=="shoe_lower":
+        open_base=float(p.get("openBaseCm",20))/100
+        sides(z,h-.020)
+        back(z+open_base,h-open_base-.020)
+        for fraction in (1/3,2/3):front("floor-standing base divider",span*fraction,depth/2,z,.020,depth-.025,open_base)
+        slab("shoe compartment base",z+open_base,.020)
+        slab("finished key counter",z+h-.020,.020)
+        for level in (.45,.70):front("shoe shelf",span/2,(depth+.070)/2,z+level,span-.045,depth-.115,.018)
+        sliding(z+open_base+.020,z+h-.020,int(p.get("doorPanels",3)))
+        shoes(span*.18)
+    elif role in ("key_niche","sideboard_niche"):
+        # The lower cabinet supplies the finished floor at exactly z: no
+        # extra slab here may bury the accessories which start at that level.
+        sides(z,h-.018)
+        back(z,h-.018)
+        slab("niche top lining",z+h-.018,.018)
+        front("warm recessed LED channel",span/2,.072,z+h-.023,span-.070,.015,.003,"WarmGrayMetal",.001)
+        front("warm LED diffuser",span/2,.072,z+h-.025,span-.075,.012,.002,"Lamp",.001)
+        front("reserved socket plate",span*.22,depth-.022,z+h*.43,.075,.007,.075,"Cream",.004)
+        for off in (-.016,.016):front("socket indication",span*.22+off,depth-.026,z+h*.43+.029,.007,.002,.018,"WarmGrayMetal",.001)
+    elif role=="upper_cabinet":
+        sides(z,h)
+        back(z+.020,h-.040)
+        slab("upper cabinet bottom",z,.020)
+        slab("upper cabinet top",z+h-.020,.020)
+        open_end=float(p.get("openEndCm",0))/100
+        closed=span-open_end
+        if open_end:
+            front("open cup bay partition",closed,depth/2,z+.020,.020,depth-.025,h-.040)
+        for level in (.34,.67):front("upper interior shelf",span/2,(depth+.035)/2,z+level,span-.045,depth-.085,.018)
+        count=int(p.get("doorPanels",3))
+        for idx in range(count):
+            door_w=(closed-.040)/count
+            along=.020+(idx+.5)*door_w
+            front("cream upper door",along,.016,z+.024,door_w-.005,.018,h-.048,"Cream",.003)
+            front("subtle upper finger edge",along,.005,z+.033,door_w-.035,.003,.012,"WarmGrayMetal",.001)
+        if open_end:
+            for level in (.36,.69):
+                along=closed+open_end*.52
+                px,py=(x+w*.57,y+along) if vertical else (x+along,y+d*.57)
+                cylinder(name+" / open-shelf cup",px,py,z+level,.038,.080,"Ceramic")
+    elif role=="shoe_bench":
+        sides(z,.40)
+        back(z+.08,.30)
+        slab("bench oak seat substrate",z+.40,.025)
+        rounded_fitout_slab(name+" / removable soft seat",x+.003,y+.003,z+.425,w-.006,d-.006,.025,.024,"Linen")
+        shoes(span*.51)
+    elif role=="bench_back":
+        # Seven centimetres is the hardware envelope, NOT a thick solid back.
+        front("slim timber back",span/2,depth-.009,z,span,.018,h,"OakLight",.007)
+        front("rounded vertical mirror frame",span*.30,depth-.022,z+.25,span*.42,.020,1.28,"OakLight",.009)
+        front("east-facing mirror",span*.30,depth-.033,z+.26,span*.42-.020,.002,1.26,"Mirror",.006)
+        for along,bottom in ((span*.69,z+1.20),(span*.85,z+1.45)):
+            front("coat hook backplate",along,depth-.023,bottom,.035,.008,.055,"WarmGrayMetal",.004)
+            front("short projecting coat hook",along,depth-.043,bottom+.012,.014,.042,.013,"WarmGrayMetal",.003)
+    elif role=="sideboard_base":
+        front("recessed toe kick",span/2,depth/2,z,span-.050,depth-.060,.075,"WarmGrayMetal",.003)
+        sides(z+.075,h-.095)
+        back(z+.075,h-.095)
+        slab("base compartment floor",z+.075,.020)
+        slab("warm stone worktop",z+h-.020,.020,"Stone")
+        front("drawer compartment shelf",span/2,(depth+.065)/2,z+.595,span-.045,depth-.110,.018)
+        sliding(z+.095,z+.59,int(p.get("doorPanels",2)))
+        for idx in range(2):
+            along=(idx+.5)*span/2
+            front("closed shallow drawer front",along,.015,z+.620,span/2-.014,.020,h-.655,"Cream",.003)
+            front("closed drawer floor",along,(depth+.065)/2,z+.622,span/2-.034,depth-.105,.016)
+            front("recessed drawer pull",along,.003,z+.790,span/2-.080,.002,.012,"WarmGrayMetal",.001)
+    elif role=="entry_accessories":
+        # A low key tray plus small bag; no objects protrude into the aisle.
+        px,py=x+w*.50,y+d*.22
+        box(name+" / oak key tray",px,py,z,.18,.25,.017,"OakLight",.007)
+        for idx in range(2):
+            rod(name+" / key",(px-.025,py-.045+idx*.045,z+.020),(px+.035,py-.045+idx*.045,z+.020),.004,"Brass")
+        bx,by=x+w*.53,y+d*.75
+        box(name+" / small everyday bag",bx,by,z,.15,.27,.19,"Terracotta",.025)
+        for sign in (-1,1):
+            rod(name+" / bag handle",(bx,by+sign*.072,z+.18),(bx,by+sign*.045,z+.26),.005,"Walnut")
+        rod(name+" / bag handle top",(bx,by-.045,z+.26),(bx,by+.045,z+.26),.005,"Walnut")
+    elif role=="dining_accessories":
+        px,py=x+w*.48,y+d*.22
+        cylinder(name+" / insulated drinks flask",px,py,z,.066,.235,"Cream",r2=.056)
+        cylinder(name+" / flask lid",px,py,z+.235,.057,.018,"OakLight")
+        rod(name+" / flask handle",(px,py+.101,z+.060),(px,py+.101,z+.185),.006,"WarmGrayMetal")
+        rod(name+" / flask handle upper",(px,py+.050,z+.185),(px,py+.101,z+.185),.006,"WarmGrayMetal")
+        rod(name+" / flask handle lower",(px,py+.050,z+.060),(px,py+.101,z+.060),.006,"WarmGrayMetal")
+        px,py=x+w*.51,y+d*.57
+        cylinder(name+" / saucer",px,py,z,.085,.012,"Ceramic")
+        cylinder(name+" / teacup",px,py,z+.012,.037,.065,"Ceramic")
+        px,py=x+w*.50,y+d*.85
+        cylinder(name+" / tea storage tin",px,py,z,.060,.145,"Sage")
+        cylinder(name+" / tea tin lid",px,py,z+.145,.062,.016,"OakLight")
+    else:raise ValueError(f"Unknown storage role {role!r}")
+
+
+def storage_fitouts(data):
+    global CURRENT_ROOM
+    for fitout in data.get("storageFitouts",[]):
+        CURRENT_ROOM=fitout["roomId"]
+        for p in fitout["parts"]:
+            before=set(bpy.context.scene.objects)
+            storage_part(p)
+            bpy.context.view_layer.update()
+            lo=(p["x"]/100,p["y"]/100,p.get("zCm",0)/100)
+            hi=(lo[0]+p["w"]/100,lo[1]+p["d"]/100,lo[2]+p["hCm"]/100)
+            for obj in set(bpy.context.scene.objects)-before:
+                obj["storageFitoutId"]=fitout["id"]
+                obj["storagePartId"]=p["id"]
+                obj["storageRole"]=p["role"]
+                obj["roomId"]=CURRENT_ROOM
+                obj["furnitureId"]=p["id"]
+                obj["furnitureFace"]=p.get("face","east")
+                if p["role"] in ("entry_accessories","dining_accessories") or "shoe sole" in obj.name or "shoe upper" in obj.name or "open-shelf cup" in obj.name:
+                    obj["storageElement"]="decor"
+                if "doorStyle" in p:obj["doorStyle"]=p["doorStyle"]
+                if "seatHeightCm" in p:obj["seatHeightCm"]=p["seatHeightCm"]
+                if "drawerExtensionCm" in p:
+                    obj["drawerExtensionCm"]=p["drawerExtensionCm"]
+                    obj["drawerState"]="closed"
+                if obj.type=="MESH":
+                    for corner in obj.bound_box:
+                        q=obj.matrix_world @ Vector(corner)
+                        val=(q.x,-q.y,q.z)
+                        if any(val[i]<lo[i]-.00015 or val[i]>hi[i]+.00015 for i in range(3)):
+                            raise ValueError(f"{fitout['id']}/{p['id']}: {obj.name} escapes storage bounds: {val} vs {lo}..{hi}")
+
+
+def dining_anchor(data):
+    tables=[f for f in data["furniture"] if "餐桌" in f["name"]]
+    if len(tables)!=1:raise ValueError("Exactly one dining table is required for its dependent lighting")
+    table=tables[0]
+    x,y,w,d=[table[key]/100 for key in ("x","y","w","d")]
+    return x+w/2,y+d/2,w,d
+
+
 def sofa(f):
     x,y,w,d=[f[k]/100 for k in ("x","y","w","d")]
     block("Curved sofa upholstered base",x,y,.10,w,d,.27,mat="Linen",bevel=.12)
@@ -1106,6 +1282,10 @@ def washer(f):
 def furnish(data):
     global CURRENT_ROOM
     for f in data["furniture"]:
+        if f.get("storageFitoutId"):
+            if not any(item["id"]==f["storageFitoutId"] for item in data.get("storageFitouts",[])):
+                raise ValueError(f"Storage wrapper {f['name']} has no matching detailed fitout")
+            continue
         x,y,w,d=[f[k]/100 for k in ("x","y","w","d")]
         CURRENT_ROOM=f.get("roomId") or room_at(x+w/2,y+d/2,data["rooms"])
         n=f["name"]
@@ -1163,15 +1343,21 @@ def furnish(data):
             if "face" in f:obj["furnitureFace"]=f["face"]
             if "doorStyle" in f:obj["doorStyle"]=f["doorStyle"]
     bay_fitouts(data)
+    storage_fitouts(data)
     CURRENT_ROOM="living"
     lamp(6.48,8.98)
-    # Pendant group over dining table, compact and true to the 1.20 m table.
-    for x,z,r in ((3.25,2.05,.18),(3.72,2.17,.13)):
-        cylinder("Dining pendant ceiling rose",x,11.84,2.67,.055,.025,"Cream")
-        rod("Pendant thin suspension",(x,11.84,2.67),(x,11.84,z+.12),.003,"Charcoal")
-        cylinder("Organic linen pendant",x,11.84,z-.06,r,.18,"Linen",r2=r*.64)
-        cylinder("Pendant opal diffuser",x,11.84,z-.065,r*.90,.01,"Lamp")
-    framed_art(2.135,10.30,1.17,.6,.75,"west")
+    # Keep the same composition relative to the source dining table, so its
+    # 400 mm east/north move does not leave lamps above the former position.
+    dcx,dcy,dw,dd=dining_anchor(data)
+    py=dcy-dd/70
+    for fraction,z,r in ((-5/24,2.05,.18),(11/60,2.17,.13)):
+        x=dcx+dw*fraction
+        cylinder("Dining pendant ceiling rose",x,py,2.67,.055,.025,"Cream")
+        rod("Pendant thin suspension",(x,py,2.67),(x,py,z+.12),.003,"Charcoal")
+        cylinder("Organic linen pendant",x,py,z-.06,r,.18,"Linen",r2=r*.64)
+        cylinder("Pendant opal diffuser",x,py,z-.065,r*.90,.01,"Lamp")
+    if not data.get("storageFitouts"):
+        framed_art(2.135,10.30,1.17,.6,.75,"west")
 
 
 VIEWS = {
@@ -1188,6 +1374,8 @@ VIEWS = {
     "bay-master": ((4.30,2.98,1.60),(4.72,.24,1.04),18),
     "bay-tea": ((2.82,1.50,1.52),(1.53,-.11,1.03),18),
     "bay-living": ((4.13,9.08,1.65),(2.30,7.47,1.15),22),
+    "entry-storage": ((4.86,13.42,1.62),(2.30,12.57,1.20),21),
+    "sideboard": ((4.88,10.72,1.62),(2.31,10.30,1.26),21),
 }
 
 
@@ -1245,7 +1433,8 @@ def lighting(data):
         CURRENT_ROOM=room["id"]
         cylinder("Flush ceiling light",x,y,2.63,.15,.033,"Cream")
         cylinder("Opal ceiling diffuser",x,y,2.625,.13,.008,"Lamp")
-    area("Dining ambient",(3.5,11.8,2.60),(3.5,11.8,0),100,1.5,(1,.87,.70))
+    dcx,dcy,dw,dd=dining_anchor(data)
+    area("Dining ambient",(dcx,dcy-dd/14,2.60),(dcx,dcy-dd/14,0),100,1.5,(1,.87,.70))
 
 
 def three(p):
@@ -1284,6 +1473,10 @@ def manifest(data, openings, src):
     for view,rid,_name in mapping:
         if rid in fitouts_by_room and view!="dining":
             desc[view]+=" "+fitouts_by_room[rid].get("summary","")
+    storage=data.get("storageFitouts",[])
+    if storage:
+        desc["dining"]="1.20 米四人餐桌与四椅按共享数据整体移位，双吊灯同步跟随。"+" ".join(item.get("summary","") for item in storage)
+        desc["living"]+=" 南侧以奶白柜门与浅木中空格统一玄关鞋柜、换鞋凳和独立餐边收纳。"
     for view,rid,name in mapping:
         room=next(r for r in data["rooms"] if r["id"]==rid)
         pos,target,lens=VIEWS[view]
@@ -1298,6 +1491,10 @@ def manifest(data, openings, src):
             rooms[-1]["fitoutId"]=fitout["id"]
             rooms[-1]["features"].extend(fitout.get("dimensions",[]))
             rooms[-1]["conditions"]=fitout.get("conditions",[])
+        if view=="dining" and storage:
+            rooms[-1]["storageFitoutIds"]=[item["id"] for item in storage]
+            rooms[-1]["features"].extend(dimension for item in storage for dimension in item.get("dimensions",[]))
+            rooms[-1]["conditions"]=[condition for item in storage for condition in item.get("conditions",[])]
     result={"version":"3.0 Blender 原木实景模型","model":"models/huiyayuan-wood.glb","blend":"models/huiyayuan-wood.blend","units":"m","source":str(src.relative_to(ROOT)).replace("\\","/"),"sourceSha256":hashlib.sha256(src.read_bytes().replace(b"\r\n", b"\n")).hexdigest(),"bounds":{"min":[0,-.012,0],"max":[8.41,2.7,14.01]},"overviewCamera":{"position":three(VIEWS["overall"][0]),"target":three(VIEWS["overall"][1])},"overallRender":"assets/blender-renders/overall.jpg","rooms":rooms,"openings":openings,"design":{"style":"现代原木","palette":["#eee9df","#bb956b","#d4c9b5","#758364","#b98165"]},"notes":["真实网格由厘米平面数据转换为米；渲染与交互使用同一 Blender 场景。","整体与房间鸟瞰采用可拆墙展示；室内机位使用完整墙体与实际开口。","C 级门窗、层高与统一墙厚仍为待现场复尺的建模假设。"]}
     result["bounds"]=geometry_bounds(data,openings)
     detail_views={"office_vanity":"bay-master","tea_seat":"bay-tea","family_desk":"bay-living"}
@@ -1306,6 +1503,13 @@ def manifest(data, openings, src):
         view=detail_views[fitout["type"]]
         pos,target,lens=VIEWS[view]
         result["bayDetails"].append({"id":view,"fitoutId":fitout["id"],"openingId":fitout["openingId"],"roomId":fitout["roomId"],"title":fitout["title"],"render":f"assets/blender-renders/{view}.jpg","interiorCamera":{"position":three(pos),"target":three(target),"horizontalFov":round(math.degrees(2*math.atan(36/(2*lens))),2),"fov":round(math.degrees(2*math.atan(24/(2*lens))),2)},"summary":fitout.get("summary",""),"dimensions":fitout.get("dimensions",[]),"conditions":fitout.get("conditions",[])})
+    result["storageDetails"]=[]
+    for fitout in storage:
+        view={"entry":"entry-storage","sideboard":"sideboard"}[fitout["type"]]
+        pos,target,lens=VIEWS[view]
+        result["storageDetails"].append({"id":view,"storageFitoutId":fitout["id"],"fitoutId":fitout["id"],"roomId":fitout["roomId"],"title":fitout["title"],"render":f"assets/blender-renders/{view}.jpg","interiorCamera":{"position":three(pos),"target":three(target),"horizontalFov":round(math.degrees(2*math.atan(36/(2*lens))),2),"fov":round(math.degrees(2*math.atan(24/(2*lens))),2)},"summary":fitout.get("summary",""),"dimensions":fitout.get("dimensions",[]),"conditions":fitout.get("conditions",[]),"references":fitout.get("references",[])})
+    if storage:
+        result["notes"].append("鞋柜与餐边杯盘柜独立分腔；抽屉以闭合状态展示，250 mm 伸出限位、进出通道及桌椅退让均属条件校核。柜体锚固、灯带/插座、门套电箱与实际净深必须现场深化。")
     if any(op.get("windowType")=="bay" for op in openings):
         result["notes"].append(BAY_NOTE)
     (MODEL_DIR/"scene-manifest.json").write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding="utf-8")

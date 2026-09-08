@@ -10,8 +10,8 @@ const data = JSON.parse(await readFile(new URL('models/design-data.json', root),
 const start = source.indexOf('function planFurniture(');
 const end = source.indexOf('\nfunction exportPlan(', start);
 assert.ok(start >= 0 && end > start, 'Actual planFurniture / makePlan functions must be discoverable');
-const helpers = ['areaOf', 'centroid', 'escapeHTML'].map(name => {
-  const line = source.split(/\r?\n/).find(line => line.startsWith(`const ${name} = `));
+const helpers = ['areaOf', 'centroid', 'escapeHTML', 'storageRoleName'].map(name => {
+  const line = source.split(/\r?\n/).find(line => new RegExp(`^const ${name}\\s*=`).test(line));
   assert.ok(line, `Actual ${name} helper must exist`);
   return line;
 }).join('\n');
@@ -99,4 +99,36 @@ for(const removed of ['次卧书桌','次卧书椅']){
   assert.ok(!svg.includes(removed),`${removed} removed from actual generated SVG`);
 }
 assert.ok(!svg.includes('data-part-id="a_ledge"')&&!svg.includes('data-part-id="a_ledge_objects"'));
-console.log('PASS: actual planFurniture + makePlan; exact east/west beds, stepped baths, suite door, 3 bays, 13 bay parts, one continuous master high table / chair and B desk deletion.');
+const storageParts=data.storageFitouts.flatMap(fitout=>fitout.parts.map(part=>({fitout,part})));
+assert.equal(storageParts.length,10);
+assert.equal(tags(svg,'data-storage-part-id=').length,10,'Exactly ten unique physical storage parts in actual floor plan');
+for(const {fitout,part} of storageParts){
+  const rect=one(svg,`data-storage-part-id="${part.id}"`);
+  assert.equal(attribute(rect,'data-storage-id'),fitout.id);
+  assert.equal(attribute(rect,'data-storage-role'),part.role);
+  assert.deepEqual(coordinates(rect,['x','y','width','height','data-z-cm','data-h-cm']),[part.x,part.y,part.w,part.d,part.zCm,part.hCm],`${part.id} source centimetres and height preserved`);
+  assert.equal(attribute(rect,'transform'),undefined,'World plan box must not rotate its 40 cm depth and along-wall length twice');
+  context.fitout=fitout;context.part=part;
+  assert.ok(svg.includes(vm.runInContext('planStoragePart(fitout,part)',context)),`${part.id} from actual renderer`);
+  if(part.role.includes('niche')||part.role.includes('accessories'))assert.equal(attribute(rect,'fill'),'none',`${part.id} does not falsely fill an open niche in plan`);
+}
+for(const wrapper of data.furniture.filter(f=>f.storageFitoutId)){
+  context.item=wrapper;
+  assert.ok(!svg.includes(vm.runInContext('planFurniture(item)',context)),`${wrapper.id} does not add a duplicate solid wrapper behind parts`);
+}
+for(const [name,bbox] of Object.entries({'四人餐桌':[330,1110,120,70],'餐椅北1':[338,1052.5,44,45],'餐椅北2':[398,1052.5,44,45],'餐椅南1':[338,1192.5,44,45],'餐椅南2':[398,1192.5,44,45]})){
+  const item=data.furniture.find(f=>f.name===name);assert.deepEqual([item.x,item.y,item.w,item.d],bbox,`${name} group move`);
+  context.item=item;assert.ok(svg.includes(vm.runInContext('planFurniture(item)',context)),`${name} actual drawing shares exact group coordinates`);
+}
+const elevationStart=source.indexOf('function storageElevation('),elevationEnd=source.indexOf('\nfunction showStorageFitouts(',elevationStart);
+assert.ok(elevationStart>=0&&elevationEnd>elevationStart);
+vm.runInContext(source.slice(elevationStart,elevationEnd),context);
+for(const fitout of data.storageFitouts){
+  context.fitout=fitout;const elevation=vm.runInContext('storageElevation(fitout)',context);
+  const maxY=Math.max(...fitout.parts.map(p=>p.y+p.d)),top=Math.max(...fitout.parts.map(p=>p.zCm+p.hCm));
+  for(const part of fitout.parts){
+    const rect=one(elevation,`data-elevation-part-id="${part.id}"`);
+    assert.deepEqual(coordinates(rect,['x','y','width','height','data-source-y','data-source-z-cm','data-depth-cm']),[maxY-part.y-part.d,top-part.zCm-part.hCm,part.d,part.hCm,part.y,part.zCm,part.w],`${part.id} actual east elevation has true along-wall length/height, not plan depth`);
+  }
+}
+console.log('PASS: actual SVG; preserved beds/baths/bays, 13 bay parts, 10 storage parts without duplicate wrappers, dining group move and exact east elevations.');
