@@ -11,6 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from geometry_paths import GUEST_PATH, MASTER_PATH, path_clearance, solid_footprints
+from validate_bay_fitouts import check_fitout_assets, check_fitout_plan
 
 BAY_DIRECTIONS = {'window_b': [0, -1], 'window_a': [0, -1], 'window_living_west': [-1, 0]}
 EXPECTED_ROOM_AREAS = {'room_b': 10.231, 'room_a': 10.850, 'room_c': 7.5886,
@@ -342,9 +343,12 @@ def check_bay_assets(glb, geometry, manifest, errors, checks):
             glass = role == 'frontGlazing' or 'glaz' in name.lower() or any('glass' in m.lower() for m in metadata.get('_materialNames', []))
             if glass and high[1] - low[1] > .20 and high[axis] - low[axis] < .04 and abs(center - original) < .015:
                 errors.append(f'Old flat glazing still closes the bay opening in the original wall plane: {name}')
-        for role, minimum in (('frontFrame', 2), ('frontGlazing', 1), ('return', 2), ('bottomSlab', 1), ('topSlab', 1)):
+        for role, minimum in (('frontFrame', 2), ('frontGlazing', 1), ('return', 2), ('bottomSlab', 1), ('topSlab', 1),
+                              ('rollerCassette', 1), ('rollerFabric', 1), ('rollerHem', 1)):
             if role_counts.get(role, 0) < minimum:
                 errors.append(f'GLB bay is missing actual tagged {role} mesh geometry: {identity}')
+        if role_counts.get('curtain'):
+            errors.append(f'GLB bay retains superseded bulky curtains instead of the cordless roller: {identity}')
         checks.append(f'{identity}: projected front={front:.2f} m; roles={role_counts}')
 
 
@@ -357,6 +361,7 @@ def run(require_assets=False):
     check_bath_revision(data, errors, checks)
     beds = check_bed_plan(data, errors, checks)
     check_bath_paths(data, errors, checks)
+    check_fitout_plan(data, errors, checks)
     room_ids = {r['id'] for r in rooms}
     assert {'room_a', 'room_b', 'room_c', 'bath_1', 'bath_2', 'living', 'kitchen', 'balcony'} <= room_ids
     for r in rooms:
@@ -435,6 +440,7 @@ def run(require_assets=False):
         assert (ROOT / 'models/huiyayuan-wood.blend').stat().st_size > 100000
         manifest = json.loads((ROOT / 'models/scene-manifest.json').read_text(encoding='utf-8'))
         check_bay_assets(glb, bay_geometry, manifest, errors, checks)
+        check_fitout_assets(data, glb, raw, manifest, ROOT, world_mesh_bounds, node_matrix, multiply_matrices, errors, checks)
         assert len(manifest['rooms']) >= 8
         source_hash = hashlib.sha256((ROOT / 'models/design-data.json').read_bytes().replace(b'\r\n', b'\n')).hexdigest()
         if manifest.get('sourceSha256') != source_hash:

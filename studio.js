@@ -1,6 +1,6 @@
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
-const ASSET_REVISION = '3.0.3';
+const ASSET_REVISION = '3.0.4';
 const revisedAsset = path => {const url=new URL(path,document.baseURI);url.searchParams.set('v',ASSET_REVISION);return url.href};
 const icons = {
   cube:'<path d="m8 2 6 3.5v5L8 14l-6-3.5v-5L8 2Z M2 5.5 8 9l6-3.5 M8 9v5 M5 3.8l6 3.5"/>',
@@ -27,7 +27,7 @@ const icon = (name) => `<svg viewBox="0 0 16 16" aria-hidden="true">${icons[name
 $$('[data-icon]').forEach(el => el.insertAdjacentHTML('afterbegin', icon(el.dataset.icon)));
 const descriptions = {
   overall:{name:'全屋概览',en:'THE ENTIRE HOME',title:'木色里的日常',icon:'cube',render:'overall',description:'浅橡木、暖白与柔和织物串起三房两卫。恢复完整客餐厅，让自然光在家中连贯流动。',features:['现代原木','三房两卫','同源模型']},
-  living:{name:'客厅',en:'LIVING ROOM',title:'留一面墙给光',icon:'sofa',render:'living',description:'电视落在双卫南侧实墙，沙发与窗错开。保留西窗前净空，以低矮家具和浅木色，让日常舒展。',features:['保留西窗','暖白织物','实墙电视']},
+  living:{name:'客厅',en:'LIVING ROOM',title:'窗边一起学习',icon:'sofa',render:'living',description:'西侧飘窗前布置双人长桌，办公与儿童学习共享自然光。电视仍落北侧实墙；桌椅、窗扇与通行空间待现场复核。',features:['双人长桌','窗侧学习','实墙电视']},
   dining:{name:'玄关 · 餐厅',en:'ENTRY & DINING',title:'围坐，才是家的中心',icon:'dining',render:'dining',description:'餐区就近厨房，玄关收纳沿墙展开。细腿家具与温暖吊灯，让进门、就餐和通行各得其所。',features:['连贯动线','沿墙收纳','暖光餐区']},
   room_a:{name:'主卧',en:'MASTER BEDROOM',title:'把喧嚣留在窗外',icon:'bed',render:'master',description:'柔和床头与浅木柜体营造安静背景，保留床侧通行。北窗的隔声与遮光，是舒适睡眠的重点。',features:['1500 mm 床','亚麻触感','北向采光']},
   room_b:{name:'次卧 B',en:'SECOND BEDROOM',title:'留有成长的余地',icon:'bed',render:'bedroom-b',description:'紧凑床、书桌与衣柜各有位置，避免满屋固定柜体。卧室入口保留开门空间，浅色材质减轻压迫感。',features:['1350 mm 床','独立书桌','门口留空']},
@@ -65,6 +65,42 @@ function sourceNotes(value,roomId=null){
 }
 function designNotes(){const seen=new Set();return [...sourceNotes(data?.renovationNotes),...sourceNotes(data?.geometryNotes)].filter(note=>{const key=note.roomId+'|'+note.text;if(seen.has(key))return false;seen.add(key);return true})}
 function renderDesignNotes(){const notes=designNotes();$('#source-notes').hidden=!notes.length;$('#source-notes-list').innerHTML=notes.map(note=>`<li>${note.roomId?escapeHTML(roomDescription(note.roomId).name)+'：':''}${escapeHTML(note.text)}</li>`).join('')}
+const bayFitoutFor = roomId => data?.bayFitouts?.find(fitout=>fitout.roomId===roomId);
+const bayRenderPath = fitout => revisedAsset(manifest?.bayDetails?.find(detail=>detail.fitoutId===fitout.id)?.render || fitout.render || `assets/blender-renders/${({room_a:'bay-master',room_b:'bay-tea',living:'bay-living'})[fitout.roomId]}.jpg`);
+const referenceURL = value => {try{const url=new URL(value);return /^https?:$/.test(url.protocol)?url.href:null}catch{return null}};
+function detailText(value){
+  if(typeof value==='string'||typeof value==='number')return String(value);
+  if(value&&typeof value==='object')return value.text||value.description||[value.label||value.name,value.value,value.unit].filter(item=>item!==undefined&&item!==null).join(' ');
+  return '';
+}
+function showBayFitouts(roomId=state.room){
+  const dialog=$('#bay-dialog');if(!dialog.open)dialog.showModal();
+  const fitout=bayFitoutFor(roomId),card=fitout&&[...dialog.querySelectorAll('[data-fitout-card]')].find(card=>card.dataset.fitoutCard===fitout.id);
+  dialog.querySelectorAll('[data-fitout-card]').forEach(item=>item.classList.toggle('is-current',item===card));
+  if(card){card.querySelector('details').open=true;card.scrollIntoView({block:'start',behavior:'instant'})}else dialog.scrollTop=0;
+}
+function renderBayFitouts(){
+  const fitouts=data?.bayFitouts||[],references=data?.designReferences||[];
+  $('#bay-fitout-cards').innerHTML=fitouts.map((fitout,index)=>{
+    const dims=(fitout.dimensions||[]).map(detailText).filter(Boolean),conditions=(fitout.conditions||[]).map(detailText).filter(Boolean);
+    const refs=(fitout.references||[]).map(id=>references.find(ref=>ref.id===id)).filter(ref=>ref&&referenceURL(ref.url));
+    return `<article class="bay-fitout-card" data-fitout-card="${escapeHTML(fitout.id)}"><button class="bay-fitout-image" data-fitout-render="${escapeHTML(fitout.id)}" aria-label="放大${escapeHTML(fitout.title)}同源渲染"><img src="${bayRenderPath(fitout)}" alt="${escapeHTML(fitout.title)} · Blender 条件方案渲染" loading="lazy"/><span class="bay-render-pending" hidden>同源细节渲染暂未载入</span><span class="bay-image-label">BLENDER / 同源设计${icon('expand')}</span></button><div class="bay-fitout-copy"><p class="bay-fitout-kicker">0${index+1} / ${escapeHTML(roomDescription(fitout.roomId).name)}</p><h3>${escapeHTML(fitout.title)}</h3><p class="bay-fitout-summary">${escapeHTML(fitout.summary||'')}</p><ul class="bay-fitout-dimensions" aria-label="方案尺寸">${dims.map(text=>`<li>${escapeHTML(text)}</li>`).join('')}</ul><details><summary>适用条件与参考案例 <span>＋</span></summary><div class="bay-fitout-details"><h4>先确认，再落地</h4><ul>${conditions.map(text=>`<li>${escapeHTML(text)}</li>`).join('')}</ul>${refs.length?`<h4>原文参考 · 仅借鉴设计思路</h4><div class="bay-references">${refs.map(ref=>`<article><a href="${escapeHTML(referenceURL(ref.url))}" target="_blank" rel="noopener noreferrer">${escapeHTML(ref.title)} <span>↗</span></a><small>${escapeHTML([ref.platform,ref.author].filter(Boolean).join(' / '))}</small><p><b>借鉴</b>${escapeHTML(detailText(ref.borrow))}</p>${ref.avoid?`<p><b>不照搬</b>${escapeHTML(detailText(ref.avoid))}</p>`:''}</article>`).join('')}</div>`:''}</div></details><button class="bay-room-button" data-fitout-room="${escapeHTML(fitout.roomId)}">在模型中查看${escapeHTML(roomDescription(fitout.roomId).name)} <span>↗</span></button></div></article>`;
+  }).join('')||'<p class="bay-empty">飘窗功能数据暂未载入，请稍后刷新。</p>';
+  const usedReferences=new Set(fitouts.flatMap(fitout=>fitout.references||[]));
+  $('#bay-safety-references').innerHTML=references.filter(ref=>!usedReferences.has(ref.id)&&referenceURL(ref.url)).map(ref=>`<article><a href="${escapeHTML(referenceURL(ref.url))}" target="_blank" rel="noopener noreferrer">${escapeHTML(ref.author)} · ${escapeHTML(ref.title)} ↗</a><p>${escapeHTML(detailText(ref.borrow))} ${escapeHTML(detailText(ref.avoid))}</p></article>`).join('');
+  $$('#bay-fitout-cards [data-fitout-room]').forEach(button=>button.addEventListener('click',()=>{$('#bay-dialog').close();selectRoom(button.dataset.fitoutRoom);switchView('model')}));
+  $$('#bay-fitout-cards [data-fitout-render]').forEach(button=>button.addEventListener('click',()=>{
+    const fitout=fitouts.find(item=>item.id===button.dataset.fitoutRender);if(!fitout||button.classList.contains('unavailable'))return;
+    $('#large-render').src=bayRenderPath(fitout);$('#large-render').alt=fitout.title+' · 条件方案渲染';$('#large-render-caption').textContent=fitout.title+' · 同源模型 / 条件方案，非已核可施工';$('#image-dialog').showModal();
+  }));
+  $$('#bay-fitout-cards img').forEach(img=>{
+    const button=img.parentElement,placeholder=img.nextElementSibling;
+    button.disabled=true;button.setAttribute('aria-busy','true');img.style.opacity='0';placeholder.hidden=false;placeholder.textContent='正在载入同源细节渲染…';
+    const loaded=()=>{img.hidden=false;img.style.opacity='1';button.disabled=false;button.removeAttribute('aria-busy');button.classList.remove('unavailable');placeholder.hidden=true};
+    const failed=()=>{img.hidden=true;button.disabled=true;button.removeAttribute('aria-busy');button.classList.add('unavailable');placeholder.hidden=false;placeholder.textContent='同源细节渲染暂未载入'};
+    img.addEventListener('error',failed);img.addEventListener('load',loaded);if(img.complete){if(img.naturalWidth)loaded();else failed()}
+  });
+}
 function bathroomDescription(id){
   if(!['bath_1','bath_2'].includes(id))return '';
   const vanity=data?.furniture?.find(item=>item.id===(id==='bath_1'?'vanity_main':'vanity_guest'));if(!vanity)return roomDescription(id).description;
@@ -78,7 +114,8 @@ function bedroomSpecification(id){
   const head={east:'东',west:'西',north:'北',south:'南'}[bed.headDirection];if(!head)return null;
   const mattress=`${Number(bed.mattressWidthCm)*10}×${Number(bed.mattressLengthCm)*10}`,frame=`${Number(bed.frameWidthCm)*10}×${Number(bed.frameLengthCm)*10}`;
   const bay=data.windows?.find(window=>window.id===(id==='room_a'?'window_a':'window_b'))?.windowType==='bay';
-  return {description:`床头朝${head}；床垫${mattress} mm，床架外包${frame} mm。浅木衣柜与柔和织物延续全屋配色${bay?'，北侧飘窗尺寸待复尺。':'。'}`,features:[`床头朝${head}`,`${Number(bed.mattressWidthCm)*10} mm床垫`,bay?'北侧飘窗':'柔和织物']};
+  const fitout=bayFitoutFor(id),bayNote=fitout?(id==='room_a'?'北侧接办公梳妆桌，保留高台后层板；详见飘窗方案。':'北飘窗设单人茶座：低台为条件方案，非现场已确认；独立书桌保留。'):`浅木衣柜与柔和织物延续全屋配色${bay?'，北侧飘窗尺寸待复尺。':'。'}`;
+  return {description:`床头朝${head}；床垫${mattress} mm，床架外包${frame} mm。${bayNote}`,features:[`床头朝${head}`,`${Number(bed.mattressWidthCm)*10} mm床垫`,fitout?(id==='room_a'?'办公 / 梳妆':'条件茶座'):bay?'北侧飘窗':'柔和织物']};
 }
 
 function makeNavigation(){
@@ -99,9 +136,11 @@ function selectRoom(id,{updateHash=true,animate=true}={}){
   $('#room-subtitle').textContent=id==='overall'?'把每一天，安放在光与木色之间。':`${areaText}现代原木 / ${content.title}`;
   $('#card-kicker').textContent=content.en;$('#card-title').textContent=content.title;
   const accessNote=id==='bath_1'?'主卫北门通主卧，按套内卫生间使用；门宽与侧面构造待复尺。':id==='bath_2'?'客卫从公共走廊进入；门宽与侧面构造待复尺。':'';
-  const bedroom=bedroomSpecification(id);
-  $('#card-description').textContent=[bedroom?.description || bathroomDescription(id) || r?.description || content.description,accessNote,...designNotes().filter(note=>note.roomId===id).map(note=>note.text)].filter(Boolean).join(' ');
-  $('#room-tags').innerHTML=(bedroom?.features || ((id==='bath_1'||id==='bath_2')?content.features:(r?.features || content.features))).slice(0,3).map(t=>`<span>${escapeHTML(t)}</span>`).join('');
+  const bedroom=bedroomSpecification(id),fitout=bayFitoutFor(id);
+  $('#card-description').textContent=[bedroom?.description || bathroomDescription(id) || (fitout?content.description:'') || r?.description || content.description,accessNote,...designNotes().filter(note=>note.roomId===id).map(note=>note.text)].filter(Boolean).join(' ');
+  $('#view-bay-fitout').hidden=!(fitout||id==='overall');
+  $('#view-bay-fitout').innerHTML=`${id==='overall'?'三处飘窗功能设计':'飘窗方案 · 尺寸 / 参考'} <span>↗</span>`;
+  $('#room-tags').innerHTML=(bedroom?.features || ((fitout||id==='bath_1'||id==='bath_2')?content.features:(r?.features || content.features))).slice(0,3).map(t=>`<span>${escapeHTML(t)}</span>`).join('');
   $('#room-preview').src=renderPath(id);$('#room-preview').alt=`${content.name} Blender 渲染预览`;
   $('#enter-room').innerHTML=`${id==='overall'?'探索客厅':'走进'+content.name} <span>↗</span>`;
   $$('#room-nav [data-room]').forEach(btn=>{btn.classList.toggle('active',btn.dataset.room===id);btn.setAttribute('aria-current',String(btn.dataset.room===id))});
@@ -160,10 +199,23 @@ function planFurniture(f){
   return `<g data-bed-direction="${direction}" data-bed-name="${escapeHTML(f.name)}" pointer-events="none"><title>${escapeHTML(f.name)} · 床头${directionName} · 床垫${mattressWidth*10}×${mattressLength*10}mm · 外包${(Number(f.frameWidthCm)||(horizontal?f.d:f.w))*10}×${(Number(f.frameLengthCm)||(horizontal?f.w:f.d))*10}mm</title>${frame}${mattress}${pillows}<line data-bed-headboard ${head} stroke="#af9776" stroke-width="${headboardDepth}"/><text data-bed-head-label x="${labelX}" y="${labelY}" text-anchor="${horizontal?(direction==='east'?'end':'start'):'middle'}" dominant-baseline="middle" font-size="10" fill="#978267">${arrow}</text></g>`;
 }
 
+function planFitoutPart(fitout,part){
+  if(!['x','y','w','d'].every(key=>Number.isFinite(Number(part[key]))))return '';
+  const {x,y,w,d}=Object.fromEntries(['x','y','w','d'].map(key=>[key,Number(part[key])])),sourceRole=part.role||'ledge';
+  const role=({raised_ledge:'ledge',seat_cushion:'cushion',back_cushion:'cushion',tea_tray:'tray'})[sourceRole]||sourceRole;
+  const subordinate=['desk_support','desk_accessories','ledge_objects'].includes(role);
+  const fill=subordinate?'none':({desktop:'#c7a578',ledge:'#d7c5a6',cushion:'#aab59c',tray:'#9c7854',chair:'#c5b89e'}[role]||'#d4c5ac');
+  const face=part.face||'north',back={east:'west',west:'east',south:'north',north:'south'}[face];
+  const backLine=back==='west'?`x1="${x+3}" y1="${y+5}" x2="${x+3}" y2="${y+d-5}"`:back==='east'?`x1="${x+w-3}" y1="${y+5}" x2="${x+w-3}" y2="${y+d-5}"`:back==='south'?`x1="${x+5}" y1="${y+d-3}" x2="${x+w-5}" y2="${y+d-3}"`:`x1="${x+5}" y1="${y+3}" x2="${x+w-5}" y2="${y+3}"`;
+  const detail=role==='chair'?`<line ${backLine} stroke="#8f7f65" stroke-width="5" stroke-linecap="round"/>`:role==='cushion'?`<rect x="${x+4}" y="${y+4}" width="${Math.max(0,w-8)}" height="${Math.max(0,d-8)}" rx="5" fill="none" stroke="#e9eddf" stroke-width="1.5" stroke-dasharray="3 3"/>`:role==='tray'?`<rect x="${x+3}" y="${y+3}" width="${Math.max(0,w-6)}" height="${Math.max(0,d-6)}" rx="2" fill="none" stroke="#d1b694" stroke-width="1.5"/>`:'';
+  return `<g data-fitout-part="${escapeHTML(part.id)}" pointer-events="none"><title>${escapeHTML(fitout.title)} · ${escapeHTML(sourceRole)} · 占位${w*10}×${d*10}mm · 底标高${Number(part.zCm||0)*10}mm / 构件高${Number(part.hCm||0)*10}mm；条件设计，非施工图</title><rect data-fitout-id="${escapeHTML(fitout.id)}" data-part-id="${escapeHTML(part.id)}" data-fitout-role="${escapeHTML(sourceRole)}" data-z-cm="${Number(part.zCm||0)}" data-h-cm="${Number(part.hCm||0)}" x="${x}" y="${y}" width="${w}" height="${d}" rx="${['cushion','chair'].includes(role)?6:2}" fill="${fill}" stroke="${subordinate?'none':'#a38b67'}" stroke-width="1.5"/>${detail}</g>`;
+}
+
 function makePlan(){
   const e=data.envelope||[[0,0],[841,0],[841,1401],[0,1401]],xs=e.map(p=>p[0]),ys=e.map(p=>p[1]);
   const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
   const wallThickness=Number(data.wallThicknessCm)||12;
+  const bayFrameFinish=data.bayDesign?.windowStyle?.frameFinish||'oak',bayFrameColor=bayFrameFinish==='warm-gray metal'?'#96948d':'#c9b28c';
   const bays=(data.windows||[]).filter(w=>w.windowType==='bay'&&w.bay).map(w=>{
     const length=Math.hypot(w.x2-w.x1,w.y2-w.y1),t=[(w.x2-w.x1)/length,(w.y2-w.y1)/length];
     const raw=w.bay.outward||[0,-1],normalLength=Math.hypot(...raw),n=raw.map(value=>value/normalLength);
@@ -182,12 +234,13 @@ function makePlan(){
     return `<polygon class="plan-room" data-plan-room="${r.id}" tabindex="0" role="button" aria-label="查看${roomDescription(r.id).name}" points="${r.points.map(p=>p.join(',')).join(' ')}" fill="${fills[r.tone]||'#ece3d5'}"/>`;
   }).join('');
   const furniture=(data.furniture||[]).map(planFurniture).join('');
+  const fitouts=(data.bayFitouts||[]).flatMap(fitout=>[...(fitout.parts||[])].sort((a,b)=>(a.zCm||0)-(b.zCm||0)).map(part=>planFitoutPart(fitout,part))).join('');
   const walls=(data.walls||[]).map(w=>`<line x1="${w[0]}" y1="${w[1]}" x2="${w[2]}" y2="${w[3]}" stroke="#8c887b" stroke-width="${wallThickness}" stroke-linecap="square"/>`).join('');
   const opening=(items,color)=>(items||[]).map(w=>`<line x1="${w.x1}" y1="${w.y1}" x2="${w.x2}" y2="${w.y2}" stroke="#fcf8ee" stroke-width="15"/><line data-opening-id="${escapeHTML(w.id)}" x1="${w.x1}" y1="${w.y1}" x2="${w.x2}" y2="${w.y2}" stroke="${color}" stroke-width="4"/>`).join('');
-  const bayWindows=bays.map(b=>`<g data-bay-window="${b.window.id}" aria-label="${escapeHTML(b.window.name)}：外凸窗台投影，尺寸待复尺"><line x1="${b.window.x1}" y1="${b.window.y1}" x2="${b.window.x2}" y2="${b.window.y2}" stroke="#fcf8ee" stroke-width="${wallThickness+3}"/><polygon data-bay-sill points="${b.sill.map(p=>p.join(',')).join(' ')}" fill="#e6dac1" stroke="#c5b497" stroke-width="1.5"/>${b.returns.map(points=>`<polygon data-bay-return points="${points.map(p=>p.join(',')).join(' ')}" fill="#8c887b"/>`).join('')}<polygon data-bay-front-frame points="${b.frame.map(p=>p.join(',')).join(' ')}" fill="#c9b28c"/><line data-bay-glass x1="${b.frontA[0]}" y1="${b.frontA[1]}" x2="${b.frontB[0]}" y2="${b.frontB[1]}" stroke="#8fa6a8" stroke-width="4"/><text x="${b.label[0]}" y="${b.label[1]}" text-anchor="middle" dominant-baseline="middle" font-size="16" fill="#958165"${b.vertical?` transform="rotate(-90 ${b.label[0]} ${b.label[1]})"`:''}>飘窗台</text></g>`).join('');
+  const bayWindows=bays.map(b=>`<g data-bay-window="${b.window.id}" aria-label="${escapeHTML(b.window.name)}：外凸窗台投影，尺寸待复尺"><line x1="${b.window.x1}" y1="${b.window.y1}" x2="${b.window.x2}" y2="${b.window.y2}" stroke="#fcf8ee" stroke-width="${wallThickness+3}"/><polygon data-bay-sill points="${b.sill.map(p=>p.join(',')).join(' ')}" fill="#e6dac1" stroke="#c5b497" stroke-width="1.5"/>${b.returns.map(points=>`<polygon data-bay-return points="${points.map(p=>p.join(',')).join(' ')}" fill="#8c887b"/>`).join('')}<polygon data-bay-front-frame data-frame-finish="${escapeHTML(bayFrameFinish)}" points="${b.frame.map(p=>p.join(',')).join(' ')}" fill="${bayFrameColor}"/><line data-bay-glass x1="${b.frontA[0]}" y1="${b.frontA[1]}" x2="${b.frontB[0]}" y2="${b.frontB[1]}" stroke="#8fa6a8" stroke-width="4"/><text x="${b.label[0]}" y="${b.label[1]}" text-anchor="middle" dominant-baseline="middle" font-size="16" fill="#958165"${b.vertical?` transform="rotate(-90 ${b.label[0]} ${b.label[1]})"`:''}>飘窗台</text></g>`).join('');
   const topDimensionY=planMinY-52,leftDimensionX=planMinX-55;
   const dimensions=`<g stroke="#b4a58e" stroke-width="1.5" fill="none"><path d="M0 ${topDimensionY}H687 M0 ${topDimensionY-14}v28 M687 ${topDimensionY-14}v28 M${leftDimensionX} 0v1401 M${leftDimensionX-14} 0h28 M${leftDimensionX-14} 1401h28 M200 1455h641 M200 1441v28 M841 1441v28"/></g><g fill="#9c8d73" font-size="19" text-anchor="middle"><text x="343" y="${topDimensionY-17}">6,870</text><text x="520" y="1484">6,410</text><text x="${leftDimensionX-20}" y="700" transform="rotate(-90 ${leftDimensionX-20} 700)">14,010</text><text x="793" y="${topDimensionY-2}" font-size="23">N ↑</text></g>`;
-  $('#floor-plan').innerHTML=`<svg viewBox="${planMinX-115} ${planMinY-110} ${maxX-planMinX+160} ${maxY-planMinY+215}" role="img" aria-label="由同源尺寸数据绘制的三房两卫平面图，三处飘窗为窗台投影、不计入房间面积">${polygons}${furniture}${walls}${opening((data.windows||[]).filter(w=>w.windowType!=='bay'),'#8fa6a8')}${bayWindows}${opening(data.doors,'#c2a071')}${labels.join('')}${dimensions}</svg>`;
+  $('#floor-plan').innerHTML=`<svg viewBox="${planMinX-115} ${planMinY-110} ${maxX-planMinX+160} ${maxY-planMinY+215}" role="img" aria-label="由同源尺寸数据绘制的三房两卫平面图，含三处飘窗条件功能方案；窗台投影不计入房间面积">${polygons}${furniture}${walls}${opening((data.windows||[]).filter(w=>w.windowType!=='bay'),'#8fa6a8')}${bayWindows}${opening(data.doors,'#c2a071')}${fitouts}${labels.join('')}${dimensions}</svg>`;
   $$('#floor-plan [data-plan-room]').forEach(p=>{p.addEventListener('click',()=>selectRoom(p.dataset.planRoom));p.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectRoom(p.dataset.planRoom)}})});
 }
 
@@ -204,8 +257,8 @@ function exportPlan(openInTab=false){
   addText('荟雅苑 · 三房两卫 / 同源模型平面',y-57,26,'#615943');
   addText('模型示意，非施工图 · 单位：mm · 墙体、门窗与管井需现场复尺',y-20,16,'#96856a');
   addText('公共区面积含客厅、餐厅及过道；飘窗仅为窗台投影，不计入房间面积。',y+height+30,15,'#96856a');
-  addText('3处飘窗存在已确认；暂按外凸600mm / 窗台900mm，宽高与侧面构造待复尺。',y+height+62,15,'#96856a');
-  addText('图中尺寸链为主体墙身尺寸，不含飘窗外包络。',y+height+94,15,'#96856a');
+  addText('3处飘窗存在已确认；外凸600mm仍待复尺。次卧430mm低台＋50mm垫仅为条件方案。',y+height+62,15,'#96856a');
+  addText('原900mm窗台为未实测基线，不代表现场；尺寸链仅计主体墙身，均非施工尺寸。',y+height+94,15,'#96856a');
   svg.querySelectorAll('text').forEach(node=>node.setAttribute('font-family','Microsoft YaHei, PingFang SC, sans-serif'));
   const url=URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(svg)],{type:'image/svg+xml;charset=utf-8'}));
   if(openInTab){const tab=window.open(url,'_blank');if(tab){tab.opener=null;toast('已打开高清平面，可滚动查看或用浏览器缩放')}else toast('新标签未能打开，请允许弹窗或点击 SVG 下载')}
@@ -401,6 +454,7 @@ function bindControls(){
   $('#view-room-render').addEventListener('click',()=>switchView('renders'));$('#fallback-renders').addEventListener('click',()=>switchView('renders'));
   $('#fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await $('#workspace').requestFullscreen()}catch{toast('当前浏览器不支持全屏，可使用横屏查看')}});
   ['#open-project','#open-dimensions'].forEach(id=>$(id).addEventListener('click',()=>$('#project-dialog').showModal()));
+  ['#open-bays','#view-bay-fitout','#project-bay-link'].forEach(id=>$(id).addEventListener('click',()=>{if($('#project-dialog').open)$('#project-dialog').close();showBayFitouts()}));
   $$('.dialog-close').forEach(button=>button.addEventListener('click',()=>button.closest('dialog').close()));
   $$('dialog').forEach(dialog=>dialog.addEventListener('click',event=>{if(event.target===dialog){const rect=dialog.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)dialog.close()}}));
   $('#enlarge-render').addEventListener('click',()=>{$('#large-render').src=renderPath(state.room);$('#large-render').alt=$('#active-render').alt;$('#large-render-caption').textContent=roomDescription(state.room).name+' · Blender 同源模型渲染';$('#image-dialog').showModal()});
@@ -425,7 +479,7 @@ async function init(){
     const base=rawRooms.find(r=>r.id===(id==='dining'?'living':id))||{},extra=manifest.rooms?.find(r=>r.id===id)||{};
     return {...base,...extra,id,name:roomDescription(id).name};
   });
-  makeNavigation();makePlan();renderDesignNotes();selectRoom(descriptions[location.hash.slice(1)]?location.hash.slice(1):'overall',{updateHash:false,animate:false});switchView('model');
+  makeNavigation();makePlan();renderDesignNotes();renderBayFitouts();selectRoom(descriptions[location.hash.slice(1)]?location.hash.slice(1):'overall',{updateHash:false,animate:false});switchView('model');
   buildScene();
 }
 init();

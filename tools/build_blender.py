@@ -130,6 +130,9 @@ def setup_materials():
     material("Chrome", (.45, .47, .46), .23, .92)
     material("Brass", (.49, .33, .14), .3, .8)
     material("Charcoal", (.035, .04, .036), .5)
+    material("WindowMetal", (.38, .37, .33), .34, .66)
+    material("WarmGrayMetal", (.49, .48, .43), .43, .50)
+    material("RollerFabric", (.85, .83, .77), .9)
     material("GlassDark", (.032, .045, .05), .17, .28)
     material("Leaf", (.18, .30, .12), .64)
     material("LeafLight", (.30, .43, .17), .7)
@@ -295,6 +298,9 @@ def load_openings(data):
         op.update(shared.get(oid, {}))
         if "bay" in op:
             op["bay"] = {**overrides.get(oid, {}).get("bay", {}), **shared.get(oid, {}).get("bay", {})}
+        for nested in ("windowDesign", "rollerBlind"):
+            if nested in op:
+                op[nested] = {**overrides.get(oid, {}).get(nested, {}), **shared.get(oid, {}).get(nested, {})}
         default = (.9, 1.4) if op["kind"] == "window" else (0, 2.15)
         op["sill"], op["height"] = heights.get(op["id"], default)
         op["sill"] = float(op.get("sillCm", op["sill"]*100))/100
@@ -329,7 +335,8 @@ def bay_opening_details(op):
 
     White side returns are an explicitly unverified solid-side assumption.
     They sit outside the aperture ends, so the original clear width survives.
-    The 900 mm sill remains a dimensional assumption, not a seating design.
+    The sill height is read verbatim: a proposed low sill must carry its
+    explicit condition metadata in the shared source, never an inferred cut.
     """
     x1,y1,x2,y2=[op[k]/100 for k in ("x1","y1","x2","y2")]
     length=math.hypot(x2-x1,y2-y1)
@@ -348,7 +355,7 @@ def bay_opening_details(op):
     outer=THICK/2
     front=outer+projection
     edge=front+.05
-    frame=.038
+    frame=.030
     def part(label,along,depth,z,width,depth_size,height,mat,role,bevel=.003):
         px,py=cx+tx*along+nx*depth,cy+ty*along+ny*depth
         ob=box(op["id"]+" / bay "+label,px,py,z,width if abs(tx)>.5 else depth_size,depth_size if abs(tx)>.5 else width,height,mat,bevel,"window")
@@ -356,17 +363,20 @@ def bay_opening_details(op):
         ob["windowType"]="bay"
         ob["bayRole"]=role
         ob["bayProjectionCm"]=float(b["projectionCm"])
+        ob["windowSystemStatus"]="proposal / external alteration approval unverified"
+        if "baselineSillCm" in op:ob["baselineSillCm"]=float(op["baselineSillCm"])
+        if "baselineSillCm" in b:ob["baselineSillCm"]=float(b["baselineSillCm"])
         return ob
     # Jambs, head, and sill meet rather than overlapping coplanar surfaces.
     for sign in (-1,1):
-        part("front jamb",sign*(length/2-frame/2),front,sill+frame,frame,.10,h-2*frame,"Oak","frontFrame")
-    part("front head",0,front,sill+h-frame,length,.10,frame,"Oak","frontFrame")
-    part("front sill frame",0,front,sill,length,.10,frame,"Oak","frontFrame")
-    count=3 if length>1.7 else 2
-    for i in range(1,count):
-        part("front mullion",-length/2+i*length/count,front,sill+frame,.028,.080,h-2*frame,"Oak","frontFrame")
-    part("front transom",0,front,sill+h*.78,length-2*frame,.070,.025,"Oak","frontFrame")
-    part("front clear glazing",0,front,sill+frame,length-2*frame,.007,h-2*frame,"Glass","frontGlazing",.001)
+        part("slim metal front jamb",sign*(length/2-frame/2),front,sill+frame,frame,.10,h-2*frame,"WindowMetal","frontFrame")
+    part("slim metal front head",0,front,sill+h-frame,length,.10,frame,"WindowMetal","frontFrame")
+    part("slim metal front sill",0,front,sill,length,.10,frame,"WindowMetal","frontFrame")
+    # Two large panes with one necessary centre member, not a decorative grid.
+    part("single centre mullion",0,front,sill+frame,.030,.10,h-2*frame,"WindowMetal","frontFrame")
+    pane_w=(length-3*frame)/2
+    for sign in (-1,1):
+        part("clear glazing panel",sign*(frame/2+pane_w/2),front,sill+frame,pane_w,.007,h-2*frame,"Glass","frontGlazing",.001)
     for sign in (-1,1):
         ob=part("solid return",sign*(length/2+returns/2),(outer+edge)/2,sill-.02,returns,edge-outer,h+.02,"Wall","return",.001)
         ob["baySide"]="left" if sign<0 else "right"
@@ -378,11 +388,16 @@ def bay_opening_details(op):
     part("deep exterior stone sill",0,(outer+edge)/2,sill-.02,length,edge-outer,.02,"Stone","stoneSill",.001)
     inner=-THICK/2-.025
     part("connected indoor stone finish",0,(inner+outer)/2,sill+.0005,length,outer-inner,.0005,"Stone","stoneSill",0)
-    # Curtains remain at the room side of the original opening, not in the bay.
-    for sign in (-1,1):
-        for fold in range(5):
-            along=sign*(length/2+.028+fold*.033)
-            part("indoor linen curtain",along,-(THICK/2+.04),.12,.030,.070,2.35,"WhiteLinen","curtain",.003)
+    # A shallow cordless roller sits within the reveal, without cutting the
+    # lintel/top slab. Its opening-sash clearance remains a product check.
+    blind=op.get("rollerBlind",{})
+    blind_depth=outer+.065
+    cassette_h=.065
+    blind_top=sill+h-.012
+    drop=min(max(float(blind.get("dropCm",28))/100,.08),h-cassette_h-.08)
+    part("cordless roller cassette",0,blind_depth,blind_top-cassette_h,length-.045,.085,cassette_h,"Cream","rollerCassette",.007)
+    part("inset roller fabric",0,blind_depth-.034,blind_top-cassette_h-drop,length-.065,.004,drop,"RollerFabric","rollerFabric",.001)
+    part("roller bottom hem",0,blind_depth-.034,blind_top-cassette_h-drop-.012,length-.065,.014,.012,"WindowMetal","rollerHem",.003)
 
 
 def wall_and_openings(data, openings):
@@ -681,6 +696,208 @@ def chair(f):
             rod("Tapered chair leg",(px+sx*w*.39,py+sy*d*.34,.02),(px+sx*w*.31,py+sy*d*.29,.46),.018,"Oak")
 
 
+def rounded_fitout_slab(name,x,y,z,w,d,h,radius=.03,mat="OakLight"):
+    """A true plan-radius slab: a 30 mm corner need not round its 30 mm
+    thickness into a pillow, as a single all-edge bevel would do."""
+    r=min(radius,w/4,d/4)
+    xy=[]
+    for cx,cy,start in ((x+w-r,y+r,-90),(x+w-r,y+d-r,0),(x+r,y+d-r,90),(x+r,y+r,180)):
+        for step in range(7):
+            a=math.radians(start+step*15)
+            xy.append((cx+r*math.cos(a),cy+r*math.sin(a)))
+    n=len(xy)
+    verts=[(px,-py,z+height) for height in (0,h) for px,py in xy]
+    faces=[tuple(range(n)),tuple(reversed(range(n,2*n)))]
+    faces.extend((i,n+i,n+(i+1)%n,(i+1)%n) for i in range(n))
+    mesh=bpy.data.meshes.new(name)
+    mesh.from_pydata(verts,[],faces)
+    mesh.update()
+    obj=bpy.data.objects.new(name,mesh)
+    bpy.context.collection.objects.link(obj)
+    finish(obj,name,mat,.0015)
+    uv=mesh.uv_layers.new(name="UVMap")
+    for polygon in mesh.polygons:
+        for li in polygon.loop_indices:
+            co=mesh.vertices[mesh.loops[li].vertex_index].co
+            uv.data[li].uv=(co.x*.8,-co.y*.8+co.z*.2)
+    return obj
+
+
+def bay_fitout_part(p):
+    """Make one explicitly bounded fitout part; never borrow another part's
+    footprint or invent hidden under-sill storage. All dimensions are cm.
+    """
+    x,y,w,d=[float(p[k])/100 for k in ("x","y","w","d")]
+    z,h=float(p.get("zCm",0))/100,float(p["hCm"])/100
+    role=p["role"]
+    face=p.get("face","south")
+    name=p.get("title",p["id"])
+    if min(w,d,h)<=0:raise ValueError(f"{name}: nonpositive fitout bounds")
+    if role in ("desktop","desk","raised_ledge","ledge"):
+        rounded_fitout_slab(name,x,y,z,w,d,h,.03 if role in ("desktop","desk") else .012)
+    elif role in ("desk_support","desk_frame","support"):
+        vertical=face in ("east","west")
+        span,depth=(d,w) if vertical else (w,d)
+        count=int(p.get("supportCount",3 if span>1.5 else 2))
+        tube=.020
+        for idx in range(count):
+            # Slight inset keeps every U frame beneath the rounded tabletop,
+            # not projecting through its curved outer corners.
+            along=.030+(span-.060)*idx/(count-1)
+            def pt(cross,height):
+                return (x+cross,y+along,height) if vertical else (x+along,y+cross,height)
+            # Uprights stay at the back/front desk edges; the only connecting
+            # member is at desk underside, never a low knee-height stretcher.
+            for cross in (.030,depth-.030):
+                px,py,_=pt(cross,z)
+                box(name+" square metal upright",px,py,z,tube,tube,h-tube,"WarmGrayMetal",.002)
+            px,py,_=pt(depth/2,z+h-tube)
+            box(name+" upper U-frame member",px,py,z+h-tube,depth-.040 if vertical else tube,tube if vertical else depth-.040,tube,"WarmGrayMetal",.002)
+    elif role in ("chair","child_chair"):
+        # Build all chair parts facing north, then rotate the whole assembly.
+        vertical=face in ("east","west")
+        cw,cd=(d,w) if vertical else (w,d)
+        seat_z=min(.445,h*.56)
+        before=set(bpy.context.scene.objects)
+        box(name+" padded seat",cw/2,cd/2,z+seat_z,cw-.045,cd-.045,.06,"Linen",.025)
+        box(name+" rounded backrest",cw/2,cd-.033,z+seat_z+.10,cw-.035,.044,h-seat_z-.10,"OakLight",.021)
+        for sx in (.035,cw-.035):
+            for sy in (.045,cd-.045):
+                box(name+" slim metal leg",sx,sy,z,.020,.020,seat_z,"WarmGrayMetal",.002)
+        if role=="child_chair" or p.get("footrest"):
+            block(name+" illustrative foot support",.045,.035,z+.17,cw-.09,.15,.025,mat="OakLight",bevel=.008)
+        angle={"north":0,"south":math.pi,"east":-math.pi/2,"west":math.pi/2}[face]
+        transform=(Matrix.Translation(Vector((x+w/2,-(y+d/2),0)))
+                   @ Matrix.Rotation(angle,4,"Z")
+                   @ Matrix.Translation(Vector((-cw/2,cd/2,0))))
+        bpy.context.view_layer.update()
+        for obj in set(bpy.context.scene.objects)-before:obj.matrix_world=transform @ obj.matrix_world
+    elif role in ("seat_cushion","cushion","back_cushion"):
+        block(name,x,y,z,w,d,h,mat="Linen",bevel=min(.035,h*.45))
+        # Fine piping stays inset rather than expanding the nominal cushion.
+        block(name+" inset textile piping",x+.005,y+.005,z+h*.24,w-.010,d-.010,.005,mat="WhiteLinen",bevel=.002)
+    elif role=="ledge_objects":
+        book_stack(x+w*.23,y+d*.52,z,.24)
+        vr=min(.06,d*.17)
+        cylinder(name+" quiet ceramic vase",x+w*.76,y+d*.50,z,vr,min(.15,h-.005),"Cream",r2=vr*.70)
+    elif role in ("tea_tray","tea"):
+        # Overall part height includes tray and removable low cup(s).
+        tray_h=min(.025,h*.3)
+        block(name+" oak tray",x,y,z,w,d,tray_h,mat="OakLight",bevel=.011)
+        for sx in (x+.005,x+w-.005):
+            box(name+" tray raised edge",sx,y+d/2,z+tray_h,.01,d,.008,"Oak",.003)
+        cup_r=min(.032,w*.14,d*.14)
+        cup_h=min(.047,h-tray_h-.010)
+        if cup_h>.012:
+            cylinder(name+" ceramic tea cup",x+w*.36,y+d*.48,z+tray_h+.001,cup_r,cup_h,"Ceramic",r2=cup_r*1.08)
+            cylinder(name+" visible tea",x+w*.36,y+d*.48,z+tray_h+cup_h-.003,cup_r*.78,.003,"Walnut")
+    elif role in ("desk_accessories","office_accessories","family_accessories"):
+        # Separate bounded accessory zones allow clear knee space and keep
+        # lamps, mirrors and screens off the glass/opening hardware.
+        bay_desk_accessories(p)
+    elif role in ("laptop","notebook","task_lamp","mirror","footrest"):
+        bay_small_object(p)
+    else:
+        raise ValueError(f"Unknown bay fitout role {role!r} in {name}")
+
+
+def bay_small_object(p):
+    x,y,w,d=[float(p[k])/100 for k in ("x","y","w","d")]
+    z,h=float(p.get("zCm",0))/100,float(p["hCm"])/100
+    role,face=p["role"],p.get("face","south")
+    name=p.get("title",p["id"])
+    if role in ("notebook","footrest"):
+        block(name,x,y,z,w,d,min(h,.025),mat="Sage" if role=="notebook" else "OakLight",bevel=.005)
+        if role=="notebook" and h>.009:
+            block(name+" pale page edges",x+.007,y+.007,z+.004,w-.014,d-.014,min(.006,h-.005),mat="WhiteLinen",bevel=.001)
+        return
+    if role=="task_lamp":
+        radius=min(w,d)*.45
+        cylinder(name+" flat base",x+w/2,y+d/2,z,radius,.012,"WarmGrayMetal")
+        cylinder(name+" slender upright",x+w/2,y+d/2,z+.012,.006,max(.01,h-.067),"WarmGrayMetal",vertices=12)
+        cylinder(name+" opal task shade",x+w/2,y+d/2,z+h-.055,radius,.045,"Cream",r2=radius*.80)
+        cylinder(name+" warm diffuser",x+w/2,y+d/2,z+h-.058,radius*.75,.003,"Lamp")
+        return
+    vertical=face in ("east","west")
+    cw,cd=(d,w) if vertical else (w,d)
+    before=set(bpy.context.scene.objects)
+    if role=="laptop":
+        block(name+" laptop base",.002,.003,z,cw-.004,cd-.006,.010,mat="WarmGrayMetal",bevel=.003)
+        screen_y=.010
+        box(name+" laptop lid",cw/2,screen_y,z+.010,cw-.012,.014,h-.012,"Charcoal",.004)
+        box(name+" quiet laptop screen",cw/2,screen_y+.0076,z+.020,cw-.030,.001,h-.036,"GlassDark",.001)
+        for row in range(3):
+            for key in range(8):
+                box(name+" keyboard key",cw*(.14+.10*key),cd*(.34+.10*row),z+.010,(cw*.078),cd*.066,.002,"Charcoal",.001)
+        block(name+" trackpad",cw*.34,cd*.71,z+.010,cw*.32,cd*.19,.001,mat="Cream",bevel=.001)
+    elif role=="mirror":
+        # Portable freestanding mirror, not a fixture mounted through glass.
+        cylinder(name+" mirror stand base",cw/2,cd/2,z,min(cw,cd)*.43,.012,"WarmGrayMetal")
+        cylinder(name+" mirror stand",cw/2,cd/2,z+.012,.005,h*.34,"WarmGrayMetal",vertices=12)
+        mw=min(cw-.012,h*.66)
+        box(name+" rounded mirror frame",cw/2,cd/2,z+h-mw,mw,min(cd*.50,.026),mw,"WindowMetal",min(.035,mw*.15))
+        box(name+" portable mirror face",cw/2,cd/2+min(cd*.25,.013)+.001,z+h-mw+.007,mw-.014,.002,mw-.014,"Mirror",min(.030,mw*.14))
+    angle={"south":0,"north":math.pi,"east":math.pi/2,"west":-math.pi/2}[face]
+    transform=(Matrix.Translation(Vector((x+w/2,-(y+d/2),0)))
+               @ Matrix.Rotation(angle,4,"Z")
+               @ Matrix.Translation(Vector((-cw/2,cd/2,0))))
+    bpy.context.view_layer.update()
+    for obj in set(bpy.context.scene.objects)-before:obj.matrix_world=transform @ obj.matrix_world
+
+
+def bay_desk_accessories(p):
+    """Compose only inside an explicitly supplied accessory envelope."""
+    x,y,w,d=[float(p[k]) for k in ("x","y","w","d")]
+    z,h=float(p["zCm"]),float(p["hCm"])
+    face=p.get("face","south")
+    vertical=face in ("east","west")
+    span,depth=(d,w) if vertical else (w,d)
+    def small(suffix,role,along,cross,sw,sd,sh):
+        child={"id":p["id"]+" / "+suffix,"role":role,"x":x+cross if vertical else x+along,"y":y+along if vertical else y+cross,"w":sd if vertical else sw,"d":sw if vertical else sd,"zCm":z,"hCm":min(h,sh),"face":face}
+        bay_small_object(child)
+    if span>140:
+        # Two stations, one notebook-based: this is not a claimed ergonomic
+        # prescription for any child's age/size or prolonged screen use.
+        small("adult laptop","laptop",18,13,34,25,24)
+        small("adult task light","task_lamp",65,5,15,15,29)
+        small("family notebook","notebook",121,21,28,22,1.8)
+        small("family task light","task_lamp",172,6,15,15,29)
+    else:
+        small("compact laptop","laptop",18,20,32,24,22)
+        small("compact task light","task_lamp",2,3,13,13,29)
+        small("movable vanity mirror","mirror",span-22,2,20,13,28)
+        small("linen notebook","notebook",span-21,depth-18,18,15,1.6)
+
+
+def bay_fitouts(data):
+    global CURRENT_ROOM
+    for fitout in data.get("bayFitouts",[]):
+        CURRENT_ROOM=fitout["roomId"]
+        for p in fitout.get("parts",[]):
+            before=set(bpy.context.scene.objects)
+            bay_fitout_part(p)
+            objects=set(bpy.context.scene.objects)-before
+            bpy.context.view_layer.update()
+            lo=(float(p["x"])/100,float(p["y"])/100,float(p.get("zCm",0))/100)
+            hi=(lo[0]+float(p["w"])/100,lo[1]+float(p["d"])/100,lo[2]+float(p["hCm"])/100)
+            for obj in objects:
+                obj["fitoutId"]=fitout["id"]
+                obj["fitoutPartId"]=p["id"]
+                obj["bayRole"]=p["role"]
+                obj["openingId"]=fitout["openingId"]
+                obj["roomId"]=CURRENT_ROOM
+                obj["furnitureId"]=p["id"]
+                obj["fitoutType"]=fitout["type"]
+                obj["designStatus"]=str(fitout.get("status","conditional design proposal"))
+                if "face" in p:obj["furnitureFace"]=p["face"]
+                if obj.type=="MESH":
+                    for point in obj.bound_box:
+                        q=obj.matrix_world @ Vector(point)
+                        values=(q.x,-q.y,q.z)
+                        if any(values[i]<lo[i]-.00015 or values[i]>hi[i]+.00015 for i in range(3)):
+                            raise ValueError(f"{fitout['id']}/{p['id']}: {obj.name} escapes declared part bounds: {values} versus {lo}..{hi}")
+
+
 def sofa(f):
     x,y,w,d=[f[k]/100 for k in ("x","y","w","d")]
     block("Curved sofa upholstered base",x,y,.10,w,d,.27,mat="Linen",bevel=.12)
@@ -916,6 +1133,7 @@ def furnish(data):
             obj["furnitureName"]=n
             if "face" in f:obj["furnitureFace"]=f["face"]
             if "doorStyle" in f:obj["doorStyle"]=f["doorStyle"]
+    bay_fitouts(data)
     CURRENT_ROOM="living"
     lamp(6.48,8.98)
     # Pendant group over dining table, compact and true to the 1.20 m table.
@@ -938,6 +1156,9 @@ VIEWS = {
     "master-bath": ((6.57,4.65,1.60),(4.85,3.95,1.12),18),
     "guest-bath": ((6.54,6.03,1.60),(4.95,5.36,1.06),17),
     "balcony": ((5.60,10.70,1.45),(7.72,10.35,1.18),20),
+    "bay-master": ((4.30,2.98,1.60),(4.72,.24,1.04),18),
+    "bay-tea": ((2.82,1.50,1.52),(1.53,-.11,1.03),18),
+    "bay-living": ((4.13,9.08,1.65),(2.30,7.47,1.15),22),
 }
 
 
@@ -1007,11 +1228,11 @@ def polygon_area(pts):
 
 
 BAY_DESCRIPTIONS = {
-    "living":"奶油布艺、浅橡木与圆形双茶几；电视位于北侧实墙，西侧恢复向外凸出的飘窗。外挑 600 mm、窗台 900 mm 暂定待复尺，不预设为坐榻。",
-    "master":"1500×2000 mm 床垫配 1600×2100 mm 床架，床头向东、脚向西；西墙衣柜朝东，南侧套内门进入主卫。北侧保留外凸飘窗，深度与窗高待复尺，不预设为坐榻。",
-    "bedroom-b":"1350×2000 mm 床垫配 1450×2100 mm 床架，床头向西、脚向东；南墙采用北向移门衣柜，东北保留书桌。北侧飘窗深度与窗高待复尺。",
+    "living":"奶油布艺、浅橡木与圆形双茶几；电视仍在北侧实墙，西侧为外凸飘窗及并肩学习办公条件方案。",
+    "master":"1500×2000 mm 床垫配 1600×2100 mm 床架，床头向东、脚向西；南侧套内门进入主卫，北端让位给窗侧办公梳妆桌。",
+    "bedroom-b":"1350×2000 mm 床垫配 1450×2100 mm 床架，床头向西、脚向东；南墙北向移门衣柜及东北独立书桌均保留。北飘窗低台茶座是附条件展示，非实测现状。",
 }
-BAY_NOTE="主卧、次卧与客厅三处为外凸飘窗；600 mm 外挑、900 mm 窗台及实心侧返边均是待复尺的 C 级暂定表达，不增加房间净面积。"
+BAY_NOTE="三处飘窗的 600 mm 外挑和实心侧返边均为待复尺暂定表达，不增加房间净面积。主卧、客厅台高暂按 900 mm；次卧茶座的 430 mm 低台仅在结构、承载与防坠条件通过时成立，不表示可以降低原结构。细金属框和无绳卷帘为拟更换设计，外立面许可与窗扇活动范围未核验。"
 
 
 def manifest(data, openings, src):
@@ -1030,6 +1251,10 @@ def manifest(data, openings, src):
     }
     if any(op.get("windowType")=="bay" for op in openings):
         desc.update(BAY_DESCRIPTIONS)
+    fitouts_by_room={item["roomId"]:item for item in data.get("bayFitouts",[])}
+    for view,rid,_name in mapping:
+        if rid in fitouts_by_room and view!="dining":
+            desc[view]+=" "+fitouts_by_room[rid].get("summary","")
     for view,rid,name in mapping:
         room=next(r for r in data["rooms"] if r["id"]==rid)
         pos,target,lens=VIEWS[view]
@@ -1039,8 +1264,19 @@ def manifest(data, openings, src):
         if view=="dining":cx,cy=3.7,12.2
         if view=="living":cx,cy=4.5,8.8
         rooms.append({"id":"dining" if view=="dining" else rid,"name":name,"area":round(polygon_area(pts),2),"points":[[x/100,y/100] for x,y in pts],"camera":{"position":[cx+3.0,5.2,cy+4],"target":[cx,.65,cy]},"interiorCamera":{"position":three(pos),"target":three(target),"horizontalFov":round(math.degrees(2*math.atan(36/(2*lens))),2),"fov":round(math.degrees(2*math.atan(24/(2*lens))),2)},"render":f"assets/blender-renders/{view}.jpg","description":desc[view],"features":["同一 Blender 场景生成模型和渲染","原木 · 奶油白 · 亚麻","门窗尺寸现场复尺"]})
+        if rid in fitouts_by_room and view!="dining":
+            fitout=fitouts_by_room[rid]
+            rooms[-1]["fitoutId"]=fitout["id"]
+            rooms[-1]["features"].extend(fitout.get("dimensions",[]))
+            rooms[-1]["conditions"]=fitout.get("conditions",[])
     result={"version":"3.0 Blender 原木实景模型","model":"models/huiyayuan-wood.glb","blend":"models/huiyayuan-wood.blend","units":"m","source":str(src.relative_to(ROOT)).replace("\\","/"),"sourceSha256":hashlib.sha256(src.read_bytes().replace(b"\r\n", b"\n")).hexdigest(),"bounds":{"min":[0,-.012,0],"max":[8.41,2.7,14.01]},"overviewCamera":{"position":three(VIEWS["overall"][0]),"target":three(VIEWS["overall"][1])},"overallRender":"assets/blender-renders/overall.jpg","rooms":rooms,"openings":openings,"design":{"style":"现代原木","palette":["#eee9df","#bb956b","#d4c9b5","#758364","#b98165"]},"notes":["真实网格由厘米平面数据转换为米；渲染与交互使用同一 Blender 场景。","整体与房间鸟瞰采用可拆墙展示；室内机位使用完整墙体与实际开口。","C 级门窗、层高与统一墙厚仍为待现场复尺的建模假设。"]}
     result["bounds"]=geometry_bounds(data,openings)
+    detail_views={"office_vanity":"bay-master","tea_seat":"bay-tea","family_desk":"bay-living"}
+    result["bayDetails"]=[]
+    for fitout in data.get("bayFitouts",[]):
+        view=detail_views[fitout["type"]]
+        pos,target,lens=VIEWS[view]
+        result["bayDetails"].append({"id":view,"fitoutId":fitout["id"],"openingId":fitout["openingId"],"roomId":fitout["roomId"],"title":fitout["title"],"render":f"assets/blender-renders/{view}.jpg","interiorCamera":{"position":three(pos),"target":three(target),"horizontalFov":round(math.degrees(2*math.atan(36/(2*lens))),2),"fov":round(math.degrees(2*math.atan(24/(2*lens))),2)},"summary":fitout.get("summary",""),"dimensions":fitout.get("dimensions",[]),"conditions":fitout.get("conditions",[])})
     if any(op.get("windowType")=="bay" for op in openings):
         result["notes"].append(BAY_NOTE)
     (MODEL_DIR/"scene-manifest.json").write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding="utf-8")

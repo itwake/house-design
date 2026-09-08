@@ -1,11 +1,11 @@
 {
-  "version": "3.0.3",
+  "version": "3.0.4",
   "geometryData": "models/design-data.json",
   "description": "V3重建使用design-data作为墙、房间、开口和家具投影唯一来源；此文件列出旧Home.xml至V3的修正语义。",
   "openings": [
     {
       "id": "window_b",
-      "name": "次卧北飘窗（存在确认，尺寸待复尺）",
+      "name": "次卧北飘窗（430低台条件展示，非实测）",
       "kind": "window",
       "windowType": "bay",
       "bay": {
@@ -21,8 +21,11 @@
       "y1": 6,
       "x2": 220,
       "y2": 6,
-      "sillCm": 90,
-      "heightCm": 140,
+      "sillCm": 43,
+      "heightCm": 187,
+      "baselineSillCm": 90,
+      "baselineHeightCm": 140,
+      "designScenario": "低台条件：实台顶可保留于430mm并经结构及防坠核验，叠加50mm坐垫至480mm；原900mm仅旧版未实测占位，不表示允许降低470mm或拆台。",
       "grade": "C"
     },
     {

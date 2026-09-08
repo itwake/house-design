@@ -1,6 +1,6 @@
 {
   "name": "荟雅苑 104.83㎡ · 28F",
-  "version": "V3.0.3 Blender 原木风 · 套卫与床向校正",
+  "version": "V3.0.4 Blender 原木风 · 三飘窗功能设计（条件方案）",
   "unit": "cm",
   "north": "图上方（临道路侧）",
   "palette": [
@@ -544,7 +544,7 @@
   "windows": [
     {
       "id": "window_b",
-      "name": "次卧北飘窗（存在确认，尺寸待复尺）",
+      "name": "次卧北飘窗（430低台条件展示，非实测）",
       "kind": "window",
       "windowType": "bay",
       "bay": {
@@ -562,8 +562,11 @@
       "y2": 6,
       "widthMm": 1300,
       "grade": "C",
-      "sillCm": 90,
-      "heightCm": 140
+      "sillCm": 43,
+      "heightCm": 187,
+      "baselineSillCm": 90,
+      "baselineHeightCm": 140,
+      "designScenario": "低台条件：实台顶可保留于430mm并经结构及防坠核验，叠加50mm坐垫至480mm；原900mm仅旧版未实测占位，不表示允许降低470mm或拆台。"
     },
     {
       "id": "window_a",
@@ -766,11 +769,11 @@
   ],
   "clearances": [
     {
-      "id": "living_window_clear",
-      "name": "客厅西窗前600净空",
-      "x": 212,
+      "id": "living_desk_aisle",
+      "name": "客厅双人桌椅后800通道（椅最大退至x344条件）",
+      "x": 344,
       "y": 647,
-      "w": 60,
+      "w": 80,
       "d": 200,
       "grade": "C"
     },
@@ -869,13 +872,14 @@
     {
       "name": "主卧衣柜",
       "x": 325,
-      "y": 20,
+      "y": 80,
       "w": 60,
-      "d": 220,
+      "d": 160,
       "a": 0,
       "tone": "wood",
       "face": "east",
-      "notes": "随东向床头移至西墙；柜面至床尾暂定800mm，开启后的可用空间需按选品深化。"
+      "doorStyle": "sliding",
+      "notes": "为飘窗侧接办公/梳妆台让出北段；衣柜宽由2200减为1600mm并改移门。工作椅使用时占局部床尾带，不能同时通行或充分取衣；柜轨和椅尺度待深化。"
     },
     {
       "name": "书房日床",
@@ -1443,7 +1447,7 @@
     "B/C拓扑已按两张图恢复；B门厅900×1000、C东北凹口及北走廊850净宽均为比例推算。",
     "V3.0.1依据用户圈图补齐书房南侧与客厅之间的实墙；南侧无门，书房入口仍在东侧公共过道。",
     "V3.0.2恢复主卧北、次卧北及客厅西3处飘窗：存在与外凸方向已确认；外凸600mm、窗台900mm、窗宽高及100mm侧返墙/板厚均待现场复尺，实侧面仅暂定示意。",
-    "飘窗为窗台及外凸空间，不并入房间地面面积；14010mm等尺寸为主体墙身尺寸，不包含飘窗最外侧包络。窗台暂高900mm，不应据此当作已验证可坐榻设计。",
+    "飘窗为窗台及外凸空间，不并入房间地面面积；14010mm等尺寸为主体墙身尺寸，不包含飘窗最外侧包络。旧900mm台高从未实测；本版A/厅仍保留900占位，B单独展示430mm低台+50mm垫的条件分支，不是允许降低台体的施工结论。",
     "北侧房间统一3100深：目标图B标3090、A标3100；C目标图2850、旧模型2860，10mm级差异暂作制图取整，待复尺。",
     "V3.0.3按用户确认恢复两卫阶梯共墙及客卫西北盆位；240mm偏移和1000mm西段为暂定几何值。模型主卫约3.63㎡、客卫约3.27㎡，不能据此覆盖实测。",
     "主卫入口改为北侧主卧套内，旧公共过道入口封闭；客卫仍从过道进入。两卫门宽750及开启方式待复尺，门关闭展示不等于开启碰撞已通过。",
@@ -1451,12 +1455,82 @@
     "主卫西墙750×400盆柜与北墙WC之间保守净夹道635mm，人体路径按600mm圆概念校核；仅属紧凑单人布局，不代表实物选品、开门及施工公差合格。",
     "两卫东窗仅恢复参考图中存在的开口，精确位置、宽高、外墙状态均待核。",
     "同户型贝壳照片可见厨房通阳台的门；不能把相似房源当作目标28楼的竣工图。阳台外侧封窗、栏杆和厨房外窗仍待核。",
-    "贝壳相似房源北侧3070/3526等尺寸与目标图3010/3500不同；本版仅借其核对门窗拓扑，不替换目标主体尺寸。照片里的飘窗台显著较低，模型900mm窗台仍是待核假设。",
+    "贝壳相似房源北侧3070/3526等尺寸与目标图3010/3500不同；本版仅借其核对门窗拓扑，不替换目标主体尺寸。照片里的飘窗台显著较低，但无法由照片量出28楼实台高度。",
     "已知约104.83平方米是房源建筑面积，模型房间净面积合计不应冒充证载面积。",
-    "旧V2 AI卧室图误把俯视地面视为后墙，不作为V3构造或照明依据。"
+    "旧V2 AI卧室图误把俯视地面视为后墙，不作为V3构造或照明依据。",
+    "V3.0.4三处功能件均由bayFitouts厘米数据生成2D、Blender和GLB；保留墙体、三飘窗外凸、主卫套内门、两卫阶梯及东西向床头。桌下腿位全部在室内一侧，不计入实心台体。",
+    "三飘窗细暖灰框和无绳卷帘为拟选内装/窗系统外观，窗框分格与开启方式未经物业、窗系统厂家或结构专业核准；卷帘及普通玻璃并非防坠设施。"
   ],
   "renovationNotes": [
     {"roomId":"balcony","status":"待确认","text":"客厅↔阳台开门为拟改造方案，现有模型西侧玻璃门不代表原结构。原门封墙改窗的具体边界待确认是否为厨房↔阳台；未确认前不新增该窗。"},
-    {"roomId":"balcony","status":"待结构核验","text":"任何新开洞/封洞须先查原结构、梁柱与承重属性，并由具备相应资质的人员及物业确认可行；本模型不授权拆墙。"}
+    {"roomId":"balcony","status":"待结构核验","text":"任何新开洞/封洞须先查原结构、梁柱与承重属性，并由具备相应资质的人员及物业确认可行；本模型不授权拆墙。"},
+    {"roomId":"room_a","status":"家具方案","text":"飘窗高低台：800×600×750办公梳妆桌侧接北窗，保留900高后层板；主卧衣柜缩为1600宽移门，椅使用时占局部床尾通道。不是把1500飘窗全宽做成正坐书桌。"},
+    {"roomId":"room_b","status":"低台条件分支","text":"茶座显示430台+50坐垫=480mm，仅在实台可达且结构、防坠通过后成立；未假设可砸台，未增踏梯。坐垫850×550、茶托可移，床侧430mm紧凑，仅适合单人小憩。"},
+    {"roomId":"living","status":"条件家具方案","text":"西窗室内侧2000×650×750双人长桌，每席约1米；腿位不借实台，示意椅后800通道。儿童需要按身高调整椅/桌与足托，成人750台高不是儿童通用高度。"},
+    {"status":"飘窗安全前置","text":"28楼的桌面/坐垫均成为可攀爬面。三窗防护、限位、可开启扇、玻璃与固定构造必须专门深化，按可站立面复核有效防护；纱窗和效果图玻璃不能代替防坠，未核验前不启用茶座或儿童窗边学习位。"}
+  ],
+  "bayDesign": {
+    "status": "条件家具与窗系统方案，非施工图",
+    "units": "cm",
+    "measured": false,
+    "windowStyle": {"frameFinish":"warm-gray metal","frameWidthCm":3,"frontFrameDepthCm":10,"mullionCount":1,"decorativeTransom":false,"blind":"cordless roller","approval":"拟更换外观，尚未核准外立面与开启扇"},
+    "safety": "普通玻璃/纱窗不承担已验证防坠功能；所有临窗可攀爬面、防护及开窗限位需专业核验。",
+    "assumptions": ["三窗宽1300/1500/2000、外凸600mm待复尺。","A与厅900mm保留旧占位；B低台是独立条件展示，不是实测或拆改许可。","桌腿、台板跨度、固接承载及电气均需厂家深化；不把全屋定制柜体当成结构支撑。"]
+  },
+  "bayFitouts": [
+    {
+      "id":"bay_a_office_vanity", "openingId":"window_a", "roomId":"room_a", "type":"office_vanity", "title":"主卧 · 窗侧办公与梳妆",
+      "summary":"利用飘窗左端侧接薄桌面，高低台共享材质；笔电与活动小镜交替使用，保留东墙床头。",
+      "dimensions":["操作桌 800×600，高750mm，台板30mm","窗台后层板暂高约919mm；不借实台算腿位","主卧衣柜改1600mm宽移门，北端让出600mm","桌与床架最近仅20mm，必须现场复尺后下单"],
+      "conditions":["以短时笔电办公和梳妆为主，不是双人或大型显示器工作站。","椅使用时占局部床尾80cm带，不保证同时绕行与开柜。","椅推进桌底再取衣；衣柜减少600mm宽储物量是此方案的代价。","工作面留空，不做桌下整排抽屉；窗台结构、开窗及防坠核验前不施工。"],
+      "references":["xhs-master-real","to8to-side-vanity","feimo-side-desk"],
+      "parts":[
+        {"id":"a_desktop","role":"desktop","x":383,"y":12,"w":80,"d":60,"zCm":72,"hCm":3,"face":"south"},
+        {"id":"a_support","role":"desk_support","x":383,"y":12,"w":80,"d":60,"zCm":0,"hCm":72,"face":"south"},
+        {"id":"a_accessories","role":"desk_accessories","x":386,"y":17,"w":74,"d":48,"zCm":75,"hCm":43,"face":"south"},
+        {"id":"a_chair","role":"chair","x":395,"y":77,"w":50,"d":48,"zCm":0,"hCm":80,"face":"north"},
+        {"id":"a_ledge","role":"raised_ledge","x":432,"y":-53,"w":146,"d":62,"zCm":90.1,"hCm":1.8},
+        {"id":"a_ledge_objects","role":"ledge_objects","x":440,"y":-43,"w":125,"d":42,"zCm":91.9,"hCm":20}
+      ]
+    },
+    {
+      "id":"bay_b_tea", "openingId":"window_b", "roomId":"room_b", "type":"tea_seat", "title":"次卧 · 一人的窗边茶座",
+      "summary":"暖灰坐垫、浅木可移茶托与无绳卷帘，取消厚重围边，不新增落地茶几或踏梯。",
+      "dimensions":["条件台顶430 + 坐垫50 = 完成坐面480mm","单人坐垫850×550mm，茶托280×320mm","北侧床边约430mm，仅紧凑单人使用","窗宽1300、外凸600mm均待复尺"],
+      "conditions":["只有实台条件可保留至该低台高度且防坠/承载通过时启用，900mm高实台不可直接照此施工。","若实测为不可改变的高台，退回陈列台，取消坐人用途，不用爬梯补救。","坐垫可拆洗、茶盘可移，台下不画未经核实的储物抽屉。","不放烧水炉或电热壶；不把此处设计为儿童攀爬或游戏区。"],
+      "references":["xhs-tea","houzz-oak-seat"],
+      "parts":[
+        {"id":"b_cushion","role":"seat_cushion","x":95,"y":-50,"w":85,"d":55,"zCm":43.2,"hCm":4.8},
+        {"id":"b_tea_tray","role":"tea_tray","x":185,"y":-45,"w":28,"d":32,"zCm":43.2,"hCm":16.3},
+        {"id":"b_back_cushion","role":"back_cushion","x":97,"y":-49,"w":43,"d":12,"zCm":48,"hCm":26}
+      ]
+    },
+    {
+      "id":"bay_living_family", "openingId":"window_living_west", "roomId":"living", "type":"family_desk", "title":"客厅 · 并肩办公与学习",
+      "summary":"完整2米浅木长台放在飘窗室内侧，成人与孩子各约1米工作面；桌下不借实台空间，电视仍在北侧实墙。",
+      "dimensions":["整桌2000×650，高750mm，台板30mm","两席各约1000mm；椅52×52cm示意","示意椅后800mm通道，椅不得无限后退","腿位在室内侧，台体不拆、不开脚洞"],
+      "conditions":["儿童身高未知，750mm桌面不是通用儿童规格；需试坐，调整桌椅/足托，不合适时采用分段升降工作面。","临窗桌椅增加攀爬风险，完成专业防坠与限位前不得启用儿童学习位。","西向眩光用可调无绳卷帘、屏幕位置与独立任务灯控制，不能凭照片承诺不晒。","中央及两端薄支架示意，木板跨度、防挠与固定承载由厂家深化；无贯穿桌下抽屉。"],
+      "references":["xhs-desk-caution","smzdm-adjustable","sawyer-fitted-desk"],
+      "parts":[
+        {"id":"l_desktop","role":"desktop","x":214,"y":647,"w":65,"d":200,"zCm":72,"hCm":3,"face":"east"},
+        {"id":"l_support","role":"desk_support","x":214,"y":647,"w":65,"d":200,"zCm":0,"hCm":72,"face":"east"},
+        {"id":"l_accessories","role":"desk_accessories","x":217,"y":653,"w":56,"d":187,"zCm":75,"hCm":45,"face":"east"},
+        {"id":"l_adult_chair","role":"chair","x":285,"y":677,"w":52,"d":52,"zCm":0,"hCm":80,"face":"west"},
+        {"id":"l_child_chair","role":"chair","x":285,"y":775,"w":52,"d":52,"zCm":0,"hCm":80,"face":"west","footrest":true},
+        {"id":"l_ledge","role":"raised_ledge","x":147,"y":649,"w":62,"d":196,"zCm":90.1,"hCm":1.8}
+      ]
+    }
+  ],
+  "designReferences": [
+    {"id":"xhs-master-real","title":"卧室飘窗桌的真实使用感受｜附尺寸","platform":"小红书","author":"王子豪装修日记","url":"https://www.xiaohongshu.com/explore/694bd658000000001e015908","borrow":"实拍可见桌面与活动镜共用、理线和可调光帘。","avoid":"作者称有拆台、约900mm椅后通道；本户型不具同样条件，不照搬1920×620×780尺寸或拆台做法。"},
+    {"id":"to8to-side-vanity","title":"芝士仙贝的家 · 飘窗侧接梳妆台","platform":"土巴兔装修日记","author":"芝士仙贝","url":"https://www.to8to.com/riji/7106585_6_asc","borrow":"2023-09-22实拍：飘台侧端延出桌面，小凳可收、窄侧收纳。","avoid":"房间尺度及作者不同帖尺寸不一致，仅借功能组织。"},
+    {"id":"feimo-side-desk","title":"衣柜、书桌与飘窗一体设计","platform":"人民号","author":"飞墨设计师","url":"https://www.peopleapp.com/rmharticle/30013789490","borrow":"施工图文可见衣柜靠窗端退让，桌面局部借窗侧光。","avoid":"原案例约17㎡卧室，大于本案；不照搬体量及文章对拆改的描述。"},
+    {"id":"xhs-tea","title":"飘窗的妙用，小茶室get","platform":"小红书","author":"小酥鱼想宅家","url":"https://www.xiaohongshu.com/explore/69f05163000000003701db67","borrow":"图文中的茶托/席垫与百叶式遮光，利用现有台面营造单人角落。","avoid":"网图台体与实测不明；不复制其小柜和全部摆件，不作为承载或防坠证据。"},
+    {"id":"houzz-oak-seat","title":"Oak Lined Window Seat","platform":"Houzz","author":"Beacham Architects","url":"https://www.houzz.co.uk/photos/oak-lined-window-seat-modern-home-office-london-phvw-vp~102392956","borrow":"真实项目：统一木色、简单坐面，书籍收纳留在侧面。","avoid":"原窗更大且台下为柜体；本案不假设可挖出台下柜。"},
+    {"id":"xhs-desk-caution","title":"不拆不砸！鸡肋飘窗原地改造成书桌成功了","platform":"小红书","author":"爱宅家的年糕","url":"https://www.xiaohongshu.com/explore/68639409000000002001b5d0","borrow":"参考轻薄长台、独立照明和帘；同时作为腿位反例。","avoid":"作者坦言腿深仅25cm且有挤腿；本方案不采用，文中灯具推广及护眼效果不作为证据。"},
+    {"id":"smzdm-adjustable","title":"飘窗升降桌 DIY 实作","platform":"什么值得买","author":"业主过程分享","url":"https://post.smzdm.com/p/ar0voo5z/","borrow":"浅木长桌、设备理线、可调桌高思路。","avoid":"不引用当年价格或拆改判断；儿童适配必须重新试坐。"},
+    {"id":"sawyer-fitted-desk","title":"Bay Window Desk","platform":"设计师网站","author":"Sawyer Design","url":"https://sawyerdesign.io/portfolio/bay-window-desk/","borrow":"按窗形定制桌沿、简洁支腿和后沿理线槽。","avoid":"原窗无本案实心台约束，不能直接套其桌下空间。"},
+    {"id":"osha-workspace","title":"Computer Workstations · Work Space","platform":"人体工学参考","author":"OSHA","url":"https://www.osha.gov/etools/computer-workstations/components/work-space","borrow":"桌下应真实留足膝/脚空间、按使用者调节。","avoid":"不是中国住宅施工验收规范，也不代表儿童通用尺寸。"},
+    {"id":"cpsc-window-safety","title":"2026 Window Safety Week","platform":"窗边安全参考","author":"CPSC","url":"https://www.cpsc.gov/Newsroom/News-Releases/2026/CPSC-Urges-Families-to-Protect-Children-During-National-Window-Safety-Week","borrow":"家具贴窗增加攀爬风险；纱窗不能防坠，应专门防护及限位。","avoid":"仅作为风险提醒，不替代广州项目的专业设计、审查与验收。"}
   ]
 }

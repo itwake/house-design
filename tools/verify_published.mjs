@@ -15,7 +15,7 @@ const targets = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json()
 const target = targets.find(t => t.id === tabId && t.url.startsWith(base));
 if (!target) throw new Error('Refusing to inspect a non-project or unpublished tab');
 const paths = ['', 'studio.js', 'studio.css', 'models/huiyayuan-wood.glb', 'models/huiyayuan-wood.blend', 'models/design-data.json', 'models/scene-manifest.json',
-  ...['overall', 'living', 'dining', 'master', 'bedroom-b', 'study', 'kitchen', 'master-bath', 'guest-bath', 'balcony'].map(name => `assets/blender-renders/${name}.jpg`)];
+  ...['overall', 'living', 'dining', 'master', 'bedroom-b', 'study', 'kitchen', 'master-bath', 'guest-bath', 'balcony', 'bay-master', 'bay-tea', 'bay-living'].map(name => `assets/blender-renders/${name}.jpg`)];
 const expression = `(async () => {
   const url = path => { const u = new URL(path, ${JSON.stringify(base)}); u.searchParams.set('v', ${JSON.stringify(version)}); return u; };
   const checks = await Promise.all(${JSON.stringify(paths)}.map(async path => { try { const r = await fetch(url(path), {method:'HEAD', signal:AbortSignal.timeout(15000)}); return [path, r.status === 200]; } catch { return [path, false]; } }));
@@ -25,6 +25,8 @@ const expression = `(async () => {
   checks.push(['three bay windows', d.windows.filter(w=>w.windowType==='bay').length === 3], ['study south wall retained', JSON.stringify(d.walls[20]) === '[206,626,319,626]']);
   checks.push(['stepped bath wall', JSON.stringify(d.walls[21]) === '[516,469,516,493]'], ['main bath north door', d.doors.find(o=>o.id==='door_bath_1').y1 === 328]);
   checks.push(['master east head', d.furniture.find(f=>f.id==='bed_a').headDirection === 'east'], ['bed B west head', d.furniture.find(f=>f.id==='bed_b').headDirection === 'west']);
+  checks.push(['three bay fitouts', d.bayFitouts?.length === 3], ['conditional B sill with preserved baseline', d.windows.find(w=>w.id==='window_b').sillCm === 43 && d.windows.find(w=>w.id==='window_b').baselineSillCm === 90]);
+  checks.push(['family desk length 200 cm', d.bayFitouts?.find(f=>f.type==='family_desk')?.parts.find(p=>p.role==='desktop').d === 200], ['original references linked', d.designReferences?.length >= 8]);
   return {version:${JSON.stringify(version)}, checks};
 })()`;
 const ws = new WebSocket(target.webSocketDebuggerUrl);

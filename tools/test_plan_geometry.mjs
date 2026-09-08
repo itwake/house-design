@@ -60,4 +60,32 @@ assert.equal(attribute(one(svg, 'data-vanity-id="vanity_main"'), 'data-vanity-fa
 assert.equal(attribute(one(svg, 'data-vanity-id="vanity_main"'), 'data-vanity-back'), 'west');
 assert.equal(attribute(one(svg, 'data-vanity-id="vanity_guest"'), 'data-vanity-back'), 'north');
 assert.equal(tags(svg, 'data-plan-room=').length, data.rooms.filter(r => r.id !== 'dining').length);
-console.log('PASS: actual planFurniture + makePlan; precise east/west beds and 7.5 cm headboards, stepped baths, suite north door, 3 bays, vanity orientation.');
+const fitoutParts = data.bayFitouts.flatMap(fitout => fitout.parts.map(part => ({fitout,part})));
+assert.equal(fitoutParts.length,15,'Three bay functions retain fifteen explicit 3D component envelopes');
+assert.equal(tags(svg,'data-part-id=').length,fitoutParts.length,'Each actual part has exactly one source rectangle');
+for(const {fitout,part} of fitoutParts){
+  const rect=one(svg,`data-part-id="${part.id}"`);
+  assert.equal(attribute(rect,'data-fitout-id'),fitout.id);
+  assert.equal(attribute(rect,'data-fitout-role'),part.role);
+  assert.deepEqual(coordinates(rect,['x','y','width','height','data-z-cm','data-h-cm']),[part.x,part.y,part.w,part.d,part.zCm,part.hCm],`${part.id} exact cm footprint and height from shared data`);
+  assert.equal(attribute(rect,'transform'),undefined,`${part.id} must not rotate its final world bbox twice`);
+  context.fitout=fitout;context.part=part;
+  const actual=vm.runInContext('planFitoutPart(fitout,part)',context);
+  assert.ok(svg.includes(actual),`${part.id} rendered by actual makePlan`);
+  if(part.role==='chair'){
+    const lines=tags(actual,'<line');
+    assert.equal(lines.length,1,`${part.id} one actual backrest line`);
+    const expected=part.face==='north'?[part.x+5,part.y+part.d-3,part.x+part.w-5,part.y+part.d-3]:[part.x+part.w-3,part.y+5,part.x+part.w-3,part.y+part.d-5];
+    assert.deepEqual(coordinates(lines[0],['x1','y1','x2','y2']),expected,`${part.id} back is opposite north/west seating face`);
+  }
+  if(['desk_support','desk_accessories','ledge_objects'].includes(part.role)){
+    assert.equal(attribute(rect,'fill'),'none',`${part.id} empty aggregate envelope is not drawn as solid storage`);
+    assert.equal(attribute(rect,'stroke'),'none');
+  }
+}
+const teaWindow=data.windows.find(w=>w.id==='window_b');
+assert.deepEqual([teaWindow.sillCm,teaWindow.heightCm,teaWindow.baselineSillCm,teaWindow.baselineHeightCm],[43,187,90,140],'Low tea ledge remains a conditional scenario with original 90 cm baseline');
+assert.ok(teaWindow.designScenario);
+assert.equal(data.bayDesign.measured,false);
+assert.ok(svg.includes('条件设计，非施工图'),'Actual SVG exports conditional-design limitations');
+console.log('PASS: actual planFurniture + makePlan; exact beds, stepped baths, suite north door, 3 bays, vanity orientation, 15 bay part dimensions / heights and three true chair orientations.');
