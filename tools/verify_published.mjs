@@ -14,14 +14,15 @@ const renderHashes=Object.fromEntries(await Promise.all(renderNames.map(async na
 const localDesign=JSON.parse(localData);
 const storageSnapshot=JSON.stringify({design:localDesign.storageDesign,fitouts:localDesign.storageFitouts,furniture:localDesign.furniture.filter(f=>f.storageFitoutId||/^(四人餐桌|餐椅)/.test(f.name||''))});
 const source = await readFile(new URL('../studio.js', import.meta.url), 'utf8');
-const version = source.match(/ASSET_REVISION = '([^']+)'/)[1];
+const assetRevision = source.match(/ASSET_REVISION = '([^']+)'/)[1];
+const version = source.match(/UI_REVISION = '([^']+)'/)?.[1] || assetRevision;
 const targets = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
 const target = targets.find(t => t.id === tabId && t.url.startsWith(base));
 if (!target) throw new Error('Refusing to inspect a non-project or unpublished tab');
 const paths = ['', 'studio.js', 'studio.css', 'models/huiyayuan-wood.glb', 'models/huiyayuan-wood.blend', 'models/design-data.json', 'models/scene-manifest.json',
   ...renderNames.map(name => `assets/blender-renders/${name}.jpg`)];
 const expression = `(async () => {
-  const url = path => { const u = new URL(path, ${JSON.stringify(base)}); u.searchParams.set('v', ${JSON.stringify(version)}); return u; };
+  const url = path => { const u = new URL(path, ${JSON.stringify(base)}); u.searchParams.set('v', ['', 'studio.js', 'studio.css'].includes(path) ? ${JSON.stringify(version)} : ${JSON.stringify(assetRevision)}); return u; };
   const checks = await Promise.all(${JSON.stringify(paths)}.map(async path => { try { const r = await fetch(url(path), {method:'HEAD', cache:'no-store', signal:AbortSignal.timeout(30000)}); return [path, r.status === 200]; } catch { return [path, false]; } }));
   const options=()=>({cache:'no-store',signal:AbortSignal.timeout(90000)});
   const sha256=async bytes=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(n=>n.toString(16).padStart(2,'0')).join('');
@@ -41,7 +42,8 @@ const expression = `(async () => {
   checks.push(['master has no extra ordinary desk/chair', !d.furniture.some(f=>ordinaryDeskOrChair(f)&&insideRoom(f,'room_a'))], ['bedroom B has no ordinary desk/chair', !d.furniture.some(f=>ordinaryDeskOrChair(f)&&insideRoom(f,'room_b'))]);
   const storageActual=JSON.stringify({design:d.storageDesign,fitouts:d.storageFitouts,furniture:d.furniture.filter(f=>f.storageFitoutId||/^(四人餐桌|餐椅)/.test(f.name||''))});
   checks.push(['storage data and furniture match local',storageActual===${JSON.stringify(storageSnapshot)}],['two storage fitouts / ten same-source parts',d.storageFitouts?.length===2&&d.storageFitouts.flatMap(f=>f.parts).length===10],['storage explicitly unmeasured',d.storageDesign?.measured===false],['two storage render cameras',m.storageDetails?.length===2&&m.storageDetails.every(x=>x.interiorCamera&&x.render)]);
-  return {version:${JSON.stringify(version)}, checks};
+  checks.push(['published UI revision',document.documentElement.dataset.uiRevision===${JSON.stringify(version)}],['room card visibility control available',Boolean(document.querySelector('#toggle-room-card[aria-controls="room-card"]'))]);
+  return {version:${JSON.stringify(version)}, assetRevision:${JSON.stringify(assetRevision)}, checks};
 })()`;
 const ws = new WebSocket(target.webSocketDebuggerUrl);
 const timer = setTimeout(() => { console.error('Published verification timed out'); ws.close(); process.exitCode = 1; }, 180000);

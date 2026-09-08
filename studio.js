@@ -1,5 +1,7 @@
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
+const UI_REVISION = '3.0.7';
+document.documentElement.dataset.uiRevision = UI_REVISION;
 const ASSET_REVISION = '3.0.6';
 const revisedAsset = path => {const url=new URL(path,document.baseURI);url.searchParams.set('v',ASSET_REVISION);return url.href};
 const icons = {
@@ -38,7 +40,8 @@ const descriptions = {
   balcony:{name:'家政阳台',en:'UTILITY BALCONY',title:'把琐碎收得漂亮',icon:'leaf',render:'balcony',description:'洗烘与家政收纳集中在原阳台。浅木柜面呼应室内，预留维护、开门及日常操作空间。',features:['洗烘叠放','家政收纳','日常留白']}
 };
 const order = Object.keys(descriptions);
-const state = {room:'overall',view:'model',cutWalls:true,labels:true,dimensions:false,interior:false,ready:false};
+const state = {room:'overall',view:'model',cutWalls:true,labels:true,dimensions:false,interior:false,ready:false,roomCardVisible:true};
+const ROOM_CARD_STORAGE_KEY = 'house-design:room-card-visible';
 let data, manifest, rooms = [], three, scene, camera, renderer, controls, model, cameraTween, defaultDistance=20, resizeObserver, dimensionLines, activeHorizontalFov=null, pendingFrame=null;
 const wallMaterials=[], roomLabelNodes=[], dimensionNodes=[];
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -192,6 +195,25 @@ function selectRoom(id,{updateHash=true,animate=true}={}){
   roomLabelNodes.forEach(item=>item.element.classList.toggle('active',item.id===id));
   updateRender();
   if(state.ready)focusRoom(id,false,animate);
+}
+
+function setRoomCardVisible(visible,{persist=true}={}){
+  state.roomCardVisible=Boolean(visible);
+  const card=$('#room-card'),toggle=$('#toggle-room-card');
+  const moveFocus=!state.roomCardVisible&&card.contains(document.activeElement);
+  card.hidden=!state.roomCardVisible;
+  $('#workspace').classList.toggle('card-hidden',!state.roomCardVisible);
+  const action=state.roomCardVisible?'隐藏说明':'显示说明';
+  toggle.querySelector('span').textContent=action;
+  toggle.setAttribute('aria-label',action);
+  toggle.setAttribute('title',action);
+  toggle.setAttribute('aria-expanded',String(state.roomCardVisible));
+  $('#room-card-toggle').setAttribute('aria-expanded',String(state.roomCardVisible));
+  if(persist){try{sessionStorage.setItem(ROOM_CARD_STORAGE_KEY,String(state.roomCardVisible))}catch{}}
+  if(moveFocus)toggle.focus({preventScroll:true});
+  // Keep the user's current orbit/zoom. A later overview reset fits the newly
+  // available area; hiding the card itself must not move the camera.
+  scheduleRender();
 }
 
 function switchView(view){
@@ -414,7 +436,7 @@ function scheduleRender(){if(state.ready&&state.view==='model'&&!document.hidden
 function fitMobileOverview(position,target){
   const viewport=$('#model-canvas').getBoundingClientRect(),card=$('#room-card').getBoundingClientRect();
   const width=viewport.width,height=viewport.height;if(!width||!height)return {position,target};
-  const safe={left:20,right:width-20,top:112,bottom:card.height>0?card.top-viewport.top-18:height-250};
+  const safe={left:20,right:width-20,top:120,bottom:state.roomCardVisible&&card.height>0?card.top-viewport.top-18:height-82};
   safe.bottom=Math.max(safe.top+150,safe.bottom);
   const bounds=manifest?.bounds||{min:[0,-.012,0],max:[8.41,2.7,14.01]};
   const center=new three.Vector3(...bounds.min).add(new three.Vector3(...bounds.max)).multiplyScalar(.5);
@@ -499,6 +521,10 @@ function tick(time){
 }
 
 function bindControls(){
+  let visible=true;try{visible=sessionStorage.getItem(ROOM_CARD_STORAGE_KEY)!=='false'}catch{}
+  setRoomCardVisible(visible,{persist:false});
+  $('#toggle-room-card').addEventListener('click',()=>setRoomCardVisible(!state.roomCardVisible));
+  $('#room-card-toggle').addEventListener('click',()=>setRoomCardVisible(false));
   $('#open-plan').addEventListener('click',()=>exportPlan(true));$('#download-plan').addEventListener('click',()=>exportPlan(false));
   $$('.view-tabs [data-view]').forEach(button=>button.addEventListener('click',()=>switchView(button.dataset.view)));
   $('.view-tabs').addEventListener('keydown',event=>{if(!['ArrowLeft','ArrowRight'].includes(event.key))return;const views=['model','plan','renders'],next=(views.indexOf(state.view)+(event.key==='ArrowRight'?1:2))%3;switchView(views[next]);$(`[data-view="${views[next]}"]`).focus()});
@@ -521,7 +547,6 @@ function bindControls(){
   $('#download-toggle').addEventListener('click',()=>{const open=$('#download-popover').hidden;$('#download-popover').hidden=!open;$('#download-toggle').setAttribute('aria-expanded',String(open))});
   document.addEventListener('click',event=>{if(!event.target.closest('.download-menu')){$('#download-popover').hidden=true;$('#download-toggle').setAttribute('aria-expanded','false')}});
   document.addEventListener('keydown',event=>{if(event.key==='Escape'){$('#download-popover').hidden=true;$('#download-toggle').setAttribute('aria-expanded','false')}});
-  $('#room-card-toggle').addEventListener('click',()=>{const collapsed=$('#room-card').classList.toggle('collapsed');$('#room-card-toggle').setAttribute('aria-expanded',String(!collapsed))});
   $('.brand').addEventListener('click',event=>{event.preventDefault();selectRoom('overall');switchView('model')});
   window.addEventListener('hashchange',()=>selectRoom(location.hash.slice(1),{updateHash:false}));
   document.addEventListener('visibilitychange',()=>{if(!document.hidden&&controls){controls.update();scheduleRender()}});
