@@ -1,0 +1,583 @@
+{
+  "version": "3.1.0",
+  "defaultScheme": "wood",
+  "updatedAt": "2026-09-09",
+  "geometrySource": "models/design-data.json",
+  "scope": "同户型、同尺度的四套饰面与软装设计分支；原方案保留，新增三套独立模型和实景视角渲染。",
+  "researchNote": "参考近年有署名的公开住宅案例，不宣称流行度排名；第三方案例照片不作为本房效果图。",
+  "invariants": [
+    "四套方案共用同一份尺寸模型；新增方案改变饰面、织物、五金与灯罩细节，不改变户型或放大家具空间。",
+    "保留三房两卫、书房与客厅的连续实墙、两卫阶梯共墙、主卫通主卧的门及既定阳台改门窗意图。",
+    "保留主卧床头朝东、次卧床头朝西；主卧仅飘窗工作梳妆台配一椅，次卧不设独立书桌椅。",
+    "三个飘窗保留现有模型外包络：主卧办公梳妆、次卧条件茶座、客厅双人学习桌；安全和人体工学条件不因风格消失。",
+    "104.83㎡为房源建筑面积，当前封闭室内模型约78.82㎡，不能当作套内实测；墙厚、窗高、台高和局部尺寸仍需现场复尺。",
+    "次卧低台茶座、28楼防坠和开窗限位、窗边桌承载、拆改许可与机电施工均需专业核验；效果图不是施工图。"
+  ],
+  "references": [
+    {
+      "id": "mada",
+      "title": "Madá Apartment",
+      "url": "https://www.archdaily.com/1064118/mada-apartment-terra-arquitetura",
+      "author": "Terra Arquitetura",
+      "date": "2026-07-05",
+      "kind": "建筑师供稿 · 实景",
+      "borrow": "陶土柜门、暖木与橄榄色软包；借颜色和材料并置，不增加柜体厚度。",
+      "avoid": "不照搬开放阳台、迁移厨房和裸露结构。"
+    },
+    {
+      "id": "bone",
+      "title": "Al Barari Apartment",
+      "url": "https://www.archdaily.com/1029037/al-barari-apartment-bone",
+      "author": "BONE",
+      "date": "2025-04-15",
+      "kind": "建筑师供稿 · 实景",
+      "borrow": "深暖木与浅灰泥、绿色局部饰面、珊瑚色织物的对比。",
+      "avoid": "不照搬抬高地面、中央岛台、房间重组或大浴缸。"
+    },
+    {
+      "id": "aim",
+      "title": "Living Without Boundaries Apartment",
+      "url": "https://www.archdaily.com/1024419/living-without-boundaries-apartment-a-i-m",
+      "author": "A I M",
+      "date": "2024-12-06",
+      "kind": "建筑师供稿 · 实景",
+      "borrow": "灰绿、木与哑光石色形成低对比层次，细灯具控制体量。",
+      "avoid": "不拆成本户不具备的开放大空间，不加入岛台或双面大沙发。"
+    },
+    {
+      "id": "antibes",
+      "title": "ANTIBES",
+      "url": "https://maison-aetg.com/en/projet/antibes-en/",
+      "author": "Maison A&G",
+      "date": "2025-05",
+      "kind": "设计工作室 · 实景",
+      "borrow": "小面积深木开放格、浅石色和卡其柜面，纤细五金。",
+      "avoid": "不复制拱门、固定卡座、圆桌与开放厨房。"
+    },
+    {
+      "id": "wuuu",
+      "title": "16 Crimson Unfold Apartment",
+      "url": "https://www.archdaily.com/1031225/16-crimson-unfold-wuuu-studio",
+      "author": "Wuuu Studio",
+      "date": "2025-06-23",
+      "kind": "设计方供稿 · 实景",
+      "borrow": "木纹与拉丝金属并置，以有边界的红蓝色块标出工作及收纳区。",
+      "avoid": "不复制客餐厨拆墙、楼梯、衣帽间重组或满墙红色。"
+    },
+    {
+      "id": "niche",
+      "title": "Blue Room",
+      "url": "https://www.studioniche.online/portfolio-collections/residential/blue-room-studio",
+      "author": "Studio NiCHE",
+      "date": "2025",
+      "kind": "设计工作室 · 实景；照片经设计师项目页交叉核对",
+      "borrow": "浅蓝和深蓝的同色层次，小面积红色构件形成重点。",
+      "avoid": "不复制开敞床区、斜向厨房、弧形门或镜面扩容。",
+      "verificationUrl": "https://www.archilovers.com/projects/335889/blue-room.html"
+    },
+    {
+      "id": "chromatic",
+      "title": "Chromatic House",
+      "url": "https://www.archdaily.com/1065847/chromatic-house-jj-plus-estudio",
+      "author": "JJ + estudio",
+      "date": "2026-07-06",
+      "kind": "建筑师供稿 · 实景",
+      "borrow": "色彩附着在收纳家具而非所有墙面，让长向空间层次清晰。",
+      "avoid": "不照搬大型空间核心、活动隔断、岛台或改变卧卫入口。"
+    }
+  ],
+  "schemes": [
+    {
+      "id": "wood",
+      "name": "木光原境",
+      "en": "WOOD & WARMTH",
+      "tagline": "熟悉的温柔，完整保留",
+      "summary": "浅橡木、奶白与柔和织物构成原方案。保留既有三房两卫、飘窗改造与玄关餐边收纳，作为其他方案的对照基线。",
+      "style": "现代原木 · 原始方案",
+      "colors": [
+        {
+          "name": "浅橡木",
+          "hex": "#C8A77E"
+        },
+        {
+          "name": "暖白",
+          "hex": "#F2EEE5"
+        },
+        {
+          "name": "暖灰织物",
+          "hex": "#A9A39A"
+        },
+        {
+          "name": "鼠尾草绿",
+          "hex": "#7C9485"
+        }
+      ],
+      "differences": [
+        "原方案模型和15张真实渲染原样保留。",
+        "轻木、柔和织物与低对比柜面，视觉最明亮平静。",
+        "适合先确定空间功能，再用小件逐步增加颜色。"
+      ],
+      "tradeoffs": [
+        "整体较克制；喜欢强烈个性的人可能觉得变化不足。",
+        "浅色织物和柜面仍需按清洁习惯、耐污性选实样。"
+      ],
+      "references": [
+        "antibes"
+      ],
+      "planPalette": {},
+      "roomOverrides": {},
+      "appearance": {
+        "preset": "base"
+      },
+      "hero": "assets/blender-renders/living.jpg",
+      "model": "models/huiyayuan-wood.glb",
+      "blend": "models/huiyayuan-wood.blend",
+      "manifest": "models/scene-manifest.json",
+      "assetRevision": "3.0.6",
+      "renderSpec": {
+        "engine": "Cycles",
+        "preserved": true
+      }
+    },
+    {
+      "id": "terracotta",
+      "name": "赤陶拾光",
+      "en": "TERRACOTTA & WALNUT",
+      "tagline": "让暖木，有一点热烈",
+      "summary": "以胡桃色木纹代替部分浅木，陶土色柜面与橄榄色软包交错；灰石感工作面、铜色细节和层叠灯罩，让原木家更有中古气息。",
+      "style": "胡桃木 · 赤陶 · 橄榄",
+      "colors": [
+        {
+          "name": "胡桃色",
+          "hex": "#936A48"
+        },
+        {
+          "name": "赤陶",
+          "hex": "#B75E42"
+        },
+        {
+          "name": "橄榄",
+          "hex": "#777852"
+        },
+        {
+          "name": "奶油",
+          "hex": "#E6D9C4"
+        }
+      ],
+      "differences": [
+        "胡桃色连续木纹与浅墙对比，地面仍保持较亮暖木。",
+        "局部赤陶柜门、橄榄沙发和陶土织物，颜色附着在原有家具。",
+        "灯罩改为同尺寸范围的层叠圆盘，配暖铜五金及颗粒石感台面。"
+      ],
+      "tradeoffs": [
+        "深木与橄榄色会增加视觉重量；北向卧室需先做日夜样板。",
+        "胡桃色是渲染色调，不代表已选定实木材种或预算。",
+        "不新增岛台、拆墙或大型装饰柜；大胆主要来自色材而非占用空间。"
+      ],
+      "references": [
+        "mada",
+        "bone"
+      ],
+      "planPalette": {
+        "wood": "#AE825B",
+        "cabinet": "#D8B495",
+        "fabric": "#9C9B70",
+        "wet": "#CDC5B9",
+        "metal": "#8A694A",
+        "wall": "#89806F",
+        "floor": "#E5D4B9"
+      },
+      "appearance": {
+        "preset": "terracotta",
+        "palette": {
+          "wood": "#936A48",
+          "floorWood": "#C6A47E",
+          "wall": "#F1E9DD",
+          "cabinet": "#DFCEB5",
+          "cabinetAccent": "#B75E42",
+          "sofa": "#858360",
+          "headboard": "#A76345",
+          "bedding": "#E7DBBF",
+          "textileAccent": "#B56349",
+          "stone": "#D0C5B4",
+          "metal": "#87623E",
+          "artAccent": "#BE654D"
+        },
+        "pendantForm": "stacked_discs",
+        "textureModes": {
+          "wood": "walnut",
+          "fabric": "tweed",
+          "stone": "clay_terrazzo"
+        },
+        "seed": 3101
+      },
+      "hero": "assets/schemes/terracotta/living.jpg",
+      "model": "models/schemes/terracotta/house.glb",
+      "blend": "models/schemes/terracotta/house.blend",
+      "manifest": "models/schemes/terracotta/scene-manifest.json",
+      "assetRevision": "3.1.0",
+      "renderSpec": {
+        "engine": "Cycles",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "roomOverrides": {
+        "overall": {
+          "title": "木与陶土，暖得有层次",
+          "description": "胡桃色家具、浅暖墙与橄榄软包串起全屋。原有空间结构、家具外包络与条件限制完整保留。"
+        },
+        "living": {
+          "title": "窗光旁的一点橄榄色",
+          "description": "以橄榄色沙发、陶土织物和暖木工作台增加层次；北侧实墙电视与西飘窗双人长桌位置不变。"
+        },
+        "dining": {
+          "title": "归家之后，有一点中古温度",
+          "description": "鞋柜与餐边柜以暖木、赤陶局部柜门和浅石感工作面形成连续语言；鞋与杯盘仍分柜腔。"
+        },
+        "room_a": {
+          "title": "在胡桃与陶土之间休息",
+          "description": "暖木衣柜、陶土色床头与浅色床品。主卧仍只设飘窗一体工作梳妆台及一把配椅。"
+        },
+        "room_b": {
+          "title": "一杯茶，一点暖色",
+          "description": "保留1350mm床与衣柜，用暖色织物和可移茶托表达茶歇；不增独立桌椅，低台茶座条件不变。"
+        },
+        "room_c": {
+          "title": "小书房，也有自己的浓度",
+          "description": "以较深木纹与陶土点缀衬托原有日床和书桌；完整实墙与紧凑通道不改变。"
+        },
+        "kitchen": {
+          "title": "把陶土留在柜门上",
+          "description": "原厨房操作台与湿区不变，局部陶土柜面与浅灰石感台面配合，不增加岛台或柜深。"
+        },
+        "bath_1": {
+          "title": "浅石与暖木的套内小卫",
+          "description": "主卫通向主卧的入口和阶梯边界保持不变；浅石感、暖木与铜色细节只改变饰面。"
+        },
+        "bath_2": {
+          "title": "让小客卫保持清爽",
+          "description": "原西北盆位、马桶和淋浴不挪动；浅石感与暖木柜面降低暗色用量，不额外加浴缸。"
+        },
+        "balcony": {
+          "title": "家务区延续暖木",
+          "description": "沿用洗烘和原柜体，暖木与局部陶土色呼应室内；机电、排水与维护空间仍待深化。"
+        }
+      },
+      "bayOverrides": {
+        "bay_a_office_vanity": {
+          "summary": "赤陶拾光：一体飘窗工作梳妆台采用本方案木色与金属细节，不新增独立书桌，只配原有单椅；台高、腿位与防坠条件沿用原方案。"
+        },
+        "bay_b_tea": {
+          "summary": "赤陶拾光：用本方案坐垫与可移茶托表达单人茶座；不设置独立书桌椅。430mm实台低台条件尚待复尺，不可按图擅拆实台。"
+        },
+        "bay_living_family": {
+          "summary": "赤陶拾光：2000mm双人长桌保持原位置和尺寸，更新木纹、织物与小件色彩；腿位在室内，儿童适配和防坠须另行核验。"
+        }
+      },
+      "storageOverrides": {
+        "entry_shoe_station": {
+          "summary": "赤陶拾光：沿用1750×400mm鞋柜、换鞋凳与镜板，以本方案柜面、木色和坐垫形成归家背景；不增加柜深或与杯盘共腔。"
+        },
+        "dining_sideboard_wall": {
+          "summary": "赤陶拾光：1400×400mm餐边柜保留浅上柜与干式备饮留空，仅更新柜门、木色、五金和石感台面；不增水槽或擅改电器适配。"
+        }
+      }
+    },
+    {
+      "id": "moss",
+      "name": "松影石居",
+      "en": "MOSS & MINERAL",
+      "tagline": "把安静，做得更有质地",
+      "summary": "烟木、浅石感和苔绿软包构成更有层次的自然主义。大墙保持浅色，以触感织物、灰绿柜面和圆润薄灯罩营造沉静，而非把全屋涂暗。",
+      "style": "烟木 · 浅石 · 苔绿",
+      "colors": [
+        {
+          "name": "烟木",
+          "hex": "#92816B"
+        },
+        {
+          "name": "苔绿",
+          "hex": "#687660"
+        },
+        {
+          "name": "浅石",
+          "hex": "#D5D0C4"
+        },
+        {
+          "name": "暖雾白",
+          "hex": "#EEEDE5"
+        }
+      ],
+      "differences": [
+        "烟木替换浅橡木的家具色调，浅石感台面强调哑光材质。",
+        "苔绿在沙发、床头与少量柜门上连续出现，卫生洁具保持白色。",
+        "圆润灯罩与细深灰金属，织物改为更明显的颗粒触感。"
+      ],
+      "tradeoffs": [
+        "低对比并非低照度；阅读、化妆与厨房仍需独立任务照明深化。",
+        "粗糙石感只作为视觉模拟，湿区实材应验证耐污与清洁性。",
+        "深绿大样在北窗下可能显灰，正式订货前需现场看样。"
+      ],
+      "references": [
+        "aim",
+        "antibes",
+        "bone"
+      ],
+      "planPalette": {
+        "wood": "#ADA08B",
+        "cabinet": "#B9BFB0",
+        "fabric": "#8A9A83",
+        "wet": "#D1D3C9",
+        "metal": "#696C65",
+        "wall": "#82867B",
+        "floor": "#DEDBCF"
+      },
+      "appearance": {
+        "preset": "moss",
+        "palette": {
+          "wood": "#92816B",
+          "floorWood": "#BEAF96",
+          "wall": "#EEEDE5",
+          "cabinet": "#D6D8CA",
+          "cabinetAccent": "#718269",
+          "sofa": "#7C8B74",
+          "headboard": "#718269",
+          "bedding": "#E3E3D6",
+          "textileAccent": "#8B997D",
+          "stone": "#D5D0C4",
+          "metal": "#535A52",
+          "artAccent": "#758369"
+        },
+        "pendantForm": "soft_dome",
+        "textureModes": {
+          "wood": "smoked_oak",
+          "fabric": "boucle",
+          "stone": "limestone"
+        },
+        "seed": 3102
+      },
+      "hero": "assets/schemes/moss/living.jpg",
+      "model": "models/schemes/moss/house.glb",
+      "blend": "models/schemes/moss/house.blend",
+      "manifest": "models/schemes/moss/scene-manifest.json",
+      "assetRevision": "3.1.0",
+      "renderSpec": {
+        "engine": "Cycles",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "roomOverrides": {
+        "overall": {
+          "title": "烟木、苔绿与浅石",
+          "description": "四套中更偏安静自然主义的一套。浅墙保留明亮感，深浅木石和织物形成层次，不改变空间尺寸。"
+        },
+        "living": {
+          "title": "把绿色留给休息的位置",
+          "description": "苔绿色软包与烟木工作台呼应，浅石感家具面与细深灰金属控制体量；窗前学习桌不挪动。"
+        },
+        "dining": {
+          "title": "收纳是一道安静的背景",
+          "description": "烟木留空区、浅灰绿局部柜门与石感台面组织鞋柜和餐边柜；台面仍是干式备饮而非新增湿区。"
+        },
+        "room_a": {
+          "title": "让床头安静下来",
+          "description": "灰绿床头和浅色床品配烟木柜面；不追加办公桌，飘窗工作梳妆台与单椅继续使用原条件尺寸。"
+        },
+        "room_b": {
+          "title": "窗边的苔绿茶歇",
+          "description": "用低饱和坐垫与烟木可移茶托构成单人角落；不恢复普通书桌椅，也不假设飘台可拆。"
+        },
+        "room_c": {
+          "title": "阅读，留给有触感的材料",
+          "description": "烟木与颗粒感织物组织小尺度书房客卧，原有日床、书桌和隔墙均保留。"
+        },
+        "kitchen": {
+          "title": "哑光材质的有序厨房",
+          "description": "浅柜面与少量灰绿前板配浅石感工作面，柜体和电器布局不变；耐污和防潮需实材核验。"
+        },
+        "bath_1": {
+          "title": "浅石围合的套内小卫",
+          "description": "浅色矿物感、烟木柜面和深灰五金，保留主卧入口及阶梯墙，洁具不染成绿色。"
+        },
+        "bath_2": {
+          "title": "紧凑，但不厚重",
+          "description": "西北浅盆位继续利用原凹口；浅石色为主，减少深色体量，不以渲染替代开门与使用净空复核。"
+        },
+        "balcony": {
+          "title": "家政区也保持统一",
+          "description": "浅灰绿和烟木柜面延续全屋，原洗烘位置不动；防潮材料、柜体通风和检修需要实物深化。"
+        }
+      },
+      "bayOverrides": {
+        "bay_a_office_vanity": {
+          "summary": "松影石居：一体飘窗工作梳妆台采用本方案木色与金属细节，不新增独立书桌，只配原有单椅；台高、腿位与防坠条件沿用原方案。"
+        },
+        "bay_b_tea": {
+          "summary": "松影石居：用本方案坐垫与可移茶托表达单人茶座；不设置独立书桌椅。430mm实台低台条件尚待复尺，不可按图擅拆实台。"
+        },
+        "bay_living_family": {
+          "summary": "松影石居：2000mm双人长桌保持原位置和尺寸，更新木纹、织物与小件色彩；腿位在室内，儿童适配和防坠须另行核验。"
+        }
+      },
+      "storageOverrides": {
+        "entry_shoe_station": {
+          "summary": "松影石居：沿用1750×400mm鞋柜、换鞋凳与镜板，以本方案柜面、木色和坐垫形成归家背景；不增加柜深或与杯盘共腔。"
+        },
+        "dining_sideboard_wall": {
+          "summary": "松影石居：1400×400mm餐边柜保留浅上柜与干式备饮留空，仅更新柜门、木色、五金和石感台面；不增水槽或擅改电器适配。"
+        }
+      }
+    },
+    {
+      "id": "cobalt",
+      "name": "蓝调构想",
+      "en": "COBALT & COMPOSITION",
+      "tagline": "一半温润，一半出格",
+      "summary": "木色与奶白继续做基底，以钴蓝收纳、砖红软装和银色金属制造几何节奏。是四套里色彩最大胆的一套，但床、柜和通道仍沿用原尺寸。",
+      "style": "现代主义启发 · 蓝红色块 · 原木",
+      "colors": [
+        {
+          "name": "钴蓝",
+          "hex": "#3859AB"
+        },
+        {
+          "name": "砖红",
+          "hex": "#BD5542"
+        },
+        {
+          "name": "暖木",
+          "hex": "#BCA07D"
+        },
+        {
+          "name": "雾白",
+          "hex": "#F1EEE5"
+        }
+      ],
+      "differences": [
+        "蓝色局部柜门与砖红织物构成视觉焦点，主墙保持奶白。",
+        "银色金属细节配同外包络的圆盘/锥形灯罩；艺术书封面加入几何图形。",
+        "柜体、书桌和飘窗配色统一到同一色彩系统，不靠额外家具填满房间。"
+      ],
+      "tradeoffs": [
+        "蓝红属于强风格，建议先从可替换织物和少量柜门验证接受度。",
+        "金属反光、色块面积和屏幕附近眩光需在实际照明下调整。",
+        "不把案例的开敞厨房、巨大彩色体块或额外隔断搬进本户型。"
+      ],
+      "references": [
+        "wuuu",
+        "niche",
+        "chromatic"
+      ],
+      "planPalette": {
+        "wood": "#C4AB87",
+        "cabinet": "#7895C3",
+        "fabric": "#C28770",
+        "wet": "#D4DCE0",
+        "metal": "#849199",
+        "wall": "#858C8E",
+        "floor": "#E6DCCA"
+      },
+      "appearance": {
+        "preset": "cobalt",
+        "palette": {
+          "wood": "#BCA07D",
+          "floorWood": "#C9B18C",
+          "wall": "#F1EEE5",
+          "cabinet": "#E1E5E3",
+          "cabinetAccent": "#3859AB",
+          "sofa": "#D7D1C1",
+          "headboard": "#6C85B2",
+          "bedding": "#E9E4D8",
+          "textileAccent": "#BD5542",
+          "stone": "#D7DADB",
+          "metal": "#A3ABB1",
+          "artAccent": "#3859AB"
+        },
+        "pendantForm": "disc_cone",
+        "textureModes": {
+          "wood": "warm_oak",
+          "fabric": "woven",
+          "stone": "graphic_terrazzo"
+        },
+        "seed": 3103
+      },
+      "hero": "assets/schemes/cobalt/living.jpg",
+      "model": "models/schemes/cobalt/house.glb",
+      "blend": "models/schemes/cobalt/house.blend",
+      "manifest": "models/schemes/cobalt/scene-manifest.json",
+      "assetRevision": "3.1.0",
+      "renderSpec": {
+        "engine": "Cycles",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "roomOverrides": {
+        "overall": {
+          "title": "用几何色块，重写日常",
+          "description": "保留暖木基底，在原有家具表面加入蓝、红、银的有界面组合。不是扩容的新户型，也不是整图滤镜。"
+        },
+        "living": {
+          "title": "一家人的彩色工作日",
+          "description": "暖白沙发与砖红织物、蓝色局部细节形成焦点；客厅长桌继续承担两席办公学习，电视不挡窗。"
+        },
+        "dining": {
+          "title": "一条有节奏的归家路径",
+          "description": "钴蓝局部柜面与木色留空区连接玄关和餐边收纳，银色细节强调几何；柜前通道保持原校核尺寸。"
+        },
+        "room_a": {
+          "title": "把蓝色放在床头",
+          "description": "蓝灰床头配浅色床品与少量砖红织物；飘窗台仍办公梳妆共用，只保留一把配椅。"
+        },
+        "room_b": {
+          "title": "让茶座轻快一点",
+          "description": "原有紧凑床与衣柜不变，以可替换的织物色块增加活力；不加桌椅，低台与防坠条件仍是前置。"
+        },
+        "room_c": {
+          "title": "给创作一点颜色",
+          "description": "原书桌、日床与柜体以蓝红小面积点缀区分工作与休息；不再加入会压缩通道的大色块体量。"
+        },
+        "kitchen": {
+          "title": "蓝色柜面，温暖木底",
+          "description": "局部钴蓝前板和浅台面构成现代主义启发的厨房；不复制参考住宅的开放岛台。"
+        },
+        "bath_1": {
+          "title": "银色细节，浅色卫浴",
+          "description": "主卫仍由主卧进入，阶梯墙和洁具位置不变；清浅石感与少量蓝色柜面，卫生陶瓷保持白色。"
+        },
+        "bath_2": {
+          "title": "小客卫也可以有色彩",
+          "description": "保留凹位浅盆柜与东侧淋浴，用局部蓝柜和银色细节表达个性，不改变卫生间净宽或凭空放大。"
+        },
+        "balcony": {
+          "title": "功能区的一笔蓝",
+          "description": "原洗烘及家政柜用同一套蓝白木色连接室内；没有新增水电线路的施工承诺。"
+        }
+      },
+      "bayOverrides": {
+        "bay_a_office_vanity": {
+          "summary": "蓝调构想：一体飘窗工作梳妆台采用本方案木色与金属细节，不新增独立书桌，只配原有单椅；台高、腿位与防坠条件沿用原方案。"
+        },
+        "bay_b_tea": {
+          "summary": "蓝调构想：用本方案坐垫与可移茶托表达单人茶座；不设置独立书桌椅。430mm实台低台条件尚待复尺，不可按图擅拆实台。"
+        },
+        "bay_living_family": {
+          "summary": "蓝调构想：2000mm双人长桌保持原位置和尺寸，更新木纹、织物与小件色彩；腿位在室内，儿童适配和防坠须另行核验。"
+        }
+      },
+      "storageOverrides": {
+        "entry_shoe_station": {
+          "summary": "蓝调构想：沿用1750×400mm鞋柜、换鞋凳与镜板，以本方案柜面、木色和坐垫形成归家背景；不增加柜深或与杯盘共腔。"
+        },
+        "dining_sideboard_wall": {
+          "summary": "蓝调构想：1400×400mm餐边柜保留浅上柜与干式备饮留空，仅更新柜门、木色、五金和石感台面；不增水槽或擅改电器适配。"
+        }
+      }
+    }
+  ]
+}

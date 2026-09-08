@@ -1,0 +1,5797 @@
+{
+  "version": "3.0 Blender 原木实景模型",
+  "model": "models/schemes/moss/house.glb",
+  "blend": "models/schemes/moss/house.blend",
+  "units": "m",
+  "source": "models/design-data.json",
+  "sourceSha256": "b6e66487d2207202a02bc3fa61401f96d5a581b445e16030c7f402d62e79e3ce",
+  "bounds": {
+    "min": [
+      0.0,
+      -0.012,
+      -0.65
+    ],
+    "max": [
+      8.41,
+      2.7,
+      14.01
+    ]
+  },
+  "overviewCamera": {
+    "position": [
+      15.5,
+      16.5,
+      21.5
+    ],
+    "target": [
+      4.2,
+      0.3,
+      7.0
+    ]
+  },
+  "overallRender": "assets/schemes/moss/overall.jpg",
+  "rooms": [
+    {
+      "id": "living",
+      "name": "客厅",
+      "area": 33.61,
+      "points": [
+        [
+          3.25,
+          3.34
+        ],
+        [
+          4.1,
+          3.34
+        ],
+        [
+          4.1,
+          6.32
+        ],
+        [
+          6.75,
+          6.32
+        ],
+        [
+          6.75,
+          11.15
+        ],
+        [
+          5.3,
+          11.15
+        ],
+        [
+          5.3,
+          13.89
+        ],
+        [
+          2.12,
+          13.89
+        ],
+        [
+          2.12,
+          6.32
+        ],
+        [
+          3.25,
+          6.32
+        ]
+      ],
+      "camera": {
+        "position": [
+          7.5,
+          5.2,
+          12.8
+        ],
+        "target": [
+          4.5,
+          0.65,
+          8.8
+        ]
+      },
+      "interiorCamera": {
+        "position": [
+          6.32,
+          1.6,
+          10.81
+        ],
+        "target": [
+          4.38,
+          1.05,
+          7.6
+        ],
+        "horizontalFov": 76.09,
+        "fov": 55.11
+      },
+      "render": "assets/schemes/moss/living.jpg",
+      "description": "苔绿色软包与烟木工作台呼应，浅石感家具面与细深灰金属控制体量；窗前学习桌不挪动。",
+      "features": [
+        "同一 Blender 场景生成模型和渲染",
+        "烟木 · 浅石 · 苔绿",
+        "门窗尺寸现场复尺",
+        "整桌2000×650，高750mm，台板30mm",
+        "两席各约1000mm；椅52×52cm示意",
+        "示意椅后800mm通道，椅不得无限后退",
+        "腿位在室内侧，台体不拆、不开脚洞"
+      ],
+      "fitoutId": "bay_living_family",
+      "conditions": [
+        "儿童身高未知，750mm桌面不是通用儿童规格；需试坐，调整桌椅/足托，不合适时采用分段升降工作面。",
+        "临窗桌椅增加攀爬风险，完成专业防坠与限位前不得启用儿童学习位。",
+        "西向眩光用可调无绳卷帘、屏幕位置与独立任务灯控制，不能凭照片承诺不晒。",
+        "中央及两端薄支架示意，木板跨度、防挠与固定承载由厂家深化；无贯穿桌下抽屉。"
+      ],
+      "title": "把绿色留给休息的位置"
+    },
+    {
+      "id": "dining",
+      "name": "餐厅与玄关",
+      "area": 33.61,
+      "points": [
+        [
+          3.25,
+          3.34
+        ],
+        [
+          4.1,
+          3.34
+        ],
+        [
+          4.1,
+          6.32
+        ],
+        [
+          6.75,
+          6.32
+        ],
+        [
+          6.75,
+          11.15
+        ],
+        [
+          5.3,
+          11.15
+        ],
+        [
+          5.3,
+          13.89
+        ],
+        [
+          2.12,
+          13.89
+        ],
+        [
+          2.12,
+          6.32
+        ],
+        [
+          3.25,
+          6.32
+        ]
+      ],
+      "camera": {
+        "position": [
+          6.7,
+          5.2,
+          16.2
+        ],
+        "target": [
+          3.7,
+          0.65,
+          12.2
+        ]
+      },
+      "interiorCamera": {
+        "position": [
+          4.87,
+          1.62,
+          13.62
+        ],
+        "target": [
+          3.03,
+          1.05,
+          11.5
+        ],
+        "horizontalFov": 76.09,
+        "fov": 55.11
+      },
+      "render": "assets/schemes/moss/dining.jpg",
+      "description": "烟木留空区、浅灰绿局部柜门与石感台面组织鞋柜和餐边柜；台面仍是干式备饮而非新增湿区。",
+      "features": [
+        "同一 Blender 场景生成模型和渲染",
+        "烟木 · 浅石 · 苔绿",
+        "门窗尺寸现场复尺",
+        "鞋柜1750×400，高2500mm；下柜移门",
+        "底部200mm常鞋区，中部1000–1500mm置物格",
+        "换鞋凳800×400，完成坐高450mm",
+        "餐桌东移400、北移400mm后，柜前至桌边775mm",
+        "底柜1400×400，台面高850mm",
+        "上柜深280，离地1500至2500mm",
+        "中部净留650mm；小抽屉伸出最多250mm",
+        "餐桌东侧至厨房墙800mm；沿用1200×700四人桌"
+      ],
+      "storageFitoutIds": [
+        "entry_shoe_station",
+        "dining_sideboard_wall"
+      ],
+      "conditions": [
+        "柜体外深400mm不等于内部净深；按实际鞋长及轨道厚度复核，必要时局部斜层板，暂不承诺鞋量。",
+        "凳体采用落地侧板支撑，软垫可拆洗；承载、尖角与墙面固定须厂家深化。",
+        "高柜和镜板不得遮电箱、门铃/对讲、开关及检修口；现场量清入户门合页和门套。",
+        "换鞋位避开暂定扫门区，但多人同时进出及餐椅退让仍需试摆；不是无障碍方案。",
+        "鞋柜独立存鞋，不与餐边杯盘柜共用内腔；图示灯带和插座是设计预留，不代表已确认电路。",
+        "以杯盘、餐具、茶罐和干式备饮为主，没有新增水槽或擅改给排水。",
+        "400mm台面不能默认容纳咖啡机/净饮机；须扣后部插头、散热、开盖空间并按实物选型，热蒸汽不能直冲上柜。",
+        "下柜推拉门不向过道扫开；上柜门和抽屉动态、身高可达性仍待样板试用。",
+        "餐椅最多30cm后退是本轮校核情景；出入时推回近门椅，不能把80cm静态边距当成所有使用状态的通道。",
+        "上柜固定、灯带散热、插座回路、防潮易洁台面及柜腔通风须厂家/电气专业深化。"
+      ],
+      "title": "收纳是一道安静的背景"
+    },
+    {
+      "id": "room_a",
+      "name": "主卧",
+      "area": 10.85,
+      "points": [
+        [
+          3.25,
+          0.12
+        ],
+        [
+          6.75,
+          0.12
+        ],
+        [
+          6.75,
+          3.22
+        ],
+        [
+          3.25,
+          3.22
+        ]
+      ],
+      "camera": {
+        "position": [
+          8.0,
+          5.2,
+          5.67
+        ],
+        "target": [
+          5.0,
+          0.65,
+          1.67
+        ]
+      },
+      "interiorCamera": {
+        "position": [
+          5.5,
+          1.58,
+          3.02
+        ],
+        "target": [
+          5.33,
+          1.0,
+          1.27
+        ],
+        "horizontalFov": 90.0,
+        "fov": 67.38
+      },
+      "render": "assets/schemes/moss/master.jpg",
+      "description": "灰绿床头和浅色床品配烟木柜面；不追加办公桌，飘窗工作梳妆台与单椅继续使用原条件尺寸。",
+      "features": [
+        "同一 Blender 场景生成模型和渲染",
+        "烟木 · 浅石 · 苔绿",
+        "门窗尺寸现场复尺",
+        "一体台面1460×1300mm，含飘台段及室内650mm段",
+        "实台暂900mm，台顶931mm；配椅座高640、足踏250mm",
+        "桌下实有膝脚区600×520mm，完全位于室内",
+        "床向南220mm，南侧留800mm；柜南移250mm，侧入斜口约547mm"
+      ],
+      "fitoutId": "bay_a_office_vanity",
+      "conditions": [
+        "窗台900mm只是旧模型未实测占位；先按保留实台的高工作台示意，不能当作750mm普通桌直接下单。",
+        "只保留一把无扶手、可转向的配椅。侧坐且入口紧凑，桌与床仅50mm间隙不是通道；主要上下床走南侧。",
+        "需实测窗台、现场试坐和验证椅子进出、足踏及视线；短时办公/梳妆为主，不承诺长时人体工学适配。",
+        "桌面跨飘台和室内，室内支架提供独立支承，不在实台内虚构腿洞或抽屉；跨度、防挠和固定承载须厂家深化。",
+        "28楼窗边高椅和台面均增加攀爬风险；完成开窗限位、专业防坠及窗扇净空核验后才能使用。"
+      ],
+      "title": "让床头安静下来"
+    },
+    {
+      "id": "room_b",
+      "name": "次卧 B",
+      "area": 10.23,
+      "points": [
+        [
+          0.12,
+          0.12
+        ],
+        [
+          3.13,
+          0.12
+        ],
+        [
+          3.13,
+          4.22
+        ],
+        [
+          2.23,
+          4.22
+        ],
+        [
+          2.23,
+          3.22
+        ],
+        [
+          0.12,
+          3.22
+        ]
+      ],
+      "camera": {
+        "position": [
+          4.826666666666666,
+          5.2,
+          6.52
+        ],
+        "target": [
+          1.8266666666666667,
+          0.65,
+          2.52
+        ]
+      },
+      "interiorCamera": {
+        "position": [
+          2.96,
+          1.6,
+          2.58
+        ],
+        "target": [
+          1.55,
+          0.97,
+          1.2
+        ],
+        "horizontalFov": 83.97,
+        "fov": 61.93
+      },
+      "render": "assets/schemes/moss/bedroom-b.jpg",
+      "description": "用低饱和坐垫与烟木可移茶托构成单人角落；不恢复普通书桌椅，也不假设飘台可拆。",
+      "features": [
+        "同一 Blender 场景生成模型和渲染",
+        "烟木 · 浅石 · 苔绿",
+        "门窗尺寸现场复尺",
+        "条件台顶430 + 坐垫50 = 完成坐面480mm",
+        "单人坐垫850×550mm，茶托280×320mm",
+        "北侧床边约430mm，仅紧凑单人使用",
+        "窗宽1300、外凸600mm均待复尺"
+      ],
+      "fitoutId": "bay_b_tea",
+      "conditions": [
+        "只有实台条件可保留至该低台高度且防坠/承载通过时启用，900mm高实台不可直接照此施工。",
+        "若实测为不可改变的高台，退回陈列台，取消坐人用途，不用爬梯补救。",
+        "坐垫可拆洗、茶盘可移，台下不画未经核实的储物抽屉。",
+        "不放烧水炉或电热壶；不把此处设计为儿童攀爬或游戏区。"
+      ],
+      "title": "窗边的苔绿茶歇"
+    },
+    {
+      "id": "room_c",
+      "name": "书房 · 客卧",
+      "area": 7.59,
+      "points": [
+        [
+          0.12,
+          3.34
+        ],
+        [
+          2.11,
+          3.34
+        ],
+        [
+          2.11,
+          4.34
+        ],
+        [
+          3.13,
+          4.34
+        ],
+        [
+          3.13,
+          6.2
+        ],
+        [
+          0.12,
+          6.2
+        ]
+      ],
+      "camera": {
+        "position": [
+          4.786666666666667,
+          5.2,
+          8.626666666666667
+        ],
+        "target": [
+          1.7866666666666666,
+          0.65,
+          4.626666666666667
+        ]
+      },
+      "interiorCamera": {
+        "position": [
+          3.0,
+          1.62,
+          4.5
+        ],
+        "target": [
+          1.3,
+          1.02,
+          5.15
+        ],
+        "horizontalFov": 83.97,
+        "fov": 61.93
+      },
+      "render": "assets/schemes/moss/study.jpg",
+      "description": "烟木与颗粒感织物组织小尺度书房客卧，原有日床、书桌和隔墙均保留。",
+      "features": [
+        "同一 Blender 场景生成模型和渲染",
+        "烟木 · 浅石 · 苔绿",
+        "门窗尺寸现场复尺"
+      ],
+      "title": "阅读，留给有触感的材料"
+    },
+    {
+      "id": "kitchen",
+      "name": "厨房",
+      "area": 7.52,
+      "points": [
+        [
+          5.42,
+          11.27
+        ],
+        [
+          8.29,
+          11.27
+        ],
+        [
+          8.29,
+          13.89
+        ],
+        [
+          5.42,
+          13.89
+        ]
+      ],
+      "camera": {
+        "position": [
+          9.855,
+          5.2,
+          16.58
+        ],
+        "target": [
+          6.855,
+          0.65,
+          12.58
+        ]
+      },
+      "interiorCamera": {
+        "position": [
+          5.73,
+          1.58,
+          12.45
+        ],
+        "target": [
+          7.67,
+          1.1,
+          12.82
+        ],
+        "horizontalFov": 83.97,
+        "fov": 61.93
+      },
+      "render": "assets/schemes/moss/kitchen.jpg",
+      "description": "浅柜面与少量灰绿前板配浅石感工作面，柜体和电器布局不变；耐污和防潮需实材核验。",
+      "features": [
+        "同一 Blender 场景生成模型和渲染",
+        "烟木 · 浅石 · 苔绿",
+        "门窗尺寸现场复尺"
+      ],
+      "title": "哑光材质的有序厨房"
+    },
+    {
+      "id": "bath_1",
+      "name": "主卫",
+      "area": 3.63,
+      "points": [
+        [
+          4.22,
+          3.34
+        ],
+        [
+          6.75,
+          3.34
+        ],
+        [
+          6.75,
+          4.87
+        ],
+        [
+          5.22,
+          4.87
+        ],
+        [
+          5.22,
+          4.63
+        ],
+        [
+          4.22,
+          4.63
+        ]
+      ],
+      "camera": {
+        "position": [
+          8.396666666666667,
+          5.2,
+          8.280000000000001
+        ],
+        "target": [
+          5.3966666666666665,
+          0.65,
+          4.28
+        ]
+      },
+      "interiorCamera": {
+        "position": [
+          6.57,
+          1.6,
+          4.65
+        ],
+        "target": [
+          4.85,
+          1.12,
+          3.95
+        ],
+        "horizontalFov": 90.0,
+        "fov": 67.38
+      },
+      "render": "assets/schemes/moss/master-bath.jpg",
+      "description": "浅色矿物感、烟木柜面和深灰五金，保留主卧入口及阶梯墙，洁具不染成绿色。",
+      "features": [
+        "同一 Blender 场景生成模型和渲染",
+        "烟木 · 浅石 · 苔绿",
+        "门窗尺寸现场复尺"
+      ],
+      "title": "浅石围合的套内小卫"
+    },
+    {
+      "id": "bath_2",
+      "name": "客卫",
+      "area": 3.27,
+      "points": [
+        [
+          4.22,
+          4.75
+        ],
+        [
+          5.1,
+          4.75
+        ],
+        [
+          5.1,
+          4.99
+        ],
+        [
+          6.75,
+          4.99
+        ],
+        [
+          6.75,
+          6.2
+        ],
+        [
+          4.22,
+          6.2
+        ]
+      ],
+      "camera": {
+        "position": [
+          8.356666666666666,
+          5.2,
+          9.313333333333333
+        ],
+        "target": [
+          5.3566666666666665,
+          0.65,
+          5.3133333333333335
+        ]
+      },
+      "interiorCamera": {
+        "position": [
+          6.54,
+          1.6,
+          6.03
+        ],
+        "target": [
+          4.95,
+          1.06,
+          5.36
+        ],
+        "horizontalFov": 93.27,
+        "fov": 70.44
+      },
+      "render": "assets/schemes/moss/guest-bath.jpg",
+      "description": "西北浅盆位继续利用原凹口；浅石色为主，减少深色体量，不以渲染替代开门与使用净空复核。",
+      "features": [
+        "同一 Blender 场景生成模型和渲染",
+        "烟木 · 浅石 · 苔绿",
+        "门窗尺寸现场复尺"
+      ],
+      "title": "紧凑，但不厚重"
+    },
+    {
+      "id": "balcony",
+      "name": "家政阳台",
+      "area": 2.12,
+      "points": [
+        [
+          6.87,
+          9.66
+        ],
+        [
+          8.29,
+          9.66
+        ],
+        [
+          8.29,
+          11.15
+        ],
+        [
+          6.87,
+          11.15
+        ]
+      ],
+      "camera": {
+        "position": [
+          10.58,
+          5.2,
+          14.405
+        ],
+        "target": [
+          7.58,
+          0.65,
+          10.405
+        ]
+      },
+      "interiorCamera": {
+        "position": [
+          5.6,
+          1.45,
+          10.7
+        ],
+        "target": [
+          7.72,
+          1.18,
+          10.35
+        ],
+        "horizontalFov": 83.97,
+        "fov": 61.93
+      },
+      "render": "assets/schemes/moss/balcony.jpg",
+      "description": "浅灰绿和烟木柜面延续全屋，原洗烘位置不动；防潮材料、柜体通风和检修需要实物深化。",
+      "features": [
+        "同一 Blender 场景生成模型和渲染",
+        "烟木 · 浅石 · 苔绿",
+        "门窗尺寸现场复尺"
+      ],
+      "title": "家政区也保持统一"
+    }
+  ],
+  "openings": [
+    {
+      "id": "window_b",
+      "name": "次卧北飘窗（430低台条件展示，非实测）",
+      "kind": "window",
+      "windowType": "bay",
+      "bay": {
+        "projectionCm": 60,
+        "outward": [
+          0,
+          -1
+        ],
+        "returnThicknessCm": 10,
+        "slabThicknessCm": 10,
+        "sideStyle": "solid",
+        "grade": "C",
+        "source": "2026-09-07用户圈图与原户型图确认向北外凸；外凸600mm从外墙外表面至前框中心暂定，侧面构造、板厚和全部窗尺寸待复尺"
+      },
+      "x1": 90,
+      "y1": 6,
+      "x2": 220,
+      "y2": 6,
+      "sillCm": 43,
+      "heightCm": 187,
+      "baselineSillCm": 90,
+      "baselineHeightCm": 140,
+      "designScenario": "低台条件：实台顶可保留于430mm并经结构及防坠核验，叠加50mm坐垫至480mm；原900mm仅旧版未实测占位，不表示允许降低470mm或拆台。",
+      "grade": "C",
+      "widthMm": 1300,
+      "sill": 0.43,
+      "height": 1.87
+    },
+    {
+      "id": "window_a",
+      "name": "主卧北飘窗（存在确认，尺寸待复尺）",
+      "kind": "window",
+      "windowType": "bay",
+      "bay": {
+        "projectionCm": 60,
+        "outward": [
+          0,
+          -1
+        ],
+        "returnThicknessCm": 10,
+        "slabThicknessCm": 10,
+        "sideStyle": "solid",
+        "grade": "C",
+        "source": "2026-09-07用户圈图与原户型图确认向北外凸；外凸600mm从外墙外表面至前框中心暂定，侧面构造、板厚和全部窗尺寸待复尺"
+      },
+      "x1": 430,
+      "y1": 6,
+      "x2": 580,
+      "y2": 6,
+      "sillCm": 90,
+      "heightCm": 140,
+      "grade": "C",
+      "widthMm": 1500,
+      "sill": 0.9,
+      "height": 1.4
+    },
+    {
+      "id": "window_c",
+      "name": "小卧西窗（待复尺）",
+      "kind": "window",
+      "x1": 6,
+      "y1": 415,
+      "x2": 6,
+      "y2": 525,
+      "sillCm": 90,
+      "heightCm": 140,
+      "grade": "C",
+      "widthMm": 1100,
+      "sill": 0.9,
+      "height": 1.4
+    },
+    {
+      "id": "window_living_west",
+      "name": "客厅西飘窗（存在确认，尺寸待复尺）",
+      "kind": "window",
+      "windowType": "bay",
+      "bay": {
+        "projectionCm": 60,
+        "outward": [
+          -1,
+          0
+        ],
+        "returnThicknessCm": 10,
+        "slabThicknessCm": 10,
+        "sideStyle": "solid",
+        "grade": "C",
+        "source": "2026-09-07用户圈图与目标户型图确认向西外凸；外凸600mm从外墙外表面至前框中心暂定，侧面构造、板厚和全部窗尺寸待复尺"
+      },
+      "x1": 206,
+      "y1": 647,
+      "x2": 206,
+      "y2": 847,
+      "sillCm": 90,
+      "heightCm": 140,
+      "grade": "C",
+      "widthMm": 2000,
+      "sill": 0.9,
+      "height": 1.4
+    },
+    {
+      "id": "window_bath_1_east",
+      "name": "主卫东窗（原图有窗，尺寸待复尺）",
+      "kind": "window",
+      "x1": 681,
+      "y1": 365,
+      "x2": 681,
+      "y2": 435,
+      "sillCm": 150,
+      "heightCm": 80,
+      "grade": "C",
+      "widthMm": 700,
+      "source": "assets/original-plan.webp 主卫东墙可见外窗，目标尺寸图同侧也有开口符号；宽高和精确位置未标注",
+      "sill": 1.5,
+      "height": 0.8
+    },
+    {
+      "id": "window_bath_2_east",
+      "name": "客卫东窗（同户型图有窗，目标须复尺）",
+      "kind": "window",
+      "x1": 681,
+      "y1": 530,
+      "x2": 681,
+      "y2": 590,
+      "sillCm": 150,
+      "heightCm": 80,
+      "grade": "C",
+      "widthMm": 600,
+      "source": "assets/original-plan.webp 客卫东墙可见窄窗；目标房源该处缺少明确宽高标注，存在与尺寸均须现场确认",
+      "sill": 1.5,
+      "height": 0.8
+    },
+    {
+      "id": "balcony_door",
+      "name": "拟开客厅阳台玻璃门（非已核实原门，待结构核验）",
+      "kind": "glass-door",
+      "x1": 681,
+      "y1": 960,
+      "x2": 681,
+      "y2": 1110,
+      "sillCm": 0,
+      "heightCm": 220,
+      "grade": "C",
+      "widthMm": 1500,
+      "sill": 0.0,
+      "height": 2.2
+    },
+    {
+      "id": "entry_door",
+      "name": "入户门（待复尺）",
+      "kind": "entry-door",
+      "x1": 390,
+      "y1": 1395,
+      "x2": 490,
+      "y2": 1395,
+      "sillCm": 0,
+      "heightCm": 220,
+      "grade": "C",
+      "widthMm": 1000,
+      "sill": 0.0,
+      "height": 2.2
+    },
+    {
+      "id": "door_a",
+      "name": "主卧门800（避开过道端墙，待复尺）",
+      "kind": "interior-door",
+      "x1": 327.5,
+      "y1": 328,
+      "x2": 407.5,
+      "y2": 328,
+      "sillCm": 0,
+      "heightCm": 215,
+      "grade": "C",
+      "widthMm": 800,
+      "notes": "旧900门与湿区墙端相交；按当前850净走廊暂用800门洞，不代表现场门宽",
+      "sill": 0.0,
+      "height": 2.15
+    },
+    {
+      "id": "door_b",
+      "name": "次卧B门厅东门（比例复原，待复尺）",
+      "kind": "interior-door",
+      "x1": 319,
+      "y1": 335.5,
+      "x2": 319,
+      "y2": 420.5,
+      "sillCm": 0,
+      "heightCm": 215,
+      "grade": "B",
+      "widthMm": 850,
+      "swing": "向B房内开，避开走廊",
+      "sill": 0.0,
+      "height": 2.15
+    },
+    {
+      "id": "door_c",
+      "name": "书房C东门（待复尺）",
+      "kind": "interior-door",
+      "x1": 319,
+      "y1": 457.5,
+      "x2": 319,
+      "y2": 542.5,
+      "sillCm": 0,
+      "heightCm": 215,
+      "grade": "B",
+      "widthMm": 850,
+      "swing": "向C房内开，门后850×850无家具",
+      "sill": 0.0,
+      "height": 2.15
+    },
+    {
+      "id": "door_bath_1",
+      "name": "主卧套内主卫门（门宽和开启方式待复尺）",
+      "kind": "interior-door",
+      "x1": 432,
+      "y1": 328,
+      "x2": 507,
+      "y2": 328,
+      "sillCm": 0,
+      "heightCm": 210,
+      "grade": "C",
+      "widthMm": 750,
+      "connects": [
+        "room_a",
+        "bath_1"
+      ],
+      "notes": "2026-09-08用户确认主卫从主卧进入；门洞750为暂定，关闭展示不代表已核验开启方向。",
+      "sill": 0.0,
+      "height": 2.1
+    },
+    {
+      "id": "door_bath_2",
+      "name": "客卫门（外开/移门条件）",
+      "kind": "interior-door",
+      "x1": 416,
+      "y1": 517.5,
+      "x2": 416,
+      "y2": 592.5,
+      "sillCm": 0,
+      "heightCm": 210,
+      "grade": "C",
+      "widthMm": 750,
+      "sill": 0.0,
+      "height": 2.1
+    },
+    {
+      "id": "door_kitchen",
+      "name": "厨房玻璃移门（待复尺）",
+      "kind": "glass-door",
+      "x1": 536,
+      "y1": 1175,
+      "x2": 536,
+      "y2": 1265,
+      "sillCm": 0,
+      "heightCm": 220,
+      "grade": "C",
+      "widthMm": 900,
+      "sill": 0.0,
+      "height": 2.2
+    }
+  ],
+  "design": {
+    "style": "烟木 · 浅石 · 苔绿",
+    "palette": [
+      "#92816B",
+      "#BEAF96",
+      "#EEEDE5",
+      "#D6D8CA",
+      "#718269",
+      "#7C8B74",
+      "#718269",
+      "#E3E3D6",
+      "#8B997D",
+      "#D5D0C4",
+      "#535A52",
+      "#758369"
+    ]
+  },
+  "notes": [
+    "真实网格由厘米平面数据转换为米；渲染与交互使用同一 Blender 场景。",
+    "整体与房间鸟瞰采用可拆墙展示；室内机位使用完整墙体与实际开口。",
+    "C 级门窗、层高与统一墙厚仍为待现场复尺的建模假设。",
+    "鞋柜与餐边杯盘柜独立分腔；抽屉以闭合状态展示，250 mm 伸出限位、进出通道及桌椅退让均属条件校核。柜体锚固、灯带/插座、门套电箱与实际净深必须现场深化。",
+    "三处飘窗的 600 mm 外挑和实心侧返边均为待复尺暂定表达，不增加房间净面积。主卧以未实测的 900 mm 原台为条件，做约 930 mm 完成面（模型 931 mm）的一体连续高台，仅配一把完成座高 640 mm、脚踏高 250 mm 的椅；不是 750 mm 普通书桌，原台不挖腿洞。室内内挑及支撑承载需厂家和结构核验。客厅原台仍暂按 900 mm；次卧茶座的 430 mm 低台仅在结构、承载与防坠条件通过时成立，不表示可以降低原结构。细金属框和无绳卷帘为拟更换设计，外立面许可与窗扇活动范围未核验。",
+    "本方案仅更换表面材质、织物、柜门配色及原灯罩包络内的形态；墙体、门窗、床位、全部家具占地和条件说明继承基准模型。"
+  ],
+  "bayDetails": [
+    {
+      "id": "bay-master",
+      "fitoutId": "bay_a_office_vanity",
+      "openingId": "window_a",
+      "roomId": "room_a",
+      "title": "主卧 · 一体飘窗办公梳妆台",
+      "render": "assets/schemes/moss/bay-master.jpg",
+      "interiorCamera": {
+        "position": [
+          4.3,
+          1.6,
+          2.98
+        ],
+        "target": [
+          4.72,
+          1.04,
+          0.24
+        ],
+        "horizontalFov": 90.0,
+        "fov": 67.38
+      },
+      "summary": "松影石居：一体飘窗工作梳妆台采用本方案木色与金属细节，不新增独立书桌，只配原有单椅；台高、腿位与防坠条件沿用原方案。",
+      "dimensions": [
+        "一体台面1460×1300mm，含飘台段及室内650mm段",
+        "实台暂900mm，台顶931mm；配椅座高640、足踏250mm",
+        "桌下实有膝脚区600×520mm，完全位于室内",
+        "床向南220mm，南侧留800mm；柜南移250mm，侧入斜口约547mm"
+      ],
+      "conditions": [
+        "窗台900mm只是旧模型未实测占位；先按保留实台的高工作台示意，不能当作750mm普通桌直接下单。",
+        "只保留一把无扶手、可转向的配椅。侧坐且入口紧凑，桌与床仅50mm间隙不是通道；主要上下床走南侧。",
+        "需实测窗台、现场试坐和验证椅子进出、足踏及视线；短时办公/梳妆为主，不承诺长时人体工学适配。",
+        "桌面跨飘台和室内，室内支架提供独立支承，不在实台内虚构腿洞或抽屉；跨度、防挠和固定承载须厂家深化。",
+        "28楼窗边高椅和台面均增加攀爬风险；完成开窗限位、专业防坠及窗扇净空核验后才能使用。"
+      ]
+    },
+    {
+      "id": "bay-tea",
+      "fitoutId": "bay_b_tea",
+      "openingId": "window_b",
+      "roomId": "room_b",
+      "title": "次卧 · 一人的窗边茶座",
+      "render": "assets/schemes/moss/bay-tea.jpg",
+      "interiorCamera": {
+        "position": [
+          2.82,
+          1.52,
+          1.5
+        ],
+        "target": [
+          1.53,
+          1.03,
+          -0.11
+        ],
+        "horizontalFov": 90.0,
+        "fov": 67.38
+      },
+      "summary": "松影石居：用本方案坐垫与可移茶托表达单人茶座；不设置独立书桌椅。430mm实台低台条件尚待复尺，不可按图擅拆实台。",
+      "dimensions": [
+        "条件台顶430 + 坐垫50 = 完成坐面480mm",
+        "单人坐垫850×550mm，茶托280×320mm",
+        "北侧床边约430mm，仅紧凑单人使用",
+        "窗宽1300、外凸600mm均待复尺"
+      ],
+      "conditions": [
+        "只有实台条件可保留至该低台高度且防坠/承载通过时启用，900mm高实台不可直接照此施工。",
+        "若实测为不可改变的高台，退回陈列台，取消坐人用途，不用爬梯补救。",
+        "坐垫可拆洗、茶盘可移，台下不画未经核实的储物抽屉。",
+        "不放烧水炉或电热壶；不把此处设计为儿童攀爬或游戏区。"
+      ]
+    },
+    {
+      "id": "bay-living",
+      "fitoutId": "bay_living_family",
+      "openingId": "window_living_west",
+      "roomId": "living",
+      "title": "客厅 · 并肩办公与学习",
+      "render": "assets/schemes/moss/bay-living.jpg",
+      "interiorCamera": {
+        "position": [
+          4.13,
+          1.65,
+          9.08
+        ],
+        "target": [
+          2.3,
+          1.15,
+          7.47
+        ],
+        "horizontalFov": 78.58,
+        "fov": 57.22
+      },
+      "summary": "松影石居：2000mm双人长桌保持原位置和尺寸，更新木纹、织物与小件色彩；腿位在室内，儿童适配和防坠须另行核验。",
+      "dimensions": [
+        "整桌2000×650，高750mm，台板30mm",
+        "两席各约1000mm；椅52×52cm示意",
+        "示意椅后800mm通道，椅不得无限后退",
+        "腿位在室内侧，台体不拆、不开脚洞"
+      ],
+      "conditions": [
+        "儿童身高未知，750mm桌面不是通用儿童规格；需试坐，调整桌椅/足托，不合适时采用分段升降工作面。",
+        "临窗桌椅增加攀爬风险，完成专业防坠与限位前不得启用儿童学习位。",
+        "西向眩光用可调无绳卷帘、屏幕位置与独立任务灯控制，不能凭照片承诺不晒。",
+        "中央及两端薄支架示意，木板跨度、防挠与固定承载由厂家深化；无贯穿桌下抽屉。"
+      ]
+    }
+  ],
+  "storageDetails": [
+    {
+      "id": "entry-storage",
+      "storageFitoutId": "entry_shoe_station",
+      "fitoutId": "entry_shoe_station",
+      "roomId": "living",
+      "title": "玄关 · 回家后的收纳与换鞋",
+      "render": "assets/schemes/moss/entry-storage.jpg",
+      "interiorCamera": {
+        "position": [
+          4.86,
+          1.62,
+          13.42
+        ],
+        "target": [
+          2.3,
+          1.2,
+          12.57
+        ],
+        "horizontalFov": 81.2,
+        "fov": 59.49
+      },
+      "summary": "松影石居：沿用1750×400mm鞋柜、换鞋凳与镜板，以本方案柜面、木色和坐垫形成归家背景；不增加柜深或与杯盘共腔。",
+      "dimensions": [
+        "鞋柜1750×400，高2500mm；下柜移门",
+        "底部200mm常鞋区，中部1000–1500mm置物格",
+        "换鞋凳800×400，完成坐高450mm",
+        "餐桌东移400、北移400mm后，柜前至桌边775mm"
+      ],
+      "conditions": [
+        "柜体外深400mm不等于内部净深；按实际鞋长及轨道厚度复核，必要时局部斜层板，暂不承诺鞋量。",
+        "凳体采用落地侧板支撑，软垫可拆洗；承载、尖角与墙面固定须厂家深化。",
+        "高柜和镜板不得遮电箱、门铃/对讲、开关及检修口；现场量清入户门合页和门套。",
+        "换鞋位避开暂定扫门区，但多人同时进出及餐椅退让仍需试摆；不是无障碍方案。",
+        "鞋柜独立存鞋，不与餐边杯盘柜共用内腔；图示灯带和插座是设计预留，不代表已确认电路。"
+      ],
+      "references": [
+        "entry-qiwu-50",
+        "entry-owner-61",
+        "entry-corten",
+        "entry-baili"
+      ]
+    },
+    {
+      "id": "sideboard",
+      "storageFitoutId": "dining_sideboard_wall",
+      "fitoutId": "dining_sideboard_wall",
+      "roomId": "living",
+      "title": "餐边 · 杯盘收纳与干式饮品台",
+      "render": "assets/schemes/moss/sideboard.jpg",
+      "interiorCamera": {
+        "position": [
+          4.88,
+          1.62,
+          10.72
+        ],
+        "target": [
+          2.31,
+          1.26,
+          10.3
+        ],
+        "horizontalFov": 81.2,
+        "fov": 59.49
+      },
+      "summary": "松影石居：1400×400mm餐边柜保留浅上柜与干式备饮留空，仅更新柜门、木色、五金和石感台面；不增水槽或擅改电器适配。",
+      "dimensions": [
+        "底柜1400×400，台面高850mm",
+        "上柜深280，离地1500至2500mm",
+        "中部净留650mm；小抽屉伸出最多250mm",
+        "餐桌东侧至厨房墙800mm；沿用1200×700四人桌"
+      ],
+      "conditions": [
+        "以杯盘、餐具、茶罐和干式备饮为主，没有新增水槽或擅改给排水。",
+        "400mm台面不能默认容纳咖啡机/净饮机；须扣后部插头、散热、开盖空间并按实物选型，热蒸汽不能直冲上柜。",
+        "下柜推拉门不向过道扫开；上柜门和抽屉动态、身高可达性仍待样板试用。",
+        "餐椅最多30cm后退是本轮校核情景；出入时推回近门椅，不能把80cm静态边距当成所有使用状态的通道。",
+        "上柜固定、灯带散热、插座回路、防潮易洁台面及柜腔通风须厂家/电气专业深化。"
+      ],
+      "references": [
+        "entry-qiwu-50",
+        "entry-corten",
+        "entry-quanyou"
+      ]
+    }
+  ],
+  "schemeId": "moss",
+  "schemeTitle": "松影石居",
+  "schemeSummary": "烟木、浅石感和苔绿软包构成更有层次的自然主义。大墙保持浅色，以触感织物、灰绿柜面和圆润薄灯罩营造沉静，而非把全屋涂暗。",
+  "appearance": {
+    "palette": {
+      "wood": "#92816B",
+      "floorWood": "#BEAF96",
+      "wall": "#EEEDE5",
+      "cabinet": "#D6D8CA",
+      "cabinetAccent": "#718269",
+      "sofa": "#7C8B74",
+      "headboard": "#718269",
+      "bedding": "#E3E3D6",
+      "textileAccent": "#8B997D",
+      "stone": "#D5D0C4",
+      "metal": "#535A52",
+      "artAccent": "#758369"
+    },
+    "pendantForm": "soft_dome",
+    "textureModes": {
+      "wood": "smoked_oak",
+      "fabric": "boucle",
+      "stone": "limestone"
+    },
+    "seed": 3102,
+    "preset": "moss",
+    "algorithmVersion": "scheme-pbr-3"
+  },
+  "appearanceHash": "3245541f6d1df59020df26f36f6bea379792dd109319ebd116fd2d84256fef68",
+  "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+  "protectedObjectCount": 1269,
+  "allowedGeometryOverrides": [
+    {
+      "name": "Organic linen pendant",
+      "form": "soft_dome",
+      "originalBounds": [
+        [
+          3.4715204685926437,
+          -11.618479207158089,
+          1.989999920129776
+        ],
+        [
+          3.8284797221422195,
+          -11.261519953608513,
+          2.1699999272823334
+        ]
+      ],
+      "newBounds": [
+        [
+          3.4725204706192017,
+          -11.61747920513153,
+          1.990999922156334
+        ],
+        [
+          3.8274797201156616,
+          -11.26251995563507,
+          2.1689999252557755
+        ]
+      ]
+    },
+    {
+      "name": "Organic linen pendant.001",
+      "form": "soft_dome",
+      "originalBounds": [
+        [
+          3.991258442401886,
+          -11.568741023540497,
+          2.110000044107437
+        ],
+        [
+          4.248741328716278,
+          -11.311258137226105,
+          2.2900000512599945
+        ]
+      ],
+      "newBounds": [
+        [
+          3.992258444428444,
+          -11.567741021513939,
+          2.111000046133995
+        ],
+        [
+          4.24774132668972,
+          -11.312258139252663,
+          2.2890000492334366
+        ]
+      ]
+    }
+  ],
+  "renderSpec": {
+    "engine": "CYCLES",
+    "device": "CPU",
+    "width": 960,
+    "height": 640,
+    "samples": 8,
+    "denoise": true,
+    "threads": 2,
+    "views": [
+      "overall",
+      "living",
+      "dining",
+      "master",
+      "bedroom-b",
+      "study",
+      "kitchen",
+      "master-bath",
+      "guest-bath",
+      "balcony",
+      "bay-master",
+      "bay-tea",
+      "bay-living",
+      "entry-storage",
+      "sideboard"
+    ]
+  },
+  "baseBlendSha256": "f419e7de14b9a25dd1c28ad7cbfe6e9b6d4577d0a577ed8bc79d6a1dbabe8f3d",
+  "overallTitle": "烟木、苔绿与浅石",
+  "overallDescription": "四套中更偏安静自然主义的一套。浅墙保留明亮感，深浅木石和织物形成层次，不改变空间尺寸。",
+  "materialAssignmentCount": 1089,
+  "materialAudit": {
+    "Oak floorboard/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.001/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.002/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.003/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.004/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.005/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.006/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.007/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.008/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.009/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.010/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.011/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.012/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.013/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.014/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.015/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.016/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.017/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.018/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.019/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.020/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.021/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.022/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.023/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.024/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.025/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.026/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.027/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.028/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.029/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.030/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.031/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.032/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.033/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.034/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.035/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.036/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.037/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.038/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.039/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.040/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.041/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.042/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.043/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.044/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.045/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.046/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.047/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.048/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.049/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.050/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.051/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.052/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.053/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.054/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Ceiling / room_b/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Oak floorboard.055/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.056/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.057/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.058/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.059/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.060/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.061/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.062/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.063/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.064/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.065/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.066/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.067/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.068/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.069/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.070/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.071/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.072/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.073/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.074/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.075/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.076/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.077/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.078/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.079/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.080/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.081/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.082/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.083/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.084/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.085/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.086/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.087/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.088/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.089/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.090/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.091/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.092/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.093/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.094/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.095/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.096/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.097/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.098/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.099/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.100/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.101/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.102/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.103/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.104/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.105/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.106/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.107/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.108/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.109/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.110/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.111/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.112/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.113/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.114/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Ceiling / room_a/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Oak floorboard.115/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.116/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.117/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.118/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.119/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.120/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.121/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.122/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.123/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.124/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.125/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.126/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.127/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.128/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.129/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.130/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.131/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.132/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.133/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.134/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.135/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.136/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.137/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.138/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.139/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.140/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.141/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.142/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.143/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.144/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.145/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.146/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.147/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.148/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.149/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.150/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.151/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.152/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.153/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.154/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.155/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.156/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.157/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.158/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.159/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.160/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.161/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.162/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Ceiling / room_c/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Tile/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.001/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.002/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.003/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.004/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.005/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.006/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.007/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.008/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.009/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.010/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.011/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.012/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.013/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.014/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Ceiling / bath_1/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Tile.015/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.016/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.017/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.018/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.019/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.020/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.021/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.022/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.023/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.024/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.025/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.026/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.027/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.028/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.029/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Ceiling / bath_2/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Oak floorboard.163/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.164/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.165/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.166/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.167/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.168/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.169/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.170/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.171/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.172/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.173/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.174/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.175/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.176/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.177/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.178/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.179/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.180/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.181/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.182/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.183/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.184/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.185/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.186/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.187/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.188/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.189/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.190/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.191/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.192/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.193/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.194/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.195/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.196/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.197/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.198/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.199/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.200/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.201/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.202/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.203/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.204/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.205/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.206/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.207/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.208/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.209/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.210/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.211/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.212/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.213/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.214/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.215/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.216/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.217/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.218/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.219/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.220/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.221/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.222/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.223/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.224/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.225/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.226/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.227/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.228/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.229/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.230/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.231/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.232/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.233/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.234/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.235/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.236/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.237/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.238/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.239/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.240/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.241/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.242/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.243/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.244/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.245/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.246/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.247/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.248/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.249/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.250/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.251/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.252/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.253/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.254/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.255/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.256/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.257/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.258/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.259/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.260/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.261/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.262/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.263/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.264/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.265/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.266/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.267/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.268/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.269/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.270/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.271/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.272/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.273/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.274/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.275/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.276/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.277/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.278/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.279/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.280/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.281/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.282/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.283/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.284/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.285/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.286/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.287/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.288/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.289/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.290/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.291/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.292/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.293/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.294/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.295/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.296/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.297/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.298/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.299/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.300/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.301/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.302/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.303/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.304/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.305/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.306/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.307/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.308/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.309/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.310/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.311/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.312/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.313/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.314/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.315/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.316/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.317/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.318/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.319/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Oak floorboard.320/0": {
+      "from": "Oak",
+      "to": "moss / floorWood / wood"
+    },
+    "Ceiling / living/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Tile.030/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.031/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.032/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.033/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.034/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.035/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.036/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.037/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.038/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Ceiling / balcony/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Tile.039/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.040/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.041/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.042/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.043/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.044/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.045/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.046/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.047/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.048/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.049/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.050/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.051/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.052/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.053/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.054/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.055/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.056/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.057/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.058/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.059/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.060/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.061/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.062/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Tile.063/0": {
+      "from": "Tile",
+      "to": "moss / stone / stone"
+    },
+    "Ceiling / kitchen/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Wall 00 / pier/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 00/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 00 / sill/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 00.001/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 00 / lintel/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Wall 00 / pier.001/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 00.002/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 00 / sill.001/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 00.003/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 00 / lintel.001/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Wall 00 / pier.002/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 00.004/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 01 / pier/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 01/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 01 / sill/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 01.001/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 01 / lintel/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Wall 01 / pier.001/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 01.002/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 02 / pier/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 02/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 03 / pier/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 03/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 03 / sill/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 03.001/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 03 / lintel/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Wall 03 / pier.001/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 03.002/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 04 / pier/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 04/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 04 / lintel/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Wall 04 / pier.001/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 04.001/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 05 / pier/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 05/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 06 / pier/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 06/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 07 / pier/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 07/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 07 / sill/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 07.001/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 07 / lintel/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Wall 07 / pier.001/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 07.002/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 07 / sill.001/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 07.003/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 07 / lintel.001/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Wall 07 / pier.002/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 07.004/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 08 / pier/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 08/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 08 / lintel/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Wall 08 / pier.001/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 08.001/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 08 / lintel.001/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Wall 08 / pier.002/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 08.002/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 09 / pier/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 09/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 10 / pier/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 10/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 10 / lintel/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Wall 10 / pier.001/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 10.001/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 10 / lintel.001/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Wall 10 / pier.002/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 10.002/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 11 / pier/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 11/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 11 / lintel/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Wall 11 / pier.001/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 11.001/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 12 / pier/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 12/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 13 / pier/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 13/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 14 / lintel/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Wall 14 / pier/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 14/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 15 / pier/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 15/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 16 / pier/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 16/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 17 / pier/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 17/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 17 / lintel/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Wall 17 / pier.001/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 17.001/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 18 / pier/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 18/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 19 / pier/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 19/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 20 / pier/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 20/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 21 / pier/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 21/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "Wall 22 / pier/0": {
+      "from": "Wall",
+      "to": "moss / wall"
+    },
+    "Skirting 22/0": {
+      "from": "Cream",
+      "to": "moss / bedding"
+    },
+    "window_b / bay deep exterior stone sill/0": {
+      "from": "Stone",
+      "to": "moss / stone / stone.001"
+    },
+    "window_b / bay connected indoor stone finish/0": {
+      "from": "Stone",
+      "to": "moss / stone / stone.001"
+    },
+    "window_b / bay cordless roller cassette/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "window_b / bay inset roller fabric/0": {
+      "from": "RollerFabric",
+      "to": "moss / bedding / fabric"
+    },
+    "window_a / bay deep exterior stone sill/0": {
+      "from": "Stone",
+      "to": "moss / stone / stone.001"
+    },
+    "window_a / bay connected indoor stone finish/0": {
+      "from": "Stone",
+      "to": "moss / stone / stone.001"
+    },
+    "window_a / bay cordless roller cassette/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "window_a / bay inset roller fabric/0": {
+      "from": "RollerFabric",
+      "to": "moss / bedding / fabric"
+    },
+    "window_c / jamb/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "window_c / jamb.001/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "window_c / head/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "window_c / sill frame/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "window_c / mullion/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "window_c / transom/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "window_c / stone ledge/0": {
+      "from": "Stone",
+      "to": "moss / stone / stone.001"
+    },
+    "window_c / linen curtain fold/0": {
+      "from": "WhiteLinen",
+      "to": "moss / bedding / fabric"
+    },
+    "window_c / linen curtain fold.001/0": {
+      "from": "WhiteLinen",
+      "to": "moss / bedding / fabric"
+    },
+    "window_c / linen curtain fold.002/0": {
+      "from": "WhiteLinen",
+      "to": "moss / bedding / fabric"
+    },
+    "window_c / linen curtain fold.003/0": {
+      "from": "WhiteLinen",
+      "to": "moss / bedding / fabric"
+    },
+    "window_c / linen curtain fold.004/0": {
+      "from": "WhiteLinen",
+      "to": "moss / bedding / fabric"
+    },
+    "window_c / linen curtain fold.005/0": {
+      "from": "WhiteLinen",
+      "to": "moss / bedding / fabric"
+    },
+    "window_c / linen curtain fold.006/0": {
+      "from": "WhiteLinen",
+      "to": "moss / bedding / fabric"
+    },
+    "window_c / linen curtain fold.007/0": {
+      "from": "WhiteLinen",
+      "to": "moss / bedding / fabric"
+    },
+    "window_c / linen curtain fold.008/0": {
+      "from": "WhiteLinen",
+      "to": "moss / bedding / fabric"
+    },
+    "window_c / linen curtain fold.009/0": {
+      "from": "WhiteLinen",
+      "to": "moss / bedding / fabric"
+    },
+    "window_living_west / bay deep exterior stone sill/0": {
+      "from": "Stone",
+      "to": "moss / stone / stone.001"
+    },
+    "window_living_west / bay connected indoor stone finish/0": {
+      "from": "Stone",
+      "to": "moss / stone / stone.001"
+    },
+    "window_living_west / bay cordless roller cassette/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "window_living_west / bay inset roller fabric/0": {
+      "from": "RollerFabric",
+      "to": "moss / bedding / fabric"
+    },
+    "window_bath_1_east / jamb/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "window_bath_1_east / jamb.001/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "window_bath_1_east / head/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "window_bath_1_east / sill frame/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "window_bath_1_east / mullion/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "window_bath_1_east / transom/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "window_bath_1_east / stone ledge/0": {
+      "from": "Stone",
+      "to": "moss / stone / stone.001"
+    },
+    "window_bath_2_east / jamb/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "window_bath_2_east / jamb.001/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "window_bath_2_east / head/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "window_bath_2_east / sill frame/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "window_bath_2_east / mullion/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "window_bath_2_east / transom/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "window_bath_2_east / stone ledge/0": {
+      "from": "Stone",
+      "to": "moss / stone / stone.001"
+    },
+    "balcony_door / jamb/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "balcony_door / jamb.001/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "balcony_door / head/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "balcony_door / sill frame/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "balcony_door / mullion/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "entry_door / jamb/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "entry_door / jamb.001/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "entry_door / head/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "entry_door / oak door leaf/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "entry_door / handle escutcheon/0": {
+      "from": "Brass",
+      "to": "moss / metal"
+    },
+    "entry_door / lever handle/0": {
+      "from": "Brass",
+      "to": "moss / metal"
+    },
+    "door_a / jamb/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "door_a / jamb.001/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "door_a / head/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "door_a / oak door leaf/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "door_a / handle escutcheon/0": {
+      "from": "Brass",
+      "to": "moss / metal"
+    },
+    "door_a / lever handle/0": {
+      "from": "Brass",
+      "to": "moss / metal"
+    },
+    "door_b / jamb/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "door_b / jamb.001/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "door_b / head/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "door_b / oak door leaf/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "door_b / handle escutcheon/0": {
+      "from": "Brass",
+      "to": "moss / metal"
+    },
+    "door_b / lever handle/0": {
+      "from": "Brass",
+      "to": "moss / metal"
+    },
+    "door_c / jamb/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "door_c / jamb.001/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "door_c / head/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "door_c / oak door leaf/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "door_c / handle escutcheon/0": {
+      "from": "Brass",
+      "to": "moss / metal"
+    },
+    "door_c / lever handle/0": {
+      "from": "Brass",
+      "to": "moss / metal"
+    },
+    "door_bath_1 / jamb/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "door_bath_1 / jamb.001/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "door_bath_1 / head/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "door_bath_1 / oak door leaf/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "door_bath_1 / handle escutcheon/0": {
+      "from": "Brass",
+      "to": "moss / metal"
+    },
+    "door_bath_1 / lever handle/0": {
+      "from": "Brass",
+      "to": "moss / metal"
+    },
+    "door_bath_2 / jamb/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "door_bath_2 / jamb.001/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "door_bath_2 / head/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "door_bath_2 / oak door leaf/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "door_bath_2 / handle escutcheon/0": {
+      "from": "Brass",
+      "to": "moss / metal"
+    },
+    "door_bath_2 / lever handle/0": {
+      "from": "Brass",
+      "to": "moss / metal"
+    },
+    "door_kitchen / jamb/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "door_kitchen / jamb.001/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "door_kitchen / head/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "door_kitchen / sill frame/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "door_kitchen / mullion/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "次卧1350床 recessed supporting base/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "次卧1350床 solid oak plinth/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "次卧1350床 upholstered headboard/0": {
+      "from": "Linen",
+      "to": "moss / headboard / fabric"
+    },
+    "次卧1350床 mattress/0": {
+      "from": "WhiteLinen",
+      "to": "moss / bedding / fabric"
+    },
+    "次卧1350床 rounded duvet/0": {
+      "from": "Cream",
+      "to": "moss / bedding / fabric"
+    },
+    "次卧1350床 sage throw/0": {
+      "from": "Sage",
+      "to": "moss / textileAccent / fabric"
+    },
+    "Soft sleeping pillow/0": {
+      "from": "WhiteLinen",
+      "to": "moss / bedding / fabric"
+    },
+    "Soft sleeping pillow.001/0": {
+      "from": "WhiteLinen",
+      "to": "moss / bedding / fabric"
+    },
+    "次卧衣柜 recessed plinth/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "次卧衣柜 carcass bottom/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "次卧衣柜 carcass top/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "次卧衣柜 carcass side/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "次卧衣柜 carcass side.001/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "次卧衣柜 carcass back/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "次卧衣柜 upper shelf/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "次卧衣柜 sliding door track/0": {
+      "from": "Brass",
+      "to": "moss / metal"
+    },
+    "次卧衣柜 sliding door track.001/0": {
+      "from": "Brass",
+      "to": "moss / metal"
+    },
+    "次卧衣柜 sliding door track.002/0": {
+      "from": "Brass",
+      "to": "moss / metal"
+    },
+    "次卧衣柜 sliding door track.003/0": {
+      "from": "Brass",
+      "to": "moss / metal"
+    },
+    "次卧衣柜 sliding door/0": {
+      "from": "Oak",
+      "to": "moss / cabinet"
+    },
+    "次卧衣柜 recessed sliding pull/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "次卧衣柜 sliding door.001/0": {
+      "from": "Oak",
+      "to": "moss / cabinet"
+    },
+    "次卧衣柜 recessed sliding pull.001/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "主卧1500床 recessed supporting base/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "主卧1500床 solid oak plinth/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "主卧1500床 upholstered headboard/0": {
+      "from": "Linen",
+      "to": "moss / headboard / fabric"
+    },
+    "主卧1500床 mattress/0": {
+      "from": "WhiteLinen",
+      "to": "moss / bedding / fabric"
+    },
+    "主卧1500床 rounded duvet/0": {
+      "from": "Cream",
+      "to": "moss / bedding / fabric"
+    },
+    "主卧1500床 sage throw/0": {
+      "from": "Sage",
+      "to": "moss / textileAccent / fabric"
+    },
+    "Soft sleeping pillow.002/0": {
+      "from": "WhiteLinen",
+      "to": "moss / bedding / fabric"
+    },
+    "Soft sleeping pillow.003/0": {
+      "from": "WhiteLinen",
+      "to": "moss / bedding / fabric"
+    },
+    "主卧衣柜 recessed plinth/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "主卧衣柜 carcass bottom/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "主卧衣柜 carcass top/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "主卧衣柜 carcass side/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "主卧衣柜 carcass side.001/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "主卧衣柜 carcass back/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "主卧衣柜 upper shelf/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "主卧衣柜 sliding door track/0": {
+      "from": "Brass",
+      "to": "moss / metal"
+    },
+    "主卧衣柜 sliding door track.001/0": {
+      "from": "Brass",
+      "to": "moss / metal"
+    },
+    "主卧衣柜 sliding door track.002/0": {
+      "from": "Brass",
+      "to": "moss / metal"
+    },
+    "主卧衣柜 sliding door track.003/0": {
+      "from": "Brass",
+      "to": "moss / metal"
+    },
+    "主卧衣柜 sliding door/0": {
+      "from": "Oak",
+      "to": "moss / cabinet"
+    },
+    "主卧衣柜 recessed sliding pull/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "主卧衣柜 sliding door.001/0": {
+      "from": "Oak",
+      "to": "moss / cabinet"
+    },
+    "主卧衣柜 recessed sliding pull.001/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "书房日床 recessed supporting base/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "书房日床 solid oak plinth/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "书房日床 upholstered headboard/0": {
+      "from": "Linen",
+      "to": "moss / headboard / fabric"
+    },
+    "书房日床 mattress/0": {
+      "from": "WhiteLinen",
+      "to": "moss / bedding / fabric"
+    },
+    "书房日床 rounded duvet/0": {
+      "from": "Cream",
+      "to": "moss / bedding / fabric"
+    },
+    "书房日床 sage throw/0": {
+      "from": "Sage",
+      "to": "moss / textileAccent / fabric"
+    },
+    "Soft sleeping pillow.004/0": {
+      "from": "WhiteLinen",
+      "to": "moss / bedding / fabric"
+    },
+    "Daybed side upholstered rail/0": {
+      "from": "Linen",
+      "to": "moss / headboard / fabric.001"
+    },
+    "Daybed sage cushion/0": {
+      "from": "Sage",
+      "to": "moss / textileAccent / fabric"
+    },
+    "Daybed sage cushion.001/0": {
+      "from": "Sage",
+      "to": "moss / textileAccent / fabric"
+    },
+    "Oak desk desktop/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Desk turned leg/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Desk turned leg.001/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Desk turned leg.002/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Desk turned leg.003/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Lamp base/0": {
+      "from": "Brass",
+      "to": "moss / metal"
+    },
+    "Lamp upright/0": {
+      "from": "Brass",
+      "to": "moss / metal"
+    },
+    "Pleated linen lampshade/0": {
+      "from": "Linen",
+      "to": "moss / headboard / fabric.001"
+    },
+    "Desk linen notebook/0": {
+      "from": "Sage",
+      "to": "moss / bedding / art"
+    },
+    "Rounded linen chair seat/0": {
+      "from": "Linen",
+      "to": "moss / textileAccent / fabric.001"
+    },
+    "Curved oak chair back/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Tapered chair leg/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Tapered chair leg.001/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Tapered chair leg.002/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Tapered chair leg.003/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "书房客衣柜 recessed plinth/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "书房客衣柜 carcass bottom/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "书房客衣柜 carcass top/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "书房客衣柜 carcass side/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "书房客衣柜 carcass side.001/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "书房客衣柜 carcass back/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "书房客衣柜 upper shelf/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "书房客衣柜 door/0": {
+      "from": "Oak",
+      "to": "moss / cabinet"
+    },
+    "书房客衣柜 brass pull/0": {
+      "from": "Brass",
+      "to": "moss / metal"
+    },
+    "书房客衣柜 door.001/0": {
+      "from": "Oak",
+      "to": "moss / cabinet"
+    },
+    "书房客衣柜 brass pull.001/0": {
+      "from": "Brass",
+      "to": "moss / metal"
+    },
+    "Curved sofa upholstered base/0": {
+      "from": "Linen",
+      "to": "moss / sofa / fabric"
+    },
+    "Curved sofa full back/0": {
+      "from": "Linen",
+      "to": "moss / sofa / fabric"
+    },
+    "Rounded sofa arm/0": {
+      "from": "Linen",
+      "to": "moss / sofa / fabric"
+    },
+    "Rounded sofa arm.001/0": {
+      "from": "Linen",
+      "to": "moss / sofa / fabric"
+    },
+    "Separate sofa seat cushion/0": {
+      "from": "Cream",
+      "to": "moss / sofa / fabric"
+    },
+    "Separate sofa seat cushion.001/0": {
+      "from": "Cream",
+      "to": "moss / sofa / fabric"
+    },
+    "Separate sofa seat cushion.002/0": {
+      "from": "Cream",
+      "to": "moss / sofa / fabric"
+    },
+    "Textile sofa scatter cushion/0": {
+      "from": "Terracotta",
+      "to": "moss / textileAccent / fabric.001"
+    },
+    "Textile sofa scatter cushion.001/0": {
+      "from": "Sage",
+      "to": "moss / textileAccent / fabric.001"
+    },
+    "Subtle flatwoven living rug/0": {
+      "from": "WhiteLinen",
+      "to": "moss / bedding / fabric.001"
+    },
+    "电视薄柜 oak case/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Reeded cabinet door/0": {
+      "from": "Oak",
+      "to": "moss / cabinet"
+    },
+    "Reeded cabinet door.001/0": {
+      "from": "Oak",
+      "to": "moss / cabinet"
+    },
+    "Reeded cabinet door.002/0": {
+      "from": "Oak",
+      "to": "moss / cabinet"
+    },
+    "Reeded cabinet door.003/0": {
+      "from": "Oak",
+      "to": "moss / cabinet"
+    },
+    "Reeded cabinet door.004/0": {
+      "from": "Oak",
+      "to": "moss / cabinet"
+    },
+    "Cabinet foot/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Cabinet foot.001/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Cabinet foot.002/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Cabinet foot.003/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Ceramic bud vase/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "Vase neck/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "Dried branch/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Dried branch.001/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Dried branch.002/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Small art book/0": {
+      "from": "Sage",
+      "to": "moss / bedding / art"
+    },
+    "Small art book.001/0": {
+      "from": "Cream",
+      "to": "moss / bedding / art"
+    },
+    "Small art book.002/0": {
+      "from": "Terracotta",
+      "to": "moss / bedding / art"
+    },
+    "Round fluted oak tea-table pedestal/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.001/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.002/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.003/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.004/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.005/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.006/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.007/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.008/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.009/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.010/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.011/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.012/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.013/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.014/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.015/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.016/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.017/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.018/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.019/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.020/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.021/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.022/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.023/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Rounded warm-stone tea-table top/0": {
+      "from": "Stone",
+      "to": "moss / stone / stone.001"
+    },
+    "Round fluted oak tea-table pedestal.001/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.024/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.025/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.026/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.027/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.028/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.029/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.030/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.031/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.032/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.033/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.034/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.035/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.036/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.037/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.038/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.039/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.040/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.041/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.042/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.043/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.044/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.045/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.046/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Table pedestal flute.047/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Rounded warm-stone tea-table top.001/0": {
+      "from": "Stone",
+      "to": "moss / stone / stone.001"
+    },
+    "Small art book.003/0": {
+      "from": "Sage",
+      "to": "moss / bedding / art"
+    },
+    "Small art book.004/0": {
+      "from": "Cream",
+      "to": "moss / bedding / art"
+    },
+    "Small art book.005/0": {
+      "from": "Terracotta",
+      "to": "moss / bedding / art"
+    },
+    "窗边矮柜 oak case/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Reeded cabinet door.005/0": {
+      "from": "Oak",
+      "to": "moss / cabinet"
+    },
+    "Reeded cabinet door.006/0": {
+      "from": "Oak",
+      "to": "moss / cabinet"
+    },
+    "Cabinet foot.004/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Cabinet foot.005/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Cabinet foot.006/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Cabinet foot.007/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Ceramic bud vase.001/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "Vase neck.001/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "Dried branch.003/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Dried branch.004/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Dried branch.005/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Clay planter/0": {
+      "from": "Terracotta",
+      "to": "moss / artAccent"
+    },
+    "Soil/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Plant stem/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Plant stem.001/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Plant stem.002/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Plant stem.003/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Plant stem.004/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Soft corner solid-oak dining top/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Dining table tapered leg/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Dining table tapered leg.001/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Dining table tapered leg.002/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Dining table tapered leg.003/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Ceramic bud vase.002/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "Vase neck.002/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "Dried branch.006/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Dried branch.007/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Dried branch.008/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Rounded linen chair seat.001/0": {
+      "from": "Linen",
+      "to": "moss / textileAccent / fabric.001"
+    },
+    "Curved oak chair back.001/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Tapered chair leg.004/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Tapered chair leg.005/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Tapered chair leg.006/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Tapered chair leg.007/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Rounded linen chair seat.002/0": {
+      "from": "Linen",
+      "to": "moss / textileAccent / fabric.001"
+    },
+    "Curved oak chair back.002/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Tapered chair leg.008/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Tapered chair leg.009/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Tapered chair leg.010/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Tapered chair leg.011/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Rounded linen chair seat.003/0": {
+      "from": "Linen",
+      "to": "moss / textileAccent / fabric.001"
+    },
+    "Curved oak chair back.003/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Tapered chair leg.012/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Tapered chair leg.013/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Tapered chair leg.014/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Tapered chair leg.015/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Rounded linen chair seat.004/0": {
+      "from": "Linen",
+      "to": "moss / textileAccent / fabric.001"
+    },
+    "Curved oak chair back.004/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Tapered chair leg.016/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Tapered chair leg.017/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Tapered chair leg.018/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Tapered chair leg.019/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Kitchen recessed oak toe-kick/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Kitchen cabinet carcass/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "Kitchen oak cabinet front/0": {
+      "from": "Oak",
+      "to": "moss / cabinetAccent"
+    },
+    "Kitchen integrated pull/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Kitchen oak cabinet front.001/0": {
+      "from": "Oak",
+      "to": "moss / cabinetAccent"
+    },
+    "Kitchen integrated pull.001/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Kitchen oak cabinet front.002/0": {
+      "from": "Oak",
+      "to": "moss / cabinetAccent"
+    },
+    "Kitchen integrated pull.002/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Kitchen oak cabinet front.003/0": {
+      "from": "Oak",
+      "to": "moss / cabinetAccent"
+    },
+    "Kitchen integrated pull.003/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Kitchen oak cabinet front.004/0": {
+      "from": "Oak",
+      "to": "moss / cabinetAccent"
+    },
+    "Kitchen integrated pull.004/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Quartz worktop/0": {
+      "from": "Stone",
+      "to": "moss / stone / stone.001"
+    },
+    "Concealed cooker hood/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "Hood flue/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "Warm backsplash panel/0": {
+      "from": "Stone",
+      "to": "moss / stone / stone.001"
+    },
+    "Kitchen recessed oak toe-kick.001/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Kitchen cabinet carcass.001/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "Kitchen oak cabinet front.005/0": {
+      "from": "Oak",
+      "to": "moss / cabinet"
+    },
+    "Kitchen integrated pull.005/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Kitchen oak cabinet front.006/0": {
+      "from": "Oak",
+      "to": "moss / cabinet"
+    },
+    "Kitchen integrated pull.006/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Kitchen oak cabinet front.007/0": {
+      "from": "Oak",
+      "to": "moss / cabinet"
+    },
+    "Kitchen integrated pull.007/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Kitchen oak cabinet front.008/0": {
+      "from": "Oak",
+      "to": "moss / cabinet"
+    },
+    "Kitchen integrated pull.008/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Quartz worktop.001/0": {
+      "from": "Stone",
+      "to": "moss / stone / stone.001"
+    },
+    "Sink steel rim/0": {
+      "from": "Chrome",
+      "to": "moss / metal"
+    },
+    "Kitchen tap upright/0": {
+      "from": "Chrome",
+      "to": "moss / metal"
+    },
+    "Kitchen tap spout/0": {
+      "from": "Chrome",
+      "to": "moss / metal"
+    },
+    "Oak chopping board/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Kitchen open oak shelf/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Ceramic bud vase.003/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "Vase neck.003/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "Dried branch.009/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Dried branch.010/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Dried branch.011/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Appliance oak surround/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Integrated refrigerator door/0": {
+      "from": "Cream",
+      "to": "moss / cabinet"
+    },
+    "Integrated freezer door/0": {
+      "from": "Cream",
+      "to": "moss / cabinet"
+    },
+    "Fridge recessed pull/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "Appliance oak surround.001/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Oven bar handle/0": {
+      "from": "Chrome",
+      "to": "moss / metal"
+    },
+    "Oven bar handle.001/0": {
+      "from": "Chrome",
+      "to": "moss / metal"
+    },
+    "Oven tower upper cupboard/0": {
+      "from": "Cream",
+      "to": "moss / cabinet"
+    },
+    "Appliance controls/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "Appliance dial/0": {
+      "from": "Chrome",
+      "to": "moss / metal"
+    },
+    "Appliance controls.001/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "Appliance dial.001/0": {
+      "from": "Chrome",
+      "to": "moss / metal"
+    },
+    "Laundry oak side panel/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Laundry top shelf/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Linen storage basket/0": {
+      "from": "Linen",
+      "to": "moss / headboard / fabric.001"
+    },
+    "Linen storage basket.001/0": {
+      "from": "Linen",
+      "to": "moss / headboard / fabric.001"
+    },
+    "阳台家政柜 oak case/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Reeded cabinet door.007/0": {
+      "from": "Oak",
+      "to": "moss / cabinet"
+    },
+    "Reeded cabinet door.008/0": {
+      "from": "Oak",
+      "to": "moss / cabinet"
+    },
+    "Cabinet foot.008/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Cabinet foot.009/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Cabinet foot.010/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Cabinet foot.011/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Floating oak vanity/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Vanity drawer front/0": {
+      "from": "Oak",
+      "to": "moss / cabinet"
+    },
+    "Vanity drawer front.001/0": {
+      "from": "Oak",
+      "to": "moss / cabinet"
+    },
+    "Vanity pale stone top/0": {
+      "from": "Stone",
+      "to": "moss / stone / stone.001"
+    },
+    "Basin hollow/0": {
+      "from": "Stone",
+      "to": "moss / neutralCeramic"
+    },
+    "Basin tap stem/0": {
+      "from": "Chrome",
+      "to": "moss / metal"
+    },
+    "Basin tap spout/0": {
+      "from": "Chrome",
+      "to": "moss / metal"
+    },
+    "Oak mirror frame/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Concealed cistern service box/0": {
+      "from": "Stone",
+      "to": "moss / neutralStone"
+    },
+    "Flush plate/0": {
+      "from": "Chrome",
+      "to": "moss / metal"
+    },
+    "Shower sloping stone tray/0": {
+      "from": "Stone",
+      "to": "moss / stone / stone.001"
+    },
+    "Shower glass upright/0": {
+      "from": "Chrome",
+      "to": "moss / metal"
+    },
+    "Shower riser/0": {
+      "from": "Chrome",
+      "to": "moss / metal"
+    },
+    "Shower head arm/0": {
+      "from": "Chrome",
+      "to": "moss / metal"
+    },
+    "Rain shower head/0": {
+      "from": "Chrome",
+      "to": "moss / metal"
+    },
+    "Shower mixer/0": {
+      "from": "Chrome",
+      "to": "moss / metal"
+    },
+    "Shower linear drain/0": {
+      "from": "Chrome",
+      "to": "moss / metal"
+    },
+    "Shower floating soap shelf/0": {
+      "from": "Stone",
+      "to": "moss / stone / stone.001"
+    },
+    "Floating oak vanity.001/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Vanity drawer front.002/0": {
+      "from": "Oak",
+      "to": "moss / cabinetAccent"
+    },
+    "Vanity drawer front.003/0": {
+      "from": "Oak",
+      "to": "moss / cabinetAccent"
+    },
+    "Vanity pale stone top.001/0": {
+      "from": "Stone",
+      "to": "moss / stone / stone.001"
+    },
+    "Basin hollow.001/0": {
+      "from": "Stone",
+      "to": "moss / neutralCeramic"
+    },
+    "Basin tap stem.001/0": {
+      "from": "Chrome",
+      "to": "moss / metal"
+    },
+    "Basin tap spout.001/0": {
+      "from": "Chrome",
+      "to": "moss / metal"
+    },
+    "Oak mirror frame.001/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "Concealed cistern service box.001/0": {
+      "from": "Stone",
+      "to": "moss / neutralStone"
+    },
+    "Flush plate.001/0": {
+      "from": "Chrome",
+      "to": "moss / metal"
+    },
+    "Shower sloping stone tray.001/0": {
+      "from": "Stone",
+      "to": "moss / stone / stone.001"
+    },
+    "Shower glass upright.001/0": {
+      "from": "Chrome",
+      "to": "moss / metal"
+    },
+    "Shower riser.001/0": {
+      "from": "Chrome",
+      "to": "moss / metal"
+    },
+    "Shower head arm.001/0": {
+      "from": "Chrome",
+      "to": "moss / metal"
+    },
+    "Rain shower head.001/0": {
+      "from": "Chrome",
+      "to": "moss / metal"
+    },
+    "Shower mixer.001/0": {
+      "from": "Chrome",
+      "to": "moss / metal"
+    },
+    "Shower linear drain.001/0": {
+      "from": "Chrome",
+      "to": "moss / metal"
+    },
+    "Shower floating soap shelf.001/0": {
+      "from": "Stone",
+      "to": "moss / stone / stone.001"
+    },
+    "a_desktop/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "a_support square metal upright/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "a_support square metal upright.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "a_support upper U-frame member/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "a_support square metal upright.002/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "a_support square metal upright.003/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "a_support upper U-frame member.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "a_accessories / single user laptop laptop base/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "a_accessories / single user laptop trackpad/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "a_accessories / single task light flat base/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "a_accessories / single task light slender upright/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "a_accessories / single task light opal task shade/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "a_accessories / movable vanity mirror mirror stand base/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "a_accessories / movable vanity mirror mirror stand/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "a_accessories / linen notebook/0": {
+      "from": "Sage",
+      "to": "moss / bedding / art"
+    },
+    "a_accessories / linen notebook pale page edges/0": {
+      "from": "WhiteLinen",
+      "to": "moss / bedding / fabric"
+    },
+    "a_chair padded seat/0": {
+      "from": "Linen",
+      "to": "moss / textileAccent / fabric.001"
+    },
+    "a_chair rounded backrest/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "a_chair slim metal leg/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "a_chair slim metal leg.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "a_chair slim metal leg.002/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "a_chair slim metal leg.003/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "a_chair rear backrest connecting post/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "a_chair rear backrest connecting post.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "a_chair illustrative foot support/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "b_cushion/0": {
+      "from": "Linen",
+      "to": "moss / headboard / fabric.002"
+    },
+    "b_cushion inset textile piping/0": {
+      "from": "WhiteLinen",
+      "to": "moss / headboard / fabric.002"
+    },
+    "b_tea_tray oak tray/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "b_tea_tray tray raised edge/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "b_tea_tray tray raised edge.001/0": {
+      "from": "Oak",
+      "to": "moss / wood / wood"
+    },
+    "b_tea_tray visible tea/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "b_back_cushion/0": {
+      "from": "Linen",
+      "to": "moss / headboard / fabric.002"
+    },
+    "b_back_cushion inset textile piping/0": {
+      "from": "WhiteLinen",
+      "to": "moss / headboard / fabric.002"
+    },
+    "l_desktop/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "l_support square metal upright/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "l_support square metal upright.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "l_support upper U-frame member/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "l_support square metal upright.002/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "l_support square metal upright.003/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "l_support upper U-frame member.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "l_support square metal upright.004/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "l_support square metal upright.005/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "l_support upper U-frame member.002/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "l_accessories / adult laptop laptop base/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "l_accessories / adult laptop trackpad/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "l_accessories / adult task light flat base/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "l_accessories / adult task light slender upright/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "l_accessories / adult task light opal task shade/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "l_accessories / family notebook/0": {
+      "from": "Sage",
+      "to": "moss / cabinetAccent.001"
+    },
+    "l_accessories / family notebook pale page edges/0": {
+      "from": "WhiteLinen",
+      "to": "moss / bedding / fabric"
+    },
+    "l_accessories / family task light flat base/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "l_accessories / family task light slender upright/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "l_accessories / family task light opal task shade/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "l_adult_chair padded seat/0": {
+      "from": "Linen",
+      "to": "moss / textileAccent / fabric.001"
+    },
+    "l_adult_chair rounded backrest/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "l_adult_chair slim metal leg/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "l_adult_chair slim metal leg.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "l_adult_chair slim metal leg.002/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "l_adult_chair slim metal leg.003/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "l_child_chair padded seat/0": {
+      "from": "Linen",
+      "to": "moss / textileAccent / fabric.001"
+    },
+    "l_child_chair rounded backrest/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "l_child_chair slim metal leg/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "l_child_chair slim metal leg.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "l_child_chair slim metal leg.002/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "l_child_chair slim metal leg.003/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "l_child_chair illustrative foot support/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "l_ledge/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "e_shoe_lower / end support panel/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "e_shoe_lower / end support panel.001/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "e_shoe_lower / thin back panel/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "e_shoe_lower / floor-standing base divider/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "e_shoe_lower / floor-standing base divider.001/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "e_shoe_lower / shoe compartment base/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "e_shoe_lower / finished key counter/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "e_shoe_lower / shoe shelf/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "e_shoe_lower / shoe shelf.001/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "e_shoe_lower / sliding track/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "e_shoe_lower / sliding track.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "e_shoe_lower / sliding track.002/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "e_shoe_lower / sliding track.003/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "e_shoe_lower / cream sliding door/0": {
+      "from": "Cream",
+      "to": "moss / cabinet"
+    },
+    "e_shoe_lower / inset finger pull/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "e_shoe_lower / cream sliding door.001/0": {
+      "from": "Cream",
+      "to": "moss / cabinet"
+    },
+    "e_shoe_lower / inset finger pull.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "e_shoe_lower / cream sliding door.002/0": {
+      "from": "Cream",
+      "to": "moss / cabinet"
+    },
+    "e_shoe_lower / inset finger pull.002/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "e_shoe_lower / visible shoe sole/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "e_shoe_lower / soft shoe upper/0": {
+      "from": "Linen",
+      "to": "moss / headboard / fabric.001"
+    },
+    "e_shoe_lower / visible shoe sole.001/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "e_shoe_lower / soft shoe upper.001/0": {
+      "from": "Linen",
+      "to": "moss / headboard / fabric.001"
+    },
+    "e_key_niche / end support panel/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "e_key_niche / end support panel.001/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "e_key_niche / thin back panel/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "e_key_niche / niche top lining/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "e_key_niche / warm recessed LED channel/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "e_key_niche / reserved socket plate/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "e_key_niche / socket indication/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "e_key_niche / socket indication.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "e_shoe_upper / end support panel/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "e_shoe_upper / end support panel.001/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "e_shoe_upper / thin back panel/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "e_shoe_upper / upper cabinet bottom/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "e_shoe_upper / upper cabinet top/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "e_shoe_upper / upper interior shelf/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "e_shoe_upper / upper interior shelf.001/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "e_shoe_upper / cream upper door/0": {
+      "from": "Cream",
+      "to": "moss / cabinet"
+    },
+    "e_shoe_upper / subtle upper finger edge/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "e_shoe_upper / cream upper door.001/0": {
+      "from": "Cream",
+      "to": "moss / cabinet"
+    },
+    "e_shoe_upper / subtle upper finger edge.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "e_shoe_upper / cream upper door.002/0": {
+      "from": "Cream",
+      "to": "moss / cabinet"
+    },
+    "e_shoe_upper / subtle upper finger edge.002/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "e_key_accessories / oak key tray/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "e_key_accessories / key/0": {
+      "from": "Brass",
+      "to": "moss / metal"
+    },
+    "e_key_accessories / key.001/0": {
+      "from": "Brass",
+      "to": "moss / metal"
+    },
+    "e_key_accessories / small everyday bag/0": {
+      "from": "Terracotta",
+      "to": "moss / artAccent"
+    },
+    "e_key_accessories / bag handle/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "e_key_accessories / bag handle.001/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "e_key_accessories / bag handle top/0": {
+      "from": "Walnut",
+      "to": "moss / wood / wood"
+    },
+    "e_bench / end support panel/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "e_bench / end support panel.001/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "e_bench / thin back panel/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "e_bench / bench oak seat substrate/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "e_bench / removable soft seat/0": {
+      "from": "Linen",
+      "to": "moss / headboard / fabric.002"
+    },
+    "e_bench / visible shoe sole/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "e_bench / soft shoe upper/0": {
+      "from": "Linen",
+      "to": "moss / headboard / fabric.001"
+    },
+    "e_bench / visible shoe sole.001/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "e_bench / soft shoe upper.001/0": {
+      "from": "Linen",
+      "to": "moss / headboard / fabric.001"
+    },
+    "e_bench_back / slim timber back/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "e_bench_back / rounded vertical mirror frame/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "e_bench_back / coat hook backplate/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "e_bench_back / short projecting coat hook/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "e_bench_back / coat hook backplate.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "e_bench_back / short projecting coat hook.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "d_base / recessed toe kick/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "d_base / end support panel/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "d_base / end support panel.001/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "d_base / thin back panel/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "d_base / base compartment floor/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "d_base / warm stone worktop/0": {
+      "from": "Stone",
+      "to": "moss / stone / stone.001"
+    },
+    "d_base / drawer compartment shelf/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "d_base / sliding track/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "d_base / sliding track.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "d_base / sliding track.002/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "d_base / sliding track.003/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "d_base / cream sliding door/0": {
+      "from": "Cream",
+      "to": "moss / cabinet"
+    },
+    "d_base / inset finger pull/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "d_base / cream sliding door.001/0": {
+      "from": "Cream",
+      "to": "moss / cabinet"
+    },
+    "d_base / inset finger pull.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "d_base / closed shallow drawer front/0": {
+      "from": "Cream",
+      "to": "moss / cabinet"
+    },
+    "d_base / closed drawer floor/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "d_base / recessed drawer pull/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "d_base / closed shallow drawer front.001/0": {
+      "from": "Cream",
+      "to": "moss / cabinet"
+    },
+    "d_base / closed drawer floor.001/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "d_base / recessed drawer pull.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "d_niche / end support panel/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "d_niche / end support panel.001/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "d_niche / thin back panel/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "d_niche / niche top lining/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "d_niche / warm recessed LED channel/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "d_niche / reserved socket plate/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "d_niche / socket indication/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "d_niche / socket indication.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "d_upper / end support panel/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "d_upper / end support panel.001/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "d_upper / thin back panel/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "d_upper / upper cabinet bottom/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "d_upper / upper cabinet top/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "d_upper / open cup bay partition/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "d_upper / upper interior shelf/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "d_upper / upper interior shelf.001/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "d_upper / cream upper door/0": {
+      "from": "Cream",
+      "to": "moss / cabinetAccent"
+    },
+    "d_upper / subtle upper finger edge/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "d_upper / cream upper door.001/0": {
+      "from": "Cream",
+      "to": "moss / cabinetAccent"
+    },
+    "d_upper / subtle upper finger edge.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "d_accessories / insulated drinks flask/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "d_accessories / flask lid/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "d_accessories / flask handle/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "d_accessories / flask handle upper/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "d_accessories / flask handle lower/0": {
+      "from": "WarmGrayMetal",
+      "to": "moss / metal"
+    },
+    "d_accessories / tea storage tin/0": {
+      "from": "Sage",
+      "to": "moss / cabinetAccent.001"
+    },
+    "d_accessories / tea tin lid/0": {
+      "from": "OakLight",
+      "to": "moss / wood / wood"
+    },
+    "Lamp base.001/0": {
+      "from": "Brass",
+      "to": "moss / metal"
+    },
+    "Lamp upright.001/0": {
+      "from": "Brass",
+      "to": "moss / metal"
+    },
+    "Pleated linen lampshade.001/0": {
+      "from": "Linen",
+      "to": "moss / headboard / fabric.001"
+    },
+    "Dining pendant ceiling rose/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "Dining pendant ceiling rose.001/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "Flush ceiling light/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "Flush ceiling light.001/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "Flush ceiling light.002/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "Flush ceiling light.003/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "Flush ceiling light.004/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "Flush ceiling light.005/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "Flush ceiling light.006/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "Flush ceiling light.007/0": {
+      "from": "Cream",
+      "to": "moss / bedding.001"
+    },
+    "Presentation ground/0": {
+      "from": "Cream",
+      "to": "moss / wall"
+    }
+  },
+  "renderedViews": {
+    "kitchen": {
+      "appearanceHash": "3245541f6d1df59020df26f36f6bea379792dd109319ebd116fd2d84256fef68",
+      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+      "renderSpec": {
+        "width": 960,
+        "height": 640,
+        "samples": 8
+      },
+      "seconds": 52.57
+    },
+    "master-bath": {
+      "appearanceHash": "3245541f6d1df59020df26f36f6bea379792dd109319ebd116fd2d84256fef68",
+      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+      "renderSpec": {
+        "width": 960,
+        "height": 640,
+        "samples": 8
+      },
+      "seconds": 58.98
+    },
+    "overall": {
+      "appearanceHash": "3245541f6d1df59020df26f36f6bea379792dd109319ebd116fd2d84256fef68",
+      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+      "renderSpec": {
+        "width": 960,
+        "height": 640,
+        "samples": 8
+      },
+      "seconds": 28.0
+    },
+    "living": {
+      "appearanceHash": "3245541f6d1df59020df26f36f6bea379792dd109319ebd116fd2d84256fef68",
+      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+      "renderSpec": {
+        "width": 960,
+        "height": 640,
+        "samples": 8
+      },
+      "seconds": 67.29
+    },
+    "dining": {
+      "appearanceHash": "3245541f6d1df59020df26f36f6bea379792dd109319ebd116fd2d84256fef68",
+      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+      "renderSpec": {
+        "width": 960,
+        "height": 640,
+        "samples": 8
+      },
+      "seconds": 48.46
+    },
+    "master": {
+      "appearanceHash": "3245541f6d1df59020df26f36f6bea379792dd109319ebd116fd2d84256fef68",
+      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+      "renderSpec": {
+        "width": 960,
+        "height": 640,
+        "samples": 8
+      },
+      "seconds": 51.58
+    },
+    "bedroom-b": {
+      "appearanceHash": "3245541f6d1df59020df26f36f6bea379792dd109319ebd116fd2d84256fef68",
+      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+      "renderSpec": {
+        "width": 960,
+        "height": 640,
+        "samples": 8
+      },
+      "seconds": 49.93
+    },
+    "study": {
+      "appearanceHash": "3245541f6d1df59020df26f36f6bea379792dd109319ebd116fd2d84256fef68",
+      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+      "renderSpec": {
+        "width": 960,
+        "height": 640,
+        "samples": 8
+      },
+      "seconds": 64.28
+    },
+    "guest-bath": {
+      "appearanceHash": "3245541f6d1df59020df26f36f6bea379792dd109319ebd116fd2d84256fef68",
+      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+      "renderSpec": {
+        "width": 960,
+        "height": 640,
+        "samples": 8
+      },
+      "seconds": 56.61
+    },
+    "balcony": {
+      "appearanceHash": "3245541f6d1df59020df26f36f6bea379792dd109319ebd116fd2d84256fef68",
+      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+      "renderSpec": {
+        "width": 960,
+        "height": 640,
+        "samples": 8
+      },
+      "seconds": 61.86
+    },
+    "bay-master": {
+      "appearanceHash": "3245541f6d1df59020df26f36f6bea379792dd109319ebd116fd2d84256fef68",
+      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+      "renderSpec": {
+        "width": 960,
+        "height": 640,
+        "samples": 8
+      },
+      "seconds": 47.83
+    },
+    "bay-tea": {
+      "appearanceHash": "3245541f6d1df59020df26f36f6bea379792dd109319ebd116fd2d84256fef68",
+      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+      "renderSpec": {
+        "width": 960,
+        "height": 640,
+        "samples": 8
+      },
+      "seconds": 47.49
+    },
+    "bay-living": {
+      "appearanceHash": "3245541f6d1df59020df26f36f6bea379792dd109319ebd116fd2d84256fef68",
+      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+      "renderSpec": {
+        "width": 960,
+        "height": 640,
+        "samples": 8
+      },
+      "seconds": 52.74
+    },
+    "entry-storage": {
+      "appearanceHash": "3245541f6d1df59020df26f36f6bea379792dd109319ebd116fd2d84256fef68",
+      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+      "renderSpec": {
+        "width": 960,
+        "height": 640,
+        "samples": 8
+      },
+      "seconds": 52.73
+    },
+    "sideboard": {
+      "appearanceHash": "3245541f6d1df59020df26f36f6bea379792dd109319ebd116fd2d84256fef68",
+      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+      "renderSpec": {
+        "width": 960,
+        "height": 640,
+        "samples": 8
+      },
+      "seconds": 50.25
+    }
+  }
+}
