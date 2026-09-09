@@ -4,7 +4,7 @@
   "blend": "models/schemes/cobalt/house.blend",
   "units": "m",
   "source": "models/design-data.json",
-  "sourceSha256": "b6e66487d2207202a02bc3fa61401f96d5a581b445e16030c7f402d62e79e3ce",
+  "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
   "bounds": {
     "min": [
       0.0,
@@ -201,30 +201,32 @@
         "同一 Blender 场景生成模型和渲染",
         "现代主义启发 · 蓝红色块 · 原木",
         "门窗尺寸现场复尺",
-        "鞋柜1750×400，高2500mm；下柜移门",
-        "底部200mm常鞋区，中部1000–1500mm置物格",
-        "换鞋凳800×400，完成坐高450mm",
-        "餐桌东移400、北移400mm后，柜前至桌边775mm",
-        "底柜1400×400，台面高850mm",
-        "上柜深280，离地1500至2500mm",
-        "中部净留650mm；小抽屉伸出最多250mm",
-        "餐桌东侧至厨房墙800mm；沿用1200×700四人桌"
+        "沿墙650×外深340，高2500mm；柜面朝西",
+        "底部200mm常鞋位，中部1000–1500mm置物格",
+        "上柜外深280mm；北端距厨房门洞南端550mm",
+        "柜面距暂定右开90°门片约40mm，取鞋前需收门",
+        "西臂总长5290mm；南臂总长1625mm（两者均含400mm盲角）",
+        "底柜外深400、台面高850mm；上柜深280、高1500–2500mm",
+        "西直柜4890mm分1200/1200/1200/1290四模块，南可开柜段1225mm",
+        "中空高650mm；抽屉仅北两模块，最多伸出250mm",
+        "餐桌西侧775、东侧800mm；南椅退300mm后至短臂仍约815mm"
       ],
       "storageFitoutIds": [
         "entry_shoe_station",
         "dining_sideboard_wall"
       ],
       "conditions": [
-        "柜体外深400mm不等于内部净深；按实际鞋长及轨道厚度复核，必要时局部斜层板，暂不承诺鞋量。",
-        "凳体采用落地侧板支撑，软垫可拆洗；承载、尖角与墙面固定须厂家深化。",
-        "高柜和镜板不得遮电箱、门铃/对讲、开关及检修口；现场量清入户门合页和门套。",
-        "换鞋位避开暂定扫门区，但多人同时进出及餐椅退让仍需试摆；不是无障碍方案。",
-        "鞋柜独立存鞋，不与餐边杯盘柜共用内腔；图示灯带和插座是设计预留，不代表已确认电路。",
-        "以杯盘、餐具、茶罐和干式备饮为主，没有新增水槽或擅改给排水。",
-        "400mm台面不能默认容纳咖啡机/净饮机；须扣后部插头、散热、开盖空间并按实物选型，热蒸汽不能直冲上柜。",
-        "下柜推拉门不向过道扫开；上柜门和抽屉动态、身高可达性仍待样板试用。",
-        "餐椅最多30cm后退是本轮校核情景；出入时推回近门椅，不能把80cm静态边距当成所有使用状态的通道。",
-        "上柜固定、灯带散热、插座回路、防潮易洁台面及柜腔通风须厂家/电气专业深化。"
+        "650mm是本模型能留出门把手端部余量的紧凑方案，不照抄参考图鞋柜长度；门套、把手、电箱、对讲及闭门器实测后再定柜。",
+        "340mm外深要扣门轨与背板；不保证平放所有尺码，应按鞋长调整层板/斜放，图示不承诺鞋双数。",
+        "入户右合页90°时门片会挡住柜前，必须先收门再使用；超过90°向柜侧打开还可能碰撞，不能凭图认为门吸限位已完成。",
+        "模型示意门把手端部留空不代表真实五金扫动已通过；需要现场全开/关门、取鞋和多人进出试摆。",
+        "不设固定换鞋凳或镜面屏风，以免挤占门口；鞋柜与左边杯盘柜独立，灯带与插座仅预留。",
+        "400×400mm下盲角和退进上盲角封闭不用，不画假门、假抽屉或重复计算容量；转角台面及中空连通，实际拼缝/固定需深化。",
+        "西柜北端离现模型窗返边仅约30mm，不可凭概念净距下单；先量窗套、帘盒、电箱、踢脚线与墙面垂直度。",
+        "桌旁和南短臂下柜均为移门，没有向过道拉出的抽屉；北段250mm抽屉加取物站位期间，柜前不同时作绕行通道。",
+        "南上柜延续7字造型，会增加入口围合感；闭门及开启时的头部活动、可达性、转角门扇与高柜防倾倒须专业深化。",
+        "沿用1200×700mm四人桌和既有椅位；退椅300mm只是一种校核情景，进出时收椅，不能当作多人或无障碍通行认证。",
+        "台面仅放杯盘、保温壶等小件，不默认400mm深可装咖啡机、净饮机或蒸烤箱；须核对插头、散热、蒸汽、开盖高度和电气回路。"
       ],
       "title": "一条有节奏的归家路径"
     },
@@ -968,7 +970,7 @@
     "真实网格由厘米平面数据转换为米；渲染与交互使用同一 Blender 场景。",
     "整体与房间鸟瞰采用可拆墙展示；室内机位使用完整墙体与实际开口。",
     "C 级门窗、层高与统一墙厚仍为待现场复尺的建模假设。",
-    "鞋柜与餐边杯盘柜独立分腔；抽屉以闭合状态展示，250 mm 伸出限位、进出通道及桌椅退让均属条件校核。柜体锚固、灯带/插座、门套电箱与实际净深必须现场深化。",
+    "入户右侧浅鞋柜与左侧7字杯盘柜独立分腔；仅餐柜北两模块设闭合浅抽屉，250 mm 伸出限位、进出通道及桌椅退让均属条件校核，其余下柜为满高移门。封闭转角不计可用容量。柜体锚固、灯带/插座、门套把手限位、电箱与实际净深必须现场深化。",
     "三处飘窗的 600 mm 外挑和实心侧返边均为待复尺暂定表达，不增加房间净面积。主卧以未实测的 900 mm 原台为条件，做约 930 mm 完成面（模型 931 mm）的一体连续高台，仅配一把完成座高 640 mm、脚踏高 250 mm 的椅；不是 750 mm 普通书桌，原台不挖腿洞。室内内挑及支撑承载需厂家和结构核验。客厅原台仍暂按 900 mm；次卧茶座的 430 mm 低台仅在结构、承载与防坠条件通过时成立，不表示可以降低原结构。细金属框和无绳卷帘为拟更换设计，外立面许可与窗扇活动范围未核验。",
     "本方案仅更换表面材质、织物、柜门配色及原灯罩包络内的形态；墙体、门窗、床位、全部家具占地和条件说明继承基准模型。"
   ],
@@ -1086,35 +1088,35 @@
       "storageFitoutId": "entry_shoe_station",
       "fitoutId": "entry_shoe_station",
       "roomId": "living",
-      "title": "玄关 · 回家后的收纳与换鞋",
+      "title": "玄关 · 进门右手的浅鞋柜",
       "render": "assets/schemes/cobalt/entry-storage.jpg",
       "interiorCamera": {
         "position": [
-          4.86,
-          1.62,
-          13.42
+          3.2,
+          1.45,
+          12.75
         ],
         "target": [
-          2.3,
-          1.2,
-          12.57
+          5.11,
+          1.32,
+          13.475
         ],
-        "horizontalFov": 81.2,
-        "fov": 59.49
+        "horizontalFov": 90.0,
+        "fov": 67.38
       },
-      "summary": "蓝调构想：沿用1750×400mm鞋柜、换鞋凳与镜板，以本方案柜面、木色和坐垫形成归家背景；不增加柜深或与杯盘共腔。",
+      "summary": "蓝调构想：进门右侧650×340mm浅鞋柜保持浅柜面与暖木中空，银色细节与全屋呼应；取消旧西侧鞋柜和换鞋凳，先收门再取鞋。",
       "dimensions": [
-        "鞋柜1750×400，高2500mm；下柜移门",
-        "底部200mm常鞋区，中部1000–1500mm置物格",
-        "换鞋凳800×400，完成坐高450mm",
-        "餐桌东移400、北移400mm后，柜前至桌边775mm"
+        "沿墙650×外深340，高2500mm；柜面朝西",
+        "底部200mm常鞋位，中部1000–1500mm置物格",
+        "上柜外深280mm；北端距厨房门洞南端550mm",
+        "柜面距暂定右开90°门片约40mm，取鞋前需收门"
       ],
       "conditions": [
-        "柜体外深400mm不等于内部净深；按实际鞋长及轨道厚度复核，必要时局部斜层板，暂不承诺鞋量。",
-        "凳体采用落地侧板支撑，软垫可拆洗；承载、尖角与墙面固定须厂家深化。",
-        "高柜和镜板不得遮电箱、门铃/对讲、开关及检修口；现场量清入户门合页和门套。",
-        "换鞋位避开暂定扫门区，但多人同时进出及餐椅退让仍需试摆；不是无障碍方案。",
-        "鞋柜独立存鞋，不与餐边杯盘柜共用内腔；图示灯带和插座是设计预留，不代表已确认电路。"
+        "650mm是本模型能留出门把手端部余量的紧凑方案，不照抄参考图鞋柜长度；门套、把手、电箱、对讲及闭门器实测后再定柜。",
+        "340mm外深要扣门轨与背板；不保证平放所有尺码，应按鞋长调整层板/斜放，图示不承诺鞋双数。",
+        "入户右合页90°时门片会挡住柜前，必须先收门再使用；超过90°向柜侧打开还可能碰撞，不能凭图认为门吸限位已完成。",
+        "模型示意门把手端部留空不代表真实五金扫动已通过；需要现场全开/关门、取鞋和多人进出试摆。",
+        "不设固定换鞋凳或镜面屏风，以免挤占门口；鞋柜与左边杯盘柜独立，灯带与插座仅预留。"
       ],
       "references": [
         "entry-qiwu-50",
@@ -1128,35 +1130,37 @@
       "storageFitoutId": "dining_sideboard_wall",
       "fitoutId": "dining_sideboard_wall",
       "roomId": "living",
-      "title": "餐边 · 杯盘收纳与干式饮品台",
+      "title": "餐边 · 左手整墙7字收纳",
       "render": "assets/schemes/cobalt/sideboard.jpg",
       "interiorCamera": {
         "position": [
           4.88,
-          1.62,
-          10.72
+          1.6,
+          12.08
         ],
         "target": [
-          2.31,
-          1.26,
-          10.3
+          2.68,
+          1.28,
+          12.99
         ],
-        "horizontalFov": 81.2,
-        "fov": 59.49
+        "horizontalFov": 83.97,
+        "fov": 61.93
       },
-      "summary": "蓝调构想：1400×400mm餐边柜保留浅上柜与干式备饮留空，仅更新柜门、木色、五金和石感台面；不增水槽或擅改电器适配。",
+      "summary": "蓝调构想：左侧7字餐柜以暖木和奶白为底，钴蓝只落在选定上柜面。西5290mm、南1625mm整臂含盲角，模型内真实转折，不改变餐桌与窗边学习位。",
       "dimensions": [
-        "底柜1400×400，台面高850mm",
-        "上柜深280，离地1500至2500mm",
-        "中部净留650mm；小抽屉伸出最多250mm",
-        "餐桌东侧至厨房墙800mm；沿用1200×700四人桌"
+        "西臂总长5290mm；南臂总长1625mm（两者均含400mm盲角）",
+        "底柜外深400、台面高850mm；上柜深280、高1500–2500mm",
+        "西直柜4890mm分1200/1200/1200/1290四模块，南可开柜段1225mm",
+        "中空高650mm；抽屉仅北两模块，最多伸出250mm",
+        "餐桌西侧775、东侧800mm；南椅退300mm后至短臂仍约815mm"
       ],
       "conditions": [
-        "以杯盘、餐具、茶罐和干式备饮为主，没有新增水槽或擅改给排水。",
-        "400mm台面不能默认容纳咖啡机/净饮机；须扣后部插头、散热、开盖空间并按实物选型，热蒸汽不能直冲上柜。",
-        "下柜推拉门不向过道扫开；上柜门和抽屉动态、身高可达性仍待样板试用。",
-        "餐椅最多30cm后退是本轮校核情景；出入时推回近门椅，不能把80cm静态边距当成所有使用状态的通道。",
-        "上柜固定、灯带散热、插座回路、防潮易洁台面及柜腔通风须厂家/电气专业深化。"
+        "400×400mm下盲角和退进上盲角封闭不用，不画假门、假抽屉或重复计算容量；转角台面及中空连通，实际拼缝/固定需深化。",
+        "西柜北端离现模型窗返边仅约30mm，不可凭概念净距下单；先量窗套、帘盒、电箱、踢脚线与墙面垂直度。",
+        "桌旁和南短臂下柜均为移门，没有向过道拉出的抽屉；北段250mm抽屉加取物站位期间，柜前不同时作绕行通道。",
+        "南上柜延续7字造型，会增加入口围合感；闭门及开启时的头部活动、可达性、转角门扇与高柜防倾倒须专业深化。",
+        "沿用1200×700mm四人桌和既有椅位；退椅300mm只是一种校核情景，进出时收椅，不能当作多人或无障碍通行认证。",
+        "台面仅放杯盘、保温壶等小件，不默认400mm深可装咖啡机、净饮机或蒸烤箱；须核对插头、散热、蒸汽、开盖高度和电气回路。"
       ],
       "references": [
         "entry-qiwu-50",
@@ -1165,6 +1169,33 @@
       ]
     }
   ],
+  "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
+  "renderSpec": {
+    "engine": "CYCLES",
+    "device": "CPU",
+    "width": 960,
+    "height": 640,
+    "samples": 8,
+    "denoise": true,
+    "threads": 2,
+    "views": [
+      "overall",
+      "living",
+      "dining",
+      "master",
+      "bedroom-b",
+      "study",
+      "kitchen",
+      "master-bath",
+      "guest-bath",
+      "balcony",
+      "bay-master",
+      "bay-tea",
+      "bay-living",
+      "entry-storage",
+      "sideboard"
+    ]
+  },
   "schemeId": "cobalt",
   "schemeTitle": "蓝调构想",
   "schemeSummary": "木色与奶白继续做基底，以钴蓝收纳、砖红软装和银色金属制造几何节奏。是四套里色彩最大胆的一套，但床、柜和通道仍沿用原尺寸。",
@@ -1191,11 +1222,11 @@
     },
     "seed": 3103,
     "preset": "cobalt",
-    "algorithmVersion": "scheme-pbr-3"
+    "algorithmVersion": "scheme-pbr-4"
   },
-  "appearanceHash": "f0b489859803a8c6b4a0394333f493c143fb2377c2d81c31164a0953c9d0bd31",
-  "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
-  "protectedObjectCount": 1269,
+  "appearanceHash": "5bd3ddb253b9737844b8151eec3b9f273f7dca2fac68eee2d35f35b1e44ffadc",
+  "baseGeometryHash": "240a7e0df520ec12c0368db550a522390b690a33f057415a0da218855933d786",
+  "protectedObjectCount": 1377,
   "allowedGeometryOverrides": [
     {
       "name": "Organic linen pendant",
@@ -1254,36 +1285,9 @@
       ]
     }
   ],
-  "renderSpec": {
-    "engine": "CYCLES",
-    "device": "CPU",
-    "width": 960,
-    "height": 640,
-    "samples": 8,
-    "denoise": true,
-    "threads": 2,
-    "views": [
-      "overall",
-      "living",
-      "dining",
-      "master",
-      "bedroom-b",
-      "study",
-      "kitchen",
-      "master-bath",
-      "guest-bath",
-      "balcony",
-      "bay-master",
-      "bay-tea",
-      "bay-living",
-      "entry-storage",
-      "sideboard"
-    ]
-  },
-  "baseBlendSha256": "f419e7de14b9a25dd1c28ad7cbfe6e9b6d4577d0a577ed8bc79d6a1dbabe8f3d",
   "overallTitle": "用几何色块，重写日常",
   "overallDescription": "保留暖木基底，在原有家具表面加入蓝、红、银的有界面组合。不是扩容的新户型，也不是整图滤镜。",
-  "materialAssignmentCount": 1089,
+  "materialAssignmentCount": 1205,
   "materialAudit": {
     "Oak floorboard/0": {
       "from": "Oak",
@@ -4265,82 +4269,6 @@
       "from": "Terracotta",
       "to": "cobalt / bedding / art"
     },
-    "窗边矮柜 oak case/0": {
-      "from": "Oak",
-      "to": "cobalt / wood / wood"
-    },
-    "Reeded cabinet door.005/0": {
-      "from": "Oak",
-      "to": "cobalt / cabinet"
-    },
-    "Reeded cabinet door.006/0": {
-      "from": "Oak",
-      "to": "cobalt / cabinet"
-    },
-    "Cabinet foot.004/0": {
-      "from": "Oak",
-      "to": "cobalt / wood / wood"
-    },
-    "Cabinet foot.005/0": {
-      "from": "Oak",
-      "to": "cobalt / wood / wood"
-    },
-    "Cabinet foot.006/0": {
-      "from": "Oak",
-      "to": "cobalt / wood / wood"
-    },
-    "Cabinet foot.007/0": {
-      "from": "Oak",
-      "to": "cobalt / wood / wood"
-    },
-    "Ceramic bud vase.001/0": {
-      "from": "Cream",
-      "to": "cobalt / bedding.001"
-    },
-    "Vase neck.001/0": {
-      "from": "Cream",
-      "to": "cobalt / bedding.001"
-    },
-    "Dried branch.003/0": {
-      "from": "Walnut",
-      "to": "cobalt / wood / wood"
-    },
-    "Dried branch.004/0": {
-      "from": "Walnut",
-      "to": "cobalt / wood / wood"
-    },
-    "Dried branch.005/0": {
-      "from": "Walnut",
-      "to": "cobalt / wood / wood"
-    },
-    "Clay planter/0": {
-      "from": "Terracotta",
-      "to": "cobalt / artAccent"
-    },
-    "Soil/0": {
-      "from": "Walnut",
-      "to": "cobalt / wood / wood"
-    },
-    "Plant stem/0": {
-      "from": "Walnut",
-      "to": "cobalt / wood / wood"
-    },
-    "Plant stem.001/0": {
-      "from": "Walnut",
-      "to": "cobalt / wood / wood"
-    },
-    "Plant stem.002/0": {
-      "from": "Walnut",
-      "to": "cobalt / wood / wood"
-    },
-    "Plant stem.003/0": {
-      "from": "Walnut",
-      "to": "cobalt / wood / wood"
-    },
-    "Plant stem.004/0": {
-      "from": "Walnut",
-      "to": "cobalt / wood / wood"
-    },
     "Soft corner solid-oak dining top/0": {
       "from": "Oak",
       "to": "cobalt / wood / wood"
@@ -4361,23 +4289,23 @@
       "from": "Oak",
       "to": "cobalt / wood / wood"
     },
-    "Ceramic bud vase.002/0": {
+    "Ceramic bud vase.001/0": {
       "from": "Cream",
       "to": "cobalt / bedding.001"
     },
-    "Vase neck.002/0": {
+    "Vase neck.001/0": {
       "from": "Cream",
       "to": "cobalt / bedding.001"
     },
-    "Dried branch.006/0": {
+    "Dried branch.003/0": {
       "from": "Walnut",
       "to": "cobalt / wood / wood"
     },
-    "Dried branch.007/0": {
+    "Dried branch.004/0": {
       "from": "Walnut",
       "to": "cobalt / wood / wood"
     },
-    "Dried branch.008/0": {
+    "Dried branch.005/0": {
       "from": "Walnut",
       "to": "cobalt / wood / wood"
     },
@@ -4605,23 +4533,23 @@
       "from": "Oak",
       "to": "cobalt / wood / wood"
     },
-    "Ceramic bud vase.003/0": {
+    "Ceramic bud vase.002/0": {
       "from": "Cream",
       "to": "cobalt / bedding.001"
     },
-    "Vase neck.003/0": {
+    "Vase neck.002/0": {
       "from": "Cream",
       "to": "cobalt / bedding.001"
     },
-    "Dried branch.009/0": {
+    "Dried branch.006/0": {
       "from": "Walnut",
       "to": "cobalt / wood / wood"
     },
-    "Dried branch.010/0": {
+    "Dried branch.007/0": {
       "from": "Walnut",
       "to": "cobalt / wood / wood"
     },
-    "Dried branch.011/0": {
+    "Dried branch.008/0": {
       "from": "Walnut",
       "to": "cobalt / wood / wood"
     },
@@ -4693,27 +4621,27 @@
       "from": "Oak",
       "to": "cobalt / wood / wood"
     },
-    "Reeded cabinet door.007/0": {
+    "Reeded cabinet door.005/0": {
       "from": "Oak",
       "to": "cobalt / cabinet"
     },
-    "Reeded cabinet door.008/0": {
+    "Reeded cabinet door.006/0": {
       "from": "Oak",
       "to": "cobalt / cabinet"
     },
-    "Cabinet foot.008/0": {
+    "Cabinet foot.004/0": {
       "from": "Oak",
       "to": "cobalt / wood / wood"
     },
-    "Cabinet foot.009/0": {
+    "Cabinet foot.005/0": {
       "from": "Oak",
       "to": "cobalt / wood / wood"
     },
-    "Cabinet foot.010/0": {
+    "Cabinet foot.006/0": {
       "from": "Oak",
       "to": "cobalt / wood / wood"
     },
-    "Cabinet foot.011/0": {
+    "Cabinet foot.007/0": {
       "from": "Oak",
       "to": "cobalt / wood / wood"
     },
@@ -5129,11 +5057,11 @@
       "from": "OakLight",
       "to": "cobalt / wood / wood"
     },
-    "e_shoe_lower / end support panel/0": {
+    "e_shoe_lower / start support panel/0": {
       "from": "OakLight",
       "to": "cobalt / wood / wood"
     },
-    "e_shoe_lower / end support panel.001/0": {
+    "e_shoe_lower / end support panel/0": {
       "from": "OakLight",
       "to": "cobalt / wood / wood"
     },
@@ -5142,10 +5070,6 @@
       "to": "cobalt / wood / wood"
     },
     "e_shoe_lower / floor-standing base divider/0": {
-      "from": "OakLight",
-      "to": "cobalt / wood / wood"
-    },
-    "e_shoe_lower / floor-standing base divider.001/0": {
       "from": "OakLight",
       "to": "cobalt / wood / wood"
     },
@@ -5197,14 +5121,6 @@
       "from": "WarmGrayMetal",
       "to": "cobalt / metal"
     },
-    "e_shoe_lower / cream sliding door.002/0": {
-      "from": "Cream",
-      "to": "cobalt / cabinet"
-    },
-    "e_shoe_lower / inset finger pull.002/0": {
-      "from": "WarmGrayMetal",
-      "to": "cobalt / metal"
-    },
     "e_shoe_lower / visible shoe sole/0": {
       "from": "Cream",
       "to": "cobalt / bedding.001"
@@ -5221,11 +5137,11 @@
       "from": "Linen",
       "to": "cobalt / headboard / fabric.001"
     },
-    "e_key_niche / end support panel/0": {
+    "e_key_niche / start support panel/0": {
       "from": "OakLight",
       "to": "cobalt / wood / wood"
     },
-    "e_key_niche / end support panel.001/0": {
+    "e_key_niche / end support panel/0": {
       "from": "OakLight",
       "to": "cobalt / wood / wood"
     },
@@ -5253,11 +5169,11 @@
       "from": "WarmGrayMetal",
       "to": "cobalt / metal"
     },
-    "e_shoe_upper / end support panel/0": {
+    "e_shoe_upper / start support panel/0": {
       "from": "OakLight",
       "to": "cobalt / wood / wood"
     },
-    "e_shoe_upper / end support panel.001/0": {
+    "e_shoe_upper / end support panel/0": {
       "from": "OakLight",
       "to": "cobalt / wood / wood"
     },
@@ -5297,14 +5213,6 @@
       "from": "WarmGrayMetal",
       "to": "cobalt / metal"
     },
-    "e_shoe_upper / cream upper door.002/0": {
-      "from": "Cream",
-      "to": "cobalt / cabinet"
-    },
-    "e_shoe_upper / subtle upper finger edge.002/0": {
-      "from": "WarmGrayMetal",
-      "to": "cobalt / metal"
-    },
     "e_key_accessories / oak key tray/0": {
       "from": "OakLight",
       "to": "cobalt / wood / wood"
@@ -5333,63 +5241,163 @@
       "from": "Walnut",
       "to": "cobalt / wood / wood"
     },
-    "e_bench / end support panel/0": {
+    "d1_base / recessed toe kick/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d1_base / start support panel/0": {
       "from": "OakLight",
       "to": "cobalt / wood / wood"
     },
-    "e_bench / end support panel.001/0": {
+    "d1_base / end support panel/0": {
       "from": "OakLight",
       "to": "cobalt / wood / wood"
     },
-    "e_bench / thin back panel/0": {
+    "d1_base / thin back panel/0": {
       "from": "OakLight",
       "to": "cobalt / wood / wood"
     },
-    "e_bench / bench oak seat substrate/0": {
+    "d1_base / base compartment floor/0": {
       "from": "OakLight",
       "to": "cobalt / wood / wood"
     },
-    "e_bench / removable soft seat/0": {
-      "from": "Linen",
-      "to": "cobalt / headboard / fabric.002"
+    "d1_base / warm stone worktop/0": {
+      "from": "Stone",
+      "to": "cobalt / stone / stone.001"
     },
-    "e_bench / visible shoe sole/0": {
+    "d1_base / drawer compartment shelf/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d1_base / sliding track/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d1_base / sliding track.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d1_base / sliding track.002/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d1_base / sliding track.003/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d1_base / cream sliding door/0": {
+      "from": "Cream",
+      "to": "cobalt / cabinet"
+    },
+    "d1_base / inset finger pull/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d1_base / cream sliding door.001/0": {
+      "from": "Cream",
+      "to": "cobalt / cabinet"
+    },
+    "d1_base / inset finger pull.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d1_base / closed shallow drawer front/0": {
+      "from": "Cream",
+      "to": "cobalt / cabinet"
+    },
+    "d1_base / closed drawer floor/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d1_base / recessed drawer pull/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d1_base / closed shallow drawer front.001/0": {
+      "from": "Cream",
+      "to": "cobalt / cabinet"
+    },
+    "d1_base / closed drawer floor.001/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d1_base / recessed drawer pull.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d1_niche / start support panel/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d1_niche / thin back panel/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d1_niche / niche top lining/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d1_niche / warm recessed LED channel/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d1_niche / reserved socket plate/0": {
       "from": "Cream",
       "to": "cobalt / bedding.001"
     },
-    "e_bench / soft shoe upper/0": {
-      "from": "Linen",
-      "to": "cobalt / headboard / fabric.001"
+    "d1_niche / socket indication/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
     },
-    "e_bench / visible shoe sole.001/0": {
+    "d1_niche / socket indication.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d1_upper / start support panel/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d1_upper / end support panel/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d1_upper / thin back panel/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d1_upper / upper cabinet bottom/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d1_upper / upper cabinet top/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d1_upper / open cup bay partition/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d1_upper / upper interior shelf/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d1_upper / upper interior shelf.001/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d1_upper / cream upper door/0": {
       "from": "Cream",
-      "to": "cobalt / bedding.001"
+      "to": "cobalt / cabinet"
     },
-    "e_bench / soft shoe upper.001/0": {
-      "from": "Linen",
-      "to": "cobalt / headboard / fabric.001"
-    },
-    "e_bench_back / slim timber back/0": {
-      "from": "OakLight",
-      "to": "cobalt / wood / wood"
-    },
-    "e_bench_back / rounded vertical mirror frame/0": {
-      "from": "OakLight",
-      "to": "cobalt / wood / wood"
-    },
-    "e_bench_back / coat hook backplate/0": {
+    "d1_upper / subtle upper finger edge/0": {
       "from": "WarmGrayMetal",
       "to": "cobalt / metal"
     },
-    "e_bench_back / short projecting coat hook/0": {
-      "from": "WarmGrayMetal",
-      "to": "cobalt / metal"
+    "d1_upper / cream upper door.001/0": {
+      "from": "Cream",
+      "to": "cobalt / cabinet"
     },
-    "e_bench_back / coat hook backplate.001/0": {
-      "from": "WarmGrayMetal",
-      "to": "cobalt / metal"
-    },
-    "e_bench_back / short projecting coat hook.001/0": {
+    "d1_upper / subtle upper finger edge.001/0": {
       "from": "WarmGrayMetal",
       "to": "cobalt / metal"
     },
@@ -5397,11 +5405,11 @@
       "from": "WarmGrayMetal",
       "to": "cobalt / metal"
     },
-    "d_base / end support panel/0": {
+    "d_base / start support panel/0": {
       "from": "OakLight",
       "to": "cobalt / wood / wood"
     },
-    "d_base / end support panel.001/0": {
+    "d_base / end support panel/0": {
       "from": "OakLight",
       "to": "cobalt / wood / wood"
     },
@@ -5477,14 +5485,6 @@
       "from": "WarmGrayMetal",
       "to": "cobalt / metal"
     },
-    "d_niche / end support panel/0": {
-      "from": "OakLight",
-      "to": "cobalt / wood / wood"
-    },
-    "d_niche / end support panel.001/0": {
-      "from": "OakLight",
-      "to": "cobalt / wood / wood"
-    },
     "d_niche / thin back panel/0": {
       "from": "OakLight",
       "to": "cobalt / wood / wood"
@@ -5509,11 +5509,11 @@
       "from": "WarmGrayMetal",
       "to": "cobalt / metal"
     },
-    "d_upper / end support panel/0": {
+    "d_upper / start support panel/0": {
       "from": "OakLight",
       "to": "cobalt / wood / wood"
     },
-    "d_upper / end support panel.001/0": {
+    "d_upper / end support panel/0": {
       "from": "OakLight",
       "to": "cobalt / wood / wood"
     },
@@ -5526,10 +5526,6 @@
       "to": "cobalt / wood / wood"
     },
     "d_upper / upper cabinet top/0": {
-      "from": "OakLight",
-      "to": "cobalt / wood / wood"
-    },
-    "d_upper / open cup bay partition/0": {
       "from": "OakLight",
       "to": "cobalt / wood / wood"
     },
@@ -5554,6 +5550,254 @@
       "to": "cobalt / cabinetAccent.001"
     },
     "d_upper / subtle upper finger edge.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d3_base / recessed toe kick/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d3_base / start support panel/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d3_base / end support panel/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d3_base / thin back panel/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d3_base / base compartment floor/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d3_base / warm stone worktop/0": {
+      "from": "Stone",
+      "to": "cobalt / stone / stone.001"
+    },
+    "d3_base / full-height cupboard interior shelf/0": {
+      "from": "OakLight",
+      "to": "cobalt / cabinet"
+    },
+    "d3_base / sliding track/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d3_base / sliding track.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d3_base / sliding track.002/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d3_base / sliding track.003/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d3_base / cream sliding door/0": {
+      "from": "Cream",
+      "to": "cobalt / cabinet"
+    },
+    "d3_base / inset finger pull/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d3_base / cream sliding door.001/0": {
+      "from": "Cream",
+      "to": "cobalt / cabinet"
+    },
+    "d3_base / inset finger pull.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d3_niche / thin back panel/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d3_niche / niche top lining/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d3_niche / warm recessed LED channel/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d3_niche / reserved socket plate/0": {
+      "from": "Cream",
+      "to": "cobalt / bedding.001"
+    },
+    "d3_niche / socket indication/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d3_niche / socket indication.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d3_upper / start support panel/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d3_upper / end support panel/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d3_upper / thin back panel/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d3_upper / upper cabinet bottom/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d3_upper / upper cabinet top/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d3_upper / upper interior shelf/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d3_upper / upper interior shelf.001/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d3_upper / cream upper door/0": {
+      "from": "Cream",
+      "to": "cobalt / cabinet"
+    },
+    "d3_upper / subtle upper finger edge/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d3_upper / cream upper door.001/0": {
+      "from": "Cream",
+      "to": "cobalt / cabinet"
+    },
+    "d3_upper / subtle upper finger edge.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d4_base / recessed toe kick/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d4_base / start support panel/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d4_base / thin back panel/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d4_base / base compartment floor/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d4_base / warm stone worktop/0": {
+      "from": "Stone",
+      "to": "cobalt / stone / stone.001"
+    },
+    "d4_base / full-height cupboard interior shelf/0": {
+      "from": "OakLight",
+      "to": "cobalt / cabinet"
+    },
+    "d4_base / sliding track/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d4_base / sliding track.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d4_base / sliding track.002/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d4_base / sliding track.003/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d4_base / cream sliding door/0": {
+      "from": "Cream",
+      "to": "cobalt / cabinet"
+    },
+    "d4_base / inset finger pull/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d4_base / cream sliding door.001/0": {
+      "from": "Cream",
+      "to": "cobalt / cabinet"
+    },
+    "d4_base / inset finger pull.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d4_niche / thin back panel/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d4_niche / niche top lining/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d4_niche / warm recessed LED channel/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d4_niche / reserved socket plate/0": {
+      "from": "Cream",
+      "to": "cobalt / bedding.001"
+    },
+    "d4_niche / socket indication/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d4_niche / socket indication.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d4_upper / start support panel/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d4_upper / thin back panel/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d4_upper / upper cabinet bottom/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d4_upper / upper cabinet top/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d4_upper / upper interior shelf/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d4_upper / upper interior shelf.001/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d4_upper / cream upper door/0": {
+      "from": "Cream",
+      "to": "cobalt / cabinet"
+    },
+    "d4_upper / subtle upper finger edge/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d4_upper / cream upper door.001/0": {
+      "from": "Cream",
+      "to": "cobalt / cabinet"
+    },
+    "d4_upper / subtle upper finger edge.001/0": {
       "from": "WarmGrayMetal",
       "to": "cobalt / metal"
     },
@@ -5582,6 +5826,230 @@
       "to": "cobalt / cabinetAccent.002"
     },
     "d_accessories / tea tin lid/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d_return_base / recessed toe kick/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d_return_base / end support panel/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d_return_base / thin back panel/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d_return_base / base compartment floor/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d_return_base / warm stone worktop/0": {
+      "from": "Stone",
+      "to": "cobalt / stone / stone.001"
+    },
+    "d_return_base / full-height cupboard interior shelf/0": {
+      "from": "OakLight",
+      "to": "cobalt / cabinet"
+    },
+    "d_return_base / sliding track/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d_return_base / sliding track.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d_return_base / sliding track.002/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d_return_base / sliding track.003/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d_return_base / cream sliding door/0": {
+      "from": "Cream",
+      "to": "cobalt / cabinet"
+    },
+    "d_return_base / inset finger pull/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d_return_base / cream sliding door.001/0": {
+      "from": "Cream",
+      "to": "cobalt / cabinet"
+    },
+    "d_return_base / inset finger pull.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d_return_niche / end support panel/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d_return_niche / thin back panel/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d_return_niche / niche top lining/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d_return_niche / warm recessed LED channel/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d_return_niche / reserved socket plate/0": {
+      "from": "Cream",
+      "to": "cobalt / bedding.001"
+    },
+    "d_return_niche / socket indication/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d_return_niche / socket indication.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d_return_upper / end support panel/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d_return_upper / thin back panel/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d_return_upper / upper cabinet bottom/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d_return_upper / upper cabinet top/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d_return_upper / upper interior shelf/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d_return_upper / upper interior shelf.001/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d_return_upper / cream upper door/0": {
+      "from": "Cream",
+      "to": "cobalt / cabinetAccent.001"
+    },
+    "d_return_upper / subtle upper finger edge/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d_return_upper / cream upper door.001/0": {
+      "from": "Cream",
+      "to": "cobalt / cabinetAccent.001"
+    },
+    "d_return_upper / subtle upper finger edge.001/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d_return_accessories / insulated drinks flask/0": {
+      "from": "Cream",
+      "to": "cobalt / bedding.001"
+    },
+    "d_return_accessories / flask lid/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d_return_accessories / flask handle/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d_return_accessories / flask handle upper/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d_return_accessories / flask handle lower/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d_return_accessories / tea storage tin/0": {
+      "from": "Sage",
+      "to": "cobalt / cabinetAccent.002"
+    },
+    "d_return_accessories / tea tin lid/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d_corner_base / blind corner recessed plinth/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d_corner_base / blind corner west partition/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d_corner_base / blind corner east partition/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d_corner_base / blind corner north partition/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d_corner_base / blind corner south partition/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d_corner_base / blind corner bottom/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d_corner_base / blind corner finished top/0": {
+      "from": "Stone",
+      "to": "cobalt / stone / stone.001"
+    },
+    "d_corner_niche / corner west back lining/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d_corner_niche / corner south back lining/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d_corner_niche / corner niche top lining/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d_corner_niche / corner LED channel north-south/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d_corner_niche / corner LED channel west-east/0": {
+      "from": "WarmGrayMetal",
+      "to": "cobalt / metal"
+    },
+    "d_corner_upper / blind corner west partition/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d_corner_upper / blind corner east partition/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d_corner_upper / blind corner north partition/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d_corner_upper / blind corner south partition/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d_corner_upper / blind corner bottom/0": {
+      "from": "OakLight",
+      "to": "cobalt / wood / wood"
+    },
+    "d_corner_upper / blind corner finished top/0": {
       "from": "OakLight",
       "to": "cobalt / wood / wood"
     },
@@ -5642,156 +6110,712 @@
       "to": "cobalt / wall"
     }
   },
+  "schemeBlendSha256": "5ac8ecf0fb9220ea6443a9d2c4b87e4db8cee4b6550b379fbc4ef00cbdce48f5",
   "renderedViews": {
-    "kitchen": {
-      "appearanceHash": "f0b489859803a8c6b4a0394333f493c143fb2377c2d81c31164a0953c9d0bd31",
-      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
-      "renderSpec": {
-        "width": 960,
-        "height": 640,
-        "samples": 8
-      },
-      "seconds": 52.5
-    },
-    "master-bath": {
-      "appearanceHash": "f0b489859803a8c6b4a0394333f493c143fb2377c2d81c31164a0953c9d0bd31",
-      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
-      "renderSpec": {
-        "width": 960,
-        "height": 640,
-        "samples": 8
-      },
-      "seconds": 62.14
-    },
     "overall": {
-      "appearanceHash": "f0b489859803a8c6b4a0394333f493c143fb2377c2d81c31164a0953c9d0bd31",
-      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+      "appearanceHash": "5bd3ddb253b9737844b8151eec3b9f273f7dca2fac68eee2d35f35b1e44ffadc",
+      "baseGeometryHash": "240a7e0df520ec12c0368db550a522390b690a33f057415a0da218855933d786",
+      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
+      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
+      "schemeBlendSha256": "5ac8ecf0fb9220ea6443a9d2c4b87e4db8cee4b6550b379fbc4ef00cbdce48f5",
+      "cameraState": {
+        "matrix": [
+          [
+            0.7887659668922424,
+            -0.4064065217971802,
+            0.46117451786994934,
+            15.5
+          ],
+          [
+            0.6146935820579529,
+            0.52149498462677,
+            -0.5917725563049316,
+            -21.5
+          ],
+          [
+            3.0256597227662496e-08,
+            0.7502511143684387,
+            0.6611530184745789,
+            16.5
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 48.0,
+        "sensorWidth": 36.0,
+        "type": "ORTHO",
+        "orthoScale": 22.0
+      },
+      "cameraHash": "ab339362c6853999998686872a82b18c9e21e0ff439d8d8edf2389dc20207b8e",
+      "imageSha256": "ba4ad0bc7fd91d2838b4224fe72ffb64052f51ae7558a1196e0ff59c105ecea5",
       "renderSpec": {
         "width": 960,
         "height": 640,
         "samples": 8
       },
-      "seconds": 27.42
+      "seconds": 26.95
     },
     "living": {
-      "appearanceHash": "f0b489859803a8c6b4a0394333f493c143fb2377c2d81c31164a0953c9d0bd31",
-      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+      "appearanceHash": "5bd3ddb253b9737844b8151eec3b9f273f7dca2fac68eee2d35f35b1e44ffadc",
+      "baseGeometryHash": "240a7e0df520ec12c0368db550a522390b690a33f057415a0da218855933d786",
+      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
+      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
+      "schemeBlendSha256": "5ac8ecf0fb9220ea6443a9d2c4b87e4db8cee4b6550b379fbc4ef00cbdce48f5",
+      "cameraState": {
+        "matrix": [
+          [
+            0.8558418154716492,
+            -0.07504504173994064,
+            0.511764645576477,
+            6.320000171661377
+          ],
+          [
+            0.517237663269043,
+            0.12417237460613251,
+            -0.8467859625816345,
+            -10.8100004196167
+          ],
+          [
+            5.734309027616291e-08,
+            0.9894187450408936,
+            0.14508803188800812,
+            1.600000023841858
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 23.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "6684a8e03131e6a4f9aa0eb10d2261185b343c893a8fb3bff5e69d4583c15e3c",
+      "imageSha256": "8b3d2ae83155921d3eda672b7d44ab219b8c330a36684b271c3c0f5b3ff3e12c",
       "renderSpec": {
         "width": 960,
         "height": 640,
         "samples": 8
       },
-      "seconds": 52.6
+      "seconds": 52.13
     },
     "dining": {
-      "appearanceHash": "f0b489859803a8c6b4a0394333f493c143fb2377c2d81c31164a0953c9d0bd31",
-      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+      "appearanceHash": "5bd3ddb253b9737844b8151eec3b9f273f7dca2fac68eee2d35f35b1e44ffadc",
+      "baseGeometryHash": "240a7e0df520ec12c0368db550a522390b690a33f057415a0da218855933d786",
+      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
+      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
+      "schemeBlendSha256": "5ac8ecf0fb9220ea6443a9d2c4b87e4db8cee4b6550b379fbc4ef00cbdce48f5",
+      "cameraState": {
+        "matrix": [
+          [
+            0.7552186846733093,
+            -0.13043460249900818,
+            0.6423640251159668,
+            4.869999885559082
+          ],
+          [
+            0.6554729342460632,
+            0.15028324723243713,
+            -0.7401149868965149,
+            -13.619999885559082
+          ],
+          [
+            5.4287919937223705e-08,
+            0.980000913143158,
+            0.19899307191371918,
+            1.6200000047683716
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 23.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "273aec53736590e50bc3ef06c2b14edf0c6d94f2e33fd719a2f4413c61036acd",
+      "imageSha256": "1ea3b9bef3c55e05321c23187c65bec66e9dbe9fd8969c726f8baddca1734ab2",
       "renderSpec": {
         "width": 960,
         "height": 640,
         "samples": 8
       },
-      "seconds": 54.42
+      "seconds": 54.78
     },
     "master": {
-      "appearanceHash": "f0b489859803a8c6b4a0394333f493c143fb2377c2d81c31164a0953c9d0bd31",
-      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+      "appearanceHash": "5bd3ddb253b9737844b8151eec3b9f273f7dca2fac68eee2d35f35b1e44ffadc",
+      "baseGeometryHash": "240a7e0df520ec12c0368db550a522390b690a33f057415a0da218855933d786",
+      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
+      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
+      "schemeBlendSha256": "5ac8ecf0fb9220ea6443a9d2c4b87e4db8cee4b6550b379fbc4ef00cbdce48f5",
+      "cameraState": {
+        "matrix": [
+          [
+            0.9953147768974304,
+            -0.030289478600025177,
+            0.09182088822126389,
+            5.5
+          ],
+          [
+            0.09668778628110886,
+            0.3118032217025757,
+            -0.9452143907546997,
+            -3.0199999809265137
+          ],
+          [
+            3.6502059153065147e-09,
+            0.9496637582778931,
+            0.3132709562778473,
+            1.5800000429153442
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 18.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "8d8ad846c7ed6d4e6af95d10550b6ce813695eb21f1b994204b8fbe076ae71f0",
+      "imageSha256": "1947fd3c09c9b4ff5324c4ff6cd7d392265efaaa89b90efe5ca88800dec8321e",
       "renderSpec": {
         "width": 960,
         "height": 640,
         "samples": 8
       },
-      "seconds": 50.24
+      "seconds": 50.25
     },
     "bedroom-b": {
-      "appearanceHash": "f0b489859803a8c6b4a0394333f493c143fb2377c2d81c31164a0953c9d0bd31",
-      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+      "appearanceHash": "5bd3ddb253b9737844b8151eec3b9f273f7dca2fac68eee2d35f35b1e44ffadc",
+      "baseGeometryHash": "240a7e0df520ec12c0368db550a522390b690a33f057415a0da218855933d786",
+      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
+      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
+      "schemeBlendSha256": "5ac8ecf0fb9220ea6443a9d2c4b87e4db8cee4b6550b379fbc4ef00cbdce48f5",
+      "cameraState": {
+        "matrix": [
+          [
+            0.6994629502296448,
+            -0.21739377081394196,
+            0.6808021068572998,
+            2.9600000381469727
+          ],
+          [
+            0.714668869972229,
+            0.2127683311700821,
+            -0.66631680727005,
+            -2.5799999237060547
+          ],
+          [
+            -1.2823196726685637e-08,
+            0.9526119828224182,
+            0.3041881024837494,
+            1.600000023841858
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 20.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "b839b4e82231249dfb424103d1b509b0d4ec953314445bfccee3d2d0c19a68a3",
+      "imageSha256": "dd710266c1ce29c8fbbbc16ccb98f5510b866bcd13b452785b22bfdcdfcb4e15",
       "renderSpec": {
         "width": 960,
         "height": 640,
         "samples": 8
       },
-      "seconds": 51.0
+      "seconds": 49.51
     },
     "study": {
-      "appearanceHash": "f0b489859803a8c6b4a0394333f493c143fb2377c2d81c31164a0953c9d0bd31",
-      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+      "appearanceHash": "5bd3ddb253b9737844b8151eec3b9f273f7dca2fac68eee2d35f35b1e44ffadc",
+      "baseGeometryHash": "240a7e0df520ec12c0368db550a522390b690a33f057415a0da218855933d786",
+      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
+      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
+      "schemeBlendSha256": "5ac8ecf0fb9220ea6443a9d2c4b87e4db8cee4b6550b379fbc4ef00cbdce48f5",
+      "cameraState": {
+        "matrix": [
+          [
+            -0.357137531042099,
+            -0.2924429476261139,
+            0.8870906829833984,
+            3.0
+          ],
+          [
+            0.9340518116950989,
+            -0.11181651800870895,
+            0.3391817808151245,
+            -4.5
+          ],
+          [
+            7.640077370751897e-08,
+            0.9497232437133789,
+            0.3130907118320465,
+            1.6200000047683716
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 20.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "a07b518ec5777b56caaf6f1c8e617ea48d2cf6f5b336d2a8695cfcd935282a9c",
+      "imageSha256": "3ebbf46ed9f23f3731cfafa7f03d098d03d40c2d74ba7905e196af6f5f5d19c3",
       "renderSpec": {
         "width": 960,
         "height": 640,
         "samples": 8
       },
-      "seconds": 49.48
+      "seconds": 49.28
+    },
+    "kitchen": {
+      "appearanceHash": "5bd3ddb253b9737844b8151eec3b9f273f7dca2fac68eee2d35f35b1e44ffadc",
+      "baseGeometryHash": "240a7e0df520ec12c0368db550a522390b690a33f057415a0da218855933d786",
+      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
+      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
+      "schemeBlendSha256": "5ac8ecf0fb9220ea6443a9d2c4b87e4db8cee4b6550b379fbc4ef00cbdce48f5",
+      "cameraState": {
+        "matrix": [
+          [
+            -0.1873447746038437,
+            0.23198504745960236,
+            -0.9545076489448547,
+            5.730000019073486
+          ],
+          [
+            -0.9822942018508911,
+            -0.04424445703625679,
+            0.18204531073570251,
+            -12.449999809265137
+          ],
+          [
+            1.1684840472980795e-07,
+            0.971712589263916,
+            0.23616653680801392,
+            1.5800000429153442
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 20.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "504bc8f2e0dca15a7dcac35a7c7b56834b98a791c8587485c90513149168b184",
+      "imageSha256": "64cf308d5bdee7af7e9084f90d82ce765f15ffb1451a56063e3ee492c7538a07",
+      "renderSpec": {
+        "width": 960,
+        "height": 640,
+        "samples": 8
+      },
+      "seconds": 55.75
+    },
+    "master-bath": {
+      "appearanceHash": "5bd3ddb253b9737844b8151eec3b9f273f7dca2fac68eee2d35f35b1e44ffadc",
+      "baseGeometryHash": "240a7e0df520ec12c0368db550a522390b690a33f057415a0da218855933d786",
+      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
+      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
+      "schemeBlendSha256": "5ac8ecf0fb9220ea6443a9d2c4b87e4db8cee4b6550b379fbc4ef00cbdce48f5",
+      "cameraState": {
+        "matrix": [
+          [
+            0.3769546151161194,
+            -0.23179687559604645,
+            0.8967582583427429,
+            6.570000171661377
+          ],
+          [
+            0.9262317419052124,
+            0.09433586895465851,
+            -0.36495962738990784,
+            -4.650000095367432
+          ],
+          [
+            2.5351983623522756e-08,
+            0.9681791663169861,
+            0.2502579689025879,
+            1.600000023841858
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 18.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "a5dafe79238f55e21f3c9e377384ce3e602a2a1841132a2fa63b5e5fbeb732cf",
+      "imageSha256": "9e37c789071bf312bdfffb30832cf7e80fbdce07df0eae3296ef353fb621edfb",
+      "renderSpec": {
+        "width": 960,
+        "height": 640,
+        "samples": 8
+      },
+      "seconds": 57.61
     },
     "guest-bath": {
-      "appearanceHash": "f0b489859803a8c6b4a0394333f493c143fb2377c2d81c31164a0953c9d0bd31",
-      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+      "appearanceHash": "5bd3ddb253b9737844b8151eec3b9f273f7dca2fac68eee2d35f35b1e44ffadc",
+      "baseGeometryHash": "240a7e0df520ec12c0368db550a522390b690a33f057415a0da218855933d786",
+      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
+      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
+      "schemeBlendSha256": "5ac8ecf0fb9220ea6443a9d2c4b87e4db8cee4b6550b379fbc4ef00cbdce48f5",
+      "cameraState": {
+        "matrix": [
+          [
+            0.38831594586372375,
+            -0.2752458453178406,
+            0.879460334777832,
+            6.539999961853027
+          ],
+          [
+            0.921526312828064,
+            0.1159839779138565,
+            -0.37059006094932556,
+            -6.03000020980835
+          ],
+          [
+            7.04290172848232e-08,
+            0.9543518424034119,
+            0.2986847162246704,
+            1.600000023841858
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 17.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "04334e9a9633a9cc55f9e80598374da245b84eaf8e5649e13b75c7f8331c1283",
+      "imageSha256": "59edff130412cb73f7af9ef53edc94fbdf5d5036c54266f66eb7718932b0a75f",
       "renderSpec": {
         "width": 960,
         "height": 640,
         "samples": 8
       },
-      "seconds": 58.73
+      "seconds": 61.38
     },
     "balcony": {
-      "appearanceHash": "f0b489859803a8c6b4a0394333f493c143fb2377c2d81c31164a0953c9d0bd31",
-      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+      "appearanceHash": "5bd3ddb253b9737844b8151eec3b9f273f7dca2fac68eee2d35f35b1e44ffadc",
+      "baseGeometryHash": "240a7e0df520ec12c0368db550a522390b690a33f057415a0da218855933d786",
+      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
+      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
+      "schemeBlendSha256": "5ac8ecf0fb9220ea6443a9d2c4b87e4db8cee4b6550b379fbc4ef00cbdce48f5",
+      "cameraState": {
+        "matrix": [
+          [
+            0.16288898885250092,
+            0.12301202118396759,
+            -0.9789459705352783,
+            5.599999904632568
+          ],
+          [
+            -0.9866443872451782,
+            0.020308611914515495,
+            -0.16161800920963287,
+            -10.699999809265137
+          ],
+          [
+            7.55030171717408e-08,
+            0.9921973347663879,
+            0.12467717379331589,
+            1.4500000476837158
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 20.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "7ceaac78a5f015f3f7b19c33277175d86a910c17fb783afa0e5a4030b3db990f",
+      "imageSha256": "76bc0b301c1013c941cbd1d31b3621a9a051ecde8b34a57c33ce63e9a5014022",
       "renderSpec": {
         "width": 960,
         "height": 640,
         "samples": 8
       },
-      "seconds": 66.81
+      "seconds": 67.78
     },
     "bay-master": {
-      "appearanceHash": "f0b489859803a8c6b4a0394333f493c143fb2377c2d81c31164a0953c9d0bd31",
-      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+      "appearanceHash": "5bd3ddb253b9737844b8151eec3b9f273f7dca2fac68eee2d35f35b1e44ffadc",
+      "baseGeometryHash": "240a7e0df520ec12c0368db550a522390b690a33f057415a0da218855933d786",
+      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
+      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
+      "schemeBlendSha256": "5ac8ecf0fb9220ea6443a9d2c4b87e4db8cee4b6550b379fbc4ef00cbdce48f5",
+      "cameraState": {
+        "matrix": [
+          [
+            0.9884549975395203,
+            0.03000291995704174,
+            -0.1485145390033722,
+            4.300000190734863
+          ],
+          [
+            -0.15151484310626984,
+            0.195733442902565,
+            -0.9688816666603088,
+            -2.9800000190734863
+          ],
+          [
+            -1.508635705249617e-08,
+            0.980198085308075,
+            0.1980195790529251,
+            1.600000023841858
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 18.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "7abd47f8951b7efef8b9d45da91e3bfe668a5cff9bdf05b0908d9b6e1b4d1b37",
+      "imageSha256": "74d2e80c2421b3295472701c212e1e062c64167612cd53aa28bbe35b404d9322",
       "renderSpec": {
         "width": 960,
         "height": 640,
         "samples": 8
       },
-      "seconds": 50.18
+      "seconds": 52.9
     },
     "bay-tea": {
-      "appearanceHash": "f0b489859803a8c6b4a0394333f493c143fb2377c2d81c31164a0953c9d0bd31",
-      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+      "appearanceHash": "5bd3ddb253b9737844b8151eec3b9f273f7dca2fac68eee2d35f35b1e44ffadc",
+      "baseGeometryHash": "240a7e0df520ec12c0368db550a522390b690a33f057415a0da218855933d786",
+      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
+      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
+      "schemeBlendSha256": "5ac8ecf0fb9220ea6443a9d2c4b87e4db8cee4b6550b379fbc4ef00cbdce48f5",
+      "cameraState": {
+        "matrix": [
+          [
+            0.7803956270217896,
+            -0.14449310302734375,
+            0.608362078666687,
+            2.819999933242798
+          ],
+          [
+            0.6252861022949219,
+            0.1803361475467682,
+            -0.7592734694480896,
+            -1.5
+          ],
+          [
+            9.408643109054537e-08,
+            0.9729340076446533,
+            0.23108306527137756,
+            1.5199999809265137
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 18.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "3077a73c660451a101411f0a0bd60fcf08342b4983c9ecc06891a16b19edc49c",
+      "imageSha256": "7b0a1df7d5326c70fe620b9b8bd0d4535574d4eef4bf261dac94812a199bc26f",
       "renderSpec": {
         "width": 960,
         "height": 640,
         "samples": 8
       },
-      "seconds": 52.04
+      "seconds": 54.44
     },
     "bay-living": {
-      "appearanceHash": "f0b489859803a8c6b4a0394333f493c143fb2377c2d81c31164a0953c9d0bd31",
-      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+      "appearanceHash": "5bd3ddb253b9737844b8151eec3b9f273f7dca2fac68eee2d35f35b1e44ffadc",
+      "baseGeometryHash": "240a7e0df520ec12c0368db550a522390b690a33f057415a0da218855933d786",
+      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
+      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
+      "schemeBlendSha256": "5ac8ecf0fb9220ea6443a9d2c4b87e4db8cee4b6550b379fbc4ef00cbdce48f5",
+      "cameraState": {
+        "matrix": [
+          [
+            0.6605352163314819,
+            -0.15087266266345978,
+            0.7354798913002014,
+            4.130000114440918
+          ],
+          [
+            0.7507950663566589,
+            0.13273492455482483,
+            -0.6470612287521362,
+            -9.079999923706055
+          ],
+          [
+            -1.946109762229753e-08,
+            0.9796013832092285,
+            0.20095054805278778,
+            1.649999976158142
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 22.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "2a27670782bad5b09701b4218bb7692661f75d47004ad8f63d14af7155acb57f",
+      "imageSha256": "d10e480b5abccbd276c8135a87b4f6003cbf04585bba216354065fa23c445546",
       "renderSpec": {
         "width": 960,
         "height": 640,
         "samples": 8
       },
-      "seconds": 54.0
+      "seconds": 81.97
     },
     "entry-storage": {
-      "appearanceHash": "f0b489859803a8c6b4a0394333f493c143fb2377c2d81c31164a0953c9d0bd31",
-      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+      "appearanceHash": "5bd3ddb253b9737844b8151eec3b9f273f7dca2fac68eee2d35f35b1e44ffadc",
+      "baseGeometryHash": "240a7e0df520ec12c0368db550a522390b690a33f057415a0da218855933d786",
+      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
+      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
+      "schemeBlendSha256": "5ac8ecf0fb9220ea6443a9d2c4b87e4db8cee4b6550b379fbc4ef00cbdce48f5",
+      "cameraState": {
+        "matrix": [
+          [
+            -0.3548758029937744,
+            0.059371087700128555,
+            -0.9330263733863831,
+            3.200000047683716
+          ],
+          [
+            -0.9349134564399719,
+            -0.022536057978868484,
+            0.35415950417518616,
+            -12.75
+          ],
+          [
+            9.7587943059807e-08,
+            0.9979815483093262,
+            0.06350433081388474,
+            1.4500000476837158
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 18.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "b8b4c8b0b8b0005f528aa20fa3ce04fe05d1b1f8caa2a483792cbc5f827bf1b3",
+      "imageSha256": "c8e059f142c7f0239e7c55a5c27cac2f15a5e26a5a73a3e1f1d3df615e3676c3",
       "renderSpec": {
         "width": 960,
         "height": 640,
         "samples": 8
       },
-      "seconds": 59.09
+      "seconds": 66.99
     },
     "sideboard": {
-      "appearanceHash": "f0b489859803a8c6b4a0394333f493c143fb2377c2d81c31164a0953c9d0bd31",
-      "baseGeometryHash": "cce47a52d417c0f6c404d0b8b4e227584c103c4d43acf3be224a94cf7cd169be",
+      "appearanceHash": "5bd3ddb253b9737844b8151eec3b9f273f7dca2fac68eee2d35f35b1e44ffadc",
+      "baseGeometryHash": "240a7e0df520ec12c0368db550a522390b690a33f057415a0da218855933d786",
+      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
+      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
+      "schemeBlendSha256": "5ac8ecf0fb9220ea6443a9d2c4b87e4db8cee4b6550b379fbc4ef00cbdce48f5",
+      "cameraState": {
+        "matrix": [
+          [
+            -0.382228285074234,
+            -0.1230967789888382,
+            0.9158322811126709,
+            4.880000114440918
+          ],
+          [
+            0.9240679144859314,
+            -0.0509173758327961,
+            0.3788217008113861,
+            -12.079999923706055
+          ],
+          [
+            4.490390637101882e-08,
+            0.9910876154899597,
+            0.13321185111999512,
+            1.600000023841858
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 20.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "129dcdb2f3563dc939adba9fdb515e98c934b7aea9a5a7eb4a643e8c04f178ad",
+      "imageSha256": "19ea6bcae53a4e0f98107c39a60249f605f60ec9a501fbb0488748fd6e0032f7",
       "renderSpec": {
         "width": 960,
         "height": 640,
         "samples": 8
       },
-      "seconds": 53.69
+      "seconds": 52.67
     }
   }
 }

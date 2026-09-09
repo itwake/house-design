@@ -31,7 +31,7 @@ async function screenshot(name){
   const visible=`[...document.querySelectorAll('.scheme-card-image img')].filter(i=>{const r=i.getBoundingClientRect();return r.width>0&&r.bottom>0&&r.top<innerHeight})`;
   const ready=await waitFor(`(${visible}).every(i=>i.complete&&i.naturalWidth>0)`,15000);check(`${name}: visible hero images loaded`,ready);
   if(ready)await evaluate(`Promise.all((${visible}).map(i=>i.decode().catch(()=>{})))`);
-  const r=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false}),out=path.resolve(`tmp/v310-${name}.png`);await writeFile(out,Buffer.from(r.data,'base64'));screenshots.push(out);
+  const r=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false}),out=path.resolve(`tmp/v311-${name}.png`);await writeFile(out,Buffer.from(r.data,'base64'));screenshots.push(out);
 }
 const schemeReady=id=>`document.documentElement?.dataset.scheme===${JSON.stringify(id)}&&document.querySelector('#model-loading')?.hidden===true&&document.querySelectorAll('#floor-plan [data-plan-room]').length>0`;
 const inView=selector=>`(()=>{const e=document.querySelector(${JSON.stringify(selector)}),r=e.getBoundingClientRect(),hit=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);return !!e.getClientRects().length&&r.left>=0&&r.right<=innerWidth+1&&r.top>=0&&r.bottom<=innerHeight+1&&(hit===e||e.contains(hit))})()`;

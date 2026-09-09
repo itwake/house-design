@@ -1,6 +1,6 @@
 {
   "name": "荟雅苑 104.83㎡ · 28F",
-  "version": "V3.0.6 Blender 原木风 · 玄关鞋柜与餐边柜专项设计（条件方案）",
+  "version": "V3.1.1 Blender 四风格 · 右鞋柜与左7字餐边整墙（条件方案）",
   "unit": "cm",
   "north": "图上方（临道路侧）",
   "palette": [
@@ -930,24 +930,6 @@
       "tone": "wood"
     },
     {
-      "name": "窗边矮柜",
-      "x": 212.5,
-      "y": 860,
-      "w": 35,
-      "d": 80,
-      "a": 0,
-      "tone": "wood"
-    },
-    {
-      "name": "窗边绿植",
-      "x": 253,
-      "y": 863,
-      "w": 34,
-      "d": 34,
-      "a": 0,
-      "tone": "plant"
-    },
-    {
       "name": "四人餐桌",
       "x": 330,
       "y": 1110,
@@ -1000,46 +982,60 @@
       "name": "玄关柜",
       "id": "entry_storage",
       "storageFitoutId": "entry_shoe_station",
-      "x": 212.5,
-      "y": 1130,
-      "w": 40,
-      "d": 175,
+      "x": 495,
+      "y": 1320,
+      "w": 34,
+      "d": 65,
       "heightCm": 250,
       "a": 0,
       "tone": "wood",
-      "face": "east",
+      "face": "west",
       "doorStyle": "sliding",
-      "notes": "400mm外深、分层鞋柜与中部钥匙格；内部净深需扣除背板及移门轨道。底部常鞋区有落地侧板支撑，不伪装整柜无支承悬浮。"
+      "notes": "进门右侧靠厨房实墙，650mm沿墙长、340mm外深。浅柜净深及鞋长须复核；柜体不占1000mm入户门洞，门把手/门套/实际开启须量房后确定，不设固定换鞋凳。"
     },
     {
       "name": "餐边柜",
       "id": "dining_sideboard",
       "storageFitoutId": "dining_sideboard_wall",
       "x": 212.5,
-      "y": 960,
+      "y": 860,
       "w": 40,
-      "d": 140,
+      "d": 489,
       "heightCm": 250,
       "a": 0,
       "tone": "wood",
       "face": "east",
       "doorStyle": "sliding",
-      "notes": "1400×400底柜、850高干式饮品台、1500起280深上柜。底柜移门，小抽屉伸出最多250mm；不默认放得下咖啡机、净饮机或蒸烤电器。"
+      "notes": "西墙7字餐柜主臂分1200/1200/1200/1290mm四模块，另有南侧盲角。400mm底深、280mm上深，850mm台面与650mm中空；鞋柜已移至进门右侧。"
     },
     {
-      "name": "玄关换鞋凳",
-      "id": "entry_bench",
-      "storageFitoutId": "entry_shoe_station",
-      "x": 212.5,
-      "y": 1305,
-      "w": 40,
-      "d": 80,
-      "heightCm": 235,
-      "seatHeightCm": 45,
+      "name": "餐边柜南侧转折",
+      "id": "dining_sideboard_return",
+      "storageFitoutId": "dining_sideboard_wall",
+      "x": 252.5,
+      "y": 1349,
+      "w": 122.5,
+      "d": 40,
+      "heightCm": 250,
       "a": 0,
-      "tone": "fabric",
-      "face": "east",
-      "notes": "800×400单人软垫凳，完成坐高450mm，木背板配镜/挂钩至2350mm；凳下开放常鞋位，支撑与承载待厂家深化。"
+      "tone": "wood",
+      "face": "north",
+      "doorStyle": "sliding",
+      "notes": "南墙沿门左侧短转折，含西盲角的整臂总长1625mm；本段可开柜1225mm。末端距门洞左边150mm，转角不作为可用储物容量。"
+    },
+    {
+      "name": "餐边柜封闭盲角",
+      "id": "dining_sideboard_corner",
+      "storageFitoutId": "dining_sideboard_wall",
+      "x": 212.5,
+      "y": 1349,
+      "w": 40,
+      "d": 40,
+      "heightCm": 250,
+      "a": 0,
+      "tone": "wood",
+      "face": "north",
+      "notes": "400×400mm下柜转角封闭不用，台面在上方连续转折；退进上柜的盲角单独按实际280mm深生成。非实心满高占位，不重复生成模型。"
     },
     {
       "name": "厨房南侧地柜",
@@ -1164,7 +1160,7 @@
       "tone": "wet"
     }
   ],
-  "geometryRevision": "2026-09-08-stepped-baths-east-west-beds",
+  "geometryRevision": "2026-09-09-right-entry-shoes-left-L-sideboard",
   "coordinateSystem": {
     "unit": "cm",
     "x": "向东（图右）",
@@ -1464,7 +1460,8 @@
     "旧V2 AI卧室图误把俯视地面视为后墙，不作为V3构造或照明依据。",
     "V3.0.4三处功能件均由bayFitouts厘米数据生成2D、Blender和GLB；保留墙体、三飘窗外凸、主卫套内门、两卫阶梯及东西向床头。桌下腿位全部在室内一侧，不计入实心台体。",
     "V3.0.5按用户要求删除主卧独立桌与次卧独立桌椅。主卧仅一块与飘窗连成整体的台面、一把西侧向东配椅；床南移220mm、衣柜南移250mm让位，床头方向及所有墙窗不变。主卧高台与高椅是未实测条件示意，非普通750mm书桌已核验。",
-    "V3.0.6参考设计师原作及业主日记优化玄关与餐边柜，网络尺寸不当作本户实测。餐桌及四椅统一东移400mm、北移400mm，吊灯随桌定位；鞋柜前至桌西775mm、桌东至厨房墙800mm。墙窗、两卧与三飘窗功能件不变。",
+    "历史V3.0.6将餐桌及四椅统一东移400mm、北移400mm，吊灯随桌定位；V3.1.1保留该餐桌位置，但旧西鞋柜、固定凳及独立矮柜已由右鞋柜+左7字餐柜取代。",
+    "V3.1.1依据业主图1红线，南门进入右侧设650×340mm浅鞋柜，左侧西/南两墙设7字连续餐柜。图2、3来自镜像户型，仅借样式不套方向或尺寸。24个实体构件按不同柜面方向驱动2D、分段立面、Blender与GLB；盲角不计容量，墙窗、三飘窗、床向和餐桌均不动。",
     "三飘窗细暖灰框和无绳卷帘为拟选内装/窗系统外观，窗框分格与开启方式未经物业、窗系统厂家或结构专业核准；卷帘及普通玻璃并非防坠设施。"
   ],
   "renovationNotes": [
@@ -1528,44 +1525,62 @@
   "storageDesign": {
     "status":"条件收纳方案，非实测施工图", "units":"cm", "measured":false,
     "palette":["奶白哑光柜门","浅橡木开放格","浅石色台面","少量暖灰五金"],
-    "referencesNote":"设计师原作、业主实拍与品牌方案图分别标注；借鉴造型和功能，不代表对品牌或施工质量的推荐。",
-    "assumptions":["柜深、高度、现场梁位、墙体承载、踢脚线及电箱/开关位置均待实测，不覆盖检修口。","入户门合页与开启方向未测；先保留两种内开扫门的共同包络，进出时优先推回近门餐椅。","鞋与杯盘是独立封闭柜腔，外观配色统一不等于混放或共用通风。","鞋长需与扣除门轨及背板后的净深核对；不承诺400mm外深能平放所有尺码。","台面仅示意干式饮品区；插座及走线由电气专业深化，电器尺寸、功率、散热与开盖空间逐台核对。"],
+    "referencesNote":"本轮布局依据业主图1红线：由南门进入，右手东侧鞋柜、左手西墙及南墙7字餐边柜。图2鞋柜/图3餐柜来自反向户型，只借奶白柜门、木色中空和连续转角，不套左右、112㎡面积或照片尺寸；业主附图未复制到公开网站。下列旧网络链接仅供辅助参考。",
+    "assumptions":["所有柜深、高度、梁位、电箱/开关/对讲及墙体承载均待实测；高柜顶留至2500mm，2700mm层高只是模型假设。","入户门合页、把手及最大开启角未测。东鞋柜面距暂定右开90°门片仅约40mm，鞋柜需收门后使用；门继续向柜侧打开可能相撞，门吸/闭门器必须现场深化。","东鞋柜缩为沿墙650×外深340mm，北端让出把手示意区。该净深不保证平放大码鞋，应按实物鞋长与柜门五金选择层板或斜放做法，不承诺鞋量。","7字餐柜替代原西鞋柜、换鞋凳、窗边小矮柜及落地绿植；不再另设固定凳或入户屏风。鞋和杯盘位于左右独立柜腔。","西臂5290mm、南臂1625mm均含盲角；角内400×400mm下柜封闭不计有效储物，上柜退进按280mm深另做盲角，台面连续不虚构双份柜体。","餐桌及椅子不再移位；77.5/80cm为静态两侧边距。北段浅抽屉开启与取物时不可同时把柜前当通道，桌旁及南短臂下柜采用移门。","南侧上柜形成完整7字转折，也增加入口围合感；上柜门、头部活动空间、收口及固定仍需样板和专业深化。","台面为干式备饮/杯盘收纳，不新增水槽或固定大型电器；插头、功率、散热与开盖高度按实际电器逐台确认。西柜北端至现模型窗返边仅约30mm，窗套及帘盒净距须现场核对。"],
     "clearances":[
       {"id":"entry_door_sweep","x":390,"y":1295,"w":100,"d":100,"label":"入户两种内开方向的保守扫门包络（待复尺）"},
-      {"id":"shoe_bench_use","x":252.5,"y":1305,"w":60,"d":80,"label":"换鞋膝腿示意区，非额外固定家具"},
-      {"id":"sideboard_drawer_open","x":252.5,"y":960,"w":25,"d":140,"label":"餐边小抽屉最大250mm伸出示意"},
-      {"id":"sideboard_user","x":277.5,"y":960,"w":50,"d":140,"label":"抽屉打开后的单人取物示意带"}
+      {"id":"shoe_user","x":435,"y":1320,"w":60,"d":65,"label":"鞋柜取物示意区，须先收门；非固定换鞋凳"},
+      {"id":"entry_handle_reserve","x":491,"y":1295,"w":12,"d":25,"label":"暂定90°门把手端部余量，硬件及全程扫动待复测"},
+      {"id":"sideboard_drawer_open","x":252.5,"y":860,"w":25,"d":240,"label":"仅北两模块有250mm浅抽屉；桌旁及短臂不用抽屉"},
+      {"id":"sideboard_user","x":277.5,"y":860,"w":50,"d":240,"label":"开抽屉后的取物带，不同时作为通行净宽"},
+      {"id":"return_user","x":252.5,"y":1299,"w":122.5,"d":50,"label":"南短臂柜前单人取物示意，柜门关闭才做进出动线核对"}
     ]
   },
   "storageFitouts": [
     {
-      "id":"entry_shoe_station","roomId":"living","type":"entry","title":"玄关 · 回家后的收纳与换鞋",
-      "furnitureIds":["entry_storage","entry_bench"],
-      "summary":"奶白封闭鞋柜、浅木钥匙格与常穿鞋留空；末端加入一人换鞋凳和镜面挂物背板，把换鞋与随手置物留在进门附近。",
-      "dimensions":["鞋柜1750×400，高2500mm；下柜移门","底部200mm常鞋区，中部1000–1500mm置物格","换鞋凳800×400，完成坐高450mm","餐桌东移400、北移400mm后，柜前至桌边775mm"],
-      "conditions":["柜体外深400mm不等于内部净深；按实际鞋长及轨道厚度复核，必要时局部斜层板，暂不承诺鞋量。","凳体采用落地侧板支撑，软垫可拆洗；承载、尖角与墙面固定须厂家深化。","高柜和镜板不得遮电箱、门铃/对讲、开关及检修口；现场量清入户门合页和门套。","换鞋位避开暂定扫门区，但多人同时进出及餐椅退让仍需试摆；不是无障碍方案。","鞋柜独立存鞋，不与餐边杯盘柜共用内腔；图示灯带和插座是设计预留，不代表已确认电路。"],
+      "id":"entry_shoe_station","roomId":"living","type":"entry","title":"玄关 · 进门右手的浅鞋柜",
+      "furnitureIds":["entry_storage"],
+      "segments":[{"id":"east-entry","title":"入户右侧 · 厨房墙浅鞋柜","face":"west"}],
+      "summary":"从南侧大门进来，右手东侧是面向过道的浅鞋柜。奶白门板、浅木钥匙中空和底部常鞋位参考业主图2，位置按本户方向重新安排；取消旧西侧鞋柜与固定换鞋凳。",
+      "dimensions":["沿墙650×外深340，高2500mm；柜面朝西","底部200mm常鞋位，中部1000–1500mm置物格","上柜外深280mm；北端距厨房门洞南端550mm","柜面距暂定右开90°门片约40mm，取鞋前需收门"],
+      "conditions":["650mm是本模型能留出门把手端部余量的紧凑方案，不照抄参考图鞋柜长度；门套、把手、电箱、对讲及闭门器实测后再定柜。","340mm外深要扣门轨与背板；不保证平放所有尺码，应按鞋长调整层板/斜放，图示不承诺鞋双数。","入户右合页90°时门片会挡住柜前，必须先收门再使用；超过90°向柜侧打开还可能碰撞，不能凭图认为门吸限位已完成。","模型示意门把手端部留空不代表真实五金扫动已通过；需要现场全开/关门、取鞋和多人进出试摆。","不设固定换鞋凳或镜面屏风，以免挤占门口；鞋柜与左边杯盘柜独立，灯带与插座仅预留。"],
       "references":["entry-qiwu-50","entry-owner-61","entry-corten","entry-baili"],
       "parts":[
-        {"id":"e_shoe_lower","role":"shoe_lower","x":212.5,"y":1130,"w":40,"d":175,"zCm":0,"hCm":100,"face":"east","openBaseCm":20,"doorStyle":"sliding","doorPanels":3},
-        {"id":"e_key_niche","role":"key_niche","x":212.5,"y":1130,"w":40,"d":175,"zCm":100,"hCm":50,"face":"east"},
-        {"id":"e_shoe_upper","role":"upper_cabinet","x":212.5,"y":1130,"w":32,"d":175,"zCm":150,"hCm":100,"face":"east","doorPanels":3},
-        {"id":"e_key_accessories","role":"entry_accessories","x":218,"y":1150,"w":26,"d":135,"zCm":100,"hCm":30,"face":"east"},
-        {"id":"e_bench","role":"shoe_bench","x":212.5,"y":1305,"w":40,"d":80,"zCm":0,"hCm":45,"face":"east","seatHeightCm":45},
-        {"id":"e_bench_back","role":"bench_back","x":212.5,"y":1305,"w":7,"d":80,"zCm":45,"hCm":190,"face":"east"}
+        {"id":"e_shoe_lower","role":"shoe_lower","segmentId":"east-entry","x":495,"y":1320,"w":34,"d":65,"zCm":0,"hCm":100,"face":"west","openBaseCm":20,"doorStyle":"sliding","doorPanels":2},
+        {"id":"e_key_niche","role":"key_niche","segmentId":"east-entry","x":495,"y":1320,"w":34,"d":65,"zCm":100,"hCm":50,"face":"west"},
+        {"id":"e_shoe_upper","role":"upper_cabinet","segmentId":"east-entry","x":501,"y":1320,"w":28,"d":65,"zCm":150,"hCm":100,"face":"west","doorPanels":2},
+        {"id":"e_key_accessories","role":"entry_accessories","segmentId":"east-entry","x":500,"y":1323,"w":24,"d":60,"zCm":100,"hCm":30,"face":"west","preset":"compact"}
       ]
     },
     {
-      "id":"dining_sideboard_wall","roomId":"living","type":"sideboard","title":"餐边 · 杯盘收纳与干式饮品台",
-      "furnitureIds":["dining_sideboard"],
-      "summary":"浅石色留空台面、奶白推拉下柜和退进的浅上柜，加入餐具抽屉与少量开放杯格；用同一套木色和柜门语言连接玄关。",
-      "dimensions":["底柜1400×400，台面高850mm","上柜深280，离地1500至2500mm","中部净留650mm；小抽屉伸出最多250mm","餐桌东侧至厨房墙800mm；沿用1200×700四人桌"],
-      "conditions":["以杯盘、餐具、茶罐和干式备饮为主，没有新增水槽或擅改给排水。","400mm台面不能默认容纳咖啡机/净饮机；须扣后部插头、散热、开盖空间并按实物选型，热蒸汽不能直冲上柜。","下柜推拉门不向过道扫开；上柜门和抽屉动态、身高可达性仍待样板试用。","餐椅最多30cm后退是本轮校核情景；出入时推回近门椅，不能把80cm静态边距当成所有使用状态的通道。","上柜固定、灯带散热、插座回路、防潮易洁台面及柜腔通风须厂家/电气专业深化。"],
+      "id":"dining_sideboard_wall","roomId":"living","type":"sideboard","title":"餐边 · 左手整墙7字收纳",
+      "furnitureIds":["dining_sideboard","dining_sideboard_return","dining_sideboard_corner"],
+      "segments":[{"id":"west-run","title":"西墙长臂 · 从飘窗旁到入户","face":"east"},{"id":"south-return","title":"南墙短臂 · 在门左侧转折","face":"north"},{"id":"corner","title":"转角封闭区 · 不计有效储物","face":"north"}],
+      "summary":"从大门进入的左侧，沿西墙做整排奶白柜与木色中空，再沿南墙转折成为7字。参考业主图3连续台面与上、下柜的关系；以本户尺寸分模块，替代原来分散的矮柜、鞋柜和换鞋凳。",
+      "dimensions":["西臂总长5290mm；南臂总长1625mm（两者均含400mm盲角）","底柜外深400、台面高850mm；上柜深280、高1500–2500mm","西直柜4890mm分1200/1200/1200/1290四模块，南可开柜段1225mm","中空高650mm；抽屉仅北两模块，最多伸出250mm","餐桌西侧775、东侧800mm；南椅退300mm后至短臂仍约815mm"],
+      "conditions":["400×400mm下盲角和退进上盲角封闭不用，不画假门、假抽屉或重复计算容量；转角台面及中空连通，实际拼缝/固定需深化。","西柜北端离现模型窗返边仅约30mm，不可凭概念净距下单；先量窗套、帘盒、电箱、踢脚线与墙面垂直度。","桌旁和南短臂下柜均为移门，没有向过道拉出的抽屉；北段250mm抽屉加取物站位期间，柜前不同时作绕行通道。","南上柜延续7字造型，会增加入口围合感；闭门及开启时的头部活动、可达性、转角门扇与高柜防倾倒须专业深化。","沿用1200×700mm四人桌和既有椅位；退椅300mm只是一种校核情景，进出时收椅，不能当作多人或无障碍通行认证。","台面仅放杯盘、保温壶等小件，不默认400mm深可装咖啡机、净饮机或蒸烤箱；须核对插头、散热、蒸汽、开盖高度和电气回路。"],
       "references":["entry-qiwu-50","entry-corten","entry-quanyou"],
       "parts":[
-        {"id":"d_base","role":"sideboard_base","x":212.5,"y":960,"w":40,"d":140,"zCm":0,"hCm":85,"face":"east","doorStyle":"sliding","doorPanels":2,"drawerExtensionCm":25},
-        {"id":"d_niche","role":"sideboard_niche","x":212.5,"y":960,"w":40,"d":140,"zCm":85,"hCm":65,"face":"east"},
-        {"id":"d_upper","role":"upper_cabinet","x":212.5,"y":960,"w":28,"d":140,"zCm":150,"hCm":100,"face":"east","doorPanels":2,"openEndCm":35},
-        {"id":"d_accessories","role":"dining_accessories","x":218,"y":967,"w":29,"d":124,"zCm":85,"hCm":40,"face":"east"}
+        {"id":"d1_base","role":"sideboard_base","segmentId":"west-run","x":212.5,"y":860,"w":40,"d":120,"zCm":0,"hCm":85,"face":"east","doorStyle":"sliding","doorPanels":2,"drawerPanels":2,"drawerExtensionCm":25,"flushJoints":true},
+        {"id":"d1_niche","role":"sideboard_niche","segmentId":"west-run","x":212.5,"y":860,"w":40,"d":120,"zCm":85,"hCm":65,"face":"east","omitEndPanel":true,"flushJoints":true},
+        {"id":"d1_upper","role":"upper_cabinet","segmentId":"west-run","x":212.5,"y":860,"w":28,"d":120,"zCm":150,"hCm":100,"face":"east","doorPanels":2,"openEndCm":30,"openEndSide":"south","flushJoints":true},
+        {"id":"d_base","role":"sideboard_base","segmentId":"west-run","x":212.5,"y":980,"w":40,"d":120,"zCm":0,"hCm":85,"face":"east","doorStyle":"sliding","doorPanels":2,"drawerPanels":2,"drawerExtensionCm":25,"flushJoints":true},
+        {"id":"d_niche","role":"sideboard_niche","segmentId":"west-run","x":212.5,"y":980,"w":40,"d":120,"zCm":85,"hCm":65,"face":"east","omitStartPanel":true,"omitEndPanel":true,"flushJoints":true},
+        {"id":"d_upper","role":"upper_cabinet","segmentId":"west-run","x":212.5,"y":980,"w":28,"d":120,"zCm":150,"hCm":100,"face":"east","doorPanels":2,"frontPaletteRole":"cabinetAccent","flushJoints":true},
+        {"id":"d3_base","role":"sideboard_base","segmentId":"west-run","x":212.5,"y":1100,"w":40,"d":120,"zCm":0,"hCm":85,"face":"east","doorStyle":"sliding","doorPanels":2,"drawerPanels":0,"drawerExtensionCm":0,"flushJoints":true},
+        {"id":"d3_niche","role":"sideboard_niche","segmentId":"west-run","x":212.5,"y":1100,"w":40,"d":120,"zCm":85,"hCm":65,"face":"east","omitStartPanel":true,"omitEndPanel":true,"flushJoints":true},
+        {"id":"d3_upper","role":"upper_cabinet","segmentId":"west-run","x":212.5,"y":1100,"w":28,"d":120,"zCm":150,"hCm":100,"face":"east","doorPanels":2,"flushJoints":true},
+        {"id":"d4_base","role":"sideboard_base","segmentId":"west-run","x":212.5,"y":1220,"w":40,"d":129,"zCm":0,"hCm":85,"face":"east","doorStyle":"sliding","doorPanels":2,"drawerPanels":0,"drawerExtensionCm":0,"omitEndPanel":true,"flushJoints":true},
+        {"id":"d4_niche","role":"sideboard_niche","segmentId":"west-run","x":212.5,"y":1220,"w":40,"d":129,"zCm":85,"hCm":65,"face":"east","omitStartPanel":true,"omitEndPanel":true,"flushJoints":true},
+        {"id":"d4_upper","role":"upper_cabinet","segmentId":"west-run","x":212.5,"y":1220,"w":28,"d":141,"zCm":150,"hCm":100,"face":"east","doorPanels":2,"omitEndPanel":true,"flushJoints":true},
+        {"id":"d_accessories","role":"dining_accessories","segmentId":"west-run","x":218,"y":990,"w":29,"d":98,"zCm":85,"hCm":40,"face":"east"},
+        {"id":"d_return_base","role":"sideboard_base","segmentId":"south-return","x":252.5,"y":1349,"w":122.5,"d":40,"zCm":0,"hCm":85,"face":"north","doorStyle":"sliding","doorPanels":2,"drawerPanels":0,"drawerExtensionCm":0,"omitStartPanel":true,"flushJoints":true},
+        {"id":"d_return_niche","role":"sideboard_niche","segmentId":"south-return","x":252.5,"y":1349,"w":122.5,"d":40,"zCm":85,"hCm":65,"face":"north","omitStartPanel":true,"flushJoints":true},
+        {"id":"d_return_upper","role":"upper_cabinet","segmentId":"south-return","x":240.5,"y":1361,"w":134.5,"d":28,"zCm":150,"hCm":100,"face":"north","doorPanels":2,"omitStartPanel":true,"frontPaletteRole":"cabinetAccent","flushJoints":true},
+        {"id":"d_return_accessories","role":"dining_accessories","segmentId":"south-return","x":270,"y":1355,"w":98,"d":29,"zCm":85,"hCm":40,"face":"north"},
+        {"id":"d_corner_base","role":"sideboard_blind_base","segmentId":"corner","x":212.5,"y":1349,"w":40,"d":40,"zCm":0,"hCm":85,"face":"north","usableStorage":false,"flushJoints":true},
+        {"id":"d_corner_niche","role":"sideboard_corner_niche","segmentId":"corner","x":212.5,"y":1349,"w":40,"d":40,"zCm":85,"hCm":65,"face":"north","usableStorage":false,"flushJoints":true},
+        {"id":"d_corner_upper","role":"upper_blind_corner","segmentId":"corner","x":212.5,"y":1361,"w":28,"d":28,"zCm":150,"hCm":100,"face":"north","usableStorage":false,"flushJoints":true}
       ]
     }
   ],

@@ -24,7 +24,7 @@ const context = vm.createContext({
 });
 vm.runInContext(`${helpers}\n${source.slice(start, end)}\nmakePlan();`, context, { timeout: 1000 });
 const svg = host.innerHTML;
-const tags = (html, marker) => [...html.matchAll(/<(?:rect|line|polygon|g)\b[^>]*>/g)].map(match => match[0]).filter(tag => tag.includes(marker));
+const tags = (html, marker) => [...html.matchAll(/<(?:rect|line|path|polygon|g)\b[^>]*>/g)].map(match => match[0]).filter(tag => tag.includes(marker));
 const attribute = (tag, name) => tag.match(new RegExp(`(?:^|\\s)${name}="([^"]*)"`))?.[1];
 const coordinates = (tag, names) => names.map(name => Number(attribute(tag, name)));
 const one = (html, marker) => { const found = tags(html, marker); assert.equal(found.length, 1, marker); return found[0]; };
@@ -100,17 +100,33 @@ for(const removed of ['次卧书桌','次卧书椅']){
 }
 assert.ok(!svg.includes('data-part-id="a_ledge"')&&!svg.includes('data-part-id="a_ledge_objects"'));
 const storageParts=data.storageFitouts.flatMap(fitout=>fitout.parts.map(part=>({fitout,part})));
-assert.equal(storageParts.length,10);
-assert.equal(tags(svg,'data-storage-part-id=').length,10,'Exactly ten unique physical storage parts in actual floor plan');
+assert.equal(storageParts.length,24,'V3.1.1 has four east-entry parts and twenty L-shaped dining parts');
+assert.equal(data.furniture.filter(f=>f.storageFitoutId).length,4,'Source footprint wrappers are entry, long arm, return, and blind corner');
+assert.ok(!data.furniture.some(f=>f.id==='entry_bench'),'Old fixed entry bench removed');
+const entrySource=data.storageFitouts.find(f=>f.type==='entry');
+assert.ok(entrySource.parts.every(p=>p.face==='west'&&p.segmentId==='east-entry'),'Right-hand east shoe cabinet must face the west passage, not copied from a mirrored photo');
+for(const [id,bbox]of Object.entries({e_shoe_lower:[495,1320,34,65],e_shoe_upper:[501,1320,28,65],d4_base:[212.5,1220,40,129],d4_upper:[212.5,1220,28,141],d_return_base:[252.5,1349,122.5,40],d_return_upper:[240.5,1361,134.5,28],d_corner_base:[212.5,1349,40,40],d_corner_upper:[212.5,1361,28,28]})){
+  const part=storageParts.find(item=>item.part.id===id)?.part;assert.ok(part,id);assert.deepEqual([part.x,part.y,part.w,part.d],bbox,`${id} V3.1.1 directional source anchor; upper and lower envelopes are not forcibly aligned`);
+}
+assert.equal(tags(svg,'data-storage-part-id=').length,storageParts.length,'Exactly one source rectangle per physical storage part in actual floor plan');
 for(const {fitout,part} of storageParts){
   const rect=one(svg,`data-storage-part-id="${part.id}"`);
   assert.equal(attribute(rect,'data-storage-id'),fitout.id);
   assert.equal(attribute(rect,'data-storage-role'),part.role);
+  assert.equal(attribute(rect,'data-storage-face'),part.face||fitout.face||'east');
+  assert.equal(attribute(rect,'data-storage-segment'),part.segmentId||part.source?.segmentId||part.wallSide||part.face||fitout.face||'east');
   assert.deepEqual(coordinates(rect,['x','y','width','height','data-z-cm','data-h-cm']),[part.x,part.y,part.w,part.d,part.zCm,part.hCm],`${part.id} source centimetres and height preserved`);
   assert.equal(attribute(rect,'transform'),undefined,'World plan box must not rotate its 40 cm depth and along-wall length twice');
   context.fitout=fitout;context.part=part;
   assert.ok(svg.includes(vm.runInContext('planStoragePart(fitout,part)',context)),`${part.id} from actual renderer`);
   if(part.role.includes('niche')||part.role.includes('accessories'))assert.equal(attribute(rect,'fill'),'none',`${part.id} does not falsely fill an open niche in plan`);
+  const fronts=tags(svg,`data-storage-front-for="${part.id}"`);
+  if(part.role.includes('blind')){assert.equal(fronts.length,0,`${part.id} blind zone is not a usable front cabinet`);assert.equal(tags(svg,`data-storage-blind-for="${part.id}"`).length,1)}
+  else if(!part.role.includes('niche')&&!part.role.includes('accessories')&&(part.doorStyle||part.doorPanels)){
+    assert.equal(fronts.length,1);const {x,y,w,d}=part;
+    const expected=part.face==='west'?[x+2,y+3,x+2,y+d-3]:part.face==='north'?[x+3,y+2,x+w-3,y+2]:part.face==='south'?[x+3,y+d-2,x+w-3,y+d-2]:[x+w-2,y+3,x+w-2,y+d-3];
+    assert.deepEqual(coordinates(fronts[0],['x1','y1','x2','y2']),expected,`${part.id} front edge follows source facing, never a mirrored east default`);
+  }
 }
 for(const wrapper of data.furniture.filter(f=>f.storageFitoutId)){
   context.item=wrapper;
@@ -125,10 +141,45 @@ assert.ok(elevationStart>=0&&elevationEnd>elevationStart);
 vm.runInContext(source.slice(elevationStart,elevationEnd),context);
 for(const fitout of data.storageFitouts){
   context.fitout=fitout;const elevation=vm.runInContext('storageElevation(fitout)',context);
-  const maxY=Math.max(...fitout.parts.map(p=>p.y+p.d)),top=Math.max(...fitout.parts.map(p=>p.zCm+p.hCm));
+  const segmentFor=p=>p.segmentId||p.source?.segmentId||p.wallSide||p.face||fitout.face||'east';
+  const groupKeys=new Set(fitout.parts.map(p=>`${segmentFor(p)}|${p.face||fitout.face||'east'}`));
+  assert.equal((elevation.match(/<figure\b/g)||[]).length,groupKeys.size,'Distinct segments/facings are not overlaid as a fictitious single east elevation');
   for(const part of fitout.parts){
+    const face=part.face||fitout.face||'east',same=fitout.parts.filter(p=>segmentFor(p)===segmentFor(part)&&(p.face||fitout.face||'east')===face),axis=['north','south'].includes(face)?'x':'y',length=axis==='x'?'w':'d',depth=axis==='x'?'d':'w';
+    const min=Math.min(...same.map(p=>p[axis])),max=Math.max(...same.map(p=>p[axis]+p[length])),top=Math.max(...same.map(p=>p.zCm+p.hCm));
     const rect=one(elevation,`data-elevation-part-id="${part.id}"`);
-    assert.deepEqual(coordinates(rect,['x','y','width','height','data-source-y','data-source-z-cm','data-depth-cm']),[maxY-part.y-part.d,top-part.zCm-part.hCm,part.d,part.hCm,part.y,part.zCm,part.w],`${part.id} actual east elevation has true along-wall length/height, not plan depth`);
+    assert.equal(attribute(rect,'data-elevation-face'),face);assert.equal(attribute(rect,'data-elevation-segment'),segmentFor(part));
+    assert.deepEqual(coordinates(rect,['x','y','width','height','data-source-x','data-source-y','data-source-z-cm','data-depth-cm']),[['east','north'].includes(face)?max-part[axis]-part[length]:part[axis]-min,top-part.zCm-part.hCm,part[length],part.hCm,part.x,part.y,part.zCm,part[depth]],`${part.id} actual ${face} elevation has true segment length/height, not plan depth`);
+    if(part.role.includes('niche')){
+      assert.equal(attribute(rect,'stroke'),'none',`${part.id} semantic bbox cannot imply fictitious end panels`);
+      const [x,y,w,h]=coordinates(rect,['x','y','width','height']);
+      const expected={top:[x,y,x+w,y],bottom:[x,y+h,x+w,y+h]};
+      if(part.role==='sideboard_corner_niche')expected['west-back']=[x+w,y,x+w,y+h];
+      else{if(!part.omitStartPanel)expected.start=[x+w,y,x+w,y+h];if(!part.omitEndPanel)expected.end=[x,y,x,y+h]}
+      const edges=tags(elevation,`data-elevation-niche-edge-for="${part.id}"`);
+      assert.equal(edges.length,Object.keys(expected).length,`${part.id} only retained end panels are outlined`);
+      for(const [name,coords]of Object.entries(expected))assert.deepEqual(coordinates(one(elevation,`data-elevation-niche-edge-for="${part.id}" data-niche-edge="${name}"`),['x1','y1','x2','y2']),coords,`${part.id} ${name} follows the complete module rotation`);
+    }
+    if(part.role==='sideboard_base')assert.equal(tags(elevation,`data-elevation-drawer-for="${part.id}"`).length,part.drawerPanels??part.drawerCount??2,`${part.id} drawer quantity follows source; zero means full-height closed fronts`);
   }
 }
-console.log('PASS: actual SVG; preserved beds/baths/bays, 13 bay parts, 10 storage parts without duplicate wrappers, dining group move and exact east elevations.');
+// Direction fixtures exercise the actual renderer independently of which source faces currently exist.
+context.fitout={title:'Direction regression',segments:[{id:'left',title:'左段'}],parts:[{id:'west-a',role:'shoe_lower',segmentId:'left',face:'west',x:495,y:1320,w:34,d:25,zCm:0,hCm:100},{id:'west-b',role:'shoe_lower',segmentId:'left',face:'west',x:495,y:1345,w:34,d:40,zCm:0,hCm:100},{id:'north-a',role:'sideboard_base',segmentId:'return',face:'north',x:252.5,y:1349,w:62.5,d:40,zCm:0,hCm:85},{id:'north-b',role:'sideboard_blind_base',segmentId:'return',face:'north',x:315,y:1349,w:60,d:40,zCm:0,hCm:85}]};
+const directions=vm.runInContext('storageElevation(fitout)',context);
+for(const [id,expected]of Object.entries({'west-a':[0,0,25,100],'west-b':[25,0,40,100],'north-a':[60,0,62.5,85],'north-b':[0,0,60,85]}))assert.deepEqual(coordinates(one(directions,`data-elevation-part-id="${id}"`),['x','y','width','height']),expected,`${id} screen direction regression`);
+assert.ok(directions.includes('左北右南')&&directions.includes('左东右西'));
+assert.equal(tags(directions,'data-elevation-blind-area').length,1);
+// A canonical start/end is not simply global min/max after a 180 degree turn.
+// Frontally, start remains screen-right and end screen-left for all four faces.
+for(const face of ['east','west','north','south']){
+  const vertical=['east','west'].includes(face),part={id:`niche-${face}`,role:'sideboard_niche',face,x:100,y:200,w:vertical?40:80,d:vertical?80:40,zCm:85,hCm:65,omitStartPanel:true};
+  context.fitout={title:'Rotated niche regression',parts:[part]};
+  let actual=vm.runInContext('storageElevation(fitout)',context);
+  assert.equal(tags(actual,'data-niche-edge="start"').length,0,`${face}: omitted canonical start cannot reappear on either side`);
+  assert.deepEqual(coordinates(one(actual,'data-niche-edge="end"'),['x1','y1','x2','y2']),[0,0,0,65],`${face}: retained canonical end is the left front edge`);
+  part.omitStartPanel=false;part.omitEndPanel=true;
+  actual=vm.runInContext('storageElevation(fitout)',context);
+  assert.equal(tags(actual,'data-niche-edge="end"').length,0,`${face}: omitted canonical end cannot reappear`);
+  assert.deepEqual(coordinates(one(actual,'data-niche-edge="start"'),['x1','y1','x2','y2']),[80,0,80,65],`${face}: retained canonical start is the right front edge`);
+}
+console.log(`PASS: actual SVG; beds/baths/bays preserved, ${data.bayFitouts.flatMap(f=>f.parts).length} bay parts, ${storageParts.length} exact storage boxes/fronts without duplicate wrappers, and correctly directed segmented elevations.`);

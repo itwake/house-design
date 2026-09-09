@@ -928,6 +928,73 @@ def bay_fitouts(data):
 
 
 def storage_part(p):
+    """Build complete modules in a canonical east-facing local frame.
+
+    Rotating the complete group also rotates sockets, recessed pulls, cups,
+    bags and handles; a face label alone is not an orientation transform.
+    Corner parts use explicit global west/south exterior boundaries.
+    """
+    if p["role"] in ("sideboard_blind_base","sideboard_corner_niche","upper_blind_corner"):
+        storage_corner_part(p)
+        return
+    face=p.get("face","east")
+    if face not in ("east","west","north","south"):
+        raise ValueError(f"{p['id']}: unsupported storage face {face!r}")
+    x,y,w,d=[float(p[k])/100 for k in ("x","y","w","d")]
+    depth,span=(w,d) if face in ("east","west") else (d,w)
+    local={**p,"x":0,"y":0,"w":depth*100,"d":span*100,"face":"east"}
+    before=set(bpy.context.scene.objects)
+    storage_part_east(local)
+    angle={"east":0,"west":math.pi,"north":math.pi/2,"south":-math.pi/2}[face]
+    transform=(Matrix.Translation(Vector((x+w/2,-(y+d/2),0)))
+               @ Matrix.Rotation(angle,4,"Z")
+               @ Matrix.Translation(Vector((-depth/2,span/2,0))))
+    bpy.context.view_layer.update()
+    for obj in set(bpy.context.scene.objects)-before:
+        obj.matrix_world=transform @ obj.matrix_world
+
+
+def storage_corner_part(p):
+    """An explicitly owned corner, not two interpenetrating normal cabinets.
+
+    The lower/upper blind units are closed construction voids: no invented
+    corner door, drawer or accessible storage. Their adjacent run end panels
+    can be omitted so this unit alone owns the joining partitions.
+    The niche has only west/south back linings; north/east remain open.
+    """
+    x,y,w,d=[float(p[k])/100 for k in ("x","y","w","d")]
+    z,h=float(p.get("zCm",0))/100,float(p["hCm"])/100
+    role,name=p["role"],p["id"]
+    t=.018
+    def panel(label,px,py,pz,pw,pd,ph,mat="OakLight"):
+        return block(name+" / "+label,px,py,pz,pw,pd,ph,mat=mat,bevel=0)
+    if role=="sideboard_corner_niche":
+        panel("corner west back lining",x,y,z,t,d,h-t)
+        panel("corner south back lining",x+t,y+d-t,z,w-t,t,h-t)
+        panel("corner niche top lining",x,y,z+h-t,w,d,t)
+        # Short light channels bridge the inside turn without spanning the
+        # open work surface or introducing a vertical corner divider.
+        for label,px,py,pw,pd in (
+            ("north-south",x+w-.079,y,.014,.065),
+            ("west-east",x+w-.079,y+.065,.079,.014),
+        ):
+            panel("corner LED channel "+label,px,py,z+h-t-.005,pw,pd,.003,"WarmGrayMetal")
+            panel("corner LED diffuser "+label,px+.001,py+.001,z+h-t-.007,pw-.002,pd-.002,.002,"Lamp")
+        return
+    base=.075 if role=="sideboard_blind_base" else 0
+    if base:
+        panel("blind corner recessed plinth",x+.03,y+.03,z,w-.06,d-.06,base,"WarmGrayMetal")
+    # The long x-side panels own the four 18 mm corner squares; the north /
+    # south panels stop between them, avoiding coplanar overlapping boxes.
+    for label,px in (("west",x),("east",x+w-t)):
+        panel("blind corner "+label+" partition",px,y,z+base,t,d,h-base-t)
+    for label,py in (("north",y),("south",y+d-t)):
+        panel("blind corner "+label+" partition",x+t,py,z+base,w-2*t,t,h-base-t)
+    panel("blind corner bottom",x+t,y+t,z+base,w-2*t,d-2*t,t)
+    panel("blind corner finished top",x,y,z+h-t,w,d,t,"Stone" if base else "OakLight")
+
+
+def storage_part_east(p):
     """Panel-built storage, never a solid placeholder filling the niches.
 
     Parts include their complete fronts/hardware/props inside declared bounds;
@@ -946,10 +1013,18 @@ def storage_part(p):
         else:px,py=x+along,y+d-inset
         return box(name+" / "+label,px,py,bottom,thickness if vertical else width,width if vertical else thickness,height,mat,bevel)
     def slab(label,bottom,thickness,mat="OakLight"):
+        if p.get("flushJoints"):
+            return block(name+" / "+label,x,y,bottom,w,d,thickness,mat=mat,bevel=0)
         return rounded_fitout_slab(name+" / "+label,x,y,bottom,w,d,thickness,.008,mat)
     def sides(bottom,height):
-        for along in (.010,span-.010):front("end support panel",along,depth/2,bottom,.020,depth,height)
-    def back(bottom,height):front("thin back panel",span/2,depth-.009,bottom,span-.040,.018,height)
+        if not p.get("omitStartPanel"):
+            front("start support panel",.010,depth/2,bottom,.020,depth,height)
+        if not p.get("omitEndPanel"):
+            front("end support panel",span-.010,depth/2,bottom,.020,depth,height)
+    def back(bottom,height):
+        start=0 if p.get("omitStartPanel") else .020
+        end=span if p.get("omitEndPanel") else span-.020
+        front("thin back panel",(start+end)/2,depth-.009,bottom,end-start,.018,height)
     def shoes(along,bottom=.006):
         # Footwear is only an indicative pair, not a cabinet capacity claim.
         for offset in (-.056,.056):
@@ -972,20 +1047,28 @@ def storage_part(p):
         open_base=float(p.get("openBaseCm",20))/100
         sides(z,h-.020)
         back(z+open_base,h-open_base-.020)
-        for fraction in (1/3,2/3):front("floor-standing base divider",span*fraction,depth/2,z,.020,depth-.025,open_base)
+        divisions=3 if span>=1.10 else 2
+        for index in range(1,divisions):front("floor-standing base divider",span*index/divisions,depth/2,z,.020,depth-.025,open_base)
         slab("shoe compartment base",z+open_base,.020)
         slab("finished key counter",z+h-.020,.020)
         for level in (.45,.70):front("shoe shelf",span/2,(depth+.070)/2,z+level,span-.045,depth-.115,.018)
         sliding(z+open_base+.020,z+h-.020,int(p.get("doorPanels",3)))
-        shoes(span*.18)
+        shoes(span*(.18 if divisions==3 else .25))
     elif role in ("key_niche","sideboard_niche"):
         # The lower cabinet supplies the finished floor at exactly z: no
         # extra slab here may bury the accessories which start at that level.
         sides(z,h-.018)
         back(z,h-.018)
         slab("niche top lining",z+h-.018,.018)
-        front("warm recessed LED channel",span/2,.072,z+h-.023,span-.070,.015,.003,"WarmGrayMetal",.001)
-        front("warm LED diffuser",span/2,.072,z+h-.025,span-.075,.012,.002,"Lamp",.001)
+        # An omitted joining end panel also means a continuous light run.
+        # Retained closed ends keep a 35 mm margin; adjacent module runs
+        # terminate exactly at the shared plane without overlaps or gaps.
+        led_start=0 if p.get("omitStartPanel") else .035
+        led_end=span if p.get("omitEndPanel") else span-.035
+        glow_start=led_start if p.get("omitStartPanel") else led_start+.0025
+        glow_end=led_end if p.get("omitEndPanel") else led_end-.0025
+        front("warm recessed LED channel",(led_start+led_end)/2,.072,z+h-.023,led_end-led_start,.015,.003,"WarmGrayMetal",.001)
+        front("warm LED diffuser",(glow_start+glow_end)/2,.072,z+h-.025,glow_end-glow_start,.012,.002,"Lamp",.001)
         front("reserved socket plate",span*.22,depth-.022,z+h*.43,.075,.007,.075,"Cream",.004)
         for off in (-.016,.016):front("socket indication",span*.22+off,depth-.026,z+h*.43+.029,.007,.002,.018,"WarmGrayMetal",.001)
     elif role=="upper_cabinet":
@@ -1019,23 +1102,29 @@ def storage_part(p):
         # Seven centimetres is the hardware envelope, NOT a thick solid back.
         front("slim timber back",span/2,depth-.009,z,span,.018,h,"OakLight",.007)
         front("rounded vertical mirror frame",span*.30,depth-.022,z+.25,span*.42,.020,1.28,"OakLight",.009)
-        front("east-facing mirror",span*.30,depth-.033,z+.26,span*.42-.020,.002,1.26,"Mirror",.006)
+        front("front-facing mirror",span*.30,depth-.033,z+.26,span*.42-.020,.002,1.26,"Mirror",.006)
         for along,bottom in ((span*.69,z+1.20),(span*.85,z+1.45)):
             front("coat hook backplate",along,depth-.023,bottom,.035,.008,.055,"WarmGrayMetal",.004)
             front("short projecting coat hook",along,depth-.043,bottom+.012,.014,.042,.013,"WarmGrayMetal",.003)
     elif role=="sideboard_base":
-        front("recessed toe kick",span/2,depth/2,z,span-.050,depth-.060,.075,"WarmGrayMetal",.003)
+        front("recessed toe kick",span/2,depth/2,z,span if p.get("flushJoints") else span-.050,depth-.060,.075,"WarmGrayMetal",.003)
         sides(z+.075,h-.095)
         back(z+.075,h-.095)
         slab("base compartment floor",z+.075,.020)
         slab("warm stone worktop",z+h-.020,.020,"Stone")
-        front("drawer compartment shelf",span/2,(depth+.065)/2,z+.595,span-.045,depth-.110,.018)
-        sliding(z+.095,z+.59,int(p.get("doorPanels",2)))
-        for idx in range(2):
-            along=(idx+.5)*span/2
-            front("closed shallow drawer front",along,.015,z+.620,span/2-.014,.020,h-.655,"Cream",.003)
-            front("closed drawer floor",along,(depth+.065)/2,z+.622,span/2-.034,depth-.105,.016)
-            front("recessed drawer pull",along,.003,z+.790,span/2-.080,.002,.012,"WarmGrayMetal",.001)
+        drawers=int(p.get("drawerPanels",2))
+        if drawers<0:raise ValueError(f"{name}: negative drawer count")
+        if drawers:
+            front("drawer compartment shelf",span/2,(depth+.065)/2,z+.595,span-.045,depth-.110,.018)
+            sliding(z+.095,z+.59,int(p.get("doorPanels",2)))
+            for idx in range(drawers):
+                along=(idx+.5)*span/drawers
+                front("closed shallow drawer front",along,.015,z+.620,span/drawers-.014,.020,h-.655,"Cream",.003)
+                front("closed drawer floor",along,(depth+.065)/2,z+.622,span/drawers-.034,depth-.105,.016)
+                front("recessed drawer pull",along,.003,z+.790,span/drawers-.080,.002,.012,"WarmGrayMetal",.001)
+        else:
+            front("full-height cupboard interior shelf",span/2,(depth+.065)/2,z+h*.48,span-.045,depth-.110,.018)
+            sliding(z+.095,z+h-.020,int(p.get("doorPanels",2)))
     elif role=="entry_accessories":
         # A low key tray plus small bag; no objects protrude into the aisle.
         px,py=x+w*.50,y+d*.22
@@ -1080,6 +1169,13 @@ def storage_fitouts(data):
                 obj["roomId"]=CURRENT_ROOM
                 obj["furnitureId"]=p["id"]
                 obj["furnitureFace"]=p.get("face","east")
+                segment=p.get("segmentId",p.get("source",{}).get("segmentId"))
+                if segment:obj["storageSegmentId"]=segment
+                if "frontPaletteRole" in p:
+                    obj["storageFrontPaletteRole"]=p["frontPaletteRole"]
+                if "drawerPanels" in p:obj["drawerPanels"]=int(p["drawerPanels"])
+                if p["role"] in ("sideboard_blind_base","upper_blind_corner"):
+                    obj["storageAccess"]="blind construction void; not accessible storage"
                 if p["role"] in ("entry_accessories","dining_accessories") or "shoe sole" in obj.name or "shoe upper" in obj.name or "open-shelf cup" in obj.name:
                     obj["storageElement"]="decor"
                 if "doorStyle" in p:obj["doorStyle"]=p["doorStyle"]
@@ -1374,8 +1470,8 @@ VIEWS = {
     "bay-master": ((4.30,2.98,1.60),(4.72,.24,1.04),18),
     "bay-tea": ((2.82,1.50,1.52),(1.53,-.11,1.03),18),
     "bay-living": ((4.13,9.08,1.65),(2.30,7.47,1.15),22),
-    "entry-storage": ((4.86,13.42,1.62),(2.30,12.57,1.20),21),
-    "sideboard": ((4.88,10.72,1.62),(2.31,10.30,1.26),21),
+    "entry-storage": ((3.20,12.75,1.45),(5.11,13.475,1.32),18),
+    "sideboard": ((4.88,12.08,1.60),(2.68,12.99,1.28),20),
 }
 
 
@@ -1475,8 +1571,8 @@ def manifest(data, openings, src):
             desc[view]+=" "+fitouts_by_room[rid].get("summary","")
     storage=data.get("storageFitouts",[])
     if storage:
-        desc["dining"]="1.20 米四人餐桌与四椅按共享数据整体移位，双吊灯同步跟随。"+" ".join(item.get("summary","") for item in storage)
-        desc["living"]+=" 南侧以奶白柜门与浅木中空格统一玄关鞋柜、换鞋凳和独立餐边收纳。"
+        desc["dining"]="1.20 米四人餐桌与四椅沿用共享数据位置，双吊灯与餐桌对应。"+" ".join(item.get("summary","") for item in storage)
+        desc["living"]+=" 入户右侧沿厨房墙布置面西浅鞋柜；左侧西墙长餐柜沿南墙转为7字，鞋与杯盘独立分腔，不设固定换鞋凳。"
     for view,rid,name in mapping:
         room=next(r for r in data["rooms"] if r["id"]==rid)
         pos,target,lens=VIEWS[view]
@@ -1509,7 +1605,7 @@ def manifest(data, openings, src):
         pos,target,lens=VIEWS[view]
         result["storageDetails"].append({"id":view,"storageFitoutId":fitout["id"],"fitoutId":fitout["id"],"roomId":fitout["roomId"],"title":fitout["title"],"render":f"assets/blender-renders/{view}.jpg","interiorCamera":{"position":three(pos),"target":three(target),"horizontalFov":round(math.degrees(2*math.atan(36/(2*lens))),2),"fov":round(math.degrees(2*math.atan(24/(2*lens))),2)},"summary":fitout.get("summary",""),"dimensions":fitout.get("dimensions",[]),"conditions":fitout.get("conditions",[]),"references":fitout.get("references",[])})
     if storage:
-        result["notes"].append("鞋柜与餐边杯盘柜独立分腔；抽屉以闭合状态展示，250 mm 伸出限位、进出通道及桌椅退让均属条件校核。柜体锚固、灯带/插座、门套电箱与实际净深必须现场深化。")
+        result["notes"].append("入户右侧浅鞋柜与左侧7字杯盘柜独立分腔；仅餐柜北两模块设闭合浅抽屉，250 mm 伸出限位、进出通道及桌椅退让均属条件校核，其余下柜为满高移门。封闭转角不计可用容量。柜体锚固、灯带/插座、门套把手限位、电箱与实际净深必须现场深化。")
     if any(op.get("windowType")=="bay" for op in openings):
         result["notes"].append(BAY_NOTE)
     (MODEL_DIR/"scene-manifest.json").write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding="utf-8")
@@ -1591,11 +1687,38 @@ def configure_render(args):
         except (KeyError,AttributeError):pass
 
 
+def render_camera_state(cam):
+    return {"matrix":[list(row) for row in cam.matrix_world],"lens":cam.data.lens,"sensorWidth":cam.data.sensor_width,"type":cam.data.type,"orthoScale":cam.data.ortho_scale}
+
+
+def render_camera_hash(state):
+    return hashlib.sha256(json.dumps(state,sort_keys=True,separators=(",",":")).encode()).hexdigest()
+
+
 def render(args):
     RENDER_DIR.mkdir(parents=True,exist_ok=True)
     configure_render(args)
     names=list(VIEWS) if args.render=="all" else args.render.split(",")
     scene=bpy.context.scene
+    manifest_path=MODEL_DIR/"scene-manifest.json"
+    current_manifest=json.loads(manifest_path.read_text(encoding="utf-8"))
+    blend_sha=hashlib.sha256((MODEL_DIR/"huiyayuan-wood.blend").read_bytes()).hexdigest()
+    if current_manifest.get("baseBlendSha256")!=blend_sha:
+        current_manifest["renderedViews"]={}
+    current_manifest["baseBlendSha256"]=blend_sha
+    # Earlier preview frames already have camera/image/model hashes. Add the
+    # inspectable state only by reading this same saved scene and matching
+    # their exact recorded hash; never retrofit a guessed camera to an image.
+    for previous_name,record in current_manifest.get("renderedViews",{}).items():
+        cam=bpy.data.objects.get(previous_name)
+        if not cam or cam.type!="CAMERA":raise ValueError("Recorded camera is missing: "+previous_name)
+        state=render_camera_state(cam)
+        if record.get("baseBlendSha256")==blend_sha and record.get("cameraHash")==render_camera_hash(state):
+            record["cameraState"]=state
+        elif previous_name not in names:
+            raise ValueError("Camera provenance mismatch; re-render "+previous_name)
+    frame_spec={"engine":args.engine,"width":args.resolution,"height":round(args.resolution*2/3),"samples":args.samples,"denoise":args.engine=="CYCLES"}
+    current_manifest["renderSpec"]=frame_spec
     for name in names:
         if name not in VIEWS:raise ValueError(f"Unknown view {name}: {list(VIEWS)}")
         scene.camera=bpy.data.objects[name]
@@ -1611,6 +1734,17 @@ def render(args):
         scene.render.filepath=str(RENDER_DIR/(name+".jpg"))
         print("RENDER_START",name,flush=True)
         bpy.ops.render.render(write_still=True)
+        cam=scene.camera
+        camera_state=render_camera_state(cam)
+        current_manifest.setdefault("renderedViews",{})[name]={
+            "sourceSha256":current_manifest["sourceSha256"],
+            "baseBlendSha256":blend_sha,
+            "cameraState":camera_state,
+            "cameraHash":render_camera_hash(camera_state),
+            "renderSpec":frame_spec,
+            "imageSha256":hashlib.sha256((RENDER_DIR/(name+".jpg")).read_bytes()).hexdigest(),
+        }
+        manifest_path.write_text(json.dumps(current_manifest,ensure_ascii=False,indent=2),encoding="utf-8")
         print("RENDER_COMPLETE",name,flush=True)
 
 

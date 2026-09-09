@@ -33,7 +33,7 @@ MODELS=ROOT/"models"
 BASE_BLEND=MODELS/"huiyayuan-wood.blend"
 BASE_MANIFEST=MODELS/"scene-manifest.json"
 SCHEMES_FILE=MODELS/"design-schemes.json"
-ALGORITHM_VERSION="scheme-pbr-3"
+ALGORITHM_VERSION="scheme-pbr-4"
 STONE_UV_NAME="SchemeStoneUV_1m"
 VIEWS=("overall","living","dining","master","bedroom-b","study","kitchen","master-bath","guest-bath","balcony","bay-master","bay-tea","bay-living","entry-storage","sideboard")
 ALLOWED_SHADES={"Organic linen pendant","Organic linen pendant.001"}
@@ -69,6 +69,8 @@ def parse_args():
 
 def sha_file(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 def json_hash(value):return hashlib.sha256(json.dumps(value,ensure_ascii=False,sort_keys=True,separators=(",",":")).encode()).hexdigest()
+def render_camera_state(cam):
+    return {"matrix":[list(row) for row in cam.matrix_world],"lens":cam.data.lens,"sensorWidth":cam.data.sensor_width,"type":cam.data.type,"orthoScale":cam.data.ortho_scale}
 def color(hex_value):
     value=hex_value.lstrip("#")
     if len(value)!=6:raise ValueError(f"Expected #RRGGBB, got {hex_value}")
@@ -302,6 +304,11 @@ class SchemeMaterials:
         facade=("door" in name or "drawer front" in name or "cabinet front" in name or "cupboard" in name)
         if kind=="furniture" and facade and original in ("Oak","OakLight","Cream"):
             role="cabinetAccent" if obj.get("storagePartId") in ("d_upper",) or room=="bath_2" else "cabinet"
+            explicit_role=obj.get("storageFrontPaletteRole")
+            if explicit_role:
+                if explicit_role not in ("cabinet","cabinetAccent"):
+                    raise ValueError(f"{obj.name}: unsupported front palette role {explicit_role!r}")
+                role=explicit_role
             # Root palettes reserve cabinet for the neutral background. Make
             # one actual lower kitchen run thematic, leaving the opposite run,
             # tall appliances and the rest of the storage wall restrained.
@@ -419,6 +426,9 @@ def configure_render(args):
 
 def variant_manifest(scheme,appearance,geometry_hash,count,changes,args):
     result=json.loads(BASE_MANIFEST.read_text(encoding="utf-8"))
+    # The baseline now has its own per-frame provenance. Those records are
+    # never variant renders; only a compatible prior variant may be resumed.
+    result.pop("renderedViews",None)
     sid=scheme["id"]
     model_prefix=f"models/schemes/{sid}"
     render_prefix=f"assets/schemes/{sid}"
@@ -464,6 +474,7 @@ def build_scheme(scheme,args):
     bpy.context.scene["schemeId"]=sid;bpy.context.scene["baseGeometryHash"]=before
     bpy.context.scene["appearanceHash"]=manifest["appearanceHash"]
     bpy.ops.wm.save_as_mainfile(filepath=str(out/"house.blend"),compress=True)
+    manifest["schemeBlendSha256"]=sha_file(out/"house.blend")
     export_glb(out/"house.glb")
     (out/"scene-manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding="utf-8")
     print("SCHEME_BUILD_COMPLETE",json.dumps({"id":sid,"appearanceHash":manifest["appearanceHash"],"baseGeometryHash":before,"protectedObjects":count,"glbMB":round((out/"house.glb").stat().st_size/1e6,2)},ensure_ascii=False),flush=True)
@@ -474,6 +485,8 @@ def render_scheme(scheme,args):
     bpy.ops.wm.open_mainfile(filepath=str(MODELS/"schemes"/sid/"house.blend"))
     manifest_path=MODELS/"schemes"/sid/"scene-manifest.json"
     manifest=json.loads(manifest_path.read_text(encoding="utf-8"))
+    scheme_blend_sha=sha_file(MODELS/"schemes"/sid/"house.blend")
+    if manifest.get("schemeBlendSha256")!=scheme_blend_sha:raise RuntimeError(sid+": saved scheme blend changed; rebuild before rendering")
     if manifest["appearanceHash"]!=json_hash(resolved_appearance(scheme)):raise RuntimeError(sid+": appearance changed; rebuild before rendering")
     apply_scheme_copy(manifest,scheme)
     manifest_path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding="utf-8")
@@ -484,9 +497,10 @@ def render_scheme(scheme,args):
         frame_spec={"width":args.resolution,"height":round(args.resolution*2/3),"samples":args.samples}
         prior=manifest.get("renderedViews",{}).get(name,{})
         image_path=out/(name+".jpg")
-        if args.resume and image_path.exists() and image_path.stat().st_size>1000 and prior.get("appearanceHash")==manifest["appearanceHash"] and prior.get("baseGeometryHash")==manifest["baseGeometryHash"] and prior.get("renderSpec")==frame_spec:
-            print("SCHEME_RENDER_SKIP",sid,name,flush=True);continue
         scene=bpy.context.scene;scene.camera=bpy.data.objects[name]
+        camera_state=render_camera_state(scene.camera);camera_hash=json_hash(camera_state)
+        if args.resume and image_path.exists() and image_path.stat().st_size>1000 and prior.get("imageSha256")==sha_file(image_path) and prior.get("cameraHash")==camera_hash and prior.get("sourceSha256")==manifest["sourceSha256"] and prior.get("baseBlendSha256")==manifest["baseBlendSha256"] and prior.get("schemeBlendSha256")==scheme_blend_sha and prior.get("appearanceHash")==manifest["appearanceHash"] and prior.get("baseGeometryHash")==manifest["baseGeometryHash"] and prior.get("renderSpec")==frame_spec:
+            print("SCHEME_RENDER_SKIP",sid,name,flush=True);continue
         for obj in scene.objects:
             if obj.get("kind")=="ceiling":obj.hide_render=name=="overall"
             elif obj.get("kind")=="wall":obj.hide_render=name=="overall" and obj.get("wallIndex") in (4,5,6)
@@ -495,7 +509,7 @@ def render_scheme(scheme,args):
         started=time.perf_counter();print("SCHEME_RENDER_START",sid,name,flush=True)
         bpy.ops.render.render(write_still=True)
         elapsed=round(time.perf_counter()-started,2)
-        manifest.setdefault("renderedViews",{})[name]={"appearanceHash":manifest["appearanceHash"],"baseGeometryHash":manifest["baseGeometryHash"],"renderSpec":frame_spec,"seconds":elapsed}
+        manifest.setdefault("renderedViews",{})[name]={"appearanceHash":manifest["appearanceHash"],"baseGeometryHash":manifest["baseGeometryHash"],"sourceSha256":manifest["sourceSha256"],"baseBlendSha256":manifest["baseBlendSha256"],"schemeBlendSha256":scheme_blend_sha,"cameraState":camera_state,"cameraHash":camera_hash,"imageSha256":sha_file(image_path),"renderSpec":frame_spec,"seconds":elapsed}
         manifest["renderSpec"]=render_spec(args)
         manifest_path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding="utf-8")
         print("SCHEME_RENDER_COMPLETE",sid,name,elapsed,flush=True)

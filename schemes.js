@@ -1,4 +1,4 @@
-export const SCHEME_REVISION='3.1.0';
+export const SCHEME_REVISION='3.1.1';
 export const escapeHTML=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const assetURL=(path,revision=SCHEME_REVISION)=>{const url=new URL(path,document.baseURI);url.searchParams.set('v',revision);return url.href};
 export const viewerURL=(id,hash='')=>{const url=new URL('studio.html',document.baseURI);url.searchParams.set('scheme',id);url.searchParams.set('v',SCHEME_REVISION);url.hash=hash;return url.href};

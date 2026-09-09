@@ -6,10 +6,10 @@
   <meta name="theme-color" content="#f4f1eb" />
   <meta name="description" content="荟雅苑四套三房两卫设计方案：同一户型尺寸、独立材质模型与 Blender 渲染，可交互 Three.js 全屋漫游。" />
   <title>方案查看 · 荟雅苑设计选集</title>
-  <link rel="stylesheet" href="studio.css?v=3.1.0" />
-  <link rel="stylesheet" href="schemes.css?v=3.1.0" />
+  <link rel="stylesheet" href="studio.css?v=3.1.1" />
+  <link rel="stylesheet" href="schemes.css?v=3.1.1" />
   <script type="importmap">{"imports":{"three":"./vendor/three/three.module.js","three/addons/":"./vendor/three/addons/"}}</script>
-  <script type="module" src="studio.js?v=3.1.0"></script>
+  <script type="module" src="studio.js?v=3.1.1"></script>
 </head>
 <body>
   <div class="app-shell">
@@ -59,7 +59,7 @@
 
       <section id="model-view" class="view-panel active" role="tabpanel" aria-labelledby="tab-model">
         <div id="model-canvas" class="model-canvas" aria-label="可旋转和缩放的全屋三维模型"></div>
-        <div id="scheme-load-error" class="scheme-load-error" hidden><strong>方案目录暂未载入</strong><p>请刷新重试。不会用其他方案的模型或图片替代。</p><a href="index.html?v=3.1.0">返回方案选集 ↗</a></div>
+        <div id="scheme-load-error" class="scheme-load-error" hidden><strong>方案目录暂未载入</strong><p>请刷新重试。不会用其他方案的模型或图片替代。</p><a href="index.html?v=3.1.1">返回方案选集 ↗</a></div>
         <div id="room-labels" class="room-labels"></div>
         <div id="model-loading" class="model-loading" aria-live="polite"><div class="loading-house"><span></span><span></span><span></span></div><strong>正在打开这个家</strong><span id="loading-status">载入材质与空间模型…</span><div class="loading-track"><i id="loading-progress"></i></div></div>
         <div id="model-fallback" class="model-fallback" hidden><img alt="全屋 Blender 俯视渲染" /><div><strong>当前暂时无法打开交互模型</strong><p id="fallback-message">可以先查看平面与空间渲染。</p><button class="primary-button" id="fallback-renders">查看效果图 <span>↗</span></button></div></div>
@@ -98,7 +98,7 @@
   </dialog>
   <dialog id="scheme-dialog" class="bay-dialog viewer-scheme-dialog" aria-labelledby="scheme-dialog-title">
     <button class="dialog-close icon-button" aria-label="关闭方案选择" data-icon="close"></button>
-    <header class="bay-dialog-heading"><p class="eyebrow">SAME HOME / DIFFERENT EXPRESSIONS</p><h2 id="scheme-dialog-title">换一种，感受家的另一面。</h2><p>切换材质、色彩与同源渲染，保留当前房间位置。空间尺寸、床向和收纳功能不变。</p><a class="scheme-gallery-link" href="index.html?v=3.1.0">打开完整方案选集 ↗</a></header>
+    <header class="bay-dialog-heading"><p class="eyebrow">SAME HOME / DIFFERENT EXPRESSIONS</p><h2 id="scheme-dialog-title">换一种，感受家的另一面。</h2><p>切换材质、色彩与同源渲染，保留当前房间位置。空间尺寸、床向和收纳功能不变。</p><a class="scheme-gallery-link" href="index.html?v=3.1.1">打开完整方案选集 ↗</a></header>
     <div id="viewer-scheme-grid" class="scheme-grid"></div>
     <footer class="viewer-scheme-footer"><div id="scheme-current-summary"></div><div id="scheme-current-references" class="bay-references"></div><p>风格参考只借鉴材料与色彩，不移植外部案例的尺寸或结构。当前模型仍含待复尺条件。</p></footer>
   </dialog>

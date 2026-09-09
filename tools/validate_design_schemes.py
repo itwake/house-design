@@ -376,32 +376,85 @@ class Audit:
         sid = scheme["id"]
         prefix = "assets/blender-renders" if sid == "wood" else f"assets/schemes/{sid}"
         expected = {f"{prefix}/{name}.jpg" for name in VIEWS}
-        self.check(manifest_render_paths(manifest) == expected, f"{sid}: manifest references all 15 own-scheme views, without fallback")
+        self.check(manifest_render_paths(manifest) == expected, f"{sid}: manifest references all15 own-scheme views, without fallback")
         self.check(scheme["hero"] in expected, f"{sid}: gallery hero belongs to this scheme")
         self.details[sid]["renderHashes"] = {}
+        self.details[sid]["verifiedRenderHashes"] = {}
         for name in VIEWS:
-            relative = f"{prefix}/{name}.jpg"
-            path = relative_file(relative)
+            prior_errors = len(self.errors)
+            path = relative_file(f"{prefix}/{name}.jpg")
             if not path.is_file():
                 message = f"{sid}/{name}: render missing"
                 (self.waiting if self.pending and sid != "wood" else self.errors).append(message)
                 continue
             raw = path.read_bytes()
             dimensions = jpeg_dimensions(raw)
-            self.details[sid]["renderHashes"][name] = sha(raw)
-            if sid == "wood":
-                self.check(min(dimensions) >= 640, f"{sid}/{name}: complete JPEG {dimensions[0]}x{dimensions[1]}")
-                continue
+            image_hash = sha(raw)
+            self.details[sid]["renderHashes"][name] = image_hash
             spec = scheme["renderSpec"]
             record = manifest.get("renderedViews", {}).get(name)
-            self.check(dimensions == (spec["width"], spec["height"]), f"{sid}/{name}: actual JPEG dimensions match render spec")
+            self.check(dimensions == (960, 640) == (spec["width"], spec["height"]),
+                       f"{sid}/{name}: actual JPEG960x640 matches final render spec")
             if not record:
-                self.errors.append(f"{sid}/{name}: existing image has no render provenance record")
+                self.errors.append(f"{sid}/{name}: existing image has no current final render provenance")
                 continue
-            self.check(record.get("appearanceHash") == manifest["appearanceHash"] and record.get("baseGeometryHash") == manifest["baseGeometryHash"],
-                       f"{sid}/{name}: render provenance matches appearance and geometry")
-            self.check(record.get("renderSpec") == {key: spec[key] for key in ("width", "height", "samples")},
-                       f"{sid}/{name}: recorded render quality matches scheme")
+            self.check(record.get("imageSha256") == image_hash, f"{sid}/{name}: actual JPEG hash matches final frame record")
+            self.check(record.get("baseBlendSha256") == manifest.get("baseBlendSha256") == self.base_blend_hash,
+                       f"{sid}/{name}: frame belongs to actual final baseline Blender scene")
+            self.check(record.get("sourceSha256") == manifest.get("sourceSha256") == self.source_hash,
+                       f"{sid}/{name}: frame belongs to current source geometry")
+            if sid == "wood":
+                frame = {"engine": "CYCLES", "width": spec["width"], "height": spec["height"],
+                         "samples": spec["samples"], "denoise": True}
+                self.check(record.get("renderSpec") == frame and frame["samples"] == 8,
+                           f"wood/{name}: final Cycles8 denoised render quality")
+            else:
+                self.check(record.get("appearanceHash") == manifest["appearanceHash"] and record.get("baseGeometryHash") == manifest["baseGeometryHash"],
+                           f"{sid}/{name}: render provenance matches appearance and geometry")
+                self.check(record.get("renderSpec") == {key: spec[key] for key in ("width", "height", "samples")},
+                           f"{sid}/{name}: recorded render quality matches scheme")
+                self.check(record.get("schemeBlendSha256") == manifest.get("schemeBlendSha256") == self.details[sid]["blendSha256"],
+                           f"{sid}/{name}: frame belongs to actual current scheme Blender scene")
+            self.camera_record(name, record, manifest)
+            if len(self.errors) == prior_errors:
+                self.details[sid]["verifiedRenderHashes"][name] = image_hash
+
+    def camera_record(self, name, record, manifest):
+        """Check recomputable Blender camera state against the declared view.
+
+        Coordinate conversion is Blender(x,-planY,height) -> GLB(x,height,planY).
+        This validates actual camera values, not merely a well-formed hash.
+        """
+        state = record.get("cameraState", {})
+        if not self.check(bool(state) and record.get("cameraHash") == json_hash(state),
+                          f"{name}: camera state is present with a valid reproducible hash"):
+            return
+        matrix = state.get("matrix", [])
+        if not self.check(len(matrix) == 4 and all(len(row) == 4 for row in matrix), f"{name}: camera has full4x4 world transform"):
+            return
+        position = [matrix[0][3], matrix[2][3], -matrix[1][3]]
+        if name == "overall":
+            self.check(state.get("type") == "ORTHO" and state.get("orthoScale") == 22,
+                       "overall: original22 m orthographic camera preserved")
+            camera = manifest.get("overviewCamera", {})
+        else:
+            views = [item for key in ("rooms", "bayDetails", "storageDetails") for item in manifest.get(key, [])]
+            view = next((item for item in views if Path(item.get("render", "")).stem == name), {})
+            camera = view.get("interiorCamera", {})
+        target = camera.get("target", [])
+        expected = camera.get("position", [])
+        self.check(len(expected) == 3 and max(abs(a-b) for a,b in zip(position,expected)) < .0001,
+                   f"{name}: rendered camera position matches actual room/detail manifest")
+        if len(target) == 3:
+            direction = [target[i]-position[i] for i in range(3)]
+            length = math.sqrt(sum(v*v for v in direction))
+            forward = [-matrix[0][2], -matrix[2][2], matrix[1][2]]
+            self.check(length > 0 and max(abs(forward[i]-direction[i]/length) for i in range(3)) < .0001,
+                       f"{name}: rendered camera really looks toward the declared target")
+        if name != "overall" and state.get("lens", 0) > 0:
+            fov = math.degrees(2*math.atan(state.get("sensorWidth",0)/(2*state["lens"])))
+            self.check(abs(fov-camera.get("horizontalFov", -100)) < .006 and state.get("type") == "PERSP",
+                       f"{name}: real camera lens/sensor matches perspective field of view")
 
     def run(self):
         self.self_test()
@@ -425,6 +478,7 @@ class Audit:
         self.check(ALLOWED_SHADES <= set(base_meshes), "Both approved pendant objects exist in baseline")
         self.check(len(base_meshes) >= 1200, f"Decoded {len(base_meshes)} baseline world-space mesh objects")
         base_blend_hash = sha((ROOT / "models/huiyayuan-wood.blend").read_bytes())
+        self.base_blend_hash, self.source_hash = base_blend_hash, source_hash
         ceramic_signatures = {signature for material, signature in zip(base_glb.data.get("materials", []), base_glb.materials)
                               if material.get("name") == "Ceramic"}
         builder_ast = ast.parse((ROOT / "tools/build_design_schemes.py").read_text(encoding="utf-8"))
@@ -467,6 +521,7 @@ class Audit:
                 texture_changes = set(glbs[sid].image_hashes) - set(base_glb.image_hashes)
                 self.check(len(texture_changes) >= 4, f"{sid}: {len(texture_changes)} genuinely new embedded image textures")
             self.details[sid]["modelSha256"] = glbs[sid].file_hash
+            self.details[sid]["blendSha256"] = sha(relative_file(scheme["blend"]).read_bytes())
             self.details[sid]["embeddedTextureCount"] = len(glbs[sid].image_hashes)
             self.details[sid]["textureSetHash"] = json_hash(sorted(set(glbs[sid].image_hashes)))
             self.renders(scheme, manifest)
@@ -500,7 +555,8 @@ def main():
         for sid, item in audit.details.items():
             print(f"  {sid}: {item.get('protectedMeshObjects', 'baseline')} protected meshes; "
                   f"{item.get('embeddedTextureCount', '?')} embedded textures; "
-                  f"{len(item.get('renderHashes', {}))}/15 complete views")
+                  f"{len(item.get('verifiedRenderHashes', {}))}/15 provenance-verified views "
+                  f"({len(item.get('renderHashes', {}))} JPEG files present)")
         for error in audit.errors:
             print("ERROR:", error)
         if audit.waiting:

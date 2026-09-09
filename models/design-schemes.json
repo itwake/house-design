@@ -1,9 +1,9 @@
 {
-  "version": "3.1.0",
+  "version": "3.1.1",
   "defaultScheme": "wood",
   "updatedAt": "2026-09-09",
   "geometrySource": "models/design-data.json",
-  "scope": "同户型、同尺度的四套饰面与软装设计分支；原方案保留，新增三套独立模型和实景视角渲染。",
+  "scope": "同户型、同尺度的四套饰面与软装设计分支；保留原木风格，四套共同更新为进门右鞋柜、左7字整墙餐边柜，并由新模型全量重渲。",
   "researchNote": "参考近年有署名的公开住宅案例，不宣称流行度排名；第三方案例照片不作为本房效果图。",
   "invariants": [
     "四套方案共用同一份尺寸模型；新增方案改变饰面、织物、五金与灯罩细节，不改变户型或放大家具空间。",
@@ -91,8 +91,8 @@
       "id": "wood",
       "name": "木光原境",
       "en": "WOOD & WARMTH",
-      "tagline": "熟悉的温柔，完整保留",
-      "summary": "浅橡木、奶白与柔和织物构成原方案。保留既有三房两卫、飘窗改造与玄关餐边收纳，作为其他方案的对照基线。",
+      "tagline": "熟悉的温柔，新的收纳布局",
+      "summary": "延续浅橡木、奶白与柔和织物。三房两卫及飘窗功能保留，玄关按业主新参考调整为右手浅鞋柜、左手7字整墙餐柜，作为其他风格的对照。",
       "style": "现代原木 · 原始方案",
       "colors": [
         {
@@ -113,7 +113,7 @@
         }
       ],
       "differences": [
-        "原方案模型和15张真实渲染原样保留。",
+        "原木材质风格保留；右鞋柜与左7字餐柜按本轮模型同步重渲。",
         "轻木、柔和织物与低对比柜面，视觉最明亮平静。",
         "适合先确定空间功能，再用小件逐步增加颜色。"
       ],
@@ -133,10 +133,13 @@
       "model": "models/huiyayuan-wood.glb",
       "blend": "models/huiyayuan-wood.blend",
       "manifest": "models/scene-manifest.json",
-      "assetRevision": "3.0.6",
+      "assetRevision": "3.1.1",
       "renderSpec": {
         "engine": "Cycles",
-        "preserved": true
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoising": true
       }
     },
     {
@@ -215,7 +218,7 @@
       "model": "models/schemes/terracotta/house.glb",
       "blend": "models/schemes/terracotta/house.blend",
       "manifest": "models/schemes/terracotta/scene-manifest.json",
-      "assetRevision": "3.1.0",
+      "assetRevision": "3.1.1",
       "renderSpec": {
         "engine": "Cycles",
         "width": 960,
@@ -278,10 +281,10 @@
       },
       "storageOverrides": {
         "entry_shoe_station": {
-          "summary": "赤陶拾光：沿用1750×400mm鞋柜、换鞋凳与镜板，以本方案柜面、木色和坐垫形成归家背景；不增加柜深或与杯盘共腔。"
+          "summary": "赤陶拾光：进门右手650×340mm浅鞋柜，暖木中空配浅柜面；没有固定换鞋凳，取鞋前须收门，净深和把手余量待实测。"
         },
         "dining_sideboard_wall": {
-          "summary": "赤陶拾光：1400×400mm餐边柜保留浅上柜与干式备饮留空，仅更新柜门、木色、五金和石感台面；不增水槽或擅改电器适配。"
+          "summary": "赤陶拾光：左侧西长臂5290mm、南短臂1625mm形成7字整墙；暖木中空、浅石台面和局部赤陶上柜贯通，盲角不计储物，桌旁不设抽屉。"
         }
       }
     },
@@ -362,7 +365,7 @@
       "model": "models/schemes/moss/house.glb",
       "blend": "models/schemes/moss/house.blend",
       "manifest": "models/schemes/moss/scene-manifest.json",
-      "assetRevision": "3.1.0",
+      "assetRevision": "3.1.1",
       "renderSpec": {
         "engine": "Cycles",
         "width": 960,
@@ -425,10 +428,10 @@
       },
       "storageOverrides": {
         "entry_shoe_station": {
-          "summary": "松影石居：沿用1750×400mm鞋柜、换鞋凳与镜板，以本方案柜面、木色和坐垫形成归家背景；不增加柜深或与杯盘共腔。"
+          "summary": "松影石居：进门右手650×340mm浅鞋柜，烟木中空与浅色柜门延续安静配色；不增固定换鞋凳，门扇遮柜及鞋长适配条件仍须确认。"
         },
         "dining_sideboard_wall": {
-          "summary": "松影石居：1400×400mm餐边柜保留浅上柜与干式备饮留空，仅更新柜门、木色、五金和石感台面；不增水槽或擅改电器适配。"
+          "summary": "松影石居：左侧7字整墙餐柜采用烟木留空、浅石台面与局部苔绿上柜。西长臂5290mm、南短臂1625mm含盲角，保持相同分段与取物条件。"
         }
       }
     },
@@ -509,7 +512,7 @@
       "model": "models/schemes/cobalt/house.glb",
       "blend": "models/schemes/cobalt/house.blend",
       "manifest": "models/schemes/cobalt/scene-manifest.json",
-      "assetRevision": "3.1.0",
+      "assetRevision": "3.1.1",
       "renderSpec": {
         "engine": "Cycles",
         "width": 960,
@@ -572,10 +575,10 @@
       },
       "storageOverrides": {
         "entry_shoe_station": {
-          "summary": "蓝调构想：沿用1750×400mm鞋柜、换鞋凳与镜板，以本方案柜面、木色和坐垫形成归家背景；不增加柜深或与杯盘共腔。"
+          "summary": "蓝调构想：进门右侧650×340mm浅鞋柜保持浅柜面与暖木中空，银色细节与全屋呼应；取消旧西侧鞋柜和换鞋凳，先收门再取鞋。"
         },
         "dining_sideboard_wall": {
-          "summary": "蓝调构想：1400×400mm餐边柜保留浅上柜与干式备饮留空，仅更新柜门、木色、五金和石感台面；不增水槽或擅改电器适配。"
+          "summary": "蓝调构想：左侧7字餐柜以暖木和奶白为底，钴蓝只落在选定上柜面。西5290mm、南1625mm整臂含盲角，模型内真实转折，不改变餐桌与窗边学习位。"
         }
       }
     }

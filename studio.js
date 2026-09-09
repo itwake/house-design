@@ -1,9 +1,9 @@
-import {loadSchemeCatalog,schemeCards,bindSchemeImages,schemeSwatches,schemeRender,viewerURL} from './schemes.js?v=3.1.0';
+import {loadSchemeCatalog,schemeCards,bindSchemeImages,schemeSwatches,schemeRender,viewerURL} from './schemes.js?v=3.1.1';
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
-const UI_REVISION = '3.1.0';
+const UI_REVISION = '3.1.1';
 document.documentElement.dataset.uiRevision = UI_REVISION;
-let ASSET_REVISION = '3.0.6';
+let ASSET_REVISION = '3.1.1';
 const revisedAsset = path => {const url=new URL(path,document.baseURI);url.searchParams.set('v',ASSET_REVISION);return url.href};
 const icons = {
   cube:'<path d="m8 2 6 3.5v5L8 14l-6-3.5v-5L8 2Z M2 5.5 8 9l6-3.5 M8 9v5 M5 3.8l6 3.5"/>',
@@ -31,7 +31,7 @@ $$('[data-icon]').forEach(el => el.insertAdjacentHTML('afterbegin', icon(el.data
 const descriptions = {
   overall:{name:'全屋概览',en:'THE ENTIRE HOME',title:'木色里的日常',icon:'cube',render:'overall',description:'浅橡木、暖白与柔和织物串起三房两卫。恢复完整客餐厅，让自然光在家中连贯流动。',features:['现代原木','三房两卫','同源模型']},
   living:{name:'客厅',en:'LIVING ROOM',title:'窗边一起学习',icon:'sofa',render:'living',description:'西侧飘窗前布置双人长桌，办公与儿童学习共享自然光。电视仍落北侧实墙；桌椅、窗扇与通行空间待现场复核。',features:['双人长桌','窗侧学习','实墙电视']},
-  dining:{name:'玄关 · 餐厅',en:'ENTRY & DINING',title:'把回家与围坐，收得妥帖',icon:'dining',render:'dining',description:'玄关鞋柜与换鞋凳、餐边杯盘柜与干式饮品台沿西墙分区。奶白柜门和浅木开放格保持连贯，鞋与杯盘独立收纳；尺寸与动态通行仍需现场复核。',features:['分层鞋柜','换鞋坐凳','干式饮品台']},
+  dining:{name:'玄关 · 餐厅',en:'ENTRY & DINING',title:'把回家与围坐，收得妥帖',icon:'dining',render:'dining',description:'进门东侧右手鞋柜面向西；西墙餐柜向南墙转折成7字。鞋与杯盘分开收纳，开放台面连接日常饮品操作；分段尺寸、盲角与通行动线仍需现场复核。',features:['右手鞋柜','7字餐柜','转角盲区复核']},
   room_a:{name:'主卧',en:'MASTER BEDROOM',title:'把喧嚣留在窗外',icon:'bed',render:'master',description:'柔和床头与浅木柜体营造安静背景，保留床侧通行。北窗的隔声与遮光，是舒适睡眠的重点。',features:['1500 mm 床','亚麻触感','北向采光']},
   room_b:{name:'次卧 B',en:'SECOND BEDROOM',title:'让睡眠与茶歇更从容',icon:'bed',render:'bedroom-b',description:'保留紧凑床、衣柜与条件飘窗茶座，取消独立书桌和办公椅。卧室入口保持通行，浅色材质减轻压迫感。',features:['1350 mm 床','条件茶座','不设独立书桌']},
   room_c:{name:'书房 · 客卧',en:'STUDY & GUEST',title:'一个人的安静时刻',icon:'study',render:'study',description:'独立日床与书桌适应工作、阅读和偶尔留宿。紧凑尺度用轻巧家具表达，西窗为书房引入自然光。',features:['独立日床','灵活使用','西侧窗光']},
@@ -138,27 +138,48 @@ function renderBayFitouts(){
   });
 }
 const storageRenderPath=fitout=>schemeRender(scheme,fitout.type==='entry'?'entry-storage':'sideboard');
-const storageRoleName=role=>({shoe_lower:'闭门鞋柜',key_niche:'钥匙置物格',upper_cabinet:'浅上柜',entry_accessories:'随手置物占位',shoe_bench:'换鞋坐位',bench_back:'镜面 / 挂物背板',sideboard_base:'杯盘下柜',sideboard_niche:'干式饮品格',dining_accessories:'杯具 / 茶罐示意'})[role]||role;
+const storageRoleName=role=>({shoe_lower:'闭门鞋柜',key_niche:'钥匙置物格',upper_cabinet:'浅上柜',entry_accessories:'随手置物占位',shoe_bench:'换鞋坐位',bench_back:'镜面 / 挂物背板',sideboard_base:'杯盘下柜',sideboard_niche:'干式饮品格',dining_accessories:'杯具 / 茶罐示意',sideboard_blind_base:'转角盲区',sideboard_corner_niche:'转角开放衔接',upper_blind_corner:'上柜盲角'})[role]||role;
 function storageElevation(fitout){
   const parts=fitout.parts||[];if(!parts.length)return '';
-  const minY=Math.min(...parts.map(p=>p.y)),maxY=Math.max(...parts.map(p=>p.y+p.d)),top=Math.max(...parts.map(p=>p.zCm+p.hCm)),width=maxY-minY;
-  const shapes=[...parts].sort((a,b)=>a.x-b.x).map(p=>{
-    const x=maxY-p.y-p.d,y=top-p.zCm-p.hCm,open=p.role.includes('niche'),accessory=p.role.includes('accessories'),bench=p.role==='shoe_bench';
-    const fill=accessory?'none':open?'#ddc39c':p.role==='bench_back'?'#e6dcc8':bench?'none':'#f9f6ed';
-    const meta=`data-elevation-part-id="${escapeHTML(p.id)}" data-source-y="${p.y}" data-source-z-cm="${p.zCm}" data-depth-cm="${p.w}"`;
-    let detail='';
-    if(p.role==='shoe_lower'&&p.openBaseCm){const gap=Number(p.openBaseCm);detail+=`<rect x="${x+1}" y="${top-p.zCm-gap}" width="${p.d-2}" height="${gap-1}" fill="#ded4c2" stroke="none"/><line x1="${x}" y1="${top-p.zCm-gap}" x2="${x+p.d}" y2="${top-p.zCm-gap}" stroke="#baa482" stroke-width="1"/><text x="${x+p.d/2}" y="${top-p.zCm-gap/2+3}" text-anchor="middle" font-size="7" fill="#7d6d54">常鞋区 ${gap*10}</text>`}
-    const openEnd=p.role==='upper_cabinet'?Number(p.openEndCm||0):0;
-    if(openEnd){detail+=`<rect data-elevation-open-end x="${x}" y="${y+1}" width="${openEnd}" height="${p.hCm-2}" fill="#ddc39c" stroke="#bda98a" stroke-width=".8"/>`;for(const level of [34,67])detail+=`<line x1="${x+1}" y1="${top-p.zCm-level}" x2="${x+openEnd-1}" y2="${top-p.zCm-level}" stroke="#bda98a" stroke-width="1"/>`;detail+=`<text x="${x+openEnd/2}" y="${y+p.hCm/2}" text-anchor="middle" font-size="6.5" fill="#89795f">杯格 ${openEnd*10}</text>`}
-    if(p.doorPanels&&!open){for(let i=1;i<p.doorPanels;i++)detail+=`<line x1="${x+openEnd+(p.d-openEnd)*i/p.doorPanels}" y1="${y+1}" x2="${x+openEnd+(p.d-openEnd)*i/p.doorPanels}" y2="${top-p.zCm-(p.openBaseCm||0)}" stroke="#d7cbb7" stroke-width=".8"/>`}
-    // Internal drawer fronts follow storage_part() in build_blender.py:
-    // lower edge z+62 cm, front height h-65.5 cm, two closed fronts.
-    if(p.role==='sideboard_base'){for(let i=0;i<2;i++)detail+=`<rect data-elevation-drawer x="${x+p.d*i/2+.7}" y="${top-p.zCm-62-(p.hCm-65.5)}" width="${p.d/2-1.4}" height="${p.hCm-65.5}" fill="#fcfaf3" stroke="#d1c3ac" stroke-width=".8"/>`;detail+=`<text x="${x+p.d/2}" y="${top-p.zCm-70}" text-anchor="middle" font-size="7" fill="#89795f">浅抽屉 · 闭合状态</text>`}
-    if(bench)detail+=`<line x1="${x+1}" y1="${top-Number(p.seatHeightCm||p.hCm)}" x2="${x+p.d-1}" y2="${top-Number(p.seatHeightCm||p.hCm)}" stroke="#b6b498" stroke-width="3"/><text x="${x+p.d/2}" y="${y+17}" text-anchor="middle" font-size="8" fill="#89795f">坐高 ${(p.seatHeightCm||p.hCm)*10}</text>`;
-    const text=!accessory&&!bench?`<text x="${x+openEnd+(p.d-openEnd)/2}" y="${y+p.hCm/2+3}" text-anchor="middle" font-size="${p.d<90?7:9}" fill="#89795f">${storageRoleName(p.role)}</text>`:'';
-    return `<g><title>${escapeHTML(storageRoleName(p.role))}：沿墙${p.d*10}mm / 标高${p.zCm*10}–${(p.zCm+p.hCm)*10}mm / 深${p.w*10}mm</title><rect ${meta} x="${x}" y="${y}" width="${p.d}" height="${p.hCm}" fill="${fill}" stroke="${accessory?'none':'#bda98a'}" stroke-width="1"/>${detail}${text}</g>`;
+  const faces={east:{label:'柜面向东 · 从东侧正视',axis:'y',start:'south',end:'north',order:'左南右北',reverse:true},west:{label:'柜面向西 · 从西侧正视',axis:'y',start:'north',end:'south',order:'左北右南',reverse:false},north:{label:'柜面向北 · 从北侧正视',axis:'x',start:'east',end:'west',order:'左东右西',reverse:true},south:{label:'柜面向南 · 从南侧正视',axis:'x',start:'west',end:'east',order:'左西右东',reverse:false}};
+  const groups=new Map();
+  for(const part of parts){const face=faces[part.face]?part.face:(fitout.face||'east'),segment=part.segmentId||part.source?.segmentId||part.wallSide||face,key=segment+'|'+face;if(!groups.has(key))groups.set(key,{face,segment,parts:[]});groups.get(key).parts.push(part)}
+  return [...groups.values()].map(group=>{
+    const {face,segment,parts}=group,view=faces[face]||faces.east,axis=view.axis,lengthKey=axis==='y'?'d':'w',depthKey=axis==='y'?'w':'d';
+    const min=Math.min(...parts.map(p=>p[axis])),max=Math.max(...parts.map(p=>p[axis]+p[lengthKey])),top=Math.max(...parts.map(p=>p.zCm+p.hCm)),width=max-min;
+    const title=(fitout.segments||[]).find(item=>item.id===segment)?.title||view.label;
+    const shapes=[...parts].sort((a,b)=>face==='east'?a.x-b.x:face==='west'?b.x-a.x:face==='north'?b.y-a.y:a.y-b.y).map(p=>{
+      const length=p[lengthKey],depth=p[depthKey],x=view.reverse?max-p[axis]-length:p[axis]-min,y=top-p.zCm-p.hCm,open=p.role.includes('niche'),accessory=p.role.includes('accessories'),bench=p.role==='shoe_bench';
+      const blind=p.role.includes('blind'),fill=accessory?'none':blind?'#e3ddd0':open?'#ddc39c':p.role==='bench_back'?'#e6dcc8':bench?'none':'#f9f6ed';
+      const meta=`data-elevation-part-id="${escapeHTML(p.id)}" data-elevation-face="${face}" data-elevation-segment="${escapeHTML(segment)}" data-source-x="${p.x}" data-source-y="${p.y}" data-source-z-cm="${p.zCm}" data-depth-cm="${depth}"`;
+      let detail='';
+      if(open){
+        const edge=(name,x1,y1,x2,y2)=>`<line data-elevation-niche-edge-for="${escapeHTML(p.id)}" data-niche-edge="${name}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#bda98a" stroke-width="1"/>`;
+        detail+=edge('top',x,y,x+length,y)+edge('bottom',x,y+p.hCm,x+length,y+p.hCm);
+        // The Blender module rotates as a complete canonical east-facing group:
+        // its local start is always the right edge in a frontal elevation.
+        if(p.role==='sideboard_corner_niche'){
+          // This separately owned north-facing turn has a west back lining,
+          // not an invented panel across the open east join.
+          detail+=edge('west-back',x+length,y,x+length,y+p.hCm);
+        }else{
+          if(!p.omitStartPanel)detail+=edge('start',x+length,y,x+length,y+p.hCm);
+          if(!p.omitEndPanel)detail+=edge('end',x,y,x,y+p.hCm);
+        }
+      }
+      if(blind)detail+=`<path data-elevation-blind-area d="M${x+2} ${y+2}L${x+length-2} ${y+p.hCm-2}M${x+length-2} ${y+2}L${x+2} ${y+p.hCm-2}" fill="none" stroke="#c9bda6" stroke-width=".8"/>`;
+      if(p.role==='shoe_lower'&&p.openBaseCm){const gap=Math.min(Number(p.openBaseCm),p.hCm);detail+=`<rect x="${x+1}" y="${top-p.zCm-gap}" width="${length-2}" height="${gap-1}" fill="#ded4c2" stroke="none"/><line x1="${x}" y1="${top-p.zCm-gap}" x2="${x+length}" y2="${top-p.zCm-gap}" stroke="#baa482" stroke-width="1"/><text x="${x+length/2}" y="${top-p.zCm-gap/2+3}" text-anchor="middle" font-size="7" fill="#7d6d54">常鞋区 ${gap*10}</text>`}
+      const openEnd=p.role==='upper_cabinet'?Math.min(Number(p.openEndCm||0),length):0,openSide=p.openEndSide||'south',openLeft=openSide==='start'||openSide===view.start,closedStart=x+(openLeft?openEnd:0),closedLength=length-openEnd;
+      if(openEnd){const openX=openLeft?x:x+length-openEnd;detail+=`<rect data-elevation-open-end data-open-side="${escapeHTML(openSide)}" x="${openX}" y="${y+1}" width="${openEnd}" height="${p.hCm-2}" fill="#ddc39c" stroke="#bda98a" stroke-width=".8"/>`;for(const level of p.openShelfHeightsCm||[34,67])if(level<p.hCm)detail+=`<line x1="${openX+1}" y1="${top-p.zCm-level}" x2="${openX+openEnd-1}" y2="${top-p.zCm-level}" stroke="#bda98a" stroke-width="1"/>`;detail+=`<text x="${openX+openEnd/2}" y="${y+p.hCm/2}" text-anchor="middle" font-size="6.5" fill="#89795f">杯格 ${openEnd*10}</text>`}
+      if(p.doorPanels&&!open&&!blind){for(let i=1;i<p.doorPanels;i++)detail+=`<line x1="${closedStart+closedLength*i/p.doorPanels}" y1="${y+1}" x2="${closedStart+closedLength*i/p.doorPanels}" y2="${top-p.zCm-(p.openBaseCm||0)}" stroke="#d7cbb7" stroke-width=".8"/>`}
+      // Drawer levels are design components shared with storage_part(), not measured wall dimensions.
+      if(p.role==='sideboard_base'){const count=p.drawerPanels??p.drawerCount??2,bottom=p.drawerBottomCm??62,height=p.drawerHeightCm??p.hCm-65.5;if(count>0&&height>0){for(let i=0;i<count;i++)detail+=`<rect data-elevation-drawer data-elevation-drawer-for="${escapeHTML(p.id)}" x="${x+length*i/count+.7}" y="${top-p.zCm-bottom-height}" width="${length/count-1.4}" height="${height}" fill="#fcfaf3" stroke="#d1c3ac" stroke-width=".8"/>`;detail+=`<text x="${x+length/2}" y="${top-p.zCm-bottom-height/2+3}" text-anchor="middle" font-size="7" fill="#89795f">浅抽屉 · 闭合状态</text>`}}
+      if(bench)detail+=`<line x1="${x+1}" y1="${top-Number(p.seatHeightCm||p.hCm)}" x2="${x+length-1}" y2="${top-Number(p.seatHeightCm||p.hCm)}" stroke="#b6b498" stroke-width="3"/><text x="${x+length/2}" y="${y+17}" text-anchor="middle" font-size="8" fill="#89795f">坐高 ${(p.seatHeightCm||p.hCm)*10}</text>`;
+      const text=!accessory&&!bench?`<text x="${closedStart+closedLength/2}" y="${y+p.hCm/2+3}" text-anchor="middle" font-size="${length<90?7:9}" fill="#89795f">${blind?'盲角':p.role==='sideboard_corner_niche'?'转角衔接':storageRoleName(p.role)}</text>`:'';
+      return `<g><title>${escapeHTML(storageRoleName(p.role))}：沿墙${length*10}mm / 标高${p.zCm*10}–${(p.zCm+p.hCm)*10}mm / 深${depth*10}mm</title><rect ${meta} x="${x}" y="${y}" width="${length}" height="${p.hCm}" fill="${fill}" stroke="${accessory||open?'none':'#bda98a'}" stroke-width="1"/>${detail}${text}</g>`;
+    }).join('');
+    return `<figure class="storage-elevation" data-elevation-face="${face}" data-elevation-segment="${escapeHTML(segment)}"><figcaption><b>${escapeHTML(title)}</b><span>同源 ${axis} / z 投影 · mm</span></figcaption><svg viewBox="-28 -15 ${width+58} ${top+48}" role="img" aria-label="${escapeHTML(fitout.title)} · ${view.label}，按实际构件投影，非施工图"><line x1="-6" y1="${top}" x2="${width+8}" y2="${top}" stroke="#b7aa94" stroke-width="1"/>${shapes}<line x1="0" y1="${top+14}" x2="${width}" y2="${top+14}" stroke="#ae9978" stroke-width=".7"/><text x="${width/2}" y="${top+27}" text-anchor="middle" font-size="9" fill="#8d7959">${width*10} mm · 本段投影长</text><text x="${width+14}" y="${top/2}" transform="rotate(90 ${width+14} ${top/2})" text-anchor="middle" font-size="8" fill="#8d7959">最高 ${top*10} mm</text></svg><p>${view.label}，${view.order}。分段接缝不代表中空隔板；仅画实际保留的端板。分段投影不重复展开转角，柜腔示意不替代板材、镜面开孔及五金加工图。</p></figure>`;
   }).join('');
-  return `<figure class="storage-elevation"><figcaption><b>沿墙分层 · 东侧正视</b><span>同源 y / z 投影 · mm</span></figcaption><svg viewBox="-28 -15 ${width+58} ${top+48}" role="img" aria-label="${escapeHTML(fitout.title)}分层正立面，按构件实际长度和标高投影，非施工图"><line x1="-6" y1="${top}" x2="${width+8}" y2="${top}" stroke="#b7aa94" stroke-width="1"/>${shapes}<line x1="0" y1="${top+14}" x2="${width}" y2="${top+14}" stroke="#ae9978" stroke-width=".7"/><text x="${width/2}" y="${top+27}" text-anchor="middle" font-size="9" fill="#8d7959">${width*10} mm · 沿墙总长</text><text x="${width+14}" y="${top/2}" transform="rotate(90 ${width+14} ${top/2})" text-anchor="middle" font-size="8" fill="#8d7959">最高 ${top*10} mm</text></svg><p>示意柜腔分层，不表达板厚、镜面开孔及五金加工；左南右北。</p></figure>`;
 }
 function showStorageFitouts(){if(!data){toast('空间数据正在载入，请稍后重试');return}const dialog=$('#storage-dialog');if(!dialog.open)dialog.showModal();dialog.scrollTop=0}
 function renderStorageFitouts(){
@@ -176,7 +197,7 @@ function renderStorageFitouts(){
 function diningSpecification(){
   const fitouts=data?.storageFitouts||[];if(!fitouts.length)return '';
   const entry=fitouts.find(f=>f.type==='entry'),sideboard=fitouts.find(f=>f.type==='sideboard');
-  return [entry?.summary,sideboard?.summary,entry?.dimensions?.[0],entry?.dimensions?.[2],sideboard?.dimensions?.[0],sideboard?.dimensions?.[1],'餐桌本轮东移400、北移400mm；柜深、通行及开启动态为设计校核，非现场实测。'].filter(Boolean).join(' ');
+  return [entry?.summary,sideboard?.summary,...(entry?.dimensions||[]).slice(0,2),...(sideboard?.dimensions||[]).slice(0,2),'柜深、通行、转角和开启动态均为设计校核，非现场实测；完整分层尺寸见收纳专题。'].filter(Boolean).map(detailText).join(' ');
 }
 function bathroomDescription(id){
   if(!['bath_1','bath_2'].includes(id))return '';
@@ -313,14 +334,26 @@ function planFitoutPart(fitout,part){
   return `<g data-fitout-part="${escapeHTML(part.id)}" pointer-events="none"><title>${escapeHTML(fitout.title)} · ${escapeHTML(sourceRole)} · 占位${w*10}×${d*10}mm · 底标高${Number(part.zCm||0)*10}mm / 构件高${Number(part.hCm||0)*10}mm；条件设计，非施工图</title><rect data-fitout-id="${escapeHTML(fitout.id)}" data-part-id="${escapeHTML(part.id)}" data-fitout-role="${escapeHTML(sourceRole)}" data-z-cm="${Number(part.zCm||0)}" data-h-cm="${Number(part.hCm||0)}" x="${x}" y="${y}" width="${w}" height="${d}" rx="${['cushion','chair'].includes(role)?6:2}" fill="${fill}" stroke="${subordinate?'none':'#a38b67'}" stroke-width="1.5"/>${detail}</g>`;
 }
 
+function planStorageFront(part,inset=2){
+  const {x,y,w,d}=part;
+  return part.face==='west'?[x+inset,y+3,x+inset,y+d-3]:part.face==='north'?[x+3,y+inset,x+w-3,y+inset]:part.face==='south'?[x+3,y+d-inset,x+w-3,y+d-inset]:[x+w-inset,y+3,x+w-inset,y+d-3];
+}
 function planStoragePart(fitout,part){
   if(!['x','y','w','d'].every(key=>Number.isFinite(Number(part[key]))))return '';
-  const {x,y,w,d}=part,role=part.role||'',accessory=role.includes('accessories'),back=role==='bench_back',niche=role.includes('niche'),upper=role==='upper_cabinet',bench=role==='shoe_bench';
-  const fill=accessory||niche?'none':bench?'#b9bca7':back?'#d9c5a4':upper?'#f8f4e9':'#e8dcc6';
+  const {x,y,w,d}=part,role=part.role||'',accessory=role.includes('accessories'),back=role==='bench_back',niche=role.includes('niche'),upper=role==='upper_cabinet'||role==='upper_blind_corner',bench=role==='shoe_bench',blind=role.includes('blind'),face=part.face||fitout.face||'east';
+  const fill=accessory||niche?'none':blind?'#e3ddd0':bench?'#b9bca7':back?'#d9c5a4':upper?'#f8f4e9':'#e8dcc6';
   let detail='';
   if(bench)detail=`<rect x="${x+3}" y="${y+4}" width="${w-6}" height="${d-8}" rx="4" fill="none" stroke="#f0f0e4" stroke-width="1.4" stroke-dasharray="4 3"/>`;
-  if(part.doorStyle==='sliding')detail+=`<line x1="${x+w-2}" y1="${y+3}" x2="${x+w-2}" y2="${y+d-3}" stroke="#a99069" stroke-width="2"/><path d="M${x+w-6} ${y+d*.3}v${d*.16}m-2-3 2 3 2-3 M${x+w-6} ${y+d*.7}v-${d*.16}m-2 3 2-3 2 3" fill="none" stroke="#a99069" stroke-width="1"/>`;
-  return `<g pointer-events="none"><title>${escapeHTML(fitout.title)} · ${escapeHTML(storageRoleName(role))} · 占位${w*10}×${d*10}mm / 标高${part.zCm*10}–${(part.zCm+part.hCm)*10}mm；设计示意，非施工图</title><rect data-storage-id="${escapeHTML(fitout.id)}" data-storage-part-id="${escapeHTML(part.id)}" data-storage-role="${escapeHTML(role)}" data-z-cm="${part.zCm}" data-h-cm="${part.hCm}" x="${x}" y="${y}" width="${w}" height="${d}" rx="${bench?4:0}" fill="${fill}" fill-opacity="${upper?.3:1}" stroke="${accessory||niche?'none':upper?'#b0a38b':'#b5a181'}" stroke-width="${upper?1:1.4}"${upper?' stroke-dasharray="4 3"':''}/>${detail}</g>`;
+  if(blind)detail+=`<path data-storage-blind-for="${escapeHTML(part.id)}" d="M${x+2} ${y+2}L${x+w-2} ${y+d-2}M${x+w-2} ${y+2}L${x+2} ${y+d-2}" fill="none" stroke="#b7ac98" stroke-width="1"/>`;
+  if(!blind&&!niche&&!accessory&&(part.doorStyle||part.doorPanels)){
+    const [x1,y1,x2,y2]=planStorageFront({...part,face});
+    detail+=`<line data-storage-front-for="${escapeHTML(part.id)}" data-face="${face}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#a99069" stroke-width="${part.doorStyle==='sliding'?2:1.3}"/>`;
+    if(part.doorStyle==='sliding'){
+      const dx=x2-x1,dy=y2-y1,length=Math.hypot(dx,dy),ux=dx/length,uy=dy/length;
+      for(const [at,sign]of [[.3,1],[.7,-1]]){const ax=x1+dx*at,ay=y1+dy*at,bx=ax+ux*length*.16*sign,by=ay+uy*length*.16*sign;detail+=`<path d="M${ax} ${ay}L${bx} ${by}m${-ux*3*sign-uy*2} ${-uy*3*sign+ux*2}L${bx} ${by}l${-ux*3*sign+uy*2} ${-uy*3*sign-ux*2}" fill="none" stroke="#a99069" stroke-width="1"/>`}
+    }
+  }
+  return `<g pointer-events="none"><title>${escapeHTML(fitout.title)} · ${escapeHTML(storageRoleName(role))} · 占位${w*10}×${d*10}mm / 标高${part.zCm*10}–${(part.zCm+part.hCm)*10}mm${blind?'；盲角不是正面满柜容量':''}；设计示意，非施工图</title><rect data-storage-id="${escapeHTML(fitout.id)}" data-storage-part-id="${escapeHTML(part.id)}" data-storage-role="${escapeHTML(role)}" data-storage-face="${face}" data-storage-segment="${escapeHTML(part.segmentId||part.source?.segmentId||part.wallSide||face)}" data-z-cm="${part.zCm}" data-h-cm="${part.hCm}" x="${x}" y="${y}" width="${w}" height="${d}" rx="${bench?4:0}" fill="${fill}" fill-opacity="${upper?.3:1}" stroke="${accessory||niche?'none':upper?'#b0a38b':'#b5a181'}" stroke-width="${upper?1:1.4}"${upper?' stroke-dasharray="4 3"':''}/>${detail}</g>`;
 }
 
 function makePlan(){
