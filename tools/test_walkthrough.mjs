@@ -149,10 +149,15 @@ for(const {n,meta}of doorNodes){const m=new THREE.Mesh(new THREE.BoxGeometry(.1,
 const context=vm.createContext({...walk,THREE,URL,URLSearchParams,console,document:ui.doc,window:ui.win,matchMedia:()=>({matches:false}),setTimeout:()=>0,clearTimeout:()=>{},requestAnimationFrame:()=>++calls.frames,cancelAnimationFrame:()=>{},performance:{now:()=>0},sessionStorage:{setItem:()=>calls.storage++},test:{data,manifest,catalog,camera,controls,scene,model,canvas:ui.canvas,calls}});
 vm.runInContext(source.replace(/^import .*\r?\n/gm,'').replace(/\binit\(\);\s*$/,''),context);
 vm.runInContext(`data=test.data;manifest=test.manifest;scheme=test.catalog.schemes[0];rooms=manifest.rooms;three=THREE;camera=test.camera;controls=test.controls;scene=test.scene;model=optimizeStaticModel(test.model,THREE,()=>{throw Error('Door should not be merged')});renderer={domElement:test.canvas,setSize:()=>{},render:()=>test.calls.renders++};state.ready=true;setupWalk();`,context);
-const api=vm.runInContext('({startWalk,stopWalk,focusRoom,switchView,resizeScene,tick,state,walkthrough,walkWorld,walkDoorParts,walkThresholds,setWalls,bindControls})',context);
+const api=vm.runInContext('({startWalk,stopWalk,focusRoom,switchView,resizeScene,tick,state,walkthrough,walkWorld,walkDoorParts,walkSlidingParts,walkThresholds,setWalls,bindControls})',context);
 assert.equal(ui.node('#start-walk').disabled,false);assert.equal(api.walkthrough.listeners.length,37,'Four direction pads and canvas input wired');
-assert.equal(api.walkDoorParts.length,19,'15 wood infills + 4 glass infills; preserve jambs and entry');
-assert.equal(api.walkThresholds.children.length,7,'Only the seven internal door floor gaps are bridged');
+assert.ok(!api.walkDoorParts.some(p=>p.userData.openingId==='door_kitchen'),'Kitchen leaves must never disappear');
+assert.equal(api.walkSlidingParts.length,18,'Three actual six-part sliding leaves');
+assert.deepEqual([...new Set(api.walkSlidingParts.map(p=>p.userData.slidingPanelIndex))].sort(),[0,1,2]);
+const closedPositions=api.walkSlidingParts.map(p=>p.position.clone());
+assert.equal(world.canStand(5.36,11.90),false,'North parked stack blocks walking');
+assert.ok(world.canStand(5.36,12.55),'Only the remaining south gap is passable');
+assert.equal(api.walkThresholds.children.length,6,'The six other gaps need temporary floors; kitchen now has a persistent floor');
 for(const floor of api.walkThresholds.children){
   const door=data.doors.find(d=>d.id===floor.userData.openingId),bounds=new THREE.Box3().setFromObject(floor);
   assert.ok(door&&door.id!=='entry_door');near(floor.position.x,(door.x1+door.x2)/200);near(floor.position.z,(door.y1+door.y2)/200);near(bounds.max.y,0);
@@ -161,13 +166,13 @@ const doorSnapshot=api.walkDoorParts.map(p=>p.visible);api.walkDoorParts[0].visi
 for(const room of Object.keys(WALK_STARTS))for(const cut of [true,false])for(const card of [true,false]){
   api.state.room=room;api.state.roomCardVisible=card;ui.node('#room-card').hidden=!card;api.setWalls(cut);api.startWalk();
   assert.equal(api.state.walking,true);assert.equal(api.state.interior,true);assert.equal(controls.enabled,false);near(camera.position.y,1.6);near(camera.near,.045);
-  assert.ok(api.walkDoorParts.every(p=>!p.visible));assert.equal(api.walkThresholds.visible,true);assert.equal(api.state.cutWalls,false);assert.equal(ui.node('#walk-hud').hidden,false);
+  assert.ok(api.walkDoorParts.every(p=>!p.visible));api.walkSlidingParts.forEach((p,i)=>{assert.ok(p.visible);assert.ok(p.position.equals(closedPositions[i].clone().add(new THREE.Vector3(...p.userData.slideOpenOffsetM))))});assert.equal(api.walkThresholds.visible,true);assert.equal(api.state.cutWalls,false);assert.equal(ui.node('#walk-hud').hidden,false);
   assert.equal(api.state.roomCardVisible,card);assert.equal(ui.node('#room-card').hidden,!card);
   const before=calls.orbit;api.tick(0);assert.equal(calls.orbit,before,'No Orbit update while walking');
   const position=camera.position.clone();api.resizeScene();assert.ok(position.equals(camera.position),'Resize does not refit walker');
   ui.doc.modal={};ui.win.emit('keydown',{code:'KeyW',target:ui.canvas});assert.equal(api.walkthrough.keys.size,0);ui.doc.modal=null;
   api.stopWalk();assert.equal(api.state.walking,false);assert.equal(controls.enabled,true);assert.equal(api.state.cutWalls,cut);near(camera.near,.35);
-  assert.deepEqual(api.walkDoorParts.map(p=>p.visible),doorSnapshot);assert.equal(api.walkThresholds.visible,false);assert.equal(ui.node('#walk-hud').hidden,true);assert.equal(api.state.roomCardVisible,card);
+  assert.deepEqual(api.walkDoorParts.map(p=>p.visible),doorSnapshot);api.walkSlidingParts.forEach((p,i)=>assert.ok(p.position.equals(closedPositions[i])));assert.equal(api.walkThresholds.visible,false);assert.equal(ui.node('#walk-hud').hidden,true);assert.equal(api.state.roomCardVisible,card);
 }
 api.startWalk();api.switchView('plan');assert.equal(api.state.walking,false);assert.equal(api.state.view,'plan');
 api.switchView('model');api.startWalk();api.focusRoom('room_b',false,false);assert.equal(api.state.walking,false);assert.equal(controls.enabled,true);

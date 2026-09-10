@@ -24,6 +24,9 @@ const context = vm.createContext({
 });
 vm.runInContext(`${helpers}\n${source.slice(start, end)}\nmakePlan();`, context, { timeout: 1000 });
 const svg = host.innerHTML;
+assert.ok(svg.includes('data-sliding-door="door_kitchen"'),'Kitchen shows tracked slider, not one fixed glass pane');
+assert.equal((svg.match(/data-sliding-panel=/g)||[]).length,3);
+assert.ok(svg.includes('1700 三轨推拉'));
 const tags = (html, marker) => [...html.matchAll(/<(?:rect|line|path|polygon|g)\b[^>]*>/g)].map(match => match[0]).filter(tag => tag.includes(marker));
 const attribute = (tag, name) => tag.match(new RegExp(`(?:^|\\s)${name}="([^"]*)"`))?.[1];
 const coordinates = (tag, names) => names.map(name => Number(attribute(tag, name)));

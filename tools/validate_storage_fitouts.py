@@ -18,8 +18,8 @@ DINING_SPECS = {
     '餐椅南2': [398, 1192.5, 44, 45],
 }
 ENTRY_TO_KITCHEN_PATH = [(440, 1410), (440, 1350), (455, 1310), (466, 1281.25),
-                         (483, 1266), (495, 1250), (495, 1215), (570, 1215)]
-ENTRY_TO_LIVING_PATH = ENTRY_TO_KITCHEN_PATH[:-1] + [(490,1160),(490,1100),(490,1025.75),
+                         (483, 1266), (495, 1250), (570, 1250), (695, 1255)]
+ENTRY_TO_LIVING_PATH = ENTRY_TO_KITCHEN_PATH[:-2] + [(490,1160),(490,1100),(490,1025.75),
     (371,1025.75),(371,900),(371,700),(367.5,610)]
 STORAGE_LINKS = {'entry_shoe_station': ('entry', {'entry_storage'}),
     'dining_sideboard_wall': ('sideboard', {'dining_sideboard','dining_sideboard_return','dining_sideboard_corner'})}
@@ -95,9 +95,9 @@ def check_storage_clearances(data, boxes, errors, checks):
     table,north,chair = (furniture[k] for k in ('四人餐桌','餐椅北1','餐椅南1'))
     metrics = {'west/table':table['x']-west[2], 'east/table':530-table['x']-table['w'],
         'south/chair':south[1]-chair['y']-chair['d'], 'south/rollback30':south[1]-chair['y']-chair['d']-30,
-        'shoe/right90leaf':shoe[0]-491, 'south/left90leaf':389-south[2], 'shoe/kitchenopening':shoe[1]-1265}
+        'shoe/right90leaf':shoe[0]-491, 'south/left90leaf':389-south[2], 'shoe/kitchenopening':shoe[1]-next(d['y2'] for d in data['doors'] if d['id']=='door_kitchen')}
     for key,value in {'west/table':77.5,'east/table':80,'south/chair':111.5,'south/rollback30':81.5,
-                      'shoe/right90leaf':4,'south/left90leaf':14,'shoe/kitchenopening':55}.items():
+                      'shoe/right90leaf':4,'south/left90leaf':14,'shoe/kitchenopening':5}.items():
         if abs(metrics[key]-value)>.01: errors.append(f'Physical clearance changed: {key}={metrics[key]:.3f}, expected{value} cm')
     if north['x']-(west[2]+25+50)<10.5-.01:
         errors.append('North-only25 cm drawer +50 cm user zone conflicts with north dining chair')

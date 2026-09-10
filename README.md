@@ -8,6 +8,7 @@
 
 ## 这一版有什么
 
+- V3.1.4 厨房门由900mm条件拓宽至1700mm，三扇三轨向北洞内叠停，模型实际净开约1033mm。漫游保留叠扇占位；平面、Blender/GLB与15张同源效果图全部同步。其他房间、飘窗和柜体位置不变。详见[厨房推拉门深化](docs/kitchen-slider-v314.md)。
 - V3.1.3 新增第一人称漫游：固定1.60m眼高，WASD／方向键移动、拖动转头，手机可双指分别控制方向键和视角；墙、窗、主要家具阻挡通行，一键返回俯瞰。仅改变网页交互，不改原木布局和既有模型、渲染资产。
 - V3.1.2 收起四套饰面选择入口及“换方案”弹窗，仅保留原木方案。最近确认的进门右鞋柜、左7字整墙餐边柜、三处功能飘窗及家具布局完整保留；模型、几何数据和15张效果图继续使用V3.1.1资产，没有回退或重渲。
 - 根入口直接进入查看器；三个旧配色链接回到原木，保留当前房间与说明卡隐藏偏好。未知方案链接明确报错，不默默当作有效设计。
@@ -43,7 +44,7 @@ V3.0.5按用户反馈取消主卧独立桌，只保留**一体飘窗办公梳妆
 
 详细证据、尺寸等级及尚未确定的事项见 [几何校核记录](docs/geometry-v3.md)。
 
-本轮漫游操作、门洞处理与离线验证范围见 [V3.1.3说明](docs/walkthrough-v313.md)。此前入口收敛与验证范围见 [V3.1.2说明](docs/single-layout-v312.md)。保留的几何、逐图复核和网页回归见 [V3.1.1检查记录](docs/qa-storage-v311.md)。之前记录保留于 [V3检查记录](docs/qa-v3.md) 与 [V3.1.0检查记录](docs/qa-design-schemes-v310.md)，其中“原案不变”等描述仅针对当时版本。
+本轮厨房扩洞、三轨停车与验证范围见 [V3.1.4说明](docs/kitchen-slider-v314.md)。此前漫游操作、门洞处理与离线验证范围见 [V3.1.3说明](docs/walkthrough-v313.md)。此前入口收敛与验证范围见 [V3.1.2说明](docs/single-layout-v312.md)。保留的几何、逐图复核和网页回归见 [V3.1.1检查记录](docs/qa-storage-v311.md)。之前记录保留于 [V3检查记录](docs/qa-v3.md) 与 [V3.1.0检查记录](docs/qa-design-schemes-v310.md)，其中“原案不变”等描述仅针对当时版本。
 
 ## 尺寸边界
 
@@ -94,25 +95,28 @@ node --check studio.js
 
 渲染默认使用 Cycles CPU 与去噪。可用 `--render overall,living` 仅渲染选定镜头。修改几何或相机后必须重新构建，不能仅 `--reuse`。
 
-V3.1.1 四套图统一为960×640像素、Cycles 8采样加去噪，全部由新的收纳模型重渲，不能将旧版1200×800原木图混充本轮新图。四套同机位，入户/餐柜近景按新的柜体位置重新取景；照明仅供设计展示，不是实测采光模拟。上面的32采样/1600像素命令可用于更高质量导出。
+当前V3.1.4原木15图为960×640像素、Cycles 8采样加去噪，由拓宽厨房门后的模型全部重渲。此前V3.1.1四套图统一为同规格，由当时收纳模型重渲，不能将旧版1200×800原木图混充本轮新图。四套同机位，入户/餐柜近景按新的柜体位置重新取景；照明仅供设计展示，不是实测采光模拟。上面的32采样/1600像素命令可用于更高质量导出。
 
 当前方案验证：
 
 ```powershell
 node tools/test_single_scheme.mjs
 node tools/test_walkthrough.mjs
+node tools/test_kitchen_door.mjs
 node tools/test_plan_geometry.mjs
 python tools/validate_studio.py --assets
 python tools/validate_design_schemes.py
 ```
 
-`test_single_scheme.mjs`离线执行实际路由与查看器初始化代码，核对旧链接、错误状态、房间定位、下载路径和说明卡状态，并对比V3.1.1几何及资产。它不测试WebGL或浏览器视觉。发布后运行 `node tools/verify_published.mjs`，通过HTTP逐一对比27个有效Pages资源的SHA；不读取用户浏览器或其他标签页。
+`test_single_scheme.mjs`离线执行实际路由与查看器初始化代码，核对旧链接、错误状态、房间定位、下载路径和说明卡状态，并对比受保护的历史资产与未改动的现有源几何。它不测试WebGL或浏览器视觉。发布后运行 `node tools/verify_published.mjs`，通过HTTP逐一对比27个有效Pages资源的SHA；不读取用户浏览器或其他标签页。
+
+`test_kitchen_door.mjs`核对三轨推拉门的实际GLB顶点、开合位移、净开口和叠停避障，并验证1359个无关网格未改变。
 
 `test_walkthrough.mjs`离线运行实际移动、输入与查看器生命周期代码，检查8房间连通、10个落脚点、双指输入、暂停／恢复、门片隐藏与退出复原。虚拟碰撞半径不是施工净空认证；该测试不含WebGL或浏览器视觉检查。
 
 `test_plan_geometry.mjs`直接运行网页平面与立面绘制函数，核对床、阶梯双卫、门窗、飘窗、24个收纳部件和开放中空端板方向。说明卡的浏览器专项 `qa_card_visibility.mjs` 仍可在明确要求浏览器测试时使用；旧的 `qa_design_schemes.mjs` 已标为四配色历史测试，不适用于当前入口。
 
-三套饰面实验及研究记录仅作为历史材料保留，见[历史风格研究](docs/style-research-v310.md)。如确需复现历史，可在 `build_design_schemes.py` 或 `scheme_manifest_copy.py` 显式传入 `--archived`；`validate_design_schemes.py --archived` 会连同历史模型、60张图及受保护几何一起核验。不得通过此饰面工具“生成”新布局。
+三套饰面实验及研究记录仅作为历史材料保留，见[历史风格研究](docs/style-research-v310.md)。如确需复现历史，可在 `build_design_schemes.py` 或 `scheme_manifest_copy.py` 显式传入 `--archived`；`validate_design_schemes.py --archived` 在相应历史版本可核验当时四套资产；V3.1.4以后历史配色与当前厨房门几何不同，不能拿它们与新原木模型作同几何比较。不得通过此饰面工具“生成”新布局。
 
 `validate_bay_fitouts.py`由主校验器调用，检查15个飘窗部件的实际GLB包围盒、支架三角网格的膝脚净空与条件元数据。`node tools/qa_bay_ui.mjs 本机CDP端口 本地项目标签页ID --images`可重复运行三方案的桌面/手机专题、图片、参考链接及SVG导出检查（不实际访问参考链接或下载文件）。
 

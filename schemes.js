@@ -1,6 +1,6 @@
 // One active layout. The previous three palette experiments are archived,
 // not alternative floor plans. Do not expose them as selectable schemes.
-export const SCHEME_REVISION='3.1.3';
+export const SCHEME_REVISION='3.1.4';
 export const RETIRED_PALETTE_IDS=Object.freeze(['terracotta','moss','cobalt']);
 export const assetURL=(path,revision=SCHEME_REVISION)=>{
   const url=new URL(path,document.baseURI);url.searchParams.set('v',revision);return url.href;

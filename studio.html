@@ -6,10 +6,10 @@
   <meta name="theme-color" content="#f4f1eb" />
   <meta name="description" content="荟雅苑三房两卫现代原木设计：同源平面、Blender效果图与Three.js全屋漫游，保留右侧鞋柜、左侧7字餐边柜和三处功能飘窗。" />
   <title>木光原境 · 荟雅苑的家</title>
-  <link rel="stylesheet" href="studio.css?v=3.1.3" />
-  <link rel="stylesheet" href="walkthrough.css?v=3.1.3" />
+  <link rel="stylesheet" href="studio.css?v=3.1.4" />
+  <link rel="stylesheet" href="walkthrough.css?v=3.1.4" />
   <script type="importmap">{"imports":{"three":"./vendor/three/three.module.js","three/addons/":"./vendor/three/addons/"}}</script>
-  <script type="module" src="studio.js?v=3.1.3"></script>
+  <script type="module" src="studio.js?v=3.1.4"></script>
 </head>
 <body>
   <div class="app-shell">
@@ -58,7 +58,7 @@
 
       <section id="model-view" class="view-panel active" role="tabpanel" aria-labelledby="tab-model">
         <div id="model-canvas" class="model-canvas" aria-label="可旋转和缩放的全屋三维模型"></div>
-        <div id="scheme-load-error" class="scheme-load-error" hidden><strong>设计资料暂未载入</strong><p>请刷新重试，或返回原木方案。</p><a href="index.html?v=3.1.3">返回原木方案 ↗</a></div>
+        <div id="scheme-load-error" class="scheme-load-error" hidden><strong>设计资料暂未载入</strong><p>请刷新重试，或返回原木方案。</p><a href="index.html?v=3.1.4">返回原木方案 ↗</a></div>
         <button type="button" id="start-walk" class="walk-launch" disabled aria-controls="walk-hud">第一人称漫游 <span aria-hidden="true">↗</span></button>
         <div id="walk-hud" class="walk-hud" hidden><div class="walk-location"><strong id="walk-room-name">室内漫游</strong><span>模拟视线高 1.60m</span></div><button type="button" id="walk-help" aria-label="查看漫游操作说明">操作</button><button type="button" id="exit-walk">退出漫游</button></div>
         <div id="walk-pad" class="walk-pad" role="group" aria-label="按住方向键行走" hidden><button type="button" data-walk-direction="forward" aria-label="向前走，按住持续移动" aria-pressed="false">↑</button><button type="button" data-walk-direction="left" aria-label="向左侧移，按住持续移动" aria-pressed="false">←</button><button type="button" data-walk-direction="back" aria-label="向后走，按住持续移动" aria-pressed="false">↓</button><button type="button" data-walk-direction="right" aria-label="向右侧移，按住持续移动" aria-pressed="false">→</button><span>按住移动</span></div>
@@ -99,7 +99,7 @@
     <div id="storage-fitout-cards" class="bay-fitout-grid storage-fitout-grid"></div>
     <footer class="bay-dialog-notes storage-dialog-notes"><h3>下单前，仍需实测与试摆</h3><ul id="storage-assumptions"></ul><p id="storage-reference-note"></p><p>本页图片均为本项目 Blender 同源模型渲染，不转载外部案例照片。正立面用于理解柜腔分层，不替代板件、承载、五金或电气施工图。</p></footer>
   </dialog>
-  <dialog id="walk-help-dialog" class="project-dialog walk-help-dialog" aria-labelledby="walk-help-title"><button class="dialog-close icon-button" aria-label="关闭漫游操作说明" data-icon="close"></button><h2 id="walk-help-title">在家里走一走</h2><p>电脑：W、A、S、D 或方向键前后左右移动；拖动画面环视；Q、E 左右转头。按住 Shift 可慢行，Esc 或“退出漫游”返回俯瞰。</p><p>手机／平板：按住左下方方向键移动，同时用另一根手指拖动画面转头。松开即停；也可以先转好方向再向前走。</p><p>打开说明或下载菜单、切到其他应用时会停止移动。关闭后需要重新按键；切换房间或平面／效果图会退出漫游，不会继续在后台行走。</p><p>模拟眼高固定1.60m，不跳跃、不飞行。墙、窗、柜体和主要家具设有碰撞边界；虚拟身体半径25cm仅用于操作避障，不代表实际人体净空或无障碍认证。</p><p>为演示室内通行，漫游期间临时隐藏内部门片、把手及玻璃门的中梃／玻璃，保留门框，门洞地面临时补齐；退出恢复。它不代表已经核验真实门扇的开启方式或全幅净开。入户外侧、所有窗与飘窗台都不可走出。低门槛和淋浴低台按可跨越示意，不模拟真实高差。</p><p>沿用当前条件设计：阳台新门仍需结构复核，模型不是施工许可。此功能是实时3D漫游，不是照片级VR或现场实测。</p></dialog>
+  <dialog id="walk-help-dialog" class="project-dialog walk-help-dialog" aria-labelledby="walk-help-title"><button class="dialog-close icon-button" aria-label="关闭漫游操作说明" data-icon="close"></button><h2 id="walk-help-title">在家里走一走</h2><p>电脑：W、A、S、D 或方向键前后左右移动；拖动画面环视；Q、E 左右转头。按住 Shift 可慢行，Esc 或“退出漫游”返回俯瞰。</p><p>手机／平板：按住左下方方向键移动，同时用另一根手指拖动画面转头。松开即停；也可以先转好方向再向前走。</p><p>打开说明或下载菜单、切到其他应用时会停止移动。关闭后需要重新按键；切换房间或平面／效果图会退出漫游，不会继续在后台行走。</p><p>模拟眼高固定1.60m，不跳跃、不飞行。墙、窗、柜体和主要家具设有碰撞边界；虚拟身体半径25cm仅用于操作避障，不代表实际人体净空或无障碍认证。</p><p>厨房三扇推拉门会向北叠停，保留真实占位；退出合拢。其他内部门为演示通行，漫游期间临时隐藏门片、把手及玻璃门的中梃／玻璃，保留门框，门洞地面临时补齐；退出恢复。它不代表已经核验真实门扇的开启方式或全幅净开。入户外侧、所有窗与飘窗台都不可走出。低门槛和淋浴低台按可跨越示意，不模拟真实高差。</p><p>沿用当前条件设计：阳台新门仍需结构复核，模型不是施工许可。此功能是实时3D漫游，不是照片级VR或现场实测。</p></dialog>
   <dialog id="image-dialog" class="image-dialog"><button class="dialog-close icon-button" aria-label="关闭效果图" data-icon="close"></button><img id="large-render" alt="空间大图" /><p id="large-render-caption"></p></dialog>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 </body>

@@ -4,7 +4,7 @@
   "blend": "models/huiyayuan-wood.blend",
   "units": "m",
   "source": "models/design-data.json",
-  "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
+  "sourceSha256": "082e7c2c6ca41f51de6673083341c78392c03cabcc81daa3878660b7f05da019",
   "bounds": {
     "min": [
       0.0,
@@ -202,7 +202,7 @@
         "门窗尺寸现场复尺",
         "沿墙650×外深340，高2500mm；柜面朝西",
         "底部200mm常鞋位，中部1000–1500mm置物格",
-        "上柜外深280mm；北端距厨房门洞南端550mm",
+        "上柜外深280mm；鞋柜北端距新厨房门洞南端仅50mm，门套须复核",
         "柜面距暂定右开90°门片约40mm，取鞋前需收门",
         "西臂总长5290mm；南臂总长1625mm（两者均含400mm盲角）",
         "底柜外深400、台面高850mm；上柜深280、高1500–2500mm",
@@ -484,7 +484,7 @@
         "fov": 61.93
       },
       "render": "assets/blender-renders/kitchen.jpg",
-      "description": "双排地柜、集成冰箱及蒸烤高柜，暖白石材台面与浅橡木门板。",
+      "description": "双排地柜位置不变；厨房西门暂拓至1700mm，三扇三轨玻璃门向北洞内叠停，模型净开约1033mm。门套距鞋柜仅50mm，扩洞和轨道固定待结构及管线核验。",
       "features": [
         "同一 Blender 场景生成模型和渲染",
         "原木 · 奶油白 · 亚麻",
@@ -926,16 +926,30 @@
     },
     {
       "id": "door_kitchen",
-      "name": "厨房玻璃移门（待复尺）",
+      "name": "厨房1700三扇三轨玻璃推拉门（扩洞条件方案，待复尺）",
       "kind": "glass-door",
       "x1": 536,
-      "y1": 1175,
+      "y1": 1145,
       "x2": 536,
-      "y2": 1265,
+      "y2": 1315,
       "sillCm": 0,
       "heightCm": 220,
       "grade": "C",
-      "widthMm": 900,
+      "sliding": {
+        "panelCount": 3,
+        "trackCount": 3,
+        "stackTo": "north",
+        "jambCm": 3.8,
+        "overlapCm": 3,
+        "panelDepthCm": 2.4,
+        "trackPitchCm": 4,
+        "stackStaggerCm": 1.5,
+        "frameDepthCm": 14.5,
+        "frameFinish": "warm-gray metal",
+        "condition": "三扇洞内向北叠停；1700mm洞口不等于净开，模型净开约1033mm，五金深化后以约1000mm为目标而非保证。"
+      },
+      "widthMm": 1700,
+      "notes": "原900mm门洞向北300mm、向南500mm拓宽；北端墙中心线剩240mm、南端800mm。南端距鞋柜起点50mm、南柜140mm，门套与承重/管线须现场核验，不能据图直接扩洞。",
       "sill": 0.0,
       "height": 2.2
     }
@@ -1091,7 +1105,7 @@
       "dimensions": [
         "沿墙650×外深340，高2500mm；柜面朝西",
         "底部200mm常鞋位，中部1000–1500mm置物格",
-        "上柜外深280mm；北端距厨房门洞南端550mm",
+        "上柜外深280mm；鞋柜北端距新厨房门洞南端仅50mm，门套须复核",
         "柜面距暂定右开90°门片约40mm，取鞋前需收门"
       ],
       "conditions": [
@@ -1153,108 +1167,9 @@
     }
   ],
   "renderedViews": {
-    "entry-storage": {
-      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
-      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
-      "cameraHash": "b8b4c8b0b8b0005f528aa20fa3ce04fe05d1b1f8caa2a483792cbc5f827bf1b3",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "307222b0cfc26e29989d587096aa7f3f3ec09e8ca36803d315e8e19b084b1161",
-      "cameraState": {
-        "matrix": [
-          [
-            -0.3548758029937744,
-            0.059371087700128555,
-            -0.9330263733863831,
-            3.200000047683716
-          ],
-          [
-            -0.9349134564399719,
-            -0.022536057978868484,
-            0.35415950417518616,
-            -12.75
-          ],
-          [
-            9.7587943059807e-08,
-            0.9979815483093262,
-            0.06350433081388474,
-            1.4500000476837158
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "lens": 18.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
-      }
-    },
-    "sideboard": {
-      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
-      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
-      "cameraHash": "129dcdb2f3563dc939adba9fdb515e98c934b7aea9a5a7eb4a643e8c04f178ad",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "468698d092c207399d48966fa88b33d083c45937035193bf8435b6cdb829d4e4",
-      "cameraState": {
-        "matrix": [
-          [
-            -0.382228285074234,
-            -0.1230967789888382,
-            0.9158322811126709,
-            4.880000114440918
-          ],
-          [
-            0.9240679144859314,
-            -0.0509173758327961,
-            0.3788217008113861,
-            -12.079999923706055
-          ],
-          [
-            4.490390637101882e-08,
-            0.9910876154899597,
-            0.13321185111999512,
-            1.600000023841858
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "lens": 20.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
-      }
-    },
     "overall": {
-      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
-      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
-      "cameraHash": "ab339362c6853999998686872a82b18c9e21e0ff439d8d8edf2389dc20207b8e",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "cad1b76dbebe7079a02ad4d09b89708e4dfeec9c2242ee46d0aed3b8faec31ea",
+      "sourceSha256": "082e7c2c6ca41f51de6673083341c78392c03cabcc81daa3878660b7f05da019",
+      "baseBlendSha256": "2290d0502dec9466d256a8f46069ac7841ef53e0a27ed7de8827474e9ab50708",
       "cameraState": {
         "matrix": [
           [
@@ -1286,11 +1201,20 @@
         "sensorWidth": 36.0,
         "type": "ORTHO",
         "orthoScale": 22.0
-      }
+      },
+      "cameraHash": "ab339362c6853999998686872a82b18c9e21e0ff439d8d8edf2389dc20207b8e",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "0e4d0bdf977e53e0907222625b2def295bc70e3acf2a11d69c234364ed7a3860"
     },
     "living": {
-      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
-      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
+      "sourceSha256": "082e7c2c6ca41f51de6673083341c78392c03cabcc81daa3878660b7f05da019",
+      "baseBlendSha256": "2290d0502dec9466d256a8f46069ac7841ef53e0a27ed7de8827474e9ab50708",
       "cameraState": {
         "matrix": [
           [
@@ -1331,11 +1255,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "df83b851d7d58ea2ddf8f9ecebc9f5972c6f390ca195a7dbd8a6f9bb14510924"
+      "imageSha256": "8630bc954ad1ac290657016c25418aa89e46718944e504600a2c1d06a5ddf69e"
     },
     "dining": {
-      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
-      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
+      "sourceSha256": "082e7c2c6ca41f51de6673083341c78392c03cabcc81daa3878660b7f05da019",
+      "baseBlendSha256": "2290d0502dec9466d256a8f46069ac7841ef53e0a27ed7de8827474e9ab50708",
       "cameraState": {
         "matrix": [
           [
@@ -1376,56 +1300,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "419568aa1393b27408e6f32e279a4790b0aea9d3c5c6a65dabb14a8923177021"
-    },
-    "bay-living": {
-      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
-      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
-      "cameraState": {
-        "matrix": [
-          [
-            0.6605352163314819,
-            -0.15087266266345978,
-            0.7354798913002014,
-            4.130000114440918
-          ],
-          [
-            0.7507950663566589,
-            0.13273492455482483,
-            -0.6470612287521362,
-            -9.079999923706055
-          ],
-          [
-            -1.946109762229753e-08,
-            0.9796013832092285,
-            0.20095054805278778,
-            1.649999976158142
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "lens": 22.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
-      },
-      "cameraHash": "2a27670782bad5b09701b4218bb7692661f75d47004ad8f63d14af7155acb57f",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "59d201ca5ba72de5372d9465a4d091e94539a7d0d78214f8ad1efa47b82d2298"
+      "imageSha256": "ceac60c4fdf418f10018ae0c6fc283dc0cb522b9cb96c7735b2da4992feda64b"
     },
     "master": {
-      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
-      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
+      "sourceSha256": "082e7c2c6ca41f51de6673083341c78392c03cabcc81daa3878660b7f05da019",
+      "baseBlendSha256": "2290d0502dec9466d256a8f46069ac7841ef53e0a27ed7de8827474e9ab50708",
       "cameraState": {
         "matrix": [
           [
@@ -1466,11 +1345,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "33dd35ccad28c0115765d2af2c2283bf9be689ff367355526c28418d7810404b"
+      "imageSha256": "d7e92c4cede11786611844b2ac77fbd3ed08f9f0d7dc6e9175f38ef42de5c63f"
     },
     "bedroom-b": {
-      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
-      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
+      "sourceSha256": "082e7c2c6ca41f51de6673083341c78392c03cabcc81daa3878660b7f05da019",
+      "baseBlendSha256": "2290d0502dec9466d256a8f46069ac7841ef53e0a27ed7de8827474e9ab50708",
       "cameraState": {
         "matrix": [
           [
@@ -1511,11 +1390,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "bfd42222d8974626ce043695d9a79e66441f5557f498d4d4cb6a86d8e3b6724b"
+      "imageSha256": "8f41cabd320c1b5842e9ff38a18225d42aa76afccb4d358c15c73df1aa7f4b8f"
     },
     "study": {
-      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
-      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
+      "sourceSha256": "082e7c2c6ca41f51de6673083341c78392c03cabcc81daa3878660b7f05da019",
+      "baseBlendSha256": "2290d0502dec9466d256a8f46069ac7841ef53e0a27ed7de8827474e9ab50708",
       "cameraState": {
         "matrix": [
           [
@@ -1556,11 +1435,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "67abadac55dde5fc496948e3d37a1836f048e8d6ac3996f252759a50f3001d10"
+      "imageSha256": "a96493f06f849f998cd13d145a286693405223d5310075569aa26dbf9627d5a9"
     },
     "kitchen": {
-      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
-      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
+      "sourceSha256": "082e7c2c6ca41f51de6673083341c78392c03cabcc81daa3878660b7f05da019",
+      "baseBlendSha256": "2290d0502dec9466d256a8f46069ac7841ef53e0a27ed7de8827474e9ab50708",
       "cameraState": {
         "matrix": [
           [
@@ -1601,11 +1480,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "fed8f718ce8d774a7292f517e6041fac8335394cabd8e91cf09ed29e57c4ea1c"
+      "imageSha256": "e27a8b46e31e473b6ccc6c9eb621061d63049f489a3fa2f6149a72a93b77b624"
     },
     "master-bath": {
-      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
-      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
+      "sourceSha256": "082e7c2c6ca41f51de6673083341c78392c03cabcc81daa3878660b7f05da019",
+      "baseBlendSha256": "2290d0502dec9466d256a8f46069ac7841ef53e0a27ed7de8827474e9ab50708",
       "cameraState": {
         "matrix": [
           [
@@ -1646,11 +1525,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "cda9b053164a4ddda4f9d57731617bb7cb678818f90445a9d29cf7aef7717b73"
+      "imageSha256": "70f04328ef62d771088b3d2598eceb7efa38ac7db292240b95b264f4dc452222"
     },
     "guest-bath": {
-      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
-      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
+      "sourceSha256": "082e7c2c6ca41f51de6673083341c78392c03cabcc81daa3878660b7f05da019",
+      "baseBlendSha256": "2290d0502dec9466d256a8f46069ac7841ef53e0a27ed7de8827474e9ab50708",
       "cameraState": {
         "matrix": [
           [
@@ -1691,11 +1570,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "7a3d9abdba2d722a865ff1996c8b568706b2f5e263b23cf8d069a4e1033cd9e9"
+      "imageSha256": "9a17ea80ee9dc697d4646fbc2646bc76445e0953c0d29bffd438feb621d24a62"
     },
     "balcony": {
-      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
-      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
+      "sourceSha256": "082e7c2c6ca41f51de6673083341c78392c03cabcc81daa3878660b7f05da019",
+      "baseBlendSha256": "2290d0502dec9466d256a8f46069ac7841ef53e0a27ed7de8827474e9ab50708",
       "cameraState": {
         "matrix": [
           [
@@ -1736,11 +1615,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "bb9ac978f0e8034a32d5c5f47747b82bdd186a02d9153cb2ed2de5451e2d1cc7"
+      "imageSha256": "c11387a0afdb830ed7f3845a35a55f75f9fe9b101d329ce59bdc374c7dc3cf35"
     },
     "bay-master": {
-      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
-      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
+      "sourceSha256": "082e7c2c6ca41f51de6673083341c78392c03cabcc81daa3878660b7f05da019",
+      "baseBlendSha256": "2290d0502dec9466d256a8f46069ac7841ef53e0a27ed7de8827474e9ab50708",
       "cameraState": {
         "matrix": [
           [
@@ -1781,11 +1660,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "c18eba79a1897fc040c2160ad53a315efec4356dacfcb659783e413a2c5e8ce6"
+      "imageSha256": "fe0141d2c35887d188058e5ed393465555c08e61cbb1025099461d12b319f154"
     },
     "bay-tea": {
-      "sourceSha256": "3479522526dcfdabc3a9bf887b6670371ca49324c0d78003086abfd4d9a789f4",
-      "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
+      "sourceSha256": "082e7c2c6ca41f51de6673083341c78392c03cabcc81daa3878660b7f05da019",
+      "baseBlendSha256": "2290d0502dec9466d256a8f46069ac7841ef53e0a27ed7de8827474e9ab50708",
       "cameraState": {
         "matrix": [
           [
@@ -1826,10 +1705,145 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "b48169aeb8a0d1a804ff3230cb609790a242b8cc5b900f4ce2f90f0e23b49d35"
+      "imageSha256": "8d961b3f77542fcb40d4868ca9dca3837f3a0ba21c514c69141fc07d2fc61e8d"
+    },
+    "bay-living": {
+      "sourceSha256": "082e7c2c6ca41f51de6673083341c78392c03cabcc81daa3878660b7f05da019",
+      "baseBlendSha256": "2290d0502dec9466d256a8f46069ac7841ef53e0a27ed7de8827474e9ab50708",
+      "cameraState": {
+        "matrix": [
+          [
+            0.6605352163314819,
+            -0.15087266266345978,
+            0.7354798913002014,
+            4.130000114440918
+          ],
+          [
+            0.7507950663566589,
+            0.13273492455482483,
+            -0.6470612287521362,
+            -9.079999923706055
+          ],
+          [
+            -1.946109762229753e-08,
+            0.9796013832092285,
+            0.20095054805278778,
+            1.649999976158142
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 22.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "2a27670782bad5b09701b4218bb7692661f75d47004ad8f63d14af7155acb57f",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "f4df9bc03c3f2e77f25d4a48cfea7e6ecbe5831dc0cb19096c8c8f7c557c13ec"
+    },
+    "entry-storage": {
+      "sourceSha256": "082e7c2c6ca41f51de6673083341c78392c03cabcc81daa3878660b7f05da019",
+      "baseBlendSha256": "2290d0502dec9466d256a8f46069ac7841ef53e0a27ed7de8827474e9ab50708",
+      "cameraState": {
+        "matrix": [
+          [
+            -0.3548758029937744,
+            0.059371087700128555,
+            -0.9330263733863831,
+            3.200000047683716
+          ],
+          [
+            -0.9349134564399719,
+            -0.022536057978868484,
+            0.35415950417518616,
+            -12.75
+          ],
+          [
+            9.7587943059807e-08,
+            0.9979815483093262,
+            0.06350433081388474,
+            1.4500000476837158
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 18.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "b8b4c8b0b8b0005f528aa20fa3ce04fe05d1b1f8caa2a483792cbc5f827bf1b3",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "6dbb65f0c3aa2911ac72db87f89502881d8a3dfe0dd03bcdb51013171c9a3ef2"
+    },
+    "sideboard": {
+      "sourceSha256": "082e7c2c6ca41f51de6673083341c78392c03cabcc81daa3878660b7f05da019",
+      "baseBlendSha256": "2290d0502dec9466d256a8f46069ac7841ef53e0a27ed7de8827474e9ab50708",
+      "cameraState": {
+        "matrix": [
+          [
+            -0.382228285074234,
+            -0.1230967789888382,
+            0.9158322811126709,
+            4.880000114440918
+          ],
+          [
+            0.9240679144859314,
+            -0.0509173758327961,
+            0.3788217008113861,
+            -12.079999923706055
+          ],
+          [
+            4.490390637101882e-08,
+            0.9910876154899597,
+            0.13321185111999512,
+            1.600000023841858
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 20.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "129dcdb2f3563dc939adba9fdb515e98c934b7aea9a5a7eb4a643e8c04f178ad",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "5f932b5e3b102ce5b5eef4ec806991e5b4d5c61df73f78fa40630ceeb8dc2834"
     }
   },
-  "baseBlendSha256": "24d1e50288e6c194019616aa781b3428d81e30e5c5f144b142b600597ecbb95f",
+  "baseBlendSha256": "2290d0502dec9466d256a8f46069ac7841ef53e0a27ed7de8827474e9ab50708",
   "renderSpec": {
     "engine": "CYCLES",
     "width": 960,

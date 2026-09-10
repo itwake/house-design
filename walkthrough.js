@@ -38,12 +38,21 @@ export function buildWalkWorld(data){
     let cursor=start;
     for(const door of cuts){
       solid(cursor,door.lo);
-      const frame=door.kind.includes('glass')?.038:.06;
+      const frame=door.sliding?.jambCm/100||(door.kind.includes('glass')?.038:.06);
       solid(door.lo,door.lo+frame,.145,door.id+'-jamb-a','jamb');
       solid(door.hi-frame,door.hi,.145,door.id+'-jamb-b','jamb');
       cursor=door.hi;
     }
     solid(cursor,end);
+  }
+  // A sliding kitchen door parks inside its opening; parked leaves remain
+  // visible and solid instead of granting the whole opening as a passage.
+  for(const door of doors.filter(d=>d.sliding)){
+    const c=door.sliding,n=c.panelCount;
+    if(door.x1!==door.x2||c.stackTo!=='north')throw Error('Unsupported slider parking');
+    const inner=(door.y2-door.y1)-2*c.jambCm,panel=(inner+(n-1)*c.overlapCm)/n;
+    const parked=panel+(n-1)*c.stackStaggerCm;
+    rect(door.id+'-parked-leaves',(door.x1-c.frameDepthCm/2)/100,(door.y1+c.jambCm)/100,c.frameDepthCm/100,parked/100,'sliding-stack');
   }
   for(const [index,f]of (data.furniture||[]).entries()){
     const [x,z,w,d]=[f.x,f.y,f.w,f.d].map(v=>v/100);
@@ -103,7 +112,7 @@ export function findWalkStart(world,roomId,preferred){
   return best;
 }
 export function isWalkDoorInfill(name,metadata){
-  return metadata.kind==='door'&&metadata.openingId&&metadata.openingId!=='entry_door'&&/oak door leaf|handle escutcheon|lever handle|clear glazing|mullion/.test(String(name).replace(/[_/]+/g,' ').replace(/\s+/g,' '));
+  return metadata.kind==='door'&&metadata.doorRole!=='sliding-panel'&&metadata.openingId&&metadata.openingId!=='entry_door'&&/oak door leaf|handle escutcheon|lever handle|clear glazing|mullion/.test(String(name).replace(/[_/]+/g,' ').replace(/\s+/g,' '));
 }
 export function movementVector(yaw,forward,strafe,distance){
   const length=Math.max(1,Math.hypot(forward,strafe));

@@ -194,15 +194,28 @@
     },
     {
       "id": "door_kitchen",
-      "name": "厨房玻璃移门（待复尺）",
+      "name": "厨房1700三扇三轨玻璃推拉门（扩洞条件方案，待复尺）",
       "kind": "glass-door",
       "x1": 536,
-      "y1": 1175,
+      "y1": 1145,
       "x2": 536,
-      "y2": 1265,
+      "y2": 1315,
       "sillCm": 0,
       "heightCm": 220,
-      "grade": "C"
+      "grade": "C",
+      "sliding": {
+        "panelCount": 3,
+        "trackCount": 3,
+        "stackTo": "north",
+        "jambCm": 3.8,
+        "overlapCm": 3,
+        "panelDepthCm": 2.4,
+        "trackPitchCm": 4,
+        "stackStaggerCm": 1.5,
+        "frameDepthCm": 14.5,
+        "frameFinish": "warm-gray metal",
+        "condition": "三扇洞内向北叠停；1700mm洞口不等于净开，模型净开约1033mm，五金深化后以约1000mm为目标而非保证。"
+      }
     }
   ],
   "geometryPolicy": "replace: use rooms/walls from design-data.json, do not overlay these on the V2 wall mesh",

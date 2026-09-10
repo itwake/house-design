@@ -18,7 +18,7 @@ const retired=['terracotta','moss','cobalt'];
 const preference='house-design:room-card-visible';
 assert.deepEqual(catalog.schemes.map(s=>s.id),['wood']);
 assert.deepEqual(catalog.archivedPalettes.map(s=>s.id),retired);
-assert.equal(catalog.schemes[0].assetRevision,'3.1.1');
+assert.equal(catalog.schemes[0].assetRevision,'3.1.4');
 assert.ok(catalog.futureSchemePolicy.includes('布局')&&catalog.futureSchemePolicy.includes('不作为新方案'));
 for(const text of [entry,html,viewer]){
   for(const marker of ['id="scheme-grid"','id="scheme-dialog"','id="change-scheme"','四套','设计选集','showSchemeSelector','schemeCards'])assert.ok(!text.includes(marker),marker+' removed from active UI');
@@ -58,7 +58,7 @@ function environment(href,{stored='false',entryPage=false,catalogResponse=catalo
     setTimeout:()=>0,clearTimeout:()=>{},console:{error:(...e)=>errors.push(e)},
     fetch:async href=>{
       const requestURL=new URL(href),path=requestURL.pathname.replace('/house-design/','');requests.push(path);
-      assert.equal(requestURL.searchParams.get('v'),path==='models/design-schemes.json'?catalog.version:'3.1.1','Data/manifest asset revision stays separate from UI revision');
+      assert.equal(requestURL.searchParams.get('v'),path==='models/design-schemes.json'?catalog.version:'3.1.4','Data/manifest asset revision stays separate from UI revision');
       const value=path==='models/design-schemes.json'?catalogResponse:path===catalog.geometrySource?geometry:path===catalog.schemes[0].manifest?manifest:undefined;
       assert.notEqual(value,undefined,'Unexpected/retired resource request: '+path);
       return {ok:path==='models/design-schemes.json'?status===200:true,status,json:async()=>structuredClone(value)};
@@ -71,7 +71,7 @@ const helperEnv=environment(base);
 const api=vm.runInContext('({entryURL,resolveScheme,schemeRender,loadSchemeCatalog,SCHEME_REVISION})',helperEnv.context);
 assert.equal(api.SCHEME_REVISION,catalog.version);
 assert.ok(viewer.includes("const UI_REVISION = '"+catalog.version+"'"));
-assert.equal(new URL(api.schemeRender(catalog.schemes[0],'living')).searchParams.get('v'),'3.1.1');
+assert.equal(new URL(api.schemeRender(catalog.schemes[0],'living')).searchParams.get('v'),'3.1.4');
 for(const name of ['', 'index.html'])for(const hash of ['',...roomIds.map(id=>'#'+id)])for(const style of ['', 'wood', ...retired, 'invalid']){
   const before=new URL(base+name+'?v=old&source=bookmark'+(style?'&scheme='+style:'')+hash);
   const env=environment(before.href,{entryPage:true}),after=new URL(env.redirect);
@@ -106,7 +106,7 @@ for(const style of ['', 'wood',...retired])for(const room of roomIds){
   assert.equal(env.node('#toggle-room-card').attrs['aria-expanded'],'false');
   for(const [id,key]of [['download-glb','model'],['download-blend','blend']]){
     const download=new URL(env.node('#'+id).href);
-    assert.equal(download.pathname,'/house-design/'+catalog.schemes[0][key]);assert.equal(download.searchParams.get('v'),'3.1.1');
+    assert.equal(download.pathname,'/house-design/'+catalog.schemes[0][key]);assert.equal(download.searchParams.get('v'),'3.1.4');
   }
   initialized++;
 }
@@ -119,14 +119,24 @@ for(const options of [{href:base+'studio.html?scheme=invalid#living'},{href:base
   assert.deepEqual(env.requests,['models/design-schemes.json']);
 }
 
-// This interface-only revision must not roll back the last storage correction.
+// This kitchen-door revision may update only the named source/assets.
+// All other geometry remains byte-for-byte/structurally protected.
 const baseline='248bb322d3feeb08a522a69c8cfe6612d4df532b';
 const {fileURLToPath}=await import('node:url');
 const cwd=fileURLToPath(root);
-const paths=execFileSync('git',['ls-tree','-r','--name-only',baseline,'models','assets'],{cwd,encoding:'utf8'}).trim().split('\n').filter(p=>p!=='models/design-schemes.json');
-for(const path of paths){
-  const expected=execFileSync('git',['rev-parse',baseline+':'+path],{cwd,encoding:'utf8'}).trim();
-  const actual=execFileSync('git',['hash-object','--path='+path,path],{cwd,encoding:'utf8'}).trim();
-  assert.equal(actual,expected,path+' must preserve existing asset/source bytes');
+const updated=new Set(['models/design-data.json','models/blender-overrides.json','models/design-schemes.json','models/scene-manifest.json','models/huiyayuan-wood.blend','models/huiyayuan-wood.glb']);
+const oldData=JSON.parse(execFileSync('git',['show',baseline+':models/design-data.json'],{cwd,encoding:'utf8',maxBuffer:1024*1024}));
+function unaffected(d){
+  d=structuredClone(d);d.doors=d.doors.filter(x=>x.id!=='door_kitchen');
+  d.geometryNotes=d.geometryNotes.filter(n=>!n.startsWith('V3.1.4厨房门'));
+  d.storageFitouts.forEach(f=>f.dimensions=f.dimensions.map(n=>n.startsWith('上柜外深280mm；')?'kitchen-door clearance separately verified':n));
+  return d;
 }
-console.log(`PASS: 132 entry routes, ${initialized} real viewer initializations, retired/unknown IDs, catalog failure, preserved room/hash/preferences/downloads, and ${paths.length} unchanged model/source/render assets. Offline tests do not test WebGL or browser layout.`);
+assert.deepEqual(unaffected(geometry),unaffected(oldData),'All unrelated furniture, bays, room outlines and wall centerlines stay unchanged');
+const paths=execFileSync('git',['ls-tree','-r','--name-only',baseline,'models','assets'],{cwd,encoding:'utf8'}).trim().split('\n').filter(p=>!updated.has(p)&&!p.startsWith('assets/blender-renders/'));
+const tree=execFileSync('git',['ls-tree','-r',baseline,'models','assets'],{cwd,encoding:'utf8'}).trim().split('\n');
+const expectedByPath=new Map(tree.map(line=>{const [meta,path]=line.split('\t');return [path,meta.split(' ')[2]]}));
+const actualHashes=execFileSync('git',['hash-object','--stdin-paths'],{cwd,encoding:'utf8',input:paths.join('\n')+'\n'}).trim().split('\n');
+assert.equal(actualHashes.length,paths.length);
+paths.forEach((path,i)=>assert.equal(actualHashes[i],expectedByPath.get(path),path+' must preserve existing asset/source bytes'));
+console.log(`PASS: 132 entry routes, ${initialized} real viewer initializations, retired/unknown IDs, catalog failure, preserved room/hash/preferences/downloads, and ${paths.length} unchanged historical/texture assets and unchanged unrelated active source geometry. Offline tests do not test WebGL or browser layout.`);

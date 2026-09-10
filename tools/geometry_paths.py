@@ -64,7 +64,14 @@ def solid_footprints(data, door_trim_cm=6):
                 low, high = sorted((door['y1'], door['y2']))
             if not aligned:
                 continue
-            low, high = low + door_trim_cm, high - door_trim_cm
+            config=door.get('sliding')
+            trim=config['jambCm'] if config else door_trim_cm
+            low, high = low + trim, high - trim
+            if config:
+                if horizontal or config['stackTo']!='north': raise ValueError('Unsupported sliding stack')
+                panel=(high-low+(config['panelCount']-1)*config['overlapCm'])/config['panelCount']
+                parked=panel+(config['panelCount']-1)*config['stackStaggerCm']
+                result.append((door['id']+' parked leaves',(fixed-config['frameDepthCm']/2,low,fixed+config['frameDepthCm']/2,low+parked)))
             clipped = []
             for a, b in spans:
                 if high <= a or low >= b:

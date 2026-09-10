@@ -441,6 +441,52 @@ def wall_and_openings(data, openings):
         opening_details(op, data)
 
 
+def sliding_opening_details(op):
+    """Three tracked leaves; model real parking, not one pane with mullions."""
+    config=op["sliding"]
+    x1,y1,x2,y2=[op[k]/100 for k in ("x1","y1","x2","y2")]
+    if abs(x1-x2)>.0001 or config["stackTo"]!="north":
+        raise ValueError("This calibrated kitchen slider is vertical and parks north")
+    n=int(config["panelCount"])
+    frame=config["jambCm"]/100
+    length=y2-y1
+    clear=length-2*frame
+    overlap=config["overlapCm"]/100
+    panel=(clear+(n-1)*overlap)/n
+    pitch=config["trackPitchCm"]/100
+    depth=config["panelDepthCm"]/100
+    stagger=config["stackStaggerCm"]/100
+    frame_depth=config["frameDepthCm"]/100
+    h=op["height"]
+    def part(label,x,y,z,w,d,height,role="sliding-static",mat="WarmGrayMetal"):
+        obj=box(op["id"]+" / "+label,x,y,z,w,d,height,mat,.0015,"door","kitchen")
+        obj["openingId"]=op["id"]
+        obj["doorRole"]=role
+        return obj
+    for y in (y1+frame/2,y2-frame/2):
+        part("sliding outer jamb",x1,y,0,frame_depth,frame,h-.065)
+    part("three-track top housing",x1,(y1+y2)/2,h-.065,frame_depth,length,.065)
+    for i in range(n):
+        lane=(i-(n-1)/2)*pitch
+        part("recessed guide track "+str(i+1),x1+lane,(y1+y2)/2,0,.010,length,.006)
+        start=y1+frame+i*(panel-overlap)
+        shift=-i*(panel-overlap-stagger)
+        def leaf(label,along,z,span,height,mat="WarmGrayMetal",thickness=depth):
+            obj=part("sliding leaf "+str(i+1)+" "+label,x1+lane,start+along,z,thickness,span,height,"sliding-panel",mat)
+            obj["slidingPanelIndex"]=i
+            obj["slideOpenOffsetM"]=[0.,0.,shift]
+            return obj
+        stile=.022
+        for along in (stile/2,panel-stile/2):leaf("edge stile",along,.012,stile,h-.082)
+        leaf("bottom rail",panel/2,.012,panel-2*stile,.034)
+        leaf("top rail",panel/2,h-.104,panel-2*stile,.034)
+        leaf("clear glazing",panel/2,.046,panel-2*stile,h-.150,"Glass",.008)
+        # A shallow flush pull stays within the selected frame thickness.
+        leaf("flush pull",panel-.012,1.0,.014,.16,"Brass",.025)
+    # A small threshold bridges the 120 mm wall-depth strip, flush with floors.
+    part("flush doorway floor",x1,(y1+y2)/2,-.012,.12,length,.012,"door-floor","Tile")
+
+
 def opening_details(op, data):
     global CURRENT_ROOM
     x1,y1,x2,y2 = [op[k]/100 for k in ("x1","y1","x2","y2")]
@@ -450,6 +496,9 @@ def opening_details(op, data):
     sill, h = op["sill"], op["height"]
     roommap = {"window_b":"room_b","window_a":"room_a","window_c":"room_c","door_b":"room_b","door_a":"room_a","door_c":"room_c","door_bath_1":"bath_1","door_bath_2":"bath_2","door_kitchen":"kitchen","balcony_door":"balcony"}
     CURRENT_ROOM = op.get("roomId") or roommap.get(op["id"], room_at(cx-.1,cy+.1,data["rooms"]))
+    if op.get("sliding"):
+        sliding_opening_details(op)
+        return
     if op.get("windowType")=="bay":
         bay_opening_details(op)
         return
@@ -1558,7 +1607,7 @@ def manifest(data, openings, src):
         "master":"1500×2000 mm 床垫配 1600×2100 mm 床架，床头向东；西墙衣柜朝东，南侧套内门进入主卫。",
         "bedroom-b":"1350×2000 mm 床垫配 1450×2100 mm 床架，床头向西；南墙设北向移门衣柜，东北保留书桌。",
         "study":"1.00 米日床、独立书桌和客用衣柜，在实有空间里兼顾办公与偶住。",
-        "kitchen":"双排地柜、集成冰箱及蒸烤高柜，暖白石材台面与浅橡木门板。",
+        "kitchen":"双排地柜位置不变；厨房西门暂拓至1700mm，三扇三轨玻璃门向北洞内叠停，模型净开约1033mm。门套距鞋柜仅50mm，扩洞和轨道固定待结构及管线核验。",
         "master-bath":"750 mm 宽、400 mm 深盆柜靠西墙朝东；北侧套内门通主卧，阶梯共墙保留东侧淋浴。通路紧凑，非无障碍方案。",
         "guest-bath":"600 mm 宽、350 mm 深浅盆柜置于西北凹位，保留公共过道入口、壁挂马桶及 440 mm 局部固定淋浴玻璃。",
         "balcony":"洗烘叠放与家政收纳为拟改造方案；保留西侧门，南侧窗位及外侧封窗尚未核实，边界为建模占位。",

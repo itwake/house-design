@@ -1,10 +1,10 @@
-import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.1.3';
-import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.1.3';
+import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.1.4';
+import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.1.4';
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
-const UI_REVISION = '3.1.3';
+const UI_REVISION = '3.1.4';
 document.documentElement.dataset.uiRevision = UI_REVISION;
-let ASSET_REVISION = '3.1.1';
+let ASSET_REVISION = '3.1.4';
 const revisedAsset = path => {const url=new URL(path,document.baseURI);url.searchParams.set('v',ASSET_REVISION);return url.href};
 const icons = {
   cube:'<path d="m8 2 6 3.5v5L8 14l-6-3.5v-5L8 2Z M2 5.5 8 9l6-3.5 M8 9v5 M5 3.8l6 3.5"/>',
@@ -36,7 +36,7 @@ const descriptions = {
   room_a:{name:'主卧',en:'MASTER BEDROOM',title:'把喧嚣留在窗外',icon:'bed',render:'master',description:'柔和床头与浅木柜体营造安静背景，保留床侧通行。北窗的隔声与遮光，是舒适睡眠的重点。',features:['1500 mm 床','亚麻触感','北向采光']},
   room_b:{name:'次卧 B',en:'SECOND BEDROOM',title:'让睡眠与茶歇更从容',icon:'bed',render:'bedroom-b',description:'保留紧凑床、衣柜与条件飘窗茶座，取消独立书桌和办公椅。卧室入口保持通行，浅色材质减轻压迫感。',features:['1350 mm 床','条件茶座','不设独立书桌']},
   room_c:{name:'书房 · 客卧',en:'STUDY & GUEST',title:'一个人的安静时刻',icon:'study',render:'study',description:'独立日床与书桌适应工作、阅读和偶尔留宿。紧凑尺度用轻巧家具表达，西窗为书房引入自然光。',features:['独立日床','灵活使用','西侧窗光']},
-  kitchen:{name:'厨房',en:'KITCHEN',title:'让料理有条不紊',icon:'kitchen',render:'kitchen',description:'沿原厨房湿区组织操作台和电器，暖白柜门搭配浅木。以可闭合玻璃门兼顾光线与油烟控制。',features:['保留湿区','清晰操作台','可闭合厨房']},
+  kitchen:{name:'厨房',en:'KITCHEN',title:'让料理有条不紊',icon:'kitchen',render:'kitchen',description:'沿原厨房湿区组织操作台和电器，暖白柜门搭配浅木。门洞由900拓至1700mm，三扇三轨玻璃门向北叠停；模型净开约1033mm，五金深化后约1000mm为目标。扩洞与门套需现场核验。',features:['1700mm条件门洞','三扇三轨推拉','约1033mm模型净开']},
   bath_1:{name:'主卫',en:'MAIN BATHROOM',title:'石色里的松弛',icon:'bath',render:'master-bath',description:'浅暖石材统一小空间，浴室柜、马桶和淋浴依阶梯边界布置，用镜面和均匀灯光增加清爽感。',features:['主卧套内','暖色石材','阶梯边界']},
   bath_2:{name:'客卫',en:'GUEST BATHROOM',title:'小空间，也要好用',icon:'bath',render:'guest-bath',description:'西北扩出的盆位安排浅盆柜，保留紧凑马桶与东侧淋浴。轻薄屏风和浅色砖让功能完整，卫浴选型需现场复核。',features:['凹位浅盆柜','阶梯边界','轻薄淋浴屏']},
   balcony:{name:'家政阳台',en:'UTILITY BALCONY',title:'把琐碎收得漂亮',icon:'leaf',render:'balcony',description:'洗烘与家政收纳集中在原阳台。浅木柜面呼应室内，预留维护、开门及日常操作空间。',features:['洗烘叠放','家政收纳','日常留白']}
@@ -47,7 +47,7 @@ const ROOM_CARD_STORAGE_KEY = 'house-design:room-card-visible';
 let data, manifest, scheme, schemeCatalog, rooms = [], three, scene, camera, renderer, controls, model, cameraTween, defaultDistance=20, resizeObserver, dimensionLines, activeHorizontalFov=null, pendingFrame=null;
 const wallMaterials=[], roomLabelNodes=[], dimensionNodes=[];
 let walkthrough=null,walkWorld=null,walkRestore=null,walkThresholds=null;
-const walkDoorParts=[];
+const walkDoorParts=[],walkSlidingParts=[];
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const toast = (message) => { $('#toast').textContent=message; $('#toast').classList.add('show'); clearTimeout(toast.timer); toast.timer=setTimeout(()=>$('#toast').classList.remove('show'),2700); };
 const areaOf = points => Math.abs(points.reduce((sum,p,i)=>{const q=points[(i+1)%points.length];return sum+p[0]*q[1]-q[0]*p[1]},0))/2;
@@ -359,6 +359,16 @@ function planStoragePart(fitout,part){
   return `<g pointer-events="none"><title>${escapeHTML(fitout.title)} · ${escapeHTML(storageRoleName(role))} · 占位${w*10}×${d*10}mm / 标高${part.zCm*10}–${(part.zCm+part.hCm)*10}mm${blind?'；盲角不是正面满柜容量':''}；设计示意，非施工图</title><rect data-storage-id="${escapeHTML(fitout.id)}" data-storage-part-id="${escapeHTML(part.id)}" data-storage-role="${escapeHTML(role)}" data-storage-face="${face}" data-storage-segment="${escapeHTML(part.segmentId||part.source?.segmentId||part.wallSide||face)}" data-z-cm="${part.zCm}" data-h-cm="${part.hCm}" x="${x}" y="${y}" width="${w}" height="${d}" rx="${bench?4:0}" fill="${fill}" fill-opacity="${upper?.3:1}" stroke="${accessory||niche?'none':upper?'#b0a38b':'#b5a181'}" stroke-width="${upper?1:1.4}"${upper?' stroke-dasharray="4 3"':''}/>${detail}</g>`;
 }
 
+function planSlidingDoor(door){
+  const c=door.sliding,n=c.panelCount;
+  const panel=(door.y2-door.y1-2*c.jambCm+(n-1)*c.overlapCm)/n;
+  const leaves=Array.from({length:n},(_,i)=>{
+    const x=door.x1+(i-(n-1)/2)*c.trackPitchCm-c.panelDepthCm/2,y=door.y1+c.jambCm+i*(panel-c.overlapCm);
+    return `<rect data-sliding-panel="${i}" x="${x}" y="${y}" width="${c.panelDepthCm}" height="${panel}" fill="#ccd8d5" stroke="#8d9089" stroke-width="1"/>`;
+  }).join('');
+  return `<g data-sliding-door="${escapeHTML(door.id)}"><title>1700mm条件门洞；三扇三轨向北叠停，模型净开约1033mm；此平面显示合拢位置。</title>${leaves}<text x="${door.x1+24}" y="${door.y2-25}" transform="rotate(-90 ${door.x1+24} ${door.y2-25})" font-size="14" fill="#807056">1700 三轨推拉</text></g>`;
+}
+
 function makePlan(){
   const e=data.envelope||[[0,0],[841,0],[841,1401],[0,1401]],xs=e.map(p=>p[0]),ys=e.map(p=>p[1]);
   const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
@@ -386,7 +396,7 @@ function makePlan(){
   const fitouts=(data.bayFitouts||[]).flatMap(fitout=>[...(fitout.parts||[])].sort((a,b)=>(a.zCm||0)-(b.zCm||0)).map(part=>planFitoutPart(fitout,part))).join('');
   const storage=(data.storageFitouts||[]).flatMap(fitout=>[...(fitout.parts||[])].sort((a,b)=>(a.zCm||0)-(b.zCm||0)).map(part=>planStoragePart(fitout,part))).join('');
   const walls=(data.walls||[]).map(w=>`<line x1="${w[0]}" y1="${w[1]}" x2="${w[2]}" y2="${w[3]}" stroke="#8c887b" stroke-width="${wallThickness}" stroke-linecap="square"/>`).join('');
-  const opening=(items,color)=>(items||[]).map(w=>`<line x1="${w.x1}" y1="${w.y1}" x2="${w.x2}" y2="${w.y2}" stroke="#fcf8ee" stroke-width="15"/><line data-opening-id="${escapeHTML(w.id)}" x1="${w.x1}" y1="${w.y1}" x2="${w.x2}" y2="${w.y2}" stroke="${color}" stroke-width="4"/>`).join('');
+  const opening=(items,color)=>(items||[]).map(w=>`<line x1="${w.x1}" y1="${w.y1}" x2="${w.x2}" y2="${w.y2}" stroke="#fcf8ee" stroke-width="15"/><line data-opening-id="${escapeHTML(w.id)}" x1="${w.x1}" y1="${w.y1}" x2="${w.x2}" y2="${w.y2}" stroke="${w.sliding?'#fcf8ee':color}" stroke-width="4"/>${w.sliding?planSlidingDoor(w):''}`).join('');
   const bayWindows=bays.map(b=>`<g data-bay-window="${b.window.id}" aria-label="${escapeHTML(b.window.name)}：外凸窗台投影，尺寸待复尺"><line x1="${b.window.x1}" y1="${b.window.y1}" x2="${b.window.x2}" y2="${b.window.y2}" stroke="#fcf8ee" stroke-width="${wallThickness+3}"/><polygon data-bay-sill points="${b.sill.map(p=>p.join(',')).join(' ')}" fill="#e6dac1" stroke="#c5b497" stroke-width="1.5"/>${b.returns.map(points=>`<polygon data-bay-return points="${points.map(p=>p.join(',')).join(' ')}" fill="#8c887b"/>`).join('')}<text x="${b.label[0]}" y="${b.label[1]}" text-anchor="middle" dominant-baseline="middle" font-size="16" fill="#958165"${b.vertical?` transform="rotate(-90 ${b.label[0]} ${b.label[1]})"`:''}>飘窗台</text></g>`).join('');
   // The integrated worktop spans the sill; retain the true outer frame/glass above its plan fill.
   const bayFrames=bays.map(b=>`<g data-bay-frame-layer="${escapeHTML(b.window.id)}"><polygon data-bay-front-frame data-frame-finish="${escapeHTML(bayFrameFinish)}" points="${b.frame.map(p=>p.join(',')).join(' ')}" fill="${bayFrameColor}"/><line data-bay-glass x1="${b.frontA[0]}" y1="${b.frontA[1]}" x2="${b.frontB[0]}" y2="${b.frontB[1]}" stroke="#8fa6a8" stroke-width="4"/></g>`).join('');
@@ -486,6 +496,7 @@ function setupWalk(){
   // door-thickness gaps while their leaves are open for walking.
   walkThresholds=new three.Group();walkThresholds.name='Walk-only doorway floor infills';walkThresholds.visible=false;
   for(const door of walkWorld.doors){
+    if(door.sliding)continue; // The new slider already has a persistent flush floor.
     const horizontal=Math.abs(door.y1-door.y2)<.01;
     const width=Math.hypot(door.x2-door.x1,door.y2-door.y1)/100;
     const wet=door.id.includes('bath')||door.id==='balcony_door';
@@ -493,7 +504,7 @@ function setupWalk(){
     floor.name='Walk threshold '+door.id;floor.position.set((door.x1+door.x2)/200,-.006,(door.y1+door.y2)/200);floor.userData={kind:'walk-threshold',openingId:door.id};walkThresholds.add(floor);
   }
   scene.add(walkThresholds);
-  model.traverse(object=>{if(object.userData.walkDoorInfill&&ids.has(object.userData.openingId))walkDoorParts.push(object)});
+  model.traverse(object=>{if(!ids.has(object.userData.openingId))return;if(object.userData.doorRole==='sliding-panel'&&object.userData.slideOpenOffsetM?.length===3)walkSlidingParts.push(object);else if(object.userData.walkDoorInfill)walkDoorParts.push(object)});
   walkthrough=new WalkController({
     canvas:renderer.domElement,world:walkWorld,onWake:scheduleRender,onExit:()=>stopWalk(),
     canInteract:()=>state.walking&&state.view==='model'&&!document.querySelector('dialog[open]')&&$('#download-popover').hidden,
@@ -516,8 +527,9 @@ function startWalk(){
   const seed=WALK_STARTS[state.room]||WALK_STARTS.overall;
   const start=findWalkStart(walkWorld,state.room,{x:seed[0],z:seed[1]});
   if(!start){toast('这个空间暂时没有合适的站立位置，请从全屋入口进入');return}
-  walkRestore={cutWalls:state.cutWalls,doors:walkDoorParts.map(part=>[part,part.visible])};
+  walkRestore={cutWalls:state.cutWalls,doors:walkDoorParts.map(part=>[part,part.visible]),sliding:walkSlidingParts.map(part=>[part,part.position.clone()])};
   walkDoorParts.forEach(part=>part.visible=false);walkThresholds.visible=true;
+  walkSlidingParts.forEach(part=>part.position.add(new three.Vector3(...part.userData.slideOpenOffsetM)));
   cameraTween=null;controls.enabled=false;state.walking=true;state.interior=true;
   activeHorizontalFov=null;camera.clearViewOffset();camera.near=.045;camera.fov=64;camera.updateProjectionMatrix();
   setWalls(false);$('#workspace').classList.add('walking');$('#walk-hud').hidden=false;$('#walk-pad').hidden=false;$('#walk-look-hint').hidden=false;
@@ -531,6 +543,7 @@ function stopWalk({refocus=true,restoreFocus=true}={}){
   if(!state.walking)return;
   walkthrough?.stop();cameraTween=null;state.walking=false;state.interior=false;
   for(const [part,visible]of walkRestore?.doors||[])part.visible=visible;
+  for(const [part,position]of walkRestore?.sliding||[])part.position.copy(position);
   if(walkThresholds)walkThresholds.visible=false;
   controls.enabled=true;$('#workspace').classList.remove('walking');
   $('#walk-hud').hidden=true;$('#walk-pad').hidden=true;$('#walk-look-hint').hidden=true;
