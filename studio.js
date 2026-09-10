@@ -1,7 +1,8 @@
-import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.1.2';
+import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.1.3';
+import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.1.3';
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
-const UI_REVISION = '3.1.2';
+const UI_REVISION = '3.1.3';
 document.documentElement.dataset.uiRevision = UI_REVISION;
 let ASSET_REVISION = '3.1.1';
 const revisedAsset = path => {const url=new URL(path,document.baseURI);url.searchParams.set('v',ASSET_REVISION);return url.href};
@@ -41,10 +42,12 @@ const descriptions = {
   balcony:{name:'家政阳台',en:'UTILITY BALCONY',title:'把琐碎收得漂亮',icon:'leaf',render:'balcony',description:'洗烘与家政收纳集中在原阳台。浅木柜面呼应室内，预留维护、开门及日常操作空间。',features:['洗烘叠放','家政收纳','日常留白']}
 };
 const order = Object.keys(descriptions);
-const state = {room:'overall',view:'model',cutWalls:true,labels:true,dimensions:false,interior:false,ready:false,roomCardVisible:true};
+const state = {room:'overall',view:'model',cutWalls:true,labels:true,dimensions:false,interior:false,walking:false,ready:false,roomCardVisible:true};
 const ROOM_CARD_STORAGE_KEY = 'house-design:room-card-visible';
 let data, manifest, scheme, schemeCatalog, rooms = [], three, scene, camera, renderer, controls, model, cameraTween, defaultDistance=20, resizeObserver, dimensionLines, activeHorizontalFov=null, pendingFrame=null;
 const wallMaterials=[], roomLabelNodes=[], dimensionNodes=[];
+let walkthrough=null,walkWorld=null,walkRestore=null,walkThresholds=null;
+const walkDoorParts=[];
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const toast = (message) => { $('#toast').textContent=message; $('#toast').classList.add('show'); clearTimeout(toast.timer); toast.timer=setTimeout(()=>$('#toast').classList.remove('show'),2700); };
 const areaOf = points => Math.abs(points.reduce((sum,p,i)=>{const q=points[(i+1)%points.length];return sum+p[0]*q[1]-q[0]*p[1]},0))/2;
@@ -223,6 +226,7 @@ function makeNavigation(){
 }
 
 function selectRoom(id,{updateHash=true,animate=true}={}){
+  if(state.walking)stopWalk({refocus:false});
   if(!scheme||!data)return;
   if(!descriptions[id])id='overall';
   state.room=id;state.interior=false;
@@ -271,12 +275,13 @@ function setRoomCardVisible(visible,{persist=true}={}){
 }
 
 function switchView(view){
+  if(state.walking&&view!=='model')stopWalk({restoreFocus:false});
   if(!scheme||!data)return;
   state.view=view;$('#workspace').dataset.view=view;
   $$('.view-tabs [data-view]').forEach(btn=>{const active=btn.dataset.view===view;btn.setAttribute('aria-selected',String(active));btn.tabIndex=active?0:-1});
   $$('.view-panel').forEach(panel=>{const active=panel.id===`${view}-view`;panel.hidden=!active;panel.classList.toggle('active',active)});
   if(view==='renders')updateRender();
-  if(view==='model'&&state.ready){resizeScene();controls.update()}
+  if(view==='model'&&state.ready){resizeScene();if(!state.walking)controls.update()}
 }
 
 function updateRender(){
@@ -452,6 +457,7 @@ async function buildScene(){
       }
     });scene.add(model);state.ready=true;
     buildLabels();setWalls(true);focusRoom(state.room,false,false);resizeScene();
+    try{setupWalk()}catch(error){console.error('Walk setup failed',error);walkthrough?.dispose();walkthrough=null;$('#start-walk').disabled=true;$('#start-walk').textContent='漫游暂不可用'}
     resizeObserver=new ResizeObserver(resizeScene);resizeObserver.observe(container);
     $('#model-loading').hidden=true;
     renderer.domElement.addEventListener('webglcontextlost',event=>{event.preventDefault();showFallback('浏览器的三维显示连接已中断。刷新页面可重新载入。')});
@@ -469,8 +475,70 @@ async function buildScene(){
   }catch(error){console.error('3D load failed',error);showFallback('当前设备或网络未能载入 3D 模型，平面与 Blender 渲染仍可查看。')}
 }
 
-function showFallback(message){state.ready=false;if(pendingFrame!==null){cancelAnimationFrame(pendingFrame);pendingFrame=null}$('#model-loading').hidden=true;$('#model-fallback').hidden=false;$('#fallback-message').textContent=message;$('#room-labels').hidden=true;$$('.viewer-controls button').forEach(button=>button.disabled=true);$('#model-hint').hidden=true}
+function showFallback(message){stopWalk({refocus:false});$('#start-walk').disabled=true;state.ready=false;if(pendingFrame!==null){cancelAnimationFrame(pendingFrame);pendingFrame=null}$('#model-loading').hidden=true;$('#model-fallback').hidden=false;$('#fallback-message').textContent=message;$('#room-labels').hidden=true;$$('.viewer-controls button').forEach(button=>button.disabled=true);$('#model-hint').hidden=true}
 function resizeScene(){if(!renderer||!camera)return;const {width,height}=$('#model-canvas').getBoundingClientRect();if(!width||!height)return;renderer.setSize(width,height);camera.aspect=width/height;if(activeHorizontalFov)camera.fov=2*Math.atan(Math.tan(activeHorizontalFov*Math.PI/360)/camera.aspect)*180/Math.PI;camera.updateProjectionMatrix();if(state.ready&&state.room==='overall'&&!state.interior&&(matchMedia('(max-width: 860px)').matches||camera.view?.enabled))focusRoom('overall',false,false);scheduleRender()}
+
+
+function setupWalk(){
+  walkWorld=buildWalkWorld(data);
+  const ids=new Set(walkWorld.doors.map(door=>door.id));
+  // Original floors end at the room's inner wall face. Bridge only existing
+  // door-thickness gaps while their leaves are open for walking.
+  walkThresholds=new three.Group();walkThresholds.name='Walk-only doorway floor infills';walkThresholds.visible=false;
+  for(const door of walkWorld.doors){
+    const horizontal=Math.abs(door.y1-door.y2)<.01;
+    const width=Math.hypot(door.x2-door.x1,door.y2-door.y1)/100;
+    const wet=door.id.includes('bath')||door.id==='balcony_door';
+    const floor=new three.Mesh(new three.BoxGeometry(horizontal?width:.122,.012,horizontal?.122:width),new three.MeshStandardMaterial({color:wet?0xcac3b3:0xc9ac7a,roughness:.85}));
+    floor.name='Walk threshold '+door.id;floor.position.set((door.x1+door.x2)/200,-.006,(door.y1+door.y2)/200);floor.userData={kind:'walk-threshold',openingId:door.id};walkThresholds.add(floor);
+  }
+  scene.add(walkThresholds);
+  model.traverse(object=>{if(object.userData.walkDoorInfill&&ids.has(object.userData.openingId))walkDoorParts.push(object)});
+  walkthrough=new WalkController({
+    canvas:renderer.domElement,world:walkWorld,onWake:scheduleRender,onExit:()=>stopWalk(),
+    canInteract:()=>state.walking&&state.view==='model'&&!document.querySelector('dialog[open]')&&$('#download-popover').hidden,
+    onPose:pose=>{
+      camera.position.set(pose.x,pose.eyeHeight,pose.z);
+      const level=Math.cos(pose.pitch);
+      camera.lookAt(pose.x+Math.sin(pose.yaw)*level,pose.eyeHeight+Math.sin(pose.pitch),pose.z-Math.cos(pose.yaw)*level);
+      camera.updateMatrixWorld();
+      $('#walk-room-name').textContent=pose.roomId?roomDescription(pose.roomId).name:'门口 · 通道';
+    }
+  });
+  $$('#walk-pad [data-walk-direction]').forEach(button=>walkthrough.bindPad(button,button.dataset.walkDirection));
+  $('#start-walk').disabled=false;
+}
+function startWalk(){
+  if(state.walking)return;
+  if(!state.ready||!walkthrough){toast('三维模型正在载入，请稍后再进入漫游');return}
+  if(document.querySelector('dialog[open]'))return;
+  switchView('model');
+  const seed=WALK_STARTS[state.room]||WALK_STARTS.overall;
+  const start=findWalkStart(walkWorld,state.room,{x:seed[0],z:seed[1]});
+  if(!start){toast('这个空间暂时没有合适的站立位置，请从全屋入口进入');return}
+  walkRestore={cutWalls:state.cutWalls,doors:walkDoorParts.map(part=>[part,part.visible])};
+  walkDoorParts.forEach(part=>part.visible=false);walkThresholds.visible=true;
+  cameraTween=null;controls.enabled=false;state.walking=true;state.interior=true;
+  activeHorizontalFov=null;camera.clearViewOffset();camera.near=.045;camera.fov=64;camera.updateProjectionMatrix();
+  setWalls(false);$('#workspace').classList.add('walking');$('#walk-hud').hidden=false;$('#walk-pad').hidden=false;$('#walk-look-hint').hidden=false;
+  $('#download-popover').hidden=true;$('#download-toggle').setAttribute('aria-expanded','false');
+  const target=roomById(state.room)?.interiorCamera?.target;
+  const yaw=target?Math.atan2(target[0]-start.x,start.z-target[2]):0;
+  walkthrough.start(start,yaw);
+  toast('已进入第一人称漫游 · 拖动转头，按键移动');
+}
+function stopWalk({refocus=true,restoreFocus=true}={}){
+  if(!state.walking)return;
+  walkthrough?.stop();cameraTween=null;state.walking=false;state.interior=false;
+  for(const [part,visible]of walkRestore?.doors||[])part.visible=visible;
+  if(walkThresholds)walkThresholds.visible=false;
+  controls.enabled=true;$('#workspace').classList.remove('walking');
+  $('#walk-hud').hidden=true;$('#walk-pad').hidden=true;$('#walk-look-hint').hidden=true;
+  if(refocus&&state.ready)focusRoom(state.room,false,false);
+  setWalls(walkRestore?.cutWalls??true);walkRestore=null;
+  if(refocus&&restoreFocus)$('#start-walk').focus({preventScroll:true});
+  scheduleRender();
+}
 
 function optimizeStaticModel(source,THREE,mergeGeometries){
   source.updateMatrixWorld(true);
@@ -478,10 +546,10 @@ function optimizeStaticModel(source,THREE,mergeGeometries){
   source.traverse(object=>{
     if(!object.isMesh)return;
     let owner=object,semantic={};
-    while(owner){for(const key of ['kind','roomId','external','wallIndex'])if(semantic[key]===undefined&&owner.userData[key]!==undefined)semantic[key]=owner.userData[key];owner=owner.parent}
+    while(owner){for(const key of ['kind','roomId','external','wallIndex','openingId'])if(semantic[key]===undefined&&owner.userData[key]!==undefined)semantic[key]=owner.userData[key];owner=owner.parent}
     const originalMaterial=object.material;
-    if(Array.isArray(originalMaterial)||object.isSkinnedMesh||originalMaterial.transparent||originalMaterial.transmission>0){
-      const clone=object.clone(false);clone.geometry=object.geometry.clone().applyMatrix4(object.matrixWorld);clone.position.set(0,0,0);clone.quaternion.identity();clone.scale.set(1,1,1);clone.userData={...object.userData,...semantic};optimized.add(clone);return;
+    if(semantic.kind==='door'||Array.isArray(originalMaterial)||object.isSkinnedMesh||originalMaterial.transparent||originalMaterial.transmission>0){
+      const clone=object.clone(false);clone.geometry=object.geometry.clone().applyMatrix4(object.matrixWorld);clone.position.set(0,0,0);clone.quaternion.identity();clone.scale.set(1,1,1);clone.userData={...object.userData,...semantic,walkDoorInfill:Boolean(isWalkDoorInfill(object.name,semantic))};optimized.add(clone);return;
     }
     const signature=Object.keys(object.geometry.attributes).sort().map(key=>`${key}:${object.geometry.attributes[key].itemSize}`).join(',');
     const key=[originalMaterial.uuid,semantic.kind||'',semantic.roomId||'',semantic.external||false,signature].join('|');
@@ -522,6 +590,7 @@ function fitMobileOverview(position,target){
 }
 
 function focusRoom(id,interior=false,animate=true){
+  if(state.walking)stopWalk({refocus:false});
   if(!state.ready)return;
   let preset;
   if(id==='overall')preset=manifest?.overviewCamera||{position:[15,15,21],target:[4.2,.6,7]};
@@ -541,7 +610,7 @@ function focusRoom(id,interior=false,animate=true){
   defaultDistance=position.distanceTo(target);$('#zoom-level').textContent='100%';
   if(animate&&!reducedMotion)cameraTween={start:performance.now(),fromPosition:camera.position.clone(),fromTarget:controls.target.clone(),toPosition:position,toTarget:target};
   else{camera.position.copy(position);controls.target.copy(target);controls.update()}
-  $('#enter-room').innerHTML=`${interior?'返回俯瞰视角':id==='overall'?'探索客厅':'走进'+roomDescription(id).name} <span>↗</span>`;
+  $('#enter-room').innerHTML=`${id==='overall'?'步行看全屋':'步行进入'+roomDescription(id).name} <span>↗</span>`;
   scheduleRender();
 }
 
@@ -570,8 +639,10 @@ const projected = {value:null};
 function tick(time){
   pendingFrame=null;
   if(!state.ready||document.hidden||state.view!=='model')return;
-  if(cameraTween){const progress=Math.min(1,(performance.now()-cameraTween.start)/850),ease=1-Math.pow(1-progress,3);camera.position.lerpVectors(cameraTween.fromPosition,cameraTween.toPosition,ease);controls.target.lerpVectors(cameraTween.fromTarget,cameraTween.toTarget,ease);if(progress===1)cameraTween=null}
-  controls.update();
+  const walkingFrame=state.walking;
+  const walkMoving=walkingFrame?walkthrough?.update(time):false;
+  if(!walkingFrame&&cameraTween){const progress=Math.min(1,(performance.now()-cameraTween.start)/850),ease=1-Math.pow(1-progress,3);camera.position.lerpVectors(cameraTween.fromPosition,cameraTween.toPosition,ease);controls.target.lerpVectors(cameraTween.fromTarget,cameraTween.toTarget,ease);if(progress===1)cameraTween=null}
+  if(!walkingFrame)controls.update();
   if(dimensionLines)dimensionLines.visible=state.dimensions&&!state.interior;
   $('#zoom-level').textContent=Math.round(defaultDistance/camera.position.distanceTo(controls.target)*100)+'%';
   const width=renderer.domElement.clientWidth,height=renderer.domElement.clientHeight;
@@ -585,7 +656,7 @@ function tick(time){
     if(!item.element.hidden){item.element.style.left=x+'px';item.element.style.top=y+'px'}
   });
   try{renderer.render(scene,camera)}catch(error){console.error('Model render failed',error);showFallback('当前设备未能完成三维绘制，可以继续查看同源平面与 Blender 效果图。');return}
-  if(cameraTween)scheduleRender();
+  if(cameraTween||walkMoving)scheduleRender();
 }
 
 function bindControls(){
@@ -597,11 +668,17 @@ function bindControls(){
   $$('.view-tabs [data-view]').forEach(button=>button.addEventListener('click',()=>switchView(button.dataset.view)));
   $('.view-tabs').addEventListener('keydown',event=>{if(!['ArrowLeft','ArrowRight'].includes(event.key))return;const views=['model','plan','renders'],next=(views.indexOf(state.view)+(event.key==='ArrowRight'?1:2))%3;switchView(views[next]);$(`[data-view="${views[next]}"]`).focus()});
   $('#reset-camera').addEventListener('click',()=>focusRoom(state.room));
-  [['#zoom-in',.82],['#zoom-out',1.22]].forEach(([id,factor])=>$(id).addEventListener('click',()=>{if(!state.ready)return;cameraTween=null;const direction=camera.position.clone().sub(controls.target);direction.setLength(Math.max(controls.minDistance,Math.min(controls.maxDistance,direction.length()*factor)));camera.position.copy(controls.target).add(direction);controls.update()}));
+  [['#zoom-in',.82],['#zoom-out',1.22]].forEach(([id,factor])=>$(id).addEventListener('click',()=>{if(!state.ready||state.walking)return;cameraTween=null;const direction=camera.position.clone().sub(controls.target);direction.setLength(Math.max(controls.minDistance,Math.min(controls.maxDistance,direction.length()*factor)));camera.position.copy(controls.target).add(direction);controls.update()}));
   $('#cut-walls').addEventListener('click',()=>{setWalls(!state.cutWalls);toast(state.cutWalls?'已切为低墙视图':'已恢复完整墙体')});
   $('#toggle-labels').addEventListener('click',()=>{state.labels=!state.labels;$('#toggle-labels').classList.toggle('selected',state.labels);$('#toggle-labels').setAttribute('aria-pressed',String(state.labels));scheduleRender()});
   $('#toggle-dimensions').addEventListener('click',()=>{state.dimensions=!state.dimensions;$('#toggle-dimensions').classList.toggle('selected',state.dimensions);$('#toggle-dimensions').setAttribute('aria-pressed',String(state.dimensions));if(state.dimensions)toast('标注为图纸轮廓尺寸，完整尺寸请查看平面');scheduleRender()});
-  $('#enter-room').addEventListener('click',()=>{if(state.room==='overall'){selectRoom('living');switchView('model');return}if(!state.ready){switchView('renders');return}switchView('model');focusRoom(state.room,!state.interior)});
+  $('#enter-room').addEventListener('click',()=>{if(!state.ready){switchView('renders');return}startWalk()});
+  $('#start-walk').addEventListener('click',startWalk);$('#exit-walk').addEventListener('click',()=>stopWalk());
+  $('#walk-help').addEventListener('click',()=>{walkthrough?.pause();$('#walk-help-dialog').showModal()});
+  // Opening any UI surface clears held input, including keyboard-activated
+  // buttons. Movement-pad presses are the deliberate exception.
+  document.addEventListener('click',event=>{if(state.walking&&event.target.closest('button,a,dialog')&&!event.target.closest('#walk-pad'))walkthrough?.pause()},true);
+  window.addEventListener('pagehide',()=>stopWalk({restoreFocus:false}));
   $('#view-room-render').addEventListener('click',()=>switchView('renders'));$('#fallback-renders').addEventListener('click',()=>switchView('renders'));
   $('#fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await $('#workspace').requestFullscreen()}catch{toast('当前浏览器不支持全屏，可使用横屏查看')}});
   ['#open-project','#open-dimensions'].forEach(id=>$(id).addEventListener('click',()=>$('#project-dialog').showModal()));
@@ -617,7 +694,7 @@ function bindControls(){
   document.addEventListener('keydown',event=>{if(event.key==='Escape'){$('#download-popover').hidden=true;$('#download-toggle').setAttribute('aria-expanded','false')}});
   $('.brand').addEventListener('click',event=>{event.preventDefault();selectRoom('overall');switchView('model')});
   window.addEventListener('hashchange',()=>selectRoom(location.hash.slice(1),{updateHash:false}));
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&controls){controls.update();scheduleRender()}});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&controls){if(!state.walking)controls.update();scheduleRender()}});
 }
 
 async function init(){

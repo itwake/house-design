@@ -7,7 +7,7 @@ const base='https://itwake.github.io/house-design/';
 const local=path=>new URL('../'+path,import.meta.url);
 const catalog=JSON.parse(await readFile(local('models/design-schemes.json'),'utf8'));
 const views=['overall','living','dining','master','bedroom-b','study','kitchen','master-bath','guest-bath','balcony','bay-master','bay-tea','bay-living','entry-storage','sideboard'];
-const files=new Set(['index.html','studio.html','schemes.js','studio.js','studio.css','models/design-schemes.json','models/design-data.json']);
+const files=new Set(['index.html','studio.html','schemes.js','studio.js','studio.css','walkthrough.js','walkthrough.css','models/design-schemes.json','models/design-data.json']);
 for(const scheme of catalog.schemes){
   [scheme.model,scheme.blend,scheme.manifest].forEach(path=>files.add(path));
   const dir=scheme.id==='wood'?'assets/blender-renders':'assets/schemes/'+scheme.id;

@@ -8,6 +8,7 @@
 
 ## 这一版有什么
 
+- V3.1.3 新增第一人称漫游：固定1.60m眼高，WASD／方向键移动、拖动转头，手机可双指分别控制方向键和视角；墙、窗、主要家具阻挡通行，一键返回俯瞰。仅改变网页交互，不改原木布局和既有模型、渲染资产。
 - V3.1.2 收起四套饰面选择入口及“换方案”弹窗，仅保留原木方案。最近确认的进门右鞋柜、左7字整墙餐边柜、三处功能飘窗及家具布局完整保留；模型、几何数据和15张效果图继续使用V3.1.1资产，没有回退或重渲。
 - 根入口直接进入查看器；三个旧配色链接回到原木，保留当前房间与说明卡隐藏偏好。未知方案链接明确报错，不默默当作有效设计。
 - 新方案必须有家具布局、动线或空间功能上的实质差异，不能只是换色。将来需要各自的几何数据、平面、3D及同源渲染，并逐一核对尺度与净空；本轮不新增布局。
@@ -42,7 +43,7 @@ V3.0.5按用户反馈取消主卧独立桌，只保留**一体飘窗办公梳妆
 
 详细证据、尺寸等级及尚未确定的事项见 [几何校核记录](docs/geometry-v3.md)。
 
-本轮入口收敛与验证范围见 [V3.1.2说明](docs/single-layout-v312.md)。保留的几何、逐图复核和网页回归见 [V3.1.1检查记录](docs/qa-storage-v311.md)。之前记录保留于 [V3检查记录](docs/qa-v3.md) 与 [V3.1.0检查记录](docs/qa-design-schemes-v310.md)，其中“原案不变”等描述仅针对当时版本。
+本轮漫游操作、门洞处理与离线验证范围见 [V3.1.3说明](docs/walkthrough-v313.md)。此前入口收敛与验证范围见 [V3.1.2说明](docs/single-layout-v312.md)。保留的几何、逐图复核和网页回归见 [V3.1.1检查记录](docs/qa-storage-v311.md)。之前记录保留于 [V3检查记录](docs/qa-v3.md) 与 [V3.1.0检查记录](docs/qa-design-schemes-v310.md)，其中“原案不变”等描述仅针对当时版本。
 
 ## 尺寸边界
 
@@ -67,6 +68,7 @@ V3.0.5按用户反馈取消主卧独立桌，只保留**一体飘窗办公梳妆
 | `tools/build_design_schemes.py` | 历史饰面实验生成器，必须显式`--archived`，不能生成新布局 |
 | `models/design-data.json` 内 `bayFitouts` | 每件桌面、支架、椅、坐垫与茶托的共享三维包围盒 |
 | `index.html` / `schemes.js` | 单方案入口、旧链接迁移与原木资源加载 |
+| `walkthrough.js` / `walkthrough.css` | 第一人称移动、触控、碰撞和漫游界面 |
 | `studio.html` / `studio.js` / `studio.css` | 保留完整功能的原木 Three.js 查看器 |
 | `legacy.html` | 已标记局限的旧版归档，不作新版几何依据 |
 
@@ -98,12 +100,15 @@ V3.1.1 四套图统一为960×640像素、Cycles 8采样加去噪，全部由新
 
 ```powershell
 node tools/test_single_scheme.mjs
+node tools/test_walkthrough.mjs
 node tools/test_plan_geometry.mjs
 python tools/validate_studio.py --assets
 python tools/validate_design_schemes.py
 ```
 
-`test_single_scheme.mjs`离线执行实际路由与查看器初始化代码，核对旧链接、错误状态、房间定位、下载路径和说明卡状态，并对比V3.1.1几何及资产。它不测试WebGL或浏览器视觉。发布后运行 `node tools/verify_published.mjs`，通过HTTP逐一对比25个有效Pages资源的SHA；不读取用户浏览器或其他标签页。
+`test_single_scheme.mjs`离线执行实际路由与查看器初始化代码，核对旧链接、错误状态、房间定位、下载路径和说明卡状态，并对比V3.1.1几何及资产。它不测试WebGL或浏览器视觉。发布后运行 `node tools/verify_published.mjs`，通过HTTP逐一对比27个有效Pages资源的SHA；不读取用户浏览器或其他标签页。
+
+`test_walkthrough.mjs`离线运行实际移动、输入与查看器生命周期代码，检查8房间连通、10个落脚点、双指输入、暂停／恢复、门片隐藏与退出复原。虚拟碰撞半径不是施工净空认证；该测试不含WebGL或浏览器视觉检查。
 
 `test_plan_geometry.mjs`直接运行网页平面与立面绘制函数，核对床、阶梯双卫、门窗、飘窗、24个收纳部件和开放中空端板方向。说明卡的浏览器专项 `qa_card_visibility.mjs` 仍可在明确要求浏览器测试时使用；旧的 `qa_design_schemes.mjs` 已标为四配色历史测试，不适用于当前入口。
 

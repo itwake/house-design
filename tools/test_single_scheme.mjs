@@ -85,7 +85,7 @@ for(const name of ['', 'index.html'])for(const hash of ['',...roomIds.map(id=>'#
 let initialized=0;
 for(const style of ['', 'wood',...retired])for(const room of roomIds){
   const env=environment(base+'studio.html?source=bookmark&v=old'+(style?'&scheme='+style:'')+'#'+room);
-  vm.runInContext(viewer.replace(/^import .*\r?\n/,'').replace(/\binit\(\);\s*$/,''),env.context);
+  vm.runInContext(viewer.replace(/^import .*\r?\n/gm,'').replace(/\binit\(\);\s*$/,''),env.context);
   // Geometry has a separate actual-SVG regression. Here only detach expensive
   // image/mesh rendering, leaving real bindControls/configureScheme/init intact.
   vm.runInContext(`makeNavigation=makePlan=renderDesignNotes=renderBayFitouts=renderStorageFitouts=paintSchemePlan=()=>{};
@@ -112,7 +112,7 @@ for(const style of ['', 'wood',...retired])for(const room of roomIds){
 }
 for(const options of [{href:base+'studio.html?scheme=invalid#living'},{href:base+'studio.html',status:503},{href:base+'studio.html',catalogResponse:{...catalog,schemes:[...catalog.schemes,...catalog.archivedPalettes]}}]){
   const env=environment(options.href,options);
-  vm.runInContext(viewer.replace(/^import .*\r?\n/,'').replace(/\binit\(\);\s*$/,''),env.context);
+  vm.runInContext(viewer.replace(/^import .*\r?\n/gm,'').replace(/\binit\(\);\s*$/,''),env.context);
   await vm.runInContext('init()',env.context);
   assert.equal(env.document.documentElement.dataset.scheme,undefined);
   assert.equal(env.node('#scheme-load-error').hidden,false);assert.equal(env.node('#model-loading').hidden,true);
