@@ -3,6 +3,8 @@
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import path from 'node:path';
+// Historical four-palette UI runner retained for versioned reproduction only.
+if(JSON.parse(await readFile(new URL('../models/design-schemes.json',import.meta.url),'utf8')).schemes.length!==4)throw Error('This four-palette browser suite is archived. Use node tools/test_single_scheme.mjs for the active single-layout entry.');
 const [port,tabId,...flags]=process.argv.slice(2),images=flags.includes('--images');
 if(!/^\d+$/.test(port||'')||!tabId)throw Error('Pass dedicated CDP port and project tab');
 const base='http://127.0.0.1:4173/',target=(await(await fetch(`http://127.0.0.1:${port}/json/list`)).json()).find(t=>t.id===tabId&&t.url.startsWith(base));

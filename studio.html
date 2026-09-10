@@ -4,24 +4,22 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#f4f1eb" />
-  <meta name="description" content="荟雅苑四套三房两卫设计方案：同一户型尺寸、独立材质模型与 Blender 渲染，可交互 Three.js 全屋漫游。" />
-  <title>方案查看 · 荟雅苑设计选集</title>
-  <link rel="stylesheet" href="studio.css?v=3.1.1" />
-  <link rel="stylesheet" href="schemes.css?v=3.1.1" />
+  <meta name="description" content="荟雅苑三房两卫现代原木设计：同源平面、Blender效果图与Three.js全屋漫游，保留右侧鞋柜、左侧7字餐边柜和三处功能飘窗。" />
+  <title>木光原境 · 荟雅苑的家</title>
+  <link rel="stylesheet" href="studio.css?v=3.1.2" />
   <script type="importmap">{"imports":{"three":"./vendor/three/three.module.js","three/addons/":"./vendor/three/addons/"}}</script>
-  <script type="module" src="studio.js?v=3.1.1"></script>
+  <script type="module" src="studio.js?v=3.1.2"></script>
 </head>
 <body>
   <div class="app-shell">
     <header class="topbar">
       <a class="brand" href="#overall" aria-label="当前方案，返回全屋">
         <svg class="brand-symbol" viewBox="0 0 36 36" aria-hidden="true"><path d="M5 28V13L18 5l13 8v15H5Z M12 28V16l6-4 6 4v12 M18 5v23"/></svg>
-        <span><strong>方案查看</strong><small>HUIYAYUAN DESIGN</small></span>
+        <span><strong>木光原境</strong><small>WOOD &amp; WARMTH</small></span>
       </a>
-      <div class="project-crumb"><span>荟雅苑 /</span> 设计选集</div>
+      <div class="project-crumb"><span>荟雅苑 /</span> 现代原木</div>
       <div class="top-actions">
         <span class="live-badge"><i></i> 设计探索版</span>
-        <button class="text-button scheme-switch-button" id="change-scheme">换方案 <span>⇄</span></button>
         <button class="text-button" id="open-project" data-icon="info"><span class="desktop-action-label">设计说明</span><span class="mobile-action-label">说明</span></button>
         <div class="download-menu">
           <button class="text-button" id="download-toggle" aria-expanded="false" aria-controls="download-popover" data-icon="download"><span class="desktop-action-label">下载模型</span><span class="mobile-action-label">下载</span></button>
@@ -39,7 +37,7 @@
       <nav id="room-nav" class="room-nav"></nav>
       <div class="sidebar-bottom">
         <div class="material-dots" aria-label="方案配色正在载入"></div>
-        <p>同一尺度，不同的生活表达。</p>
+        <p>把每一天，安放在光与木色之间。</p>
         <div class="home-stats"><span><b>104.83<small>㎡</small></b>建筑面积</span><span><b>3 <small>房</small> 2 <small>卫</small></b>28F · 广州</span></div>
         <button class="quiet-link" id="open-bays">飘窗功能设计 <span>↗</span></button>
         <button class="quiet-link" id="open-storage">玄关与餐边收纳 <span>↗</span></button>
@@ -59,7 +57,7 @@
 
       <section id="model-view" class="view-panel active" role="tabpanel" aria-labelledby="tab-model">
         <div id="model-canvas" class="model-canvas" aria-label="可旋转和缩放的全屋三维模型"></div>
-        <div id="scheme-load-error" class="scheme-load-error" hidden><strong>方案目录暂未载入</strong><p>请刷新重试。不会用其他方案的模型或图片替代。</p><a href="index.html?v=3.1.1">返回方案选集 ↗</a></div>
+        <div id="scheme-load-error" class="scheme-load-error" hidden><strong>设计资料暂未载入</strong><p>请刷新重试，或返回原木方案。</p><a href="index.html?v=3.1.2">返回原木方案 ↗</a></div>
         <div id="room-labels" class="room-labels"></div>
         <div id="model-loading" class="model-loading" aria-live="polite"><div class="loading-house"><span></span><span></span><span></span></div><strong>正在打开这个家</strong><span id="loading-status">载入材质与空间模型…</span><div class="loading-track"><i id="loading-progress"></i></div></div>
         <div id="model-fallback" class="model-fallback" hidden><img alt="全屋 Blender 俯视渲染" /><div><strong>当前暂时无法打开交互模型</strong><p id="fallback-message">可以先查看平面与空间渲染。</p><button class="primary-button" id="fallback-renders">查看效果图 <span>↗</span></button></div></div>
@@ -78,12 +76,12 @@
 
       <section id="renders-view" class="view-panel" role="tabpanel" aria-labelledby="tab-renders" hidden><div class="render-stage"><figure><img id="active-render" alt="当前空间 Blender 渲染" /><figcaption><span><b id="render-name">全屋概览</b><small>由同一 Blender 模型直接渲染</small></span><button class="icon-button" id="enlarge-render" aria-label="放大效果图" data-icon="expand"></button></figcaption></figure><div class="render-unavailable" id="render-unavailable" hidden>这个视角暂时未能加载，请选择其他空间。</div><div class="render-strip" id="render-strip" aria-label="空间效果图"></div></div></section>
 
-      <aside class="room-card" id="room-card"><button type="button" class="room-card-toggle" id="room-card-toggle" aria-controls="room-card" aria-expanded="true" aria-label="隐藏说明"><span>隐藏说明</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m3 3 10 10 M3 13 13 3"/></svg></button><div class="room-card-body"><img id="room-preview" alt="全屋渲染预览" /><div class="room-card-copy"><p class="card-kicker" id="card-kicker">THE ENTIRE HOME</p><h2 id="card-title">同一个家，不同表达</h2><p class="card-description" id="card-description">正在读取本方案的材质、设计说明与空间模型。</p><div class="room-tags" id="room-tags"></div><button class="primary-button" id="enter-room">探索客厅 <span>↗</span></button><button class="secondary-link" id="view-room-render">查看空间效果图 <span>→</span></button><button class="secondary-link bay-card-link" id="view-bay-fitout">三处飘窗功能设计 <span>↗</span></button><button class="secondary-link storage-card-link" id="view-storage-fitout">玄关与餐边收纳 <span>↗</span></button></div></div></aside>
+      <aside class="room-card" id="room-card"><button type="button" class="room-card-toggle" id="room-card-toggle" aria-controls="room-card" aria-expanded="true" aria-label="隐藏说明"><span>隐藏说明</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m3 3 10 10 M3 13 13 3"/></svg></button><div class="room-card-body"><img id="room-preview" alt="全屋渲染预览" /><div class="room-card-copy"><p class="card-kicker" id="card-kicker">THE ENTIRE HOME</p><h2 id="card-title">木色里的日常</h2><p class="card-description" id="card-description">正在读取本方案的材质、设计说明与空间模型。</p><div class="room-tags" id="room-tags"></div><button class="primary-button" id="enter-room">探索客厅 <span>↗</span></button><button class="secondary-link" id="view-room-render">查看空间效果图 <span>→</span></button><button class="secondary-link bay-card-link" id="view-bay-fitout">三处飘窗功能设计 <span>↗</span></button><button class="secondary-link storage-card-link" id="view-storage-fitout">玄关与餐边收纳 <span>↗</span></button></div></div></aside>
       <div class="space-footer"><span>荟雅苑 / 28F</span><span>BLENDER × THREE.JS</span></div>
     </main>
   </div>
 
-  <dialog id="project-dialog" class="project-dialog"><button class="dialog-close icon-button" aria-label="关闭设计说明" data-icon="close"></button><p class="eyebrow">ABOUT THIS HOME</p><h2>设计有温度，<br />空间有依据。</h2><p id="project-scheme-intro">四套方案保留相同户型、门窗和家具占位，以独立的材质与配色表达生活气质。</p><div class="dialog-grid"><article><span>01 / 结构</span><b>原有空间的真实关系</b><p>建筑面积 104.83㎡；净面积依模型计算，不能替代产权测绘。公共区面积包含客厅、餐厅和过道，餐厅没有重复计算独立面积。</p></article><article><span>02 / 材质</span><b id="project-scheme-materials">当前方案的材质表达</b><p id="project-scheme-palette">同一空间尺度，独立材质模型。</p></article><article><span>03 / 表达</span><b>模型与效果图同源</b><p>Blender 构建家具、材质和灯光，Three.js 用于在线交互。效果图由该模型直接渲染。</p></article><article><span>04 / 复尺</span><b>施工前仍需现场深化</b><p>现有图纸未完整标注墙体性质、窗高、梁和管井。统一墙厚及门窗尺寸含假设，开工前需设计师复核。</p></article></div><p id="plan-scheme-note">平面色块为简化方案示意，不是逐块柜门材料表；具体材料分配请看 3D 与同源渲染。四套方案的平面尺寸共用同一坐标。</p><p>次卧B北窗、主卧北窗及客厅西窗这3处飘窗存在已确认，外凸600mm仍待复尺。原900mm窗台是未实测基线；次卧本轮展示430mm低台＋50mm坐垫的条件茶座，不能当作现场事实，也不代表允许拆改。主卧仅设飘窗一体工作台与一把椅子；次卧取消独立桌椅并保留条件茶座，客厅保留双人长桌。具体构造与尺寸随下方同源方案更新。所有功能方案均须复核窗高、腿位、窗扇开启及防护；飘窗不扩大房间面积，尺寸链仅计主体墙身。</p><p>阳台外侧封窗及厨房外窗资料不足，模型暂用边界占位，不能据此判断真实采光。主卫北门通向主卧，作为套内卫生间；客卫从公共走廊进入。两卫阶梯边界随同源图纸更新，门宽和门侧构造仍需现场复尺。</p><button class="project-bay-link" id="project-bay-link"><span><small>本轮设计专题</small>三处飘窗 · 功能设计与参考案例</span><b>↗</b></button><button class="project-bay-link" id="project-storage-link"><span><small>收纳专题 · 同源构件与分层</small>玄关与餐边 · 收纳设计 / 参考原文</span><b>↗</b></button><section id="source-notes" class="source-notes" hidden><h3>本轮空间说明</h3><ul id="source-notes-list"></ul></section><p>效果图采用设计展示照明，不代表本房实测日照、采光或隔声表现。</p><p>历史归档保留了旧概念图和前版模型。旧模型未恢复次卧门厅与书房凹口，部分概念图与实际尺寸不一致；当前空间核对请使用本页模型和平面。</p><a class="primary-button" href="legacy.html">查看历史方案归档 <span>↗</span></a></dialog>
+  <dialog id="project-dialog" class="project-dialog"><button class="dialog-close icon-button" aria-label="关闭设计说明" data-icon="close"></button><p class="eyebrow">ABOUT THIS HOME</p><h2>设计有温度，<br />空间有依据。</h2><p id="project-scheme-intro">保留现代原木设计、已确认的三房两卫布局、三处功能飘窗与玄关餐边收纳。</p><div class="dialog-grid"><article><span>01 / 结构</span><b>原有空间的真实关系</b><p>建筑面积 104.83㎡；净面积依模型计算，不能替代产权测绘。公共区面积包含客厅、餐厅和过道，餐厅没有重复计算独立面积。</p></article><article><span>02 / 材质</span><b id="project-scheme-materials">当前方案的材质表达</b><p id="project-scheme-palette">浅橡木、暖白与柔和织物。</p></article><article><span>03 / 表达</span><b>模型与效果图同源</b><p>Blender 构建家具、材质和灯光，Three.js 用于在线交互。效果图由该模型直接渲染。</p></article><article><span>04 / 复尺</span><b>施工前仍需现场深化</b><p>现有图纸未完整标注墙体性质、窗高、梁和管井。统一墙厚及门窗尺寸含假设，开工前需设计师复核。</p></article></div><p id="plan-scheme-note">平面色块为简化方案示意，不是逐块柜门材料表；具体材料分配请看 3D 与同源渲染。平面和3D共用同一份尺寸坐标。</p><details class="project-material-notes"><summary>原木材质参考与取舍</summary><ul id="project-material-tradeoffs"></ul><div id="project-material-references" class="bay-references"></div></details><p id="future-scheme-policy">新增方案必须有布局、动线或空间功能上的实质差异；仅更换颜色或材质不作为新方案。</p><p>次卧B北窗、主卧北窗及客厅西窗这3处飘窗存在已确认，外凸600mm仍待复尺。原900mm窗台是未实测基线；次卧本轮展示430mm低台＋50mm坐垫的条件茶座，不能当作现场事实，也不代表允许拆改。主卧仅设飘窗一体工作台与一把椅子；次卧取消独立桌椅并保留条件茶座，客厅保留双人长桌。具体构造与尺寸随下方同源方案更新。所有功能方案均须复核窗高、腿位、窗扇开启及防护；飘窗不扩大房间面积，尺寸链仅计主体墙身。</p><p>阳台外侧封窗及厨房外窗资料不足，模型暂用边界占位，不能据此判断真实采光。主卫北门通向主卧，作为套内卫生间；客卫从公共走廊进入。两卫阶梯边界随同源图纸更新，门宽和门侧构造仍需现场复尺。</p><button class="project-bay-link" id="project-bay-link"><span><small>本轮设计专题</small>三处飘窗 · 功能设计与参考案例</span><b>↗</b></button><button class="project-bay-link" id="project-storage-link"><span><small>收纳专题 · 同源构件与分层</small>玄关与餐边 · 收纳设计 / 参考原文</span><b>↗</b></button><section id="source-notes" class="source-notes" hidden><h3>本轮空间说明</h3><ul id="source-notes-list"></ul></section><p>效果图采用设计展示照明，不代表本房实测日照、采光或隔声表现。</p><p>历史归档保留了旧概念图和前版模型。旧模型未恢复次卧门厅与书房凹口，部分概念图与实际尺寸不一致；当前空间核对请使用本页模型和平面。</p><a class="primary-button" href="legacy.html">查看历史方案归档 <span>↗</span></a></dialog>
   <dialog id="bay-dialog" class="bay-dialog" aria-labelledby="bay-dialog-title">
     <button class="dialog-close icon-button" aria-label="关闭飘窗功能设计" data-icon="close"></button>
     <header class="bay-dialog-heading"><p class="eyebrow">THREE WINDOWS / THREE RITUALS</p><h2 id="bay-dialog-title">把窗边，留给日常。</h2><p>办公与梳妆、独处喝茶、一起学习。三处飘窗分别回应一种生活，家具占位和平面、3D使用同一份数据。</p><span class="bay-conditional-badge">条件设计 · 非已核可施工</span></header>
@@ -95,12 +93,6 @@
     <header class="bay-dialog-heading"><p class="eyebrow">ARRIVE / STORE / GATHER</p><h2 id="storage-dialog-title">从进门，到一日三餐。</h2><p>鞋与杯盘分开收纳，柜门、开放格与台面延续当前方案的材质。平面、正立面和 Blender 近景均读取同一份构件尺寸。</p><span class="bay-conditional-badge">条件收纳方案 · 非实测施工图</span></header>
     <div id="storage-fitout-cards" class="bay-fitout-grid storage-fitout-grid"></div>
     <footer class="bay-dialog-notes storage-dialog-notes"><h3>下单前，仍需实测与试摆</h3><ul id="storage-assumptions"></ul><p id="storage-reference-note"></p><p>本页图片均为本项目 Blender 同源模型渲染，不转载外部案例照片。正立面用于理解柜腔分层，不替代板件、承载、五金或电气施工图。</p></footer>
-  </dialog>
-  <dialog id="scheme-dialog" class="bay-dialog viewer-scheme-dialog" aria-labelledby="scheme-dialog-title">
-    <button class="dialog-close icon-button" aria-label="关闭方案选择" data-icon="close"></button>
-    <header class="bay-dialog-heading"><p class="eyebrow">SAME HOME / DIFFERENT EXPRESSIONS</p><h2 id="scheme-dialog-title">换一种，感受家的另一面。</h2><p>切换材质、色彩与同源渲染，保留当前房间位置。空间尺寸、床向和收纳功能不变。</p><a class="scheme-gallery-link" href="index.html?v=3.1.1">打开完整方案选集 ↗</a></header>
-    <div id="viewer-scheme-grid" class="scheme-grid"></div>
-    <footer class="viewer-scheme-footer"><div id="scheme-current-summary"></div><div id="scheme-current-references" class="bay-references"></div><p>风格参考只借鉴材料与色彩，不移植外部案例的尺寸或结构。当前模型仍含待复尺条件。</p></footer>
   </dialog>
   <dialog id="image-dialog" class="image-dialog"><button class="dialog-close icon-button" aria-label="关闭效果图" data-icon="close"></button><img id="large-render" alt="空间大图" /><p id="large-render-caption"></p></dialog>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>

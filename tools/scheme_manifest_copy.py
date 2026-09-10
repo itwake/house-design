@@ -68,8 +68,11 @@ def protected_projection(manifest):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--schemes", default="terracotta,moss,cobalt")
+    parser.add_argument("--archived", action="store_true", help="Explicitly refresh archived palette prose only")
     args = parser.parse_args()
-    schemes = {item["id"]: item for item in json.loads((ROOT / "models/design-schemes.json").read_text(encoding="utf-8"))["schemes"]}
+    if not args.archived:
+        parser.error("Palette experiments are archived; use --archived only for historical maintenance")
+    schemes = {item["id"]: item for item in json.loads((ROOT / "models/design-schemes.json").read_text(encoding="utf-8")).get("archivedPalettes", [])}
     for sid in args.schemes.split(","):
         if sid == "wood":
             raise ValueError("The baseline manifest must not be changed")

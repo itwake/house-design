@@ -1,7 +1,7 @@
-import {loadSchemeCatalog,schemeCards,bindSchemeImages,schemeSwatches,schemeRender,viewerURL} from './schemes.js?v=3.1.1';
+import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.1.2';
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
-const UI_REVISION = '3.1.1';
+const UI_REVISION = '3.1.2';
 document.documentElement.dataset.uiRevision = UI_REVISION;
 let ASSET_REVISION = '3.1.1';
 const revisedAsset = path => {const url=new URL(path,document.baseURI);url.searchParams.set('v',ASSET_REVISION);return url.href};
@@ -71,10 +71,10 @@ function sourceNotes(value,roomId=null){
 function designNotes(){const seen=new Set();return [...sourceNotes(data?.renovationNotes),...sourceNotes(data?.geometryNotes)].filter(note=>{const key=note.roomId+'|'+note.text;if(seen.has(key))return false;seen.add(key);return true})}
 function renderDesignNotes(){const notes=designNotes();$('#source-notes').hidden=!notes.length;$('#source-notes-list').innerHTML=notes.map(note=>`<li>${note.roomId?escapeHTML(roomDescription(note.roomId).name)+'：':''}${escapeHTML(note.text)}</li>`).join('')}
 function configureScheme(){
-  document.documentElement.dataset.scheme=scheme.id;document.title=`${scheme.name} · 荟雅苑设计选集`;
+  document.documentElement.dataset.scheme=scheme.id;document.title=`${scheme.name} · 荟雅苑的家`;
   $('.brand strong').textContent=scheme.name;$('.brand small').textContent=scheme.en;$('.brand').setAttribute('aria-label',scheme.name+'，返回全屋');
   $('.project-crumb').textContent='荟雅苑 / '+(scheme.style||scheme.name);
-  $('.sidebar-bottom>p').textContent=scheme.tagline||'同一尺度，不同的生活表达。';
+  $('.sidebar-bottom>p').textContent=scheme.tagline||'把每一天，安放在光与木色之间。';
   $('.material-dots').innerHTML=(scheme.colors||[]).map(c=>`<i title="${escapeHTML(c.name)}" style="--swatch:${/^#[\da-f]{3,8}$/i.test(c.hex)?c.hex:'#ddd'}"></i>`).join('');
   $('.material-dots').setAttribute('aria-label',(scheme.colors||[]).map(c=>c.name).join('、'));
   if(scheme.id!=='wood'){document.documentElement.style.setProperty('--plan-hover',scheme.planPalette?.floor||'#eee7d8');document.documentElement.style.setProperty('--plan-selected',scheme.planPalette?.cabinet||'#ddd6c9')}
@@ -83,15 +83,13 @@ function configureScheme(){
   $('#model-fallback img').src=renderPath('overall');$('#model-fallback img').alt=scheme.name+' · 全屋同源渲染';
   $('#project-scheme-intro').textContent=scheme.summary;
   $('#project-scheme-materials').textContent=scheme.style||scheme.name;
-  $('#project-scheme-palette').textContent=(scheme.colors||[]).map(c=>c.name).join('、')+'。同一房间边界与家具占位，独立呈现本方案材质。';
-  $('#scheme-current-summary').innerHTML=`<p class="eyebrow">${escapeHTML(scheme.en)}</p><h3>${escapeHTML(scheme.name)}</h3><p>${escapeHTML(scheme.summary)}</p><div class="scheme-swatches">${schemeSwatches(scheme)}</div><ul>${(scheme.tradeoffs||[]).map(t=>`<li>${escapeHTML(t)}</li>`).join('')}</ul>`;
+  $('#project-scheme-palette').textContent=(scheme.colors||[]).map(c=>c.name).join('、')+'。模型、平面和效果图相互对应，施工选材仍需现场看样。';
+  $('#future-scheme-policy').textContent=schemeCatalog.futureSchemePolicy;
+  $('#project-material-tradeoffs').innerHTML=(scheme.tradeoffs||[]).map(note=>`<li>${escapeHTML(note)}</li>`).join('');
   const refs=(scheme.references||[]).map(id=>schemeCatalog.references?.find(ref=>ref.id===id)).filter(ref=>ref&&referenceURL(ref.url));
-  $('#scheme-current-references').innerHTML=refs.map(ref=>`<article><a href="${escapeHTML(referenceURL(ref.url))}" target="_blank" rel="noopener noreferrer">${escapeHTML(ref.title)} ↗</a><small>${escapeHTML([ref.author,ref.kind,ref.date].filter(Boolean).join(' / '))}</small><p>借鉴：${escapeHTML(ref.borrow)}</p><p>不照搬：${escapeHTML(ref.avoid)}</p></article>`).join('');
+  $('#project-material-references').innerHTML=refs.map(ref=>`<article><a href="${escapeHTML(referenceURL(ref.url))}" target="_blank" rel="noopener noreferrer">${escapeHTML(ref.title)} ↗</a><small>${escapeHTML([ref.author,ref.kind,ref.date].filter(Boolean).join(' / '))}</small><p>借鉴：${escapeHTML(ref.borrow)}</p><p>不照搬：${escapeHTML(ref.avoid)}</p></article>`).join('');
 }
-function showSchemeSelector(){
-  if(!schemeCatalog||!scheme){toast('方案目录尚未载入，请稍后重试');return}
-  $('#viewer-scheme-grid').innerHTML=schemeCards(schemeCatalog,{current:scheme.id,hash:state.room,compact:true});bindSchemeImages($('#viewer-scheme-grid'));$('#scheme-dialog').showModal();$('#scheme-dialog').scrollTop=0;
-}
+
 function paintSchemePlan(root){
   if(!scheme||scheme.id==='wood'||!root)return;
   const palette=scheme.planPalette||{},groups={wood:['#d2b791','#c7a578','#d7c5a6','#9c7854','#d4c5ac','#d9c5a4','#e8dcc6','#ddc39c','#e6dcc8','#e6dac1'],cabinet:['#d4c9b4','#f8f4e9','#f9f6ed','#fcfaf3'],fabric:['#f8f3e8','#f4eee2','#fffdf7','#aab59c','#c5b89e','#b9bca7','#b6b498'],metal:['#babbb0','#96948d'],wall:['#8c887b'],wet:['#d5dedb','#e5e8e2','#e4e0d6','#e6e9df'],floor:['#eee5d5','#eee8da','#ece3d5']};
@@ -609,7 +607,6 @@ function bindControls(){
   ['#open-project','#open-dimensions'].forEach(id=>$(id).addEventListener('click',()=>$('#project-dialog').showModal()));
   ['#open-bays','#view-bay-fitout','#project-bay-link'].forEach(id=>$(id).addEventListener('click',()=>{if($('#project-dialog').open)$('#project-dialog').close();showBayFitouts()}));
   ['#open-storage','#view-storage-fitout','#project-storage-link'].forEach(id=>$(id).addEventListener('click',()=>{if($('#project-dialog').open)$('#project-dialog').close();showStorageFitouts()}));
-  $('#change-scheme').addEventListener('click',showSchemeSelector);
   $$('.dialog-close').forEach(button=>button.addEventListener('click',()=>button.closest('dialog').close()));
   $$('dialog').forEach(dialog=>dialog.addEventListener('click',event=>{if(event.target===dialog){const rect=dialog.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)dialog.close()}}));
   $('#enlarge-render').addEventListener('click',()=>{if(!scheme||!data)return;$('#large-render').src=renderPath(state.room);$('#large-render').alt=$('#active-render').alt;$('#large-render-caption').textContent=scheme.name+' · '+roomDescription(state.room).name+' · Blender 同源模型渲染';$('#image-dialog').showModal()});
@@ -628,13 +625,14 @@ async function init(){
   try{
     schemeCatalog=await loadSchemeCatalog();
     const requested=new URLSearchParams(location.search).get('scheme')||schemeCatalog.defaultScheme||'wood';
-    scheme=schemeCatalog.schemes.find(item=>item.id===requested);
+    const resolved=resolveScheme(schemeCatalog,requested);scheme=resolved.scheme;
+    if(resolved.retired)toast('已收起配色版本，现保留原木方案；房间位置不变。');
     if(!scheme)throw new Error('未找到请求的设计方案：'+requested);
     ASSET_REVISION=scheme.assetRevision||UI_REVISION;
     const url=new URL(location.href);url.searchParams.set('scheme',scheme.id);url.searchParams.set('v',UI_REVISION);history.replaceState(null,'',url);
     Object.keys(scheme.roomOverrides||{}).forEach(id=>{if(descriptions[id])descriptions[id]={...descriptions[id],...schemeTextOverride(scheme.roomOverrides,id)}});
     configureScheme();
-  }catch(error){console.error('Scheme catalogue load failed',error);$('#loading-status').textContent='方案目录暂未载入';$('#model-loading').hidden=true;$('#scheme-load-error strong').textContent=schemeCatalog?'未找到这个设计方案':'方案目录暂未载入';$('#scheme-load-error').hidden=false;return}
+  }catch(error){console.error('Scheme catalogue load failed',error);$('#loading-status').textContent='方案目录暂未载入';$('#model-loading').hidden=true;$('#scheme-load-error strong').textContent=schemeCatalog?'未找到这个设计方案':'设计资料暂未载入';$('#scheme-load-error').hidden=false;return}
   const results=await Promise.allSettled([getDesignData(),getJSON(scheme.manifest)]);
   data=results[0].status==='fulfilled'?results[0].value:null;manifest=results[1].status==='fulfilled'?results[1].value:{};
   if(!data){$('#loading-status').textContent='尺寸数据暂未载入';makeNavigation();showFallback('页面的尺寸数据暂未能载入，请稍后刷新。');return}

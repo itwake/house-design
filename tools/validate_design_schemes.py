@@ -1,4 +1,4 @@
-"""Independently verify the four design schemes, without Blender or packages.
+"""Verify the active wood design and optionally archived palette experiments.
 
 The GLB check decodes actual POSITION/index bytes and node transforms. It
 compares canonical world-space triangles, not accessor min/max or generator
@@ -7,6 +7,7 @@ Only the two named pendant shades may change, inside their original bounds.
 
   python -B -X utf8 tools/validate_design_schemes.py --pending
   python -B -X utf8 tools/validate_design_schemes.py
+  python -B -X utf8 tools/validate_design_schemes.py --archived
 
 --pending permits missing NEW render files/records only. Models, geometry,
 metadata and any already-present render must still pass every check.
@@ -28,7 +29,8 @@ ROOT = Path(__file__).resolve().parents[1]
 VIEWS = ("overall", "living", "dining", "master", "bedroom-b", "study",
          "kitchen", "master-bath", "guest-bath", "balcony", "bay-master",
          "bay-tea", "bay-living", "entry-storage", "sideboard")
-SCHEME_IDS = ("wood", "terracotta", "moss", "cobalt")
+ACTIVE_IDS = ("wood",)
+ARCHIVED_IDS = ("terracotta", "moss", "cobalt")
 ALLOWED_SHADES = {"Organic linen pendant", "Organic linen pendant.001"}
 # Ten micrometres is far below both survey precision and furniture tolerance.
 GEOMETRY_GRID_M = 0.00001
@@ -297,8 +299,9 @@ def manifest_render_paths(manifest):
 
 
 class Audit:
-    def __init__(self, pending=False):
+    def __init__(self, pending=False, archived=False):
         self.pending = pending
+        self.archived = archived
         self.checks = []
         self.errors = []
         self.waiting = []
@@ -460,7 +463,11 @@ class Audit:
         self.self_test()
         data = load_json(ROOT / "models/design-schemes.json")
         schemes = data.get("schemes", [])
-        self.check(tuple(item.get("id") for item in schemes) == SCHEME_IDS, "Exactly four named schemes with original wood first")
+        self.check(tuple(item.get("id") for item in schemes) == ACTIVE_IDS, "Only wood is an active design")
+        archive = data.get("archivedPalettes", [])
+        self.check(tuple(item.get("id") for item in archive) == ARCHIVED_IDS, "Former palette experiments are archived, not active layouts")
+        if self.archived:
+            schemes = schemes + archive
         self.check(data.get("defaultScheme") == "wood", "Original scheme remains the default")
         source_path = relative_file(data["geometrySource"])
         # Match the baseline builder's UTF-8 text / universal-newline hash so
@@ -525,10 +532,11 @@ class Audit:
             self.details[sid]["embeddedTextureCount"] = len(glbs[sid].image_hashes)
             self.details[sid]["textureSetHash"] = json_hash(sorted(set(glbs[sid].image_hashes)))
             self.renders(scheme, manifest)
-        self.check(len(appearance_hashes) == 3 and len(set(appearance_hashes)) == 3, "Three new appearance definitions have distinct hashes")
-        self.check(len(set(declared_geometry_hashes)) == 1 and bool(declared_geometry_hashes[0]), "All new schemes declare one shared protected base geometry")
-        self.check(len({item["modelSha256"] for item in self.details.values()}) == 4, "All four GLB assets are distinct files")
-        self.check(len({item["textureSetHash"] for item in self.details.values()}) == 4, "All four embedded texture sets have distinct contents")
+        if self.archived:
+            self.check(len(appearance_hashes) == 3 and len(set(appearance_hashes)) == 3, "Three archived appearance definitions have distinct hashes")
+            self.check(len(set(declared_geometry_hashes)) == 1 and bool(declared_geometry_hashes) and all(declared_geometry_hashes), "Archived palettes share protected base geometry")
+            self.check(len({item["modelSha256"] for item in self.details.values()}) == 4, "Baseline and archived GLB files remain distinct")
+            self.check(len({item["textureSetHash"] for item in self.details.values()}) == 4, "Baseline and archived texture sets remain distinct")
         for name in VIEWS:
             hashes = [item["renderHashes"][name] for item in self.details.values() if name in item["renderHashes"]]
             self.check(len(hashes) == len(set(hashes)), f"{name}: every available scheme render has distinct image bytes")
@@ -538,15 +546,16 @@ class Audit:
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--pending", action="store_true", help="Allow only missing new render files while generation is underway")
+    parser.add_argument("--archived", action="store_true", help="Also verify the three retired palette experiments; does not reactivate them")
     parser.add_argument("--json", action="store_true", help="Print machine-readable summary, rather than concise progress")
     args = parser.parse_args()
-    audit = Audit(args.pending)
+    audit = Audit(args.pending, args.archived)
     try:
         audit.run()
     except (OSError, ValueError, KeyError, IndexError, struct.error) as exc:
         audit.errors.append(f"Validation stopped: {type(exc).__name__}: {exc}")
     result = {"ok": not audit.errors, "mode": "pending-renders" if args.pending else "strict",
-              "checksPassed": len(audit.checks), "errors": audit.errors,
+              "includeArchived": args.archived, "checksPassed": len(audit.checks), "errors": audit.errors,
               "pendingRenders": audit.waiting, "schemes": audit.details}
     if args.json:
         print(json.dumps(result, ensure_ascii=False, indent=2))

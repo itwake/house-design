@@ -1,6 +1,6 @@
 # 木光之间 · 荟雅苑的家
 
-104.83㎡ / 28F / 三房两卫。保留原木设计，并提供三套更鲜明的饰面与软装分支：Blender 源模型、真实模型渲染和 Three.js 交互网站共用同一套几何数据。
+104.83㎡ / 28F / 三房两卫。当前仅保留现代原木方案「木光原境」，网站打开即进入全屋查看。Blender 源模型、真实模型渲染和 Three.js 交互网站共用同一套几何数据。
 
 **在线查看：[itwake.github.io/house-design](https://itwake.github.io/house-design/)**
 
@@ -8,9 +8,9 @@
 
 ## 这一版有什么
 
-- V3.1.1 按业主红线及两张反向户型参考图，四套共同更新为进门右侧浅鞋柜、左侧7字整墙餐边柜；原有木光原境、赤陶拾光、松影石居、蓝调构想四种风格继续可选。每套独立模型、材质和15个渲染视角；查看器内换风格可保留当前房间。
-- 新方案参考七个有作者署名的公开住宅案例，来源、借鉴细节及不可照搬的改动在网站中可查，完整研究见[风格参考记录](docs/style-research-v310.md)。第三方案例照片不复制为本户效果图。
-- 风格分支改变实际木纹/织物/石感贴图、局部柜面、软包和五金；两盏餐吊灯的灯罩在共同包络内换形。四套收纳布局相同，墙、门窗、床向和三飘窗功能不因风格改变。
+- V3.1.2 收起四套饰面选择入口及“换方案”弹窗，仅保留原木方案。最近确认的进门右鞋柜、左7字整墙餐边柜、三处功能飘窗及家具布局完整保留；模型、几何数据和15张效果图继续使用V3.1.1资产，没有回退或重渲。
+- 根入口直接进入查看器；三个旧配色链接回到原木，保留当前房间与说明卡隐藏偏好。未知方案链接明确报错，不默默当作有效设计。
+- 新方案必须有家具布局、动线或空间功能上的实质差异，不能只是换色。将来需要各自的几何数据、平面、3D及同源渲染，并逐一核对尺度与净空；本轮不新增布局。
 - 温暖的浅橡木、暖白、亚麻与石材配色，细化家具、灯具、柜体和生活用品。
 - 全屋立体浏览、逐房镜头、平面核对、墙体剖切、尺寸与房间标签。
 - 说明卡可一键完全隐藏／恢复；本标签页记住选择，手机查看模型与平面时不再被卡片挡住。
@@ -22,7 +22,7 @@
 
 效果图由实际模型直接渲染，不使用生成式图片重新解释空间。模型适用于方案讨论，**不是施工图，也不是现场实测成果**。
 
-平面图共用同一坐标，方案色块是简化的示意配色，不是逐块柜门的材料编号图；具体材质分配看对应3D与同源渲染。施工选材仍需厂家样板和深化材料表。
+平面与3D共用同一坐标，色块是简化的示意配色，不是逐块柜门的材料编号图；具体材质分配看对应3D与同源渲染。施工选材仍需厂家样板和深化材料表。
 
 ## 设计与几何修正
 
@@ -42,7 +42,7 @@ V3.0.5按用户反馈取消主卧独立桌，只保留**一体飘窗办公梳妆
 
 详细证据、尺寸等级及尚未确定的事项见 [几何校核记录](docs/geometry-v3.md)。
 
-本轮实际几何、逐图复核和网页回归见 [V3.1.1检查记录](docs/qa-storage-v311.md)。之前记录保留于 [V3检查记录](docs/qa-v3.md) 与 [V3.1.0检查记录](docs/qa-design-schemes-v310.md)，其中“原案不变”等描述仅针对当时版本。
+本轮入口收敛与验证范围见 [V3.1.2说明](docs/single-layout-v312.md)。保留的几何、逐图复核和网页回归见 [V3.1.1检查记录](docs/qa-storage-v311.md)。之前记录保留于 [V3检查记录](docs/qa-v3.md) 与 [V3.1.0检查记录](docs/qa-design-schemes-v310.md)，其中“原案不变”等描述仅针对当时版本。
 
 ## 尺寸边界
 
@@ -60,14 +60,14 @@ V3.0.5按用户反馈取消主卧独立桌，只保留**一体飘窗办公梳妆
 | `models/huiyayuan-wood.blend` | Blender源模型，内嵌贴图与相机 |
 | `models/huiyayuan-wood.glb` | 网页使用的3D模型 |
 | `models/scene-manifest.json` | 房间、相机与效果图索引 |
-| `models/design-schemes.json` | 四套方案、色材配置、逐房文案与参考来源 |
-| `models/schemes/{id}/` | 三套新增方案各自的 blend、glb、贴图与几何/外观审计清单 |
+| `models/design-schemes.json` | 唯一有效方案、未来布局准则；`archivedPalettes`保留已下线配色实验 |
+| `models/schemes/{id}/` | 已下线三套配色的历史资产，不是可选布局 |
 | `assets/blender-renders/` | 原木风格新版15张渲染：10个空间、3个飘窗及2个收纳近景 |
-| `assets/schemes/{id}/` | 每套新增方案15张同视角真实模型渲染 |
-| `tools/build_design_schemes.py` | 从受保护原案生成、导出和渲染饰面分支 |
+| `assets/schemes/{id}/` | 已下线配色的历史渲染，不在当前网页加载 |
+| `tools/build_design_schemes.py` | 历史饰面实验生成器，必须显式`--archived`，不能生成新布局 |
 | `models/design-data.json` 内 `bayFitouts` | 每件桌面、支架、椅、坐垫与茶托的共享三维包围盒 |
-| `index.html` / `schemes.js` / `schemes.css` | 四方案选集入口与共用方案组件 |
-| `studio.html` / `studio.js` / `studio.css` | 按方案加载的 Three.js 查看器 |
+| `index.html` / `schemes.js` | 单方案入口、旧链接迁移与原木资源加载 |
+| `studio.html` / `studio.js` / `studio.css` | 保留完整功能的原木 Three.js 查看器 |
 | `legacy.html` | 已标记局限的旧版归档，不作新版几何依据 |
 
 ## 本地运行
@@ -94,24 +94,20 @@ node --check studio.js
 
 V3.1.1 四套图统一为960×640像素、Cycles 8采样加去噪，全部由新的收纳模型重渲，不能将旧版1200×800原木图混充本轮新图。四套同机位，入户/餐柜近景按新的柜体位置重新取景；照明仅供设计展示，不是实测采光模拟。上面的32采样/1600像素命令可用于更高质量导出。
 
-新增分支按以下流程重建，不修改原案文件：
+当前方案验证：
 
 ```powershell
-blender --background --threads 2 --python tools/build_design_schemes.py -- --build-only
-blender --background --threads 2 --python tools/build_design_schemes.py -- --render-only --views all --resume
+node tools/test_single_scheme.mjs
+node tools/test_plan_geometry.mjs
+python tools/validate_studio.py --assets
 python tools/validate_design_schemes.py
 ```
 
-可用 `--schemes cobalt --views living` 选择方案/视角。更高质量可加 `--resolution 1600 --samples 32`；同名效果图将被重新渲染，`--resume` 只跳过外观、几何和渲染规格均一致的已完成图。若将新规格作为发布版本，同时更新方案目录里的 `renderSpec`，完整重渲并再次验证，不能混用不同配置的旧图。
+`test_single_scheme.mjs`离线执行实际路由与查看器初始化代码，核对旧链接、错误状态、房间定位、下载路径和说明卡状态，并对比V3.1.1几何及资产。它不测试WebGL或浏览器视觉。发布后运行 `node tools/verify_published.mjs`，通过HTTP逐一对比25个有效Pages资源的SHA；不读取用户浏览器或其他标签页。
 
-浏览器复测请打开 `studio.html?scheme=wood`（或其他方案），使用本机调试端口及专用项目标签页；测试截图写入被Git忽略的`tmp/`。
+`test_plan_geometry.mjs`直接运行网页平面与立面绘制函数，核对床、阶梯双卫、门窗、飘窗、24个收纳部件和开放中空端板方向。说明卡的浏览器专项 `qa_card_visibility.mjs` 仍可在明确要求浏览器测试时使用；旧的 `qa_design_schemes.mjs` 已标为四配色历史测试，不适用于当前入口。
 
-```powershell
-node tools/qa_design_schemes.mjs 本机CDP端口 本地项目标签页ID --images
-node tools/qa_card_visibility.mjs 本机CDP端口 本地查看器标签页ID
-```
-
-`test_plan_geometry.mjs`直接运行网页的平面绘制函数，核对床架/床垫/头板、阶梯双卫、套卫门、飘窗与盆柜方向。发布后可运行 `node tools/verify_published.mjs 本机CDP端口 项目标签页ID`，核对80个Pages资源（界面、目录、四套模型/源文件/清单及60张效果图）的SHA与本地一致性；仅接受本项目的已发布标签页。
+三套饰面实验及研究记录仅作为历史材料保留，见[历史风格研究](docs/style-research-v310.md)。如确需复现历史，可在 `build_design_schemes.py` 或 `scheme_manifest_copy.py` 显式传入 `--archived`；`validate_design_schemes.py --archived` 会连同历史模型、60张图及受保护几何一起核验。不得通过此饰面工具“生成”新布局。
 
 `validate_bay_fitouts.py`由主校验器调用，检查15个飘窗部件的实际GLB包围盒、支架三角网格的膝脚净空与条件元数据。`node tools/qa_bay_ui.mjs 本机CDP端口 本地项目标签页ID --images`可重复运行三方案的桌面/手机专题、图片、参考链接及SVG导出检查（不实际访问参考链接或下载文件）。
 

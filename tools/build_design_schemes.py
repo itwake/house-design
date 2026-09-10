@@ -1,7 +1,7 @@
-"""Non-destructive, same-camera material schemes for the calibrated apartment.
+"""Historical palette-experiment generator, NOT a generator of layout alternatives.
 
-  blender --background --python tools/build_design_schemes.py -- --only-build
-  blender --background --python tools/build_design_schemes.py -- --render-only
+  blender --background --python tools/build_design_schemes.py -- --archived --only-build
+  blender --background --python tools/build_design_schemes.py -- --archived --render-only
 
 Every build reopens the unchanged baseline. Only two existing pendant shades
 may change geometry, strictly inside their original evaluated bounds. All
@@ -55,6 +55,7 @@ def parse_args():
     cli=sys.argv[sys.argv.index("--")+1:] if "--" in sys.argv else []
     parser=argparse.ArgumentParser()
     parser.add_argument("--schemes",default="terracotta,moss,cobalt")
+    parser.add_argument("--archived",action="store_true",help="Explicitly rebuild retired palette experiments, never active layout schemes")
     parser.add_argument("--only-build","--build-only",dest="only_build",action="store_true")
     parser.add_argument("--render-only",action="store_true")
     parser.add_argument("--render","--views",dest="render",default="all")
@@ -64,6 +65,7 @@ def parse_args():
     parser.add_argument("--threads",type=int,default=2)
     args=parser.parse_args(cli)
     if args.only_build and args.render_only:parser.error("Choose build-only OR render-only")
+    if not args.archived:parser.error("Palette experiments are archived. This tool cannot create new layouts; use --archived only for historical reproduction.")
     return args
 
 
@@ -518,7 +520,7 @@ def render_scheme(scheme,args):
 def main():
     args=parse_args()
     source=json.loads(SCHEMES_FILE.read_text(encoding="utf-8"))
-    schemes={item["id"]:item for item in source["schemes"]}
+    schemes={item["id"]:item for item in source.get("archivedPalettes", [])}
     targets=args.schemes.split(",")
     for sid in targets:
         if sid not in PRESETS or sid not in schemes:raise ValueError("Only configured non-baseline schemes are build targets: "+sid)
