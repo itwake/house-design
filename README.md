@@ -6,6 +6,14 @@
 
 ![全屋Blender模型实际渲染](assets/blender-renders/overall.jpg)
 
+## 装修知识库（2026-09-17）
+
+新增独立入口：[装修知识库](https://itwake.github.io/house-design/knowledge.html)。原有3D入口、模型、布局和渲染不变；查看器顶部可进入知识库。覆盖广州与珠三角选公司、预算合同、设计拆旧、水电防水、材料设备、验收入住。企业目录仅为公开考察线索，无排名背书。资料附来源、核验日期和适用范围。
+
+支持全文搜索、收藏、阅读标记、行动清单、私人笔记、预算台账、带证据门槛的三家比较、10类CSV模板、JSON导入导出以及完整静态打印版。私人记录仅存当前浏览器localStorage，不上传；导出文件由用户自行保管。工具的预算不是市场报价、分数不是公司信用认证、清单不是专业验收结论。
+
+内容源文件位于`knowledge/data/{start,companies,process,materials}.json`；修改后运行`node tools/build_knowledge.mjs`生成汇总、静态全文及模板。运行`node tools/test_knowledge.mjs`核验数据、来源、搜索和工具逻辑。参见[知识库研究与QA说明](docs/knowledge-base-v1.md)。
+
 ## 这一版有什么
 
 - V3.1.4 厨房门由900mm条件拓宽至1700mm，三扇三轨向北洞内叠停，模型实际净开约1033mm。漫游保留叠扇占位；平面、Blender/GLB与15张同源效果图全部同步。其他房间、飘窗和柜体位置不变。详见[厨房推拉门深化](docs/kitchen-slider-v314.md)。

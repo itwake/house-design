@@ -1,0 +1,155 @@
+{
+  "version": "1.0.0",
+  "updated": "2026-09-17",
+  "title": "装修前，先弄明白",
+  "categories": [
+    {
+      "id": "start",
+      "name": "从 0 开始",
+      "description": "先把需求、底线和决策顺序说清楚。",
+      "number": "01"
+    },
+    {
+      "id": "company",
+      "name": "选公司与团队",
+      "description": "看主体、看在建工地，再谈合作。",
+      "number": "02"
+    },
+    {
+      "id": "budget",
+      "name": "预算与合同",
+      "description": "让每一笔钱有范围、有数量、有验收。",
+      "number": "03"
+    },
+    {
+      "id": "design",
+      "name": "设计与量房",
+      "description": "效果图之后，更需要可落地的图纸。",
+      "number": "04"
+    },
+    {
+      "id": "demolition",
+      "name": "拆旧与安全",
+      "description": "结构、报备、成品保护是开工前提。",
+      "number": "05"
+    },
+    {
+      "id": "water-electric",
+      "name": "水电与隐蔽工程",
+      "description": "封起来之前，先留下合格证据。",
+      "number": "06"
+    },
+    {
+      "id": "waterproof",
+      "name": "防水与排水",
+      "description": "材料、节点、施工和试验一起看。",
+      "number": "07"
+    },
+    {
+      "id": "finish",
+      "name": "泥木油与安装",
+      "description": "工种交接、基层和成品保护。",
+      "number": "08"
+    },
+    {
+      "id": "materials",
+      "name": "基础材料",
+      "description": "从参数、样品到进场验真。",
+      "number": "09"
+    },
+    {
+      "id": "equipment",
+      "name": "家电与系统",
+      "description": "设备先选型，接口再落图。",
+      "number": "10"
+    },
+    {
+      "id": "custom",
+      "name": "定制与门窗",
+      "description": "尺寸、五金、安装、售后一起核价。",
+      "number": "11"
+    },
+    {
+      "id": "acceptance",
+      "name": "验收与整改",
+      "description": "不凭肉眼，也不只看一张照片。",
+      "number": "12"
+    },
+    {
+      "id": "local",
+      "name": "广州与珠三角",
+      "description": "本地采购路线、交付和服务半径。",
+      "number": "13"
+    },
+    {
+      "id": "move-in",
+      "name": "入住与维护",
+      "description": "环境检测、保修和日常维护。",
+      "number": "14"
+    }
+  ],
+  "stages": [
+    {
+      "title": "建立自己的需求书",
+      "category": "start",
+      "deliverable": "家庭需求、总资金上限、必保项",
+      "hold": "家庭优先级未统一，不急着付意向金"
+    },
+    {
+      "title": "筛选设计与施工团队",
+      "category": "company",
+      "deliverable": "同题询价、工地访谈、主体核验",
+      "hold": "不明确谁收钱、谁施工、谁保修，不签约"
+    },
+    {
+      "title": "量房、出图、算总账",
+      "category": "design",
+      "deliverable": "实测图、拆改图、机电与材料表",
+      "hold": "结构和关键接口未确认，不下不可退订单"
+    },
+    {
+      "title": "合同与开工准备",
+      "category": "budget",
+      "deliverable": "报价清单、节点、责任、变更规则",
+      "hold": "合同附件不全、范围有空白，不催开工"
+    },
+    {
+      "title": "拆旧与隐蔽施工",
+      "category": "water-electric",
+      "deliverable": "拆后复核、水电图、测试记录",
+      "hold": "隐蔽工程未验收，不覆盖封闭"
+    },
+    {
+      "title": "防水、基层、铺贴",
+      "category": "waterproof",
+      "deliverable": "节点照片、试验、工种交接记录",
+      "hold": "基层条件和防水问题未解决，不往下赶"
+    },
+    {
+      "title": "门窗、定制与设备",
+      "category": "custom",
+      "deliverable": "选型与点位前置，复尺和安装分批穿插",
+      "hold": "现场尺寸变了，先重审订单再生产"
+    },
+    {
+      "title": "综合验收与入住",
+      "category": "acceptance",
+      "deliverable": "整改闭环、竣工资料、环境检查",
+      "hold": "不以“通风够几个月”代替入住判断"
+    }
+  ],
+  "project": {
+    "title": "荟雅苑 · 你的家",
+    "facts": [
+      "广州 · 28 楼 · 104.83㎡建筑面积",
+      "旧房全屋翻新，水电计划重新做",
+      "三房两卫，恢复出租分隔后的客餐厅",
+      "北向与临路噪音、高层窗边安全要重点核实"
+    ],
+    "cautions": [
+      "模型不是实测或施工图。厨房拓宽门洞、阳台改门窗、飘窗功能改造均须先做现场结构与接口核查。",
+      "报价面积不可直接照搬104.83㎡：地面、墙面、柜体和拆除工程分别计量。",
+      "当前研究不代表任何公司已通过信用、在建工地或交付能力审核。"
+    ]
+  }
+}
