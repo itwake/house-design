@@ -1,0 +1,23 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {execFileSync} from 'node:child_process';
+import {houseFocus,houseView} from '../knowledge/house.mjs';
+import {searchArticles} from '../knowledge/lib.mjs';
+const root=new URL('../',import.meta.url),read=p=>readFile(new URL(p,root),'utf8');
+const data=JSON.parse(await read('knowledge/data/library.json'));
+const previous=JSON.parse(execFileSync('git',['show','fc0740f:knowledge/data/library.json'],{cwd:root,encoding:'utf8',maxBuffer:4e6}));
+const own=data.articles.filter(a=>a.projectSpecific),ids=new Set(own.map(a=>a.id));
+assert.equal(own.length,9);assert.equal(data.articles.length,previous.articles.length+9);
+for(const a of previous.articles)assert.deepEqual(data.articles.find(x=>x.id===a.id),a,'previous article unchanged '+a.id);
+for(const a of own){assert.ok(a.tags.includes('荟雅苑专用'));assert.equal(a.mode,'practical');assert.ok(a.checklist.length>=4&&a.questions.length>=4);assert.ok(a.sections.some(s=>s.table));assert.ok((JSON.stringify(a.sections).match(/[\u4e00-\u9fff]/g)||[]).length>=900,a.id+' substantive prose and comparison tables');}
+const covered=data.houseGuide.tracks.flatMap(t=>t.readings.map(r=>r.id));assert.equal(covered.length,9);assert.equal(new Set(covered).size,9);for(const id of covered)assert.ok(ids.has(id));
+for(const item of [...data.houseGuide.priorities,...data.houseGuide.outputs])assert.ok(ids.has(item.id));
+const renderCards=list=>list.map(a=>'<article data-test="'+a.id+'">'+a.title+'</article>').join('');
+const view=houseView(data,renderCards),home=houseFocus(data,renderCards);
+assert.equal((view.match(/data-test=/g)||[]).length,9);assert.equal((home.match(/data-test=/g)||[]).length,3);
+for(const html of [view,home])for(const m of html.matchAll(/#article\/([a-z0-9-]+)/g))assert.ok(ids.has(m[1]));
+const attack=structuredClone(data);attack.houseGuide.title='<script>bad</script>';assert.ok(!houseView(attack,renderCards).includes('<script>'));
+assert.ok(searchArticles(own,'半包').length>=5);assert.ok(searchArticles(own,'飘窗').length>=5);
+assert.ok(!(JSON.stringify(data.houseGuide).match(/2026.{0,2}10.{0,2}17/)));
+const guide=await read('knowledge/guide.html');assert.ok(guide.includes('id="house-guide"'));for(const a of own)assert.ok(guide.includes('id="'+a.id+'"'));
+console.log('PASS tailored house guide: 9 substantive articles, 3 unique reading tracks, all previous articles/checklist identities unchanged, safe rendering, sources, search, and static edition.');

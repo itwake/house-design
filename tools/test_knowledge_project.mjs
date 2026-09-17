@@ -7,8 +7,8 @@ const root=new URL('../',import.meta.url);
 const read=p=>readFile(new URL(p,root),'utf8');
 const data=JSON.parse(await read('knowledge/data/library.json'));
 const old=JSON.parse(execFileSync('git',['show','d05a243:knowledge/data/library.json'],{cwd:root,encoding:'utf8',maxBuffer:4e6}));
-assert.equal(data.version,'1.2.0');
-assert.equal(data.articles.length,old.articles.length);
+assert.equal(data.version,'1.3.0');
+assert.equal(data.articles.length,old.articles.length+9);
 for(const a of old.articles){const current=data.articles.find(c=>c.id===a.id);assert.ok(current,a.id);assert.deepEqual(current.checklist.slice(0,a.checklist.length),a.checklist,a.id+' existing checklist indices preserved');}
 const p=data.project,html=projectView(p),brief=projectBriefText(p),home=fieldHome(data,()=>'',projectSummary(p));
 assert.equal(p.contextCards.length,3);assert.equal(p.steps.length,3);assert.equal(p.roomNeeds.length,6);
