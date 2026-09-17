@@ -12,7 +12,9 @@
 
 支持全文搜索、收藏、阅读标记、行动清单、私人笔记、预算台账、带证据门槛的三家比较、10类CSV模板、JSON导入导出以及完整静态打印版。私人记录仅存当前浏览器localStorage，不上传；导出文件由用户自行保管。工具的预算不是市场报价、分数不是公司信用认证、清单不是专业验收结论。
 
-内容源文件位于`knowledge/data/{start,companies,process,materials}.json`；修改后运行`node tools/build_knowledge.mjs`生成汇总、静态全文及模板。运行`node tools/test_knowledge.mjs`核验数据、来源、搜索和工具逻辑。参见[知识库研究与QA说明](docs/knowledge-base-v1.md)。
+V1.1 根据用户提供的40份装修资料包整理，新增34篇业主实战指南、24张比较表和4篇已读小红书案例拆解。首页按“见公司、看报价、逛材料、水电交底、看工地、下单定制”组织；每篇附可复制的问法与检查清单。现共108篇文章。旧价格、品牌营销和个别经验不当作当前广州行情或工程结论，原资料和个人信息不上传。
+
+内容源文件位于`knowledge/data/{start,companies,process,materials,practical-*}.json`，资料包索引与案例在`study.json`。修改后运行`node tools/build_knowledge.mjs`生成汇总、静态全文及模板；运行`node tools/test_knowledge.mjs`及`node tools/test_knowledge_practical.mjs`核验。浏览器回归脚本为`tools/qa_knowledge.mjs`及`tools/qa_knowledge_practical.mjs`。参见[初版研究说明](docs/knowledge-base-v1.md)与[实战版整理及QA说明](docs/knowledge-base-v1.1.md)。
 
 ## 这一版有什么
 

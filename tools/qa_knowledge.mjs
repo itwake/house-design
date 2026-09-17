@@ -28,7 +28,7 @@ try{
  }
  const context=await browser.newContext(),page=await context.newPage();page.on('pageerror',err=>errors.push(err.message));await page.goto(base+'#home');await page.locator('#view[aria-busy="false"]').waitFor();
  for(const a of d.articles){await page.evaluate(id=>location.hash='#article/'+id,a.id);await page.locator('.reader-head h1').filter({hasText:a.title}).waitFor();check('article renders '+a.id,await page.locator('.checklist input').count()===a.checklist.length);}
- await page.goto('http://127.0.0.1:4173/knowledge/guide.html');check('static full guide',await page.locator('article').count()===d.articles.length+d.directory.length);
+ await page.goto('http://127.0.0.1:4173/knowledge/guide.html');check('static full guide',await page.locator('article').count()===d.articles.length+d.directory.length+d.study.cases.length);
  await context.close();check('no uncaught browser errors',errors.length===0);
  console.log(JSON.stringify({passed:true,checks:checks.length,viewports:[1440,390,320],articles:d.articles.length,errors},null,2));
 }finally{await browser.close();}

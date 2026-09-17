@@ -1,0 +1,27 @@
+import {escapeHTML as e,safeURL} from './lib.mjs?v=1.1.0';
+
+export function decisionTable(table){
+  if(!table?.headers?.length)return '';
+  return `<div class="decision-scroll" tabindex="0" role="region" aria-label="${e(table.caption||'选项对照表，可横向滚动')}"><table class="decision-table">${table.caption?`<caption>${e(table.caption)}</caption>`:''}<thead><tr>${table.headers.map(h=>`<th scope="col">${e(h)}</th>`).join('')}</tr></thead><tbody>${table.rows.map(row=>`<tr>${row.map((cell,i)=>i===0?`<th scope="row">${e(cell)}</th>`:`<td>${e(cell)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+}
+
+export function fieldHome(data,cards){
+  const practical=data.articles.filter(a=>a.mode==='practical');
+  const entries=[
+    ['company','准备见装修公司','带着同一份需求去谈，听懂免费设计、整装和项目经理的承诺。','带走：面谈问题和工地观察项'],
+    ['budget','已经拿到报价单','把不含项、计量方式和后续增项摊开，学会自己算一次。','带走：同口径报价与付款记录'],
+    ['materials','周末要去逛建材店','瓷砖、地板、涂料怎么试样，套餐外还会多出哪些钱。','带走：试样办法和落地价清单'],
+    ['water-electric','马上水电交底','把床、餐边柜和家电摆到现场，开槽前问清插座与接口。','带走：点位、照片和交接记录'],
+    ['finish','施工到了泥木油','师傅说可以继续了，要先看哪些地方，返工又该找谁。','带走：到场核对和工种交接单'],
+    ['custom','要下单柜子和门窗','柜体、门板、五金分开比；飘窗和七字柜先做使用测试。','带走：复尺要求与订单漏项']
+  ];
+  return `<section class="hero"><div class="hero-copy"><span class="eyebrow">广州旧房装修 · 业主实战手册</span><h1>装修遇到的问题，<br><em>一件件讲具体。</em></h1><p>拿到报价怎么看？进店先问什么？工人催着封槽怎么办？从你给的课件、预算表和真实案例里，整理能带去现场用的方法。</p><div class="hero-actions"><a class="primary" href="#field">打开实战手册 ↗</a><a class="secondary" href="#cases">看看真实案例怎么用</a></div></div><figure class="hero-visual"><img src="assets/blender-renders/overall.jpg?v=3.1.4" alt="本项目现有原木方案模型，非实测施工图"><figcaption>围绕你家的三房两卫、飘窗与七字餐边柜</figcaption></figure></section><div class="stat-row"><div><strong>${practical.length}</strong><span>新增实战专题</span></div><div><strong>${data.articles.length}</strong><span>全部知识条目</span></div><div><strong>40</strong><span>本地资料已梳理</span></div><div><strong>${e(data.updated)}</strong><span>本次更新</span></div></div><div class="section-head"><div><span class="eyebrow">WHAT ARE YOU DOING NEXT?</span><h2>你现在正要做什么？</h2></div></div><div class="scenario-grid">${entries.map(([id,title,desc,result],i)=>`<a class="scenario-card" href="#field/${id}"><span class="scenario-number">0${i+1}</span><h3>${e(title)} ↗</h3><p>${e(desc)}</p><small>${e(result)}</small></a>`).join('')}</div><section class="field-example"><span class="eyebrow">比如，师傅说……</span><h2>“铲墙已经包了，铲到底层要另外加钱。”</h2><p>先把两件事分开：原报价写的是哪一层？现场为什么还需要继续铲？让对方指出位置、面积、基层情况和费用，再决定这项工作怎么处理。</p><p class="hint">这是根据资料中“拆除层次与范围”改写的教学情景，不是你家已发生的事。</p><a href="#field/budget">看懂报价里的这些细节 ↗</a></section><div class="section-head"><h2>先看这几篇</h2><a href="#field">全部实战专题 ↗</a></div>${cards(['company','budget','materials','water-electric'].map(cat=>practical.find(a=>a.category===cat)).filter(Boolean))}<section class="project-panel"><div><span class="eyebrow">YOUR HOME, YOUR PRIORITIES</span><h2>你家优先确认的几件事</h2><ul><li>先测临路噪音与窗边使用，再定门窗和飘窗台面。</li><li>七字餐边柜、电器与餐桌一起放样，别只看柜子立面。</li><li>三房两卫全屋翻新，把两卫洁具与厨房设备提前选型。</li></ul><a href="#article/start-project-risk">查看本项目约束 ↗</a></div><div><h3>涉及拆墙的部分要单独核查</h3><p>厨房拓宽推拉门、阳台改门窗、飘窗改造仍是条件方案。先确认结构、物业与相关专业要求，再下单或开工。本文不会把模型当成施工依据。</p><a href="#article/process-demolition-structure">拆改边界与核查方法 ↗</a></div></section><details class="learning-details"><summary>我想从头学：按装修阶段查看</summary><div class="roadmap">${data.stages.map((s,i)=>`<a class="stage" href="#category/${s.category}"><span class="stage-num">0${i+1}</span><h3>${e(s.title)} ↗</h3><p>${e(s.deliverable)}</p><small>${e(s.hold)}</small></a>`).join('')}</div></details><div class="field-links"><a href="#tools/compare">团队比较表 ↗</a><a href="#tools/budget">装修总账 ↗</a><a href="#tools/templates">现场记录模板 ↗</a><a href="#study">这份资料包怎么用 ↗</a></div>`;
+}
+
+export function casesView(study){
+  return `<header class="page-head"><span class="eyebrow">READ THE EXPERIENCE, CHECK THE CONDITIONS</span><h1 tabindex="-1">案例里的经验，怎么用到你家？</h1><p>以下笔记已查看正文。只摘出值得讨论的问题，不把博主个人感受、品牌推广或单方投诉当成工程结论。</p></header><div class="case-grid">${study.cases.map(c=>`<article class="case-note"><span class="eyebrow">${e(c.type)}</span><h2>${e(c.title)}</h2><p class="hint">${e(c.author)} · ${e(c.dateLabel)} · 本次查看 ${e(study.checked)}</p><h3>原帖实际说了什么</h3><p>${e(c.observed)}</p><h3>放到你家，需要多做一步</h3><p>${e(c.application)}</p><p class="case-limit">${e(c.limit)}</p><a href="${e(safeURL(c.url))}" target="_blank" rel="noopener noreferrer">查看原笔记 ↗</a></article>`).join('')}</div><section class="field-example"><h2>搜具体问题，比搜“装修避坑”更有用</h2><p>这些是继续查案例的检索词，不代表相关搜索结果已通过核验。笔记链接可能需要登录小红书；打不开时可用标题在 App 内搜索。</p><div class="search-prompts">${study.searches.map(q=>`<a target="_blank" rel="noopener noreferrer" href="https://www.xiaohongshu.com/search_result?keyword=${encodeURIComponent(q)}">${e(q)} ↗</a>`).join('')}</div><a href="#article/practical-read-case-notes">如何做一张自己的案例卡 ↗</a></section>`;
+}
+
+export function studyView(study){
+  return `<header class="page-head"><span class="eyebrow">YOUR REFERENCE PACK</span><h1 tabindex="-1">这 40 份资料，怎样用起来</h1><p>${e(study.scope)}</p></header><div class="study-groups">${study.groups.map(g=>`<section><h2>${e(g.title)}</h2><p>${e(g.use)}</p><details><summary>包含 ${g.files.length} 份资料</summary><ul>${g.files.map(f=>`<li>${e(f)}</li>`).join('')}</ul></details></section>`).join('')}</div><h2>已经作出的取舍</h2>${decisionTable({headers:['资料中的说法或内容','新版怎么处理'],rows:study.corrections})}<p class="hint">${e(study.limits)}</p><div class="field-links"><a href="#field">阅读实战整理 ↗</a><a href="#cases">小红书案例拆解 ↗</a><a href="#sources">查看逐篇来源 ↗</a></div>`;
+}
