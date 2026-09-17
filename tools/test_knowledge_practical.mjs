@@ -6,7 +6,7 @@ const read=p=>readFile(new URL('../'+p,import.meta.url),'utf8');
 const data=JSON.parse(await read('knowledge/data/library.json'));
 const practical=data.articles.filter(a=>a.mode==='practical');
 assert.ok(practical.length>=30);
-assert.equal(data.version,'1.1.0');
+assert.equal(data.version,'1.2.0');
 assert.equal(new Set(data.study.groups.flatMap(g=>g.files)).size,40);
 assert.equal(data.study.cases.length,4);
 const ids=new Set(data.articles.map(a=>a.id));

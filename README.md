@@ -14,6 +14,8 @@
 
 V1.1 根据用户提供的40份装修资料包整理，新增34篇业主实战指南、24张比较表和4篇已读小红书案例拆解。首页按“见公司、看报价、逛材料、水电交底、看工地、下单定制”组织；每篇附可复制的问法与检查清单。现共108篇文章。旧价格、品牌营销和个别经验不当作当前广州行情或工程结论，原资料和个人信息不上传。
 
+V1.2 新增[我家项目背景](https://itwake.github.io/house-design/knowledge.html?v=1.2.0#project)：天河区荟雅苑约104㎡、原4位自如租客、业主说明10月17日之前交付、可能拆旧还原及目前倾向半包。首页摘要、三阶段推进、半包询价责任表、此前各房间需求和一键复制需求摘要同步上线；相关5篇既有指南已联动更新。交付时间不当作已清场或开工保证，半包意向不当作已签施工合同。见[背景版说明](docs/knowledge-base-v1.2.md)。
+
 内容源文件位于`knowledge/data/{start,companies,process,materials,practical-*}.json`，资料包索引与案例在`study.json`。修改后运行`node tools/build_knowledge.mjs`生成汇总、静态全文及模板；运行`node tools/test_knowledge.mjs`及`node tools/test_knowledge_practical.mjs`核验。浏览器回归脚本为`tools/qa_knowledge.mjs`及`tools/qa_knowledge_practical.mjs`。参见[初版研究说明](docs/knowledge-base-v1.md)与[实战版整理及QA说明](docs/knowledge-base-v1.1.md)。
 
 ## 这一版有什么
