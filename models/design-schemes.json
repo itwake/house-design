@@ -1,5 +1,5 @@
 {
-  "version": "3.2.2",
+  "version": "3.2.3",
   "defaultScheme": "wood",
   "updatedAt": "2026-09-22",
   "geometrySource": "models/design-data.json",
@@ -151,7 +151,7 @@
       "name": "木光 · 暖白套间",
       "en": "WOOD / PRIVATE SUITE",
       "tagline": "凹位做满，光线更柔和",
-      "summary": "保留R4B门位与套内玄关，仅两卧北段隔墙东移回原位；以浅台补齐次卧退台，主卧满凹位衣柜，书房北沙发南通长桌。",
+      "summary": "保留R4B门位与套内玄关，仅两卧北段隔墙东移回原位；以浅台补齐次卧退台，主卧满凹位衣柜，书房北沙发南通长桌。 厨房与阳台之间补回大窗。",
       "style": "暖白浅木 · 套间入口",
       "layoutKind": "alternative",
       "colors": [
@@ -203,7 +203,7 @@
       "model": "models/schemes/suite/huiyayuan-wood.glb",
       "blend": "models/schemes/suite/huiyayuan-wood.blend",
       "manifest": "models/schemes/suite/scene-manifest.json",
-      "assetRevision": "3.2.2",
+      "assetRevision": "3.2.3",
       "renderViews": [
         "overall",
         "living",
@@ -232,7 +232,7 @@
       "roomOverrides": {
         "overall": {
           "title": "暖白浅木，收纳沿墙归位",
-          "description": "保留R4B门位与套内玄关，仅两卧北段隔墙东移回原位；以浅台补齐次卧退台，主卧满凹位衣柜，书房北沙发南通长桌。",
+          "description": "保留R4B门位与套内玄关，仅两卧北段隔墙东移回原位；以浅台补齐次卧退台，主卧满凹位衣柜，书房北沙发南通长桌。 厨房与阳台之间补回大窗。",
           "features": [
             "确认家具平面",
             "暖白浅木",
@@ -287,6 +287,24 @@
         "living": {
           "title": "公共空间保持，动线重新连接",
           "description": "三处飘窗与右鞋柜、左7字餐柜保留。公共走廊约780mm，主卧套内小玄关独立；客厅成人活动椅沿用南移150mm的位置。"
+        },
+        "kitchen": {
+          "title": "让厨房与阳台之间通透起来",
+          "description": "补回厨房北侧与家政阳台共墙大窗，暂定1200×1300mm、窗台高1000mm，双扇推拉窗型仅为示意。台下柜、洗菜盆和1700mm厨房推拉门不动；北墙层板缩回窗左侧实墙，不横挡玻璃。窗洞、墙体、五金与防水收口须复尺。",
+          "features": [
+            "共墙大窗",
+            "窗下台面保留",
+            "尺寸待复尺"
+          ]
+        },
+        "balcony": {
+          "title": "窗与门各归其位",
+          "description": "南侧与厨房共墙补大窗；阳台家政矮柜仍在窗下、洗烘塔及西侧客厅入口保留。这是厨房借光内窗，不是阳台外窗；外侧采光、通风及封窗情况仍待核实。",
+          "features": [
+            "南侧厨房内窗",
+            "西侧客厅入口",
+            "洗烘及矮柜保留"
+          ]
         }
       }
     }

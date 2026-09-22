@@ -6,10 +6,10 @@
   <meta name="theme-color" content="#f4f1eb" />
   <meta name="description" content="荟雅苑三房两卫现代原木设计：同源平面、Blender效果图与Three.js全屋漫游，保留右侧鞋柜、左侧7字餐边柜和三处功能飘窗。" />
   <title>木光原境 · 荟雅苑的家</title>
-  <link rel="stylesheet" href="studio.css?v=3.2.2" />
-  <link rel="stylesheet" href="walkthrough.css?v=3.2.2" />
+  <link rel="stylesheet" href="studio.css?v=3.2.3" />
+  <link rel="stylesheet" href="walkthrough.css?v=3.2.3" />
   <script type="importmap">{"imports":{"three":"./vendor/three/three.module.js","three/addons/":"./vendor/three/addons/"}}</script>
-  <script type="module" src="studio.js?v=3.2.2"></script>
+  <script type="module" src="studio.js?v=3.2.3"></script>
 </head>
 <body>
   <div class="app-shell">
@@ -21,7 +21,7 @@
       <div class="project-crumb"><span>荟雅苑 /</span> 现代原木</div>
       <div class="top-actions">
         <span class="live-badge"><i></i> 设计探索版</span>
-        <a class="text-button scheme-switch-button" href="index.html?v=3.2.2"><span class="desktop-action-label">切换方案</span><span class="mobile-action-label">方案</span></a>
+        <a class="text-button scheme-switch-button" href="index.html?v=3.2.3"><span class="desktop-action-label">切换方案</span><span class="mobile-action-label">方案</span></a>
         <a class="text-button knowledge-entry" href="knowledge.html" aria-label="进入装修知识库"><span class="desktop-action-label">装修知识库 ↗</span><span class="mobile-action-label">知识库</span></a>
         <button class="text-button" id="open-project" data-icon="info"><span class="desktop-action-label">设计说明</span><span class="mobile-action-label">说明</span></button>
         <div class="download-menu">
@@ -60,7 +60,7 @@
 
       <section id="model-view" class="view-panel active" role="tabpanel" aria-labelledby="tab-model">
         <div id="model-canvas" class="model-canvas" aria-label="可旋转和缩放的全屋三维模型"></div>
-        <div id="scheme-load-error" class="scheme-load-error" hidden><strong>设计资料暂未载入</strong><p>请刷新重试，或返回方案选择。</p><a href="index.html?v=3.2.2">返回方案选择 ↗</a></div>
+        <div id="scheme-load-error" class="scheme-load-error" hidden><strong>设计资料暂未载入</strong><p>请刷新重试，或返回方案选择。</p><a href="index.html?v=3.2.3">返回方案选择 ↗</a></div>
         <button type="button" id="start-walk" class="walk-launch" disabled aria-controls="walk-hud">第一人称漫游 <span aria-hidden="true">↗</span></button>
         <div id="walk-hud" class="walk-hud" hidden><div class="walk-location"><strong id="walk-room-name">室内漫游</strong><span>模拟视线高 1.60m</span></div><button type="button" id="walk-help" aria-label="查看漫游操作说明">操作</button><button type="button" id="exit-walk">退出漫游</button></div>
         <div id="walk-pad" class="walk-pad" role="group" aria-label="按住方向键行走" hidden><button type="button" data-walk-direction="forward" aria-label="向前走，按住持续移动" aria-pressed="false">↑</button><button type="button" data-walk-direction="left" aria-label="向左侧移，按住持续移动" aria-pressed="false">←</button><button type="button" data-walk-direction="back" aria-label="向后走，按住持续移动" aria-pressed="false">↓</button><button type="button" data-walk-direction="right" aria-label="向右侧移，按住持续移动" aria-pressed="false">→</button><span>按住移动</span></div>

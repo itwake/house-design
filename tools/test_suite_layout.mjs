@@ -6,7 +6,9 @@ const root=new URL('../',import.meta.url),read=async p=>JSON.parse(await readFil
 const base=await read('models/design-data.json'),d=await read('models/schemes/suite/design-data.json');
 const equal=(a,b,label)=>assert.deepEqual(a,b,label);
 for(const w of [[319,6,319,242],[275,242,380,242],[380,242,380,493]])assert.ok(d.walls.some(v=>v.join()===w.join()),'Approved upper wall and retained return '+w);
-for(const key of ['envelope','windows','storageFitouts'])equal(d[key],base[key],key+' preserved');
+for(const key of ['envelope','storageFitouts'])equal(d[key],base[key],key+' preserved');
+equal(d.windows.filter(w=>w.id!=='window_kitchen_balcony'),base.windows,'All existing windows preserved');
+assert.equal(d.windows.filter(w=>w.id==='window_kitchen_balcony').length,1,'Exactly one kitchen–balcony window added');
 for(const fitout of d.bayFitouts)for(const part of fitout.parts){const old=base.bayFitouts.find(f=>f.id===fitout.id).parts.find(p=>p.id===part.id);equal(part,part.id==='l_adult_chair'?{...old,y:old.y+15}:old,'Bay part '+part.id);}
 equal(d.bayFitouts.find(f=>f.roomId==='room_a').parts,[],'Master desk AND chair removed only in new layout');
 assert.equal(d.bayFitouts.find(f=>f.roomId==='room_a').type,'bare_ledge');

@@ -17,5 +17,6 @@ for(const [i,name]of scheme.renderViews.entries()){
   composites.push({input:label,left,top});
 }
 await mkdir('tmp',{recursive:true});
-await sharp({create:{width:width*4,height:height*Math.ceil(scheme.renderViews.length/4),channels:3,background:'#f4f1ec'}}).composite(composites).png().toFile('tmp/suite-v322-contact.png');
-console.log('Verified contact sheet: tmp/suite-v322-contact.png');
+const output=`tmp/suite-v${catalog.version.replaceAll('.','')}-contact.png`;
+await sharp({create:{width:width*4,height:height*Math.ceil(scheme.renderViews.length/4),channels:3,background:'#f4f1ec'}}).composite(composites).png().toFile(output);
+console.log('Verified contact sheet: '+output);

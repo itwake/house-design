@@ -1,0 +1,22 @@
+// Compare with the approved warm-white revision, not an invented reference plan.
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {execFileSync} from 'node:child_process';
+import {buildWalkWorld,insidePolygon} from '../walkthrough.js';
+const path='models/schemes/suite/design-data.json';
+const current=JSON.parse(await readFile(path,'utf8'));
+const before=JSON.parse(execFileSync('git',['show',`c4d0bb0b87d191f87ba35dd888a464f6856a75bc:${path}`],{encoding:'utf8'}));
+for(const key of ['walls','doors','furniture','bayFitouts','storageFitouts','layout','appearance','envelope'])assert.deepEqual(current[key],before[key],'Approved '+key+' unchanged');
+for(const room of current.rooms)assert.deepEqual(room.points,before.rooms.find(r=>r.id===room.id).points,'Same room geometry '+room.id);
+assert.deepEqual(current.windows.filter(w=>w.id!=='window_kitchen_balcony'),before.windows,'Preserve every prior window');
+const w=current.windows.find(w=>w.id==='window_kitchen_balcony');
+assert.ok(w);assert.equal(current.windows.length,before.windows.length+1);
+assert.deepEqual([w.x1,w.y1,w.x2,w.y2],[698,1121,818,1121]);
+assert.deepEqual([w.widthMm,w.heightCm,w.sillCm],[1200,130,100]);
+assert.equal(w.kind,'window');assert.equal(w.grade,'C');
+assert.deepEqual(w.connects,['kitchen','balcony']);
+const walls=current.walls.filter(([ax,ay,bx,by])=>ay===by&&ay===w.y1&&ax<=w.x1&&bx>=w.x2);
+assert.deepEqual(walls,[[681,1121,835,1121]],'Exactly the kitchen–balcony common wall');
+assert.deepEqual([-10,10].map(dy=>current.rooms.find(r=>insidePolygon((w.x1+w.x2)/2,w.y1+dy,r.points))?.id),['balcony','kitchen']);
+assert.ok(!buildWalkWorld(current).canStand((w.x1+w.x2)/200,w.y1/100,.25),'Window does not become a walk-through door');
+console.log('PASS kitchen–balcony window: actual common wall, one added opening, preserved approved rooms/doors/furniture/finishes, closed walk collision; dimensions provisional.');

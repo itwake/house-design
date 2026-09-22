@@ -24,6 +24,8 @@ b.VIEWS['bay-tea']=((2.48,1.47,1.52),(1.53,-.11,1.03),18)
 b.VIEWS['master-bath']=((6.57,4.65,1.60),(4.95,3.72,1.12),18)
 b.VIEWS['guest-bath']=((6.54,6.03,1.60),(4.32,5.33,1.06),17)
 b.VIEWS['suite-entry']=((4.20,4.56,1.60),(4.19,2.55,1.24),17)
+b.VIEWS['kitchen']=((6.00,12.70,1.60),(7.55,11.21,1.52),20)
+b.VIEWS['balcony']=((7.18,10.31,1.60),(7.58,11.21,1.53),18)
 
 # Suite-only finishes: embedded textures are really changed, not a browser tint.
 original_materials=b.setup_materials
@@ -91,6 +93,20 @@ def furnish(data):
             obj['furnitureId']=f['id'];obj['furnitureName']=f['name'];obj['furnitureFace']=f['face']
 b.furnish=furnish
 
+original_kitchen_run=b.kitchen_run
+def kitchen_run(f,north):
+    before=set(bpy.context.scene.objects);original_kitchen_run(f,north)
+    if not north:return
+    # Keep the existing sink/cabinet/vase. Only the shelf that crossed the
+    # new aperture is shortened, ending 60mm before the window's west edge.
+    for obj in set(bpy.context.scene.objects)-before:
+        if obj.name.startswith('Kitchen open oak shelf'):
+            west=(f['x']+10)/100;length=6.98-.06-west
+            obj.dimensions.x=length;obj.location.x=west+length/2
+            bpy.context.view_layer.objects.active=obj
+            obj.select_set(True);bpy.ops.object.transform_apply(location=False,rotation=False,scale=True);obj.select_set(False)
+b.kitchen_run=kitchen_run
+
 def load_openings(data):
     result=[]
     for item in data['windows']+data['doors']:
@@ -102,6 +118,8 @@ b.load_openings=load_openings
 
 original_opening=b.opening_details
 def opening_details(op,data):
+    if op['id']=='window_kitchen_balcony':
+        shared_kitchen_window(op);return
     operation=op.get('operation')
     if not operation:
         return original_opening(op,data)
@@ -134,6 +152,28 @@ def opening_details(op,data):
         part('floor anti-sway guide',px+w/2,y1-.03,0,.045,.055,.013,'Brass')
     else:raise ValueError('Unsupported R4 operation '+str(operation))
 b.opening_details=opening_details
+
+def shared_kitchen_window(op):
+    # Two real overlapping sash assemblies in separate tracks, shown closed.
+    # This is a provisional window selection, not a measured existing product.
+    x1,x2,y=[op[k]/100 for k in ('x1','x2','y1')]
+    sill,h=op['sill'],op['height'];length=x2-x1;cx=(x1+x2)/2
+    c=op['windowSystem'];frame=c['frameCm']/100;pf=c['panelFrameCm']/100
+    def part(label,px,py,z,w,d,height,mat='WarmGrayMetal',role='frame'):
+        obj=b.box(op['id']+' / '+label,px,py,z,w,d,height,mat,.0015,'window','kitchen')
+        obj['openingId']=op['id'];obj['windowRole']=role;obj['connects']='kitchen,balcony'
+        return obj
+    for x in (x1+frame/2,x2-frame/2):part('outer jamb',x,y,sill+frame,frame,.12,h-2*frame)
+    part('outer head',cx,y,sill+h-frame,length,.12,frame)
+    part('outer sill',cx,y,sill,length,.12,frame)
+    inner=length-2*frame;overlap=c['overlapCm']/100;pw=(inner+overlap)/2;ph=h-2*frame
+    for i in range(2):
+        left=x1+frame+i*(pw-overlap);py=y+(i-.5)*c['trackPitchCm']/100;z=sill+frame
+        for x in (left+pf/2,left+pw-pf/2):part('sash vertical '+str(i),x,py,z+pf,pf,c['panelDepthCm']/100,ph-2*pf,role='sash')
+        for zz in (z,z+ph-pf):part('sash horizontal '+str(i),left+pw/2,py,zz,pw,c['panelDepthCm']/100,pf,role='sash')
+        part('clear glass '+str(i),left+pw/2,py,z+pf,pw-2*pf,.006,ph-2*pf,'Glass','glazing')
+        part('flush pull '+str(i),left+(pw-.07 if i==0 else .07),py+.013,sill+h/2-.06,.016,.004,.12,'WarmGrayMetal','handle')
+    part('stone sill',cx,y,sill-.025,length,.16,.025,'Stone','ledge')
 
 original_manifest=b.manifest
 def manifest(data,openings,src):

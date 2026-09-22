@@ -1,6 +1,6 @@
 {
   "name": "荟雅苑 · 主卧入口套间方案",
-  "version": "3.2.2 · suite fitted",
+  "version": "3.2.3 · suite kitchen window",
   "unit": "cm",
   "north": "图上方（临道路侧）",
   "palette": [
@@ -689,6 +689,35 @@
       "heightCm": 80,
       "grade": "C",
       "source": "assets/original-plan.webp 客卫东墙可见窄窗；目标房源该处缺少明确宽高标注，存在与尺寸均须现场确认"
+    },
+    {
+      "id": "window_kitchen_balcony",
+      "name": "厨房与阳台共墙大窗（尺寸及窗型待复尺）",
+      "kind": "window",
+      "roomId": "kitchen",
+      "connects": [
+        "kitchen",
+        "balcony"
+      ],
+      "x1": 698,
+      "y1": 1121,
+      "x2": 818,
+      "y2": 1121,
+      "widthMm": 1200,
+      "sillCm": 100,
+      "heightCm": 130,
+      "grade": "C",
+      "windowSystem": {
+        "type": "two-track-horizontal-slider",
+        "panelCount": 2,
+        "frameCm": 3.5,
+        "panelFrameCm": 2.8,
+        "overlapCm": 3,
+        "trackPitchCm": 3.6,
+        "panelDepthCm": 2.4
+      },
+      "source": "业主确认厨房与阳台之间应有大窗；共墙位置沿用模型，洞宽1200/高1300/台高1000及双扇推拉窗型均为暂定，不是实测。",
+      "notes": "厨房与家政阳台之间的内窗，不是通往客厅的窗或阳台外窗。保留窗下墙、两边台下柜和现有门；阳台外侧采光通风条件另核。"
     }
   ],
   "doors": [
@@ -1321,7 +1350,7 @@
       "notes": "200×85cm沙发占位，背靠北墙，左右各36cm；不是选定产品或沙发床展开状态。原北墙小衣柜取消。"
     }
   ],
-  "geometryRevision": "suite-fitted-2026-09-22",
+  "geometryRevision": "suite-kitchen-balcony-window-2026-09-22",
   "coordinateSystem": {
     "unit": "cm",
     "x": "向东（图右）",
@@ -1623,6 +1652,7 @@
     }
   ],
   "geometryNotes": [
+    "V3.2.3补回厨房—阳台共墙内窗，暂定1200×1300mm、台高1000mm；仅窗洞、窗体、窗左厨房层板及相关镜头变化，已确认房间/家具布局与暖白配色不变。",
     "V3.2.2按确认的家具平面更新suite；原wood方案及其模型、效果图不变。",
     "只将两卧北段隔墙东移440mm回原x319，保留门口段和横向返墙；所有门位、公共走廊、套内玄关、两卫及书房边界不变。",
     "次卧床尾470mm、床侧柜前620mm，主卧柜前800mm；均为模型外轮廓净距，不等于舒适度或合规认证。",
@@ -1654,6 +1684,14 @@
     {
       "roomId": "living",
       "text": "公共走廊仍约780mm；次卧入口在尽头左侧，主卧小玄关不计入公共区。客厅学习桌与玄关7字柜保留；成人椅沿用向南150mm的位置。"
+    },
+    {
+      "roomId": "kitchen",
+      "text": "补回厨房北侧与家政阳台共墙大窗，暂定1200×1300mm、窗台高1000mm，双扇推拉窗型仅为示意。台下柜、洗菜盆和1700mm厨房推拉门不动；北墙层板缩回窗左侧实墙，不横挡玻璃。窗洞、墙体、五金与防水收口须复尺。"
+    },
+    {
+      "roomId": "balcony",
+      "text": "南侧与厨房共墙补大窗；阳台家政矮柜仍在窗下、洗烘塔及西侧客厅入口保留。这是厨房借光内窗，不是阳台外窗；外侧采光、通风及封窗情况仍待核实。"
     }
   ],
   "bayDesign": {

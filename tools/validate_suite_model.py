@@ -14,9 +14,12 @@ model=GLB(ROOT/'models/schemes/suite/huiyayuan-wood.glb').world_meshes()
 def near(a,b):return max(abs(x-y) for x,y in zip(a,b))<.00003
 def geometry_groups(meshes,key):
     groups=defaultdict(list)
-    for item in meshes.values():
+    for name,item in meshes.items():
         if key=='openingId' and item['extras'].get('kind') not in ('window','door'):continue
         value=item['extras'].get(key)
+        # The only existing kitchen part changed is the shelf shortened to
+        # clear the new window; validate its decoded footprint separately.
+        if key=='furnitureId' and value=='厨房北侧地柜' and 'Kitchen open oak shelf' in name.replace('_',' '):continue
         if value:groups[value].append(item['geometry'])
     return {k:sorted(v) for k,v in groups.items()}
 before=geometry_groups(base,'furnitureId');after=geometry_groups(model,'furnitureId')
@@ -48,6 +51,21 @@ for fid in ['study_full_desk','bed_b_niche_console']:
     top=next(m for n,m in model.items() if m['extras'].get('furnitureId')==fid and 'continuous tabletop' in n.replace('_',' '))
     assert near([top['bounds'][0][1],top['bounds'][1][1]],[.73,.76]),'Actual tabletop, not a solid generic block'
 assert manifest['appearance']['preset']=='soft-warm'
+window_parts=[m for m in model.values() if m['extras'].get('openingId')=='window_kitchen_balcony']
+assert len(window_parts)==17,('Kitchen internal window real parts',len(window_parts))
+glass=[m for m in window_parts if m['extras'].get('windowRole')=='glazing']
+assert len(glass)==2,'Two real glass sashes'
+assert all(m['extras'].get('connects')=='kitchen,balcony' for m in window_parts)
+frame=[m for m in window_parts if m['extras'].get('windowRole')=='frame']
+lo=[min(m['bounds'][0][i] for m in frame) for i in range(3)]
+hi=[max(m['bounds'][1][i] for m in frame) for i in range(3)]
+assert near(lo,[6.98,1.0,11.15]) and near(hi,[8.18,2.3,11.27]),('Window actual frame envelope',lo,hi)
+for i,m in enumerate(sorted(glass,key=lambda m:m['bounds'][0][0])):
+    assert near([m['bounds'][0][1],m['bounds'][1][1]],[1.063,2.237]),'Window glass height'
+    assert abs(sum(m['bounds'][j][2] for j in range(2))/2-(11.21+(i-.5)*.036))<.00003,'Separate sash tracks'
+shelves=[m for n,m in model.items() if m['extras'].get('furnitureId')=='厨房北侧地柜' and 'Kitchen open oak shelf' in n.replace('_',' ')]
+assert len(shelves)==1
+assert near([shelves[0]['bounds'][0][0],shelves[0]['bounds'][1][0]],[6.0,6.92]),'Shelf stops before window instead of crossing it'
 assert manifest['design']=={'style':'暖白浅木','palette':['#F5F2ED','#C5B9A7','#D5CFC6','#8D9B8F']},'Manifest finish summary must match revised palette'
 for room in data['rooms']:
     actual=next(r for r in manifest['rooms'] if r['id']==room['id'])

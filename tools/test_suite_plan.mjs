@@ -12,7 +12,8 @@ const helpers=['areaOf','centroid','escapeHTML','storageRoleName'].map(name=>sou
 const host={innerHTML:''};
 vm.runInNewContext(helpers+'\n'+source.slice(start,end)+'\nmakePlan();',{data,$:s=>{assert.equal(s,'#floor-plan');return host;},$$:()=>[],roomDescription:id=>({name:data.rooms.find(r=>r.id===id)?.name||id})});
 const svg=host.innerHTML;
-for(const door of data.doors){const tag=svg.match(new RegExp(`<line data-opening-id="${door.id}"[^>]+>`))?.[0];assert.ok(tag,door.id);for(const k of ['x1','y1','x2','y2'])assert.ok(tag.includes(`${k}="${door[k]}"`),'Exact door plan '+door.id+'/'+k);}
+for(const door of [...data.doors,...data.windows.filter(w=>w.windowType!=='bay')]){const tag=svg.match(new RegExp(`<line data-opening-id="${door.id}"[^>]+>`))?.[0];assert.ok(tag,door.id);for(const k of ['x1','y1','x2','y2'])assert.ok(tag.includes(`${k}="${door[k]}"`),'Exact opening plan '+door.id+'/'+k);}
+assert.equal((svg.match(/data-opening-id="window_kitchen_balcony"/g)||[]).length,1,'One real kitchen–balcony window in plan');
 assert.ok(svg.includes('data-suite-entry="private"')&&svg.includes('730 × 1530'),'Private foyer is labeled on actual plan');
 assert.equal((svg.match(/data-hinged-door=/g)||[]).length,4,'Four real open hinged doors');
 assert.ok(svg.includes('data-surface-slider="door_c"'),'Study wall-mounted sliding door');

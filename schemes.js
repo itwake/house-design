@@ -1,5 +1,5 @@
 // Real layouts have independent sources. Colour-only variants stay archived.
-export const SCHEME_REVISION='3.2.2';
+export const SCHEME_REVISION='3.2.3';
 export const RETIRED_PALETTE_IDS=Object.freeze(['terracotta','moss','cobalt']);
 export const assetURL=(path,revision=SCHEME_REVISION)=>{
   const url=new URL(path,document.baseURI);url.searchParams.set('v',revision);return url.href;
