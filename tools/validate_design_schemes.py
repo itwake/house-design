@@ -524,7 +524,8 @@ class Audit:
                 glbs[sid] = GLB(relative_file(scheme["model"]))
                 meshes[sid] = glbs[sid].world_meshes()
                 self.check(len(meshes[sid]) > 1000, "suite: complete actual apartment geometry")
-                self.check(set(glbs[sid].image_hashes) == set(base_glb.image_hashes), "suite: same original wood textures, not recolouring")
+                self.check(len(set(glbs[sid].image_hashes)-set(base_glb.image_hashes)) >= 4, "suite: four genuinely new low-yellow embedded wood/fabric/stone textures")
+                self.check(manifest.get('appearance') == scheme.get('appearance') and manifest.get('appearance',{}).get('preset') == 'soft-warm', "suite: declared warm-white palette matches model manifest")
                 self.check(glbs[sid].file_hash != base_glb.file_hash, "suite: actual model differs from baseline")
             else:
                 self.check(protected_manifest(manifest) == protected_manifest(baseline), f"{sid}: rooms, openings, cameras, dimensions and conditions exactly match baseline")

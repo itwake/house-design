@@ -1,10 +1,10 @@
-import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.2.1';
-import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.2.1';
+import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.2.2';
+import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.2.2';
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
-const UI_REVISION = '3.2.1';
+const UI_REVISION = '3.2.2';
 document.documentElement.dataset.uiRevision = UI_REVISION;
-let ASSET_REVISION = '3.2.1';
+let ASSET_REVISION = '3.2.2';
 const revisedAsset = path => {const url=new URL(path,document.baseURI);url.searchParams.set('v',ASSET_REVISION);return url.href};
 const icons = {
   cube:'<path d="m8 2 6 3.5v5L8 14l-6-3.5v-5L8 2Z M2 5.5 8 9l6-3.5 M8 9v5 M5 3.8l6 3.5"/>',
@@ -300,6 +300,8 @@ function planFurniture(f){
   const direction=f.headDirection,isBed=['east','west','north','south'].includes(direction);
   const frame=`<rect data-furniture-frame x="${f.x}" y="${f.y}" width="${f.w}" height="${f.d}" rx="${f.tone==='fabric'?6:2}" fill="${({wood:'#d2b791',cabinet:'#d4c9b4',fabric:'#f8f3e8',sanitary:'#faf9f3',wet:'#d5dedb',metal:'#babbb0'})[f.tone]||'#e3d9c5'}" stroke="#b4a68e" stroke-width="1.5"${!isBed&&f.a?` transform="rotate(${f.a} ${f.x+f.w/2} ${f.y+f.d/2})"`:''}/>`;
   if(!isBed){
+    if(f.id==='study_north_sofa')return `<g data-furniture-id="${f.id}" data-sofa-face="south" pointer-events="none"><title>北墙沙发 · 朝南 · 2000×850mm占位</title>${frame}<rect data-sofa-back x="${f.x+2}" y="${f.y+2}" width="${f.w-4}" height="17" rx="5" fill="#c5b89e"/>${[0,1].map(i=>`<rect x="${f.x+14+i*(f.w-28)/2}" y="${f.y+22}" width="${(f.w-28)/2-2}" height="${f.d-26}" rx="5" fill="#fffdf7" stroke="#b4a68e"/>`).join('')}</g>`;
+    if(['bed_b_niche_console','study_full_desk'].includes(f.id))return `<g data-furniture-id="${f.id}" pointer-events="none"><title>${escapeHTML(f.name)} · ${f.w*10}×${f.d*10}mm · ${escapeHTML(f.notes)}</title>${frame}</g>`;
     if((/^vanity_/.test(f.id||'')||/浴室柜/.test(f.name||''))&&['east','west','north','south'].includes(f.face)){
       const horizontal=['east','west'].includes(f.face),cx=f.x+f.w/2,cy=f.y+f.d/2;
       const back={east:'west',west:'east',south:'north',north:'south'}[f.face];
@@ -457,9 +459,10 @@ async function buildScene(){
     camera=new THREE.PerspectiveCamera(37,1,.35,80);
     controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.08;controls.minDistance=.25;controls.maxDistance=45;controls.maxPolarAngle=Math.PI*.49;controls.target.set(4.2,.6,7);
     controls.addEventListener('start',()=>{cameraTween=null});controls.addEventListener('change',scheduleRender);
-    scene.add(new THREE.HemisphereLight(0xfff9ed,0xc2b69f,2.15));
-    const sun=new THREE.DirectionalLight(0xfff6e7,2.4);sun.position.set(-5,14,-4);sun.castShadow=false;sun.shadow.mapSize.set(1024,1024);scene.add(sun);
-    const fill=new THREE.DirectionalLight(0xfffbf2,1.0);fill.position.set(12,8,18);scene.add(fill);
+    const softWarm=scheme.appearance?.preset==='soft-warm';
+    scene.add(new THREE.HemisphereLight(softWarm?0xfffdf8:0xfff9ed,softWarm?0xc3c1bb:0xc2b69f,2.15));
+    const sun=new THREE.DirectionalLight(softWarm?0xfffcf7:0xfff6e7,2.4);sun.position.set(-5,14,-4);sun.castShadow=false;sun.shadow.mapSize.set(1024,1024);scene.add(sun);
+    const fill=new THREE.DirectionalLight(softWarm?0xf7f9ff:0xfffbf2,1.0);fill.position.set(12,8,18);scene.add(fill);
     const loader=new GLTFLoader();
     const gltf=await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error('Model load timeout')),45000);loader.load(revisedAsset(scheme.model),result=>{clearTimeout(timer);resolve(result)},event=>{
       const p=event.total?Math.min(98,Math.round(event.loaded/event.total*100)):Math.min(93,10+Math.round(event.loaded/1024/100));$('#loading-progress').style.width=p+'%';$('#loading-status').textContent=event.total?`正在载入模型 · ${p}%`:`正在载入模型 · ${(event.loaded/1024/1024).toFixed(1)} MB`;

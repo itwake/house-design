@@ -1,4 +1,4 @@
-"""Build a real alternative geometry with the existing wood materials.
+"""Build the approved fitted suite with independent warm-white finishes.
 
 Blender: --background --threads 4 --python tools/build_suite_layout.py --
          --render all --engine CYCLES --resolution 960 --samples 8
@@ -16,14 +16,80 @@ b.MODEL_DIR=ROOT/'models/schemes/suite'
 b.RENDER_DIR=ROOT/'assets/schemes/suite'
 b.TEX_DIR=b.MODEL_DIR/'textures'
 b.BAY_NOTE='三处飘窗外凸与原窗台高度均待复尺。新增方案取消主卧桌台与配椅，保留原台；次卧低台茶座仍是附条件方案，客厅双人桌保留。防坠、窗扇、外立面与结构条件须专业复核。'
-# The old study camera is outside the smaller room. Other sleeping-space,
-# living, cabinet and bay cameras remain fixed for a meaningful comparison.
-b.VIEWS['study']=((2.41,4.50,1.62),(1.27,5.18,1.02),18)
-b.VIEWS['bedroom-b']=((2.48,2.47,1.60),(1.40,1.25,.97),18)
+# Frame the revised sofa/desk and bedroom console from inside the real rooms.
+# Unaffected living, cabinet and bay cameras remain fixed for comparison.
+b.VIEWS['study']=((2.52,5.36,1.65),(1.22,4.61,1.03),18)
+b.VIEWS['bedroom-b']=((1.99,2.46,1.65),(2.11,.94,.97),18)
 b.VIEWS['bay-tea']=((2.48,1.47,1.52),(1.53,-.11,1.03),18)
 b.VIEWS['master-bath']=((6.57,4.65,1.60),(4.95,3.72,1.12),18)
 b.VIEWS['guest-bath']=((6.54,6.03,1.60),(4.32,5.33,1.06),17)
 b.VIEWS['suite-entry']=((4.20,4.56,1.60),(4.19,2.55,1.24),17)
+
+# Suite-only finishes: embedded textures are really changed, not a browser tint.
+original_materials=b.setup_materials
+def setup_materials():
+    original_materials()
+    colors={'Oak':(.68,.64,.58),'OakLight':(.76,.72,.65),'Wall':(.89,.88,.85),
+      'Cream':(.87,.85,.81),'Linen':(.79,.77,.73),'WhiteLinen':(.91,.90,.87),
+      'Sage':(.40,.49,.44),'Terracotta':(.55,.38,.33),'Stone':(.76,.75,.72),
+      'Tile':(.77,.77,.74),'Grout':(.64,.64,.61),'Brass':(.49,.44,.34),
+      'WarmGrayMetal':(.51,.51,.48),'RollerFabric':(.88,.87,.83),'Lamp':(1,.93,.83)}
+    textures={name:b.texture_image('suite-'+name.lower(),colors[name],kind) for name,kind in
+      [('Oak','wood'),('OakLight','wood'),('Linen','linen'),('Stone','stone')]}
+    for name,color in colors.items():
+        mat=b.MATS[name];mat.diffuse_color=(*color,1)
+        bs=mat.node_tree.nodes.get('Principled BSDF');bs.inputs['Base Color'].default_value=(*color,1)
+        if name=='Lamp':bs.inputs['Emission Color'].default_value=(*color,1)
+        if name in textures:
+            for node in mat.node_tree.nodes:
+                if node.type=='TEX_IMAGE':node.image=textures[name]
+b.setup_materials=setup_materials
+
+original_cabinet=b.cabinet
+def cabinet(f,h=2.35,style='wardrobe'):
+    before=set(bpy.context.scene.objects);original_cabinet(f,h,style)
+    # Large closet fronts become warm white; timber remains in the carcass.
+    for obj in set(bpy.context.scene.objects)-before:
+        if 'sliding door' in obj.name and 'track' not in obj.name:
+            obj.data.materials.clear();obj.data.materials.append(b.MATS['Cream'])
+b.cabinet=cabinet
+
+original_sofa=b.sofa
+def sofa(f):
+    if f.get('id')!='study_north_sofa':return original_sofa(f)
+    x,y,w,d=[f[k]/100 for k in ('x','y','w','d')]
+    b.block('Study sofa upholstered base',x,y,.11,w,d,.25,mat='Linen',bevel=.08)
+    b.block('Study sofa NORTH back',x,y,.26,w,.17,.51,mat='Linen',bevel=.065)
+    for px in (x+.065,x+w-.065):b.box('Study sofa arm',px,y+d/2,.30,.13,d-.03,.30,'Linen',.06)
+    for i in range(2):b.block('Study sofa SOUTH seat',x+.14+i*(w-.28)/2,y+.18,.36,(w-.28)/2-.01,d-.21,.12,mat='Cream',bevel=.04)
+    for px,mat in [(x+.4,'Sage'),(x+w-.4,'WhiteLinen')]:b.box('Study sofa cushion',px,y+.27,.48,.34,.16,.29,mat,.05)
+b.sofa=sofa
+
+original_furnish=b.furnish
+def furnish(data):
+    special={'study_full_desk','bed_b_niche_console'}
+    original_furnish({**data,'furniture':[f for f in data['furniture'] if f.get('id') not in special]})
+    for f in data['furniture']:
+        if f.get('id') not in special:continue
+        x,y,w,d=[f[k]/100 for k in ('x','y','w','d')]
+        b.CURRENT_ROOM='room_c' if f['id']=='study_full_desk' else 'room_b'
+        before=set(bpy.context.scene.objects)
+        b.block(f['id']+' / continuous tabletop',x,y,.73,w,d,.03,mat='OakLight',bevel=.008)
+        if f['id']=='study_full_desk':
+            for px in (x,x+w-.025):b.block('Study desk end gable',px,y,0,.025,d,.73,mat='Cream',bevel=.003)
+            # Recessed steel under-frame and extra support west of the chair.
+            for py in (y+.045,y+d-.045):b.box('Study desk steel underframe',x+w/2,py,.69,w-.05,.025,.04,'WarmGrayMetal',.002)
+            b.box('Study desk intermediate support',1.10,y+.045,0,.03,.03,.73,'WarmGrayMetal',.002)
+            b.lamp(2.30,5.99,.76,True)
+            b.block('Study desk notebook',.30,5.80,.762,.26,.18,.018,mat='Sage',bevel=.004)
+        else:
+            for py in (y,y+d-.025):b.block('B niche console end gable',x,py,0,w,.025,.73,mat='Cream',bevel=.003)
+            b.block('B niche console rear rail',x+w-.04,y,.67,.04,d,.06,mat='OakLight',bevel=.002)
+            b.block('B niche console intermediate support',x+.04,y+d/2,0,w-.04,.025,.73,mat='Cream',bevel=.003)
+            b.book_stack(x+w*.58,y+.38,.762,.18)
+        for obj in set(bpy.context.scene.objects)-before:
+            obj['furnitureId']=f['id'];obj['furnitureName']=f['name'];obj['furnitureFace']=f['face']
+b.furnish=furnish
 
 def load_openings(data):
     result=[]
@@ -79,7 +145,8 @@ def manifest(data,openings,src):
         if isinstance(value,list):return [paths(v) for v in value]
         if isinstance(value,dict):return {k:paths(v) for k,v in value.items()}
         return value
-    result=paths(result);result.update(version='3.2.1 · suite R4B',schemeId='suite',layout=data['layout'])
+    result=paths(result);result.update(version=data['version'],schemeId='suite',layout=data['layout'],appearance=data['appearance'])
+    result['design']={'style':'暖白浅木','palette':['#F5F2ED','#C5B9A7','#D5CFC6','#8D9B8F']}
     descriptions={n['roomId']:n['text'] for n in data['renovationNotes']}
     for room in result['rooms']:
         if room['id'] in descriptions:room['description']=descriptions[room['id']]
@@ -92,7 +159,17 @@ b.manifest=manifest
 original_lighting=b.lighting
 def lighting(data):
     original_lighting(data)
-    b.area('Suite entrance gentle fill',(4.22,4.1,2.5),(4.22,4.1,.1),35,.60,(1,.86,.68))
+    for obj in bpy.context.scene.objects:
+        if obj.type=='LIGHT' and obj.data.type=='AREA':
+            obj.data.color=(.95,.97,1) if 'daylight' in obj.name.lower() else (1,.96,.90)
+    b.area('Suite entrance gentle fill',(4.22,4.1,2.5),(4.22,4.1,.1),35,.60,(1,.96,.90))
 b.lighting=lighting
+
+original_configure=b.configure_render
+def configure_render(args):
+    original_configure(args)
+    # Pale finishes need less exposure than the original yellow-oak palette.
+    bpy.context.scene.view_settings.exposure=-.55
+b.configure_render=configure_render
 
 if __name__=='__main__':b.main()

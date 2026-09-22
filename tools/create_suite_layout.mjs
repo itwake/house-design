@@ -3,6 +3,7 @@
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {applyR4B} from './suite_r4b.mjs';
+import {applyFittedSuite,updateFittedCatalog} from './suite_fitted.mjs';
 const root=new URL('../',import.meta.url),read=p=>readFile(new URL(p,root),'utf8');
 const raw=await read('models/design-data.json'),base=JSON.parse(raw),d=structuredClone(base);
 const room=id=>d.rooms.find(r=>r.id===id),fixture=id=>d.furniture.find(f=>(f.id||f.name)===id);
@@ -76,6 +77,10 @@ d.geometryNotes=[
  ...base.geometryNotes.filter(n=>!(/B\/C拓扑|东北凹口|净走廊|两卫阶梯|客卫西北盆位|主卫入口改|主卫西墙|主卫套内门|V3.0.4|V3.0.5|主卧以|高椅|一体连续高台/.test(n)))
 ];
 applyR4B(d,base);
+applyFittedSuite(d);
 const dir=new URL('models/schemes/suite/',root);await mkdir(dir,{recursive:true});
 await writeFile(new URL('design-data.json',dir),JSON.stringify(d,null,2)+'\n');
+const catalog=JSON.parse(await read('models/design-schemes.json'));
+updateFittedCatalog(catalog,d);
+await writeFile(new URL('models/design-schemes.json',root),JSON.stringify(catalog,null,2)+'\n');
 console.log(JSON.stringify({layout:d.layout,areas:d.rooms.map(r=>({id:r.id,m2:r.modelAreaM2})),unchangedBase:true},null,2));

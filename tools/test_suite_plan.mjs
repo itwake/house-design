@@ -20,7 +20,9 @@ for(const id of ['a_desktop','a_support','a_accessories','a_chair'])assert.ok(!s
 assert.equal((svg.match(/data-bay-window=/g)||[]).length,3,'Keep three real bay windows');
 assert.equal((svg.match(/data-sliding-panel=/g)||[]).length,3,'Keep kitchen slider');
 for(const room of data.rooms)assert.ok(svg.includes(`points="${room.points.map(p=>p.join(',')).join(' ')}"`),'Actual polygon '+room.id);
-for(const [key,geometry]of [['主卧衣柜',[281,65,60,160]],['次卧衣柜',[20,262,180,60]]]){const f=data.furniture.find(f=>f.name===key);assert.deepEqual([f.x,f.y,f.w,f.d],geometry,'Latest owner wardrobe choice '+key);}
+for(const [key,geometry]of [['主卧衣柜',[325,12,60,224]],['次卧衣柜',[12,262,180,60]]]){const f=data.furniture.find(f=>f.name===key);assert.deepEqual([f.x,f.y,f.w,f.d],geometry,'Latest owner wardrobe choice '+key);}
+for(const id of ['study_north_sofa','study_full_desk','bed_b_niche_console'])assert.ok(svg.includes(`data-furniture-id="${id}"`),'Plan includes fitted furniture '+id);
+assert.ok(svg.includes('data-sofa-face="south"'),'Study sofa faces south, with back against north wall');
 if(process.argv.includes('--render')){
   const sharp=createRequire(import.meta.url)('sharp');
   const out=new URL('tmp/',root);await mkdir(out,{recursive:true});

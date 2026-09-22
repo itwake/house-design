@@ -20,7 +20,7 @@ def geometry_groups(meshes,key):
         if value:groups[value].append(item['geometry'])
     return {k:sorted(v) for k,v in groups.items()}
 before=geometry_groups(base,'furnitureId');after=geometry_groups(model,'furnitureId')
-excluded={'vanity_main','vanity_guest','书房办公椅','主卧衣柜','主卫壁挂马桶','a_desktop','a_support','a_accessories','a_chair','l_adult_chair'}
+excluded={'vanity_main','vanity_guest','书房办公椅','主卧衣柜','主卫壁挂马桶','a_desktop','a_support','a_accessories','a_chair','l_adult_chair','bed_b','次卧衣柜','书房日床','书房客衣柜','1100书桌'}
 preserved=0
 for key,hashes in before.items():
     if key not in excluded:
@@ -32,6 +32,23 @@ for field,excluded in [('openingId',{'door_a','door_b','door_c','door_bath_1','d
         if key not in excluded:assert current.get(key)==hashes,field+' moved: '+key
 assert not any(m['extras'].get('fitoutPartId','').startswith('a_') for m in model.values()),'Master desk/chair geometry still exported'
 assert not any(m['extras'].get('fitoutId')=='bay_a_office_vanity' for m in model.values()),'Old master desk components still exported'
+assert not any(m['extras'].get('furnitureId') in {'书房日床','书房客衣柜','1100书桌'} for m in model.values()),'Removed study furniture exported'
+# Decode real meshes for every newly fitted footprint, including its details.
+for fid in ['bed_b','次卧衣柜','主卧衣柜','study_full_desk','bed_b_niche_console','study_north_sofa']:
+    f=next(f for f in data['furniture'] if (f.get('id') or f['name'])==fid)
+    parts=[m for m in model.values() if m['extras'].get('furnitureId')==fid]
+    assert parts,('Missing furniture',fid)
+    lo=[min(m['bounds'][0][i] for m in parts) for i in range(3)]
+    hi=[max(m['bounds'][1][i] for m in parts) for i in range(3)]
+    assert near([lo[0],lo[2]],[f['x']/100,f['y']/100]),('Fitted minimum bounds',fid,lo)
+    assert near([hi[0],hi[2]],[(f['x']+f['w'])/100,(f['y']+f['d'])/100]),('Fitted maximum bounds',fid,hi)
+back=next(m for n,m in model.items() if 'Study sofa NORTH back' in n.replace('_',' '))
+assert near([back['bounds'][0][2],back['bounds'][1][2]],[3.34,3.51]),'Sofa back must be north'
+for fid in ['study_full_desk','bed_b_niche_console']:
+    top=next(m for n,m in model.items() if m['extras'].get('furnitureId')==fid and 'continuous tabletop' in n.replace('_',' '))
+    assert near([top['bounds'][0][1],top['bounds'][1][1]],[.73,.76]),'Actual tabletop, not a solid generic block'
+assert manifest['appearance']['preset']=='soft-warm'
+assert manifest['design']=={'style':'暖白浅木','palette':['#F5F2ED','#C5B9A7','#D5CFC6','#8D9B8F']},'Manifest finish summary must match revised palette'
 for room in data['rooms']:
     actual=next(r for r in manifest['rooms'] if r['id']==room['id'])
     assert actual['points']==[[x/100,y/100] for x,y in room['points']]
