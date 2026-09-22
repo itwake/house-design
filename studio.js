@@ -1,10 +1,10 @@
-import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.2.0';
-import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.2.0';
+import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.2.1';
+import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.2.1';
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
-const UI_REVISION = '3.2.0';
+const UI_REVISION = '3.2.1';
 document.documentElement.dataset.uiRevision = UI_REVISION;
-let ASSET_REVISION = '3.2.0';
+let ASSET_REVISION = '3.2.1';
 const revisedAsset = path => {const url=new URL(path,document.baseURI);url.searchParams.set('v',ASSET_REVISION);return url.href};
 const icons = {
   cube:'<path d="m8 2 6 3.5v5L8 14l-6-3.5v-5L8 2Z M2 5.5 8 9l6-3.5 M8 9v5 M5 3.8l6 3.5"/>',
@@ -402,7 +402,16 @@ function makePlan(){
   const fitouts=(data.bayFitouts||[]).flatMap(fitout=>[...(fitout.parts||[])].sort((a,b)=>(a.zCm||0)-(b.zCm||0)).map(part=>planFitoutPart(fitout,part))).join('');
   const storage=(data.storageFitouts||[]).flatMap(fitout=>[...(fitout.parts||[])].sort((a,b)=>(a.zCm||0)-(b.zCm||0)).map(part=>planStoragePart(fitout,part))).join('');
   const walls=(data.walls||[]).map(w=>`<line x1="${w[0]}" y1="${w[1]}" x2="${w[2]}" y2="${w[3]}" stroke="#8c887b" stroke-width="${wallThickness}" stroke-linecap="square"/>`).join('');
-  const opening=(items,color)=>(items||[]).map(w=>`<line x1="${w.x1}" y1="${w.y1}" x2="${w.x2}" y2="${w.y2}" stroke="#fcf8ee" stroke-width="15"/><line data-opening-id="${escapeHTML(w.id)}" x1="${w.x1}" y1="${w.y1}" x2="${w.x2}" y2="${w.y2}" stroke="${w.sliding?'#fcf8ee':color}" stroke-width="4"/>${w.sliding?planSlidingDoor(w):''}`).join('');
+  const operation=w=>{
+    const o=w.operation;if(!o)return '';
+    if(o.type==='hinged'){
+      const [x,y]=o.hingeCm,s=o.swing,r=w.widthMm/10-12;
+      return `<g data-hinged-door="${escapeHTML(w.id)}" fill="none" stroke="#997750" stroke-width="1.8"><path d="M${x+s.dx*r} ${y+s.dy*r} A${r} ${r} 0 0 ${s.sweep} ${x+s.ox*r} ${y+s.oy*r}" stroke-dasharray="3 3"/><path d="M${x} ${y} L${x+s.ox*r} ${y+s.oy*r}"/></g>`;
+    }
+    const p=o.panelCm,q=o.parkedCm;
+    return `<g data-surface-slider="${escapeHTML(w.id)}" stroke="#a77c40"><title>书房推拉门：实线关闭，虚线为向北打开的停靠位</title><rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.d}" fill="#c7b294"/><rect x="${q.x}" y="${q.y}" width="${q.w}" height="${q.d}" fill="none" stroke-dasharray="3 3"/><path d="M${p.x-8} ${q.y+89}V${q.y+26}m-4 6 4-6 4 6" fill="none"/></g>`;
+  };
+  const opening=(items,color)=>(items||[]).map(w=>`<line x1="${w.x1}" y1="${w.y1}" x2="${w.x2}" y2="${w.y2}" stroke="#fcf8ee" stroke-width="15"/><line data-opening-id="${escapeHTML(w.id)}" x1="${w.x1}" y1="${w.y1}" x2="${w.x2}" y2="${w.y2}" stroke="${w.sliding?'#fcf8ee':color}" stroke-width="4"/>${w.sliding?planSlidingDoor(w):operation(w)}`).join('');
   const bayWindows=bays.map(b=>`<g data-bay-window="${b.window.id}" aria-label="${escapeHTML(b.window.name)}：外凸窗台投影，尺寸待复尺"><line x1="${b.window.x1}" y1="${b.window.y1}" x2="${b.window.x2}" y2="${b.window.y2}" stroke="#fcf8ee" stroke-width="${wallThickness+3}"/><polygon data-bay-sill points="${b.sill.map(p=>p.join(',')).join(' ')}" fill="#e6dac1" stroke="#c5b497" stroke-width="1.5"/>${b.returns.map(points=>`<polygon data-bay-return points="${points.map(p=>p.join(',')).join(' ')}" fill="#8c887b"/>`).join('')}<text x="${b.label[0]}" y="${b.label[1]}" text-anchor="middle" dominant-baseline="middle" font-size="16" fill="#958165"${b.vertical?` transform="rotate(-90 ${b.label[0]} ${b.label[1]})"`:''}>飘窗台</text></g>`).join('');
   // The integrated worktop spans the sill; retain the true outer frame/glass above its plan fill.
   const bayFrames=bays.map(b=>`<g data-bay-frame-layer="${escapeHTML(b.window.id)}"><polygon data-bay-front-frame data-frame-finish="${escapeHTML(bayFrameFinish)}" points="${b.frame.map(p=>p.join(',')).join(' ')}" fill="${bayFrameColor}"/><line data-bay-glass x1="${b.frontA[0]}" y1="${b.frontA[1]}" x2="${b.frontB[0]}" y2="${b.frontB[1]}" stroke="#8fa6a8" stroke-width="4"/></g>`).join('');
@@ -502,7 +511,7 @@ function setupWalk(){
   // door-thickness gaps while their leaves are open for walking.
   walkThresholds=new three.Group();walkThresholds.name='Walk-only doorway floor infills';walkThresholds.visible=false;
   for(const door of walkWorld.doors){
-    if(door.sliding)continue; // The new slider already has a persistent flush floor.
+    if(door.sliding||door.operation)continue; // Authored doors already have a persistent flush floor.
     const horizontal=Math.abs(door.y1-door.y2)<.01;
     const width=Math.hypot(door.x2-door.x1,door.y2-door.y1)/100;
     const wet=door.id.includes('bath')||door.id==='balcony_door';
@@ -565,7 +574,7 @@ function optimizeStaticModel(source,THREE,mergeGeometries){
   source.traverse(object=>{
     if(!object.isMesh)return;
     let owner=object,semantic={};
-    while(owner){for(const key of ['kind','roomId','external','wallIndex','openingId'])if(semantic[key]===undefined&&owner.userData[key]!==undefined)semantic[key]=owner.userData[key];owner=owner.parent}
+    while(owner){for(const key of ['kind','roomId','external','wallIndex','openingId','doorRole'])if(semantic[key]===undefined&&owner.userData[key]!==undefined)semantic[key]=owner.userData[key];owner=owner.parent}
     const originalMaterial=object.material;
     if(semantic.kind==='door'||Array.isArray(originalMaterial)||object.isSkinnedMesh||originalMaterial.transparent||originalMaterial.transmission>0){
       const clone=object.clone(false);clone.geometry=object.geometry.clone().applyMatrix4(object.matrixWorld);clone.position.set(0,0,0);clone.quaternion.identity();clone.scale.set(1,1,1);clone.userData={...object.userData,...semantic,walkDoorInfill:Boolean(isWalkDoorInfill(object.name,semantic))};optimized.add(clone);return;

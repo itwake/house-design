@@ -11,6 +11,7 @@ try{
   for(const [name,width,height] of [['desktop',1440,1000],['mobile',390,844],['narrow',320,640]]){
     const context=await browser.newContext({viewport:{width,height},deviceScaleFactor:1});
     const page=await context.newPage();
+    page.setDefaultTimeout(60000);
     page.on('pageerror',e=>errors.push(name+': '+e.message));
     await page.goto(base);
     assert.equal(await page.locator('[data-scheme-card]').count(),2);
@@ -18,7 +19,7 @@ try{
     assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Chooser overflow');
     if(name!=='narrow')await page.screenshot({path:'tmp/v320-'+name+'-chooser.png',fullPage:true});
     for(const scheme of ['wood','suite']){
-      await page.goto(base+'studio.html?scheme='+scheme+'&v=3.2.0');
+      await page.goto(base+'studio.html?scheme='+scheme+'&v=3.2.1');
       await page.waitForFunction(()=>document.querySelector('#model-loading')?.hidden&&document.querySelectorAll('#floor-plan [data-plan-room]').length===8);
       assert.equal(await page.locator('html').getAttribute('data-scheme'),scheme);
       assert.ok(await page.locator('#model-fallback').evaluate(e=>e.hidden),'3D loaded without fallback');
@@ -30,7 +31,7 @@ try{
       const isSuite=scheme==='suite';
       assert.equal(await page.locator('[data-suite-entry="private"]').count(),isSuite?1:0);
       const geometry=(await page.locator('#floor-plan').innerHTML());
-      if(isSuite)assert.ok(geometry.includes('（含入口）'));
+      if(isSuite){assert.ok(geometry.includes('（含入口）'));assert.equal(await page.locator('[data-hinged-door]').count(),4);assert.equal(await page.locator('[data-surface-slider="door_c"]').count(),1);assert.ok(geometry.includes('730 × 1530'));}
       const renderPrefix=isSuite?'/assets/schemes/suite/':'/assets/blender-renders/';
       assert.ok((await page.locator('#room-preview').getAttribute('src')).includes(renderPrefix));
       assert.ok((await page.locator('#download-glb').getAttribute('href')).includes(isSuite?'models/schemes/suite/':'models/huiyayuan'));

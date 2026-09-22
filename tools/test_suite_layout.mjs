@@ -5,12 +5,17 @@ import {buildWalkWorld,findWalkStart,WALK_STARTS,insidePolygon} from '../walkthr
 const root=new URL('../',import.meta.url),read=async p=>JSON.parse(await readFile(new URL(p,root),'utf8'));
 const base=await read('models/design-data.json'),d=await read('models/schemes/suite/design-data.json');
 const equal=(a,b,label)=>assert.deepEqual(a,b,label);
-equal(d.walls[8],[319,6,319,328],'Master / B shared wall stays in place, not stepped');
+for(const w of [[275,6,275,242],[275,242,380,242],[380,242,380,493]])assert.ok(d.walls.some(v=>v.join()===w.join()),'R4B folded wall '+w);
 for(const key of ['envelope','windows','storageFitouts'])equal(d[key],base[key],key+' preserved');
 for(const fitout of d.bayFitouts)for(const part of fitout.parts){const old=base.bayFitouts.find(f=>f.id===fitout.id).parts.find(p=>p.id===part.id);equal(part,part.id==='l_adult_chair'?{...old,y:old.y+15}:old,'Bay part '+part.id);}
 equal(d.bayFitouts.find(f=>f.roomId==='room_a').parts,[],'Master desk AND chair removed only in new layout');
 assert.equal(d.bayFitouts.find(f=>f.roomId==='room_a').type,'bare_ledge');
-for(const f of base.furniture)if(!['vanity_main','vanity_guest','书房办公椅'].includes(f.id||f.name))equal(d.furniture.find(x=>(x.id||x.name)===(f.id||f.name)),f,'No unrelated furniture move: '+f.name);
+for(const f of base.furniture)if(!['vanity_main','vanity_guest','书房办公椅','主卧衣柜','主卫壁挂马桶','1100书桌'].includes(f.id||f.name))equal(d.furniture.find(x=>(x.id||x.name)===(f.id||f.name)),f,'No unrelated furniture move: '+f.name);
+assert.equal(d.layout.revision,'R4B');assert.equal(d.rooms.find(r=>r.id==='room_c').modelAreaM2,7.7792);
+assert.equal(d.doors.find(o=>o.id==='door_a').operation.type,'hinged');
+assert.equal(d.doors.find(o=>o.id==='door_c').operation.type,'surface-sliding');
+equal(d.doors.find(o=>o.id==='door_b').connects,['living','room_b']);
+assert.equal(d.doors.find(o=>o.id==='door_b').x1,275);
 equal(d.doors.find(x=>x.id==='door_kitchen'),base.doors.find(x=>x.id==='door_kitchen'));
 for(const door of d.doors){
   const segments=d.walls.filter(([a,b,c,e])=>door.x1===door.x2?a===c&&a===door.x1&&door.y1>=b&&door.y2<=e:b===e&&b===door.y1&&door.x1>=a&&door.x2<=c);
@@ -42,4 +47,5 @@ for(const [id,point]of Object.entries(WALK_STARTS)){const p=findWalkStart(world,
 // No floor is shared between rooms. Door thresholds / wall footprints are not
 // included in this small-grid floor area test.
 for(let x=2;x<841;x+=3)for(let y=2;y<1401;y+=3){const owners=d.rooms.filter(r=>insidePolygon(x,y,r.points));assert.ok(owners.length<=1,`Floor overlap ${x},${y}: ${owners.map(r=>r.id)}`);}
-console.log(`PASS suite: unchanged bedroom dividing wall / exterior / bays / storage, correct doors on polygons, ${all.seen.size} connected 50mm navigation samples and ${larger.seen.size} connected 25mm samples with 600mm envelope, 8 accessible rooms, private suite isolation and independent B/C/guest-bath access. Not a door-swing or construction compliance assessment.`);
+for(const o of d.doors.filter(o=>o.operation))assert.ok(world.obstacles.some(x=>x.id===o.id+'-open-leaf'),'Physical open leaf in walk collision '+o.id);
+console.log(`PASS R4B: folded wall, larger study, physical open door leaves, ${all.seen.size} connected 50mm navigation samples and ${larger.seen.size} connected 25mm samples with 600mm envelope, 8 accessible rooms, private suite isolation and independent B/C/guest-bath access. Not a construction compliance assessment.`);

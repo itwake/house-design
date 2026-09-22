@@ -7,8 +7,9 @@ import * as THREE from '../vendor/three/three.module.js';
 import * as walk from '../walkthrough.js';
 const {buildWalkWorld,findWalkStart,advanceWalk,movementVector,WalkController,WALK_STARTS,WALK_RADIUS,WALK_EYE_HEIGHT,isWalkDoorInfill}=walk;
 const root=new URL('../',import.meta.url),read=p=>readFile(new URL(p,root),'utf8');
-const data=JSON.parse(await read('models/design-data.json'));
-const manifest=JSON.parse(await read('models/scene-manifest.json'));
+const suite=process.argv.includes('--suite'),prefix=suite?'models/schemes/suite/':'models/';
+const data=JSON.parse(await read(prefix+'design-data.json'));
+const manifest=JSON.parse(await read(prefix+'scene-manifest.json'));
 const catalog=JSON.parse(await read('models/design-schemes.json'));
 const source=await read('studio.js'),html=await read('studio.html');
 const world=buildWalkWorld(data),near=(a,b,message)=>assert.ok(Math.abs(a-b)<1e-7,message||`${a} != ${b}`);
@@ -16,8 +17,8 @@ assert.equal(WALK_EYE_HEIGHT,1.6);assert.equal(WALK_RADIUS,.25);
 assert.equal(world.doors.length,7);
 assert.equal(world.rooms.length,8);
 for(const [id,[x,z]]of Object.entries(WALK_STARTS)){
-  assert.ok(world.canStand(x,z),'Safe entry '+id);
-  assert.deepEqual(findWalkStart(world,id,{x,z}),{x,z});
+  if(!suite){assert.ok(world.canStand(x,z),'Safe entry '+id);assert.deepEqual(findWalkStart(world,id,{x,z}),{x,z});}
+  else {const p=findWalkStart(world,id,{x,z});assert.ok(p&&world.canStand(p.x,p.z),'Revalidated R4B entry '+id);}
   const fallback=findWalkStart(world,id,{x:-100,z:-100});
   assert.ok(fallback&&world.canStand(fallback.x,fallback.z),'Safe fallback '+id);
 }
@@ -46,10 +47,10 @@ for(let head=0;head<queue.length;head++){
   }
 }
 assert.deepEqual([...reached].filter(Boolean).sort(),world.rooms.map(r=>r.id).sort(),'All 8 rooms reachable from entrance');
-for(const [id,[x,z]]of Object.entries(WALK_STARTS))assert.ok(seen.has(key(Math.round(x/step),Math.round(z/step))),'Reach seed '+id);
+if(!suite)for(const [id,[x,z]]of Object.entries(WALK_STARTS))assert.ok(seen.has(key(Math.round(x/step),Math.round(z/step))),'Reach seed '+id);
 const noSuiteDoor=buildWalkWorld({...data,doors:data.doors.filter(d=>d.id!=='door_bath_1')});
 assert.equal(noSuiteDoor.canStand(4.695,3.28),false,'Suite door must be explicitly present');
-assert.ok(world.canStand(4.695,3.28),'Suite passage is through master bedroom');
+if(!suite)assert.ok(world.canStand(4.695,3.28),'Suite passage is through master bedroom');
 for(const [yaw,f,s]of [[0,1,0],[0,1,1],[Math.PI/2,1,0],[Math.PI,1,-1]]){const d=movementVector(yaw,f,s,1);near(Math.hypot(d.x,d.z),1,'Normalized movement')}
 near(movementVector(0,1,0,1).z,-1);near(movementVector(Math.PI/2,1,0,1).x,1);
 const thinWorld={canStand:(x,z,r=.25)=>x>=r&&x<=10-r&&z>=r&&z<=10-r&&Math.abs(x-5)>=r+.004,roomAt:()=>null};
@@ -123,7 +124,7 @@ c.dispose();for(const n of [e.win,e.doc,e.canvas,...e.pads])for(const handlers o
 const ui=environment(),camera=new THREE.PerspectiveCamera(37,1000/700,.35,80),calls={orbit:0,renders:0,frames:0,storage:0};
 const controls={enabled:true,target:new THREE.Vector3(4.2,.6,7),maxDistance:45,update:()=>calls.orbit++};
 const scene=new THREE.Scene(),model=new THREE.Group();
-const glb=await readFile(new URL(catalog.schemes[0].model,root));
+const glb=await readFile(new URL(catalog.schemes[suite?1:0].model,root));
 const gltf=JSON.parse(glb.subarray(20,20+glb.readUInt32LE(12)).toString());
 const parents=new Map();gltf.nodes.forEach((n,i)=>(n.children||[]).forEach(c=>parents.set(c,i)));
 const semantics=i=>{const out={};for(let p=i;p!==undefined;p=parents.get(p))for(const [k,v]of Object.entries(gltf.nodes[p].extras||{}))if(out[k]===undefined)out[k]=v;return out};
@@ -146,18 +147,21 @@ const shade=shades.find(b=>Math.abs(b.getCenter(new THREE.Vector3()).x-6.48)<.01
 assert.ok(shade,'Actual GLB floor lampshade found');assert.ok(shade.min.x>=6.26-1e-5&&shade.max.x<=6.70+1e-5&&shade.min.z>=8.76-1e-5&&shade.max.z<=9.20+1e-5,'Supplementary collider encloses actual lampshade');
 assert.equal(new Set(doorNodes.map(d=>d.meta.openingId)).size,8,'Actual GLB has eight door assemblies');
 for(const {n,meta}of doorNodes){const m=new THREE.Mesh(new THREE.BoxGeometry(.1,.1,.1),new THREE.MeshStandardMaterial());m.name=n.name;m.userData=meta;model.add(m)}
-const context=vm.createContext({...walk,THREE,URL,URLSearchParams,console,document:ui.doc,window:ui.win,matchMedia:()=>({matches:false}),setTimeout:()=>0,clearTimeout:()=>{},requestAnimationFrame:()=>++calls.frames,cancelAnimationFrame:()=>{},performance:{now:()=>0},sessionStorage:{setItem:()=>calls.storage++},test:{data,manifest,catalog,camera,controls,scene,model,canvas:ui.canvas,calls}});
+const context=vm.createContext({...walk,THREE,URL,URLSearchParams,console,document:ui.doc,window:ui.win,matchMedia:()=>({matches:false}),setTimeout:()=>0,clearTimeout:()=>{},requestAnimationFrame:()=>++calls.frames,cancelAnimationFrame:()=>{},performance:{now:()=>0},sessionStorage:{setItem:()=>calls.storage++},test:{data,manifest,catalog,camera,controls,scene,model,canvas:ui.canvas,calls,suite}});
 vm.runInContext(source.replace(/^import .*\r?\n/gm,'').replace(/\binit\(\);\s*$/,''),context);
-vm.runInContext(`data=test.data;manifest=test.manifest;scheme=test.catalog.schemes[0];rooms=manifest.rooms;three=THREE;camera=test.camera;controls=test.controls;scene=test.scene;model=optimizeStaticModel(test.model,THREE,()=>{throw Error('Door should not be merged')});renderer={domElement:test.canvas,setSize:()=>{},render:()=>test.calls.renders++};state.ready=true;setupWalk();`,context);
-const api=vm.runInContext('({startWalk,stopWalk,focusRoom,switchView,resizeScene,tick,state,walkthrough,walkWorld,walkDoorParts,walkSlidingParts,walkThresholds,setWalls,bindControls})',context);
+vm.runInContext(`data=test.data;manifest=test.manifest;scheme=test.catalog.schemes[test.suite?1:0];rooms=manifest.rooms;three=THREE;camera=test.camera;controls=test.controls;scene=test.scene;model=optimizeStaticModel(test.model,THREE,()=>{throw Error('Door should not be merged')});renderer={domElement:test.canvas,setSize:()=>{},render:()=>test.calls.renders++};state.ready=true;setupWalk();`,context);
+const api=vm.runInContext('({startWalk,stopWalk,focusRoom,switchView,resizeScene,tick,state,walkthrough,walkWorld,walkDoorParts,walkSlidingParts,walkThresholds,setWalls,bindControls,model})',context);
 assert.equal(ui.node('#start-walk').disabled,false);assert.equal(api.walkthrough.listeners.length,37,'Four direction pads and canvas input wired');
 assert.ok(!api.walkDoorParts.some(p=>p.userData.openingId==='door_kitchen'),'Kitchen leaves must never disappear');
-assert.equal(api.walkSlidingParts.length,18,'Three actual six-part sliding leaves');
-assert.deepEqual([...new Set(api.walkSlidingParts.map(p=>p.userData.slidingPanelIndex))].sort(),[0,1,2]);
+assert.equal(api.walkSlidingParts.length,suite?20:18,'Kitchen leaves plus real study leaf and flush pull in R4B');
+assert.deepEqual([...new Set(api.walkSlidingParts.filter(p=>p.userData.openingId==='door_kitchen').map(p=>p.userData.slidingPanelIndex))].sort(),[0,1,2]);
+const openHinges=api.model.children.filter(p=>p.userData.doorRole==='hinged-open-panel');
+assert.equal(openHinges.length,suite?8:0);
+assert.ok(openHinges.every(p=>!api.walkDoorParts.includes(p)),'Open hinged leaves never disappear');
 const closedPositions=api.walkSlidingParts.map(p=>p.position.clone());
 assert.equal(world.canStand(5.36,11.90),false,'North parked stack blocks walking');
 assert.ok(world.canStand(5.36,12.55),'Only the remaining south gap is passable');
-assert.equal(api.walkThresholds.children.length,6,'The six other gaps need temporary floors; kitchen now has a persistent floor');
+assert.equal(api.walkThresholds.children.length,suite?1:6,'R4B custom door assemblies also have persistent floors');
 for(const floor of api.walkThresholds.children){
   const door=data.doors.find(d=>d.id===floor.userData.openingId),bounds=new THREE.Box3().setFromObject(floor);
   assert.ok(door&&door.id!=='entry_door');near(floor.position.x,(door.x1+door.x2)/200);near(floor.position.z,(door.y1+door.y2)/200);near(bounds.max.y,0);
@@ -167,6 +171,7 @@ for(const room of Object.keys(WALK_STARTS))for(const cut of [true,false])for(con
   api.state.room=room;api.state.roomCardVisible=card;ui.node('#room-card').hidden=!card;api.setWalls(cut);api.startWalk();
   assert.equal(api.state.walking,true);assert.equal(api.state.interior,true);assert.equal(controls.enabled,false);near(camera.position.y,1.6);near(camera.near,.045);
   assert.ok(api.walkDoorParts.every(p=>!p.visible));api.walkSlidingParts.forEach((p,i)=>{assert.ok(p.visible);assert.ok(p.position.equals(closedPositions[i].clone().add(new THREE.Vector3(...p.userData.slideOpenOffsetM))))});assert.equal(api.walkThresholds.visible,true);assert.equal(api.state.cutWalls,false);assert.equal(ui.node('#walk-hud').hidden,false);
+  assert.ok(openHinges.every(p=>p.visible),'R4B hinged panels stay visible while walking');
   assert.equal(api.state.roomCardVisible,card);assert.equal(ui.node('#room-card').hidden,!card);
   const before=calls.orbit;api.tick(0);assert.equal(calls.orbit,before,'No Orbit update while walking');
   const position=camera.position.clone();api.resizeScene();assert.ok(position.equals(camera.position),'Resize does not refit walker');

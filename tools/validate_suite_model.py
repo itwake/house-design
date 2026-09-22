@@ -20,7 +20,7 @@ def geometry_groups(meshes,key):
         if value:groups[value].append(item['geometry'])
     return {k:sorted(v) for k,v in groups.items()}
 before=geometry_groups(base,'furnitureId');after=geometry_groups(model,'furnitureId')
-excluded={'vanity_main','vanity_guest','书房办公椅','a_desktop','a_support','a_accessories','a_chair','l_adult_chair'}
+excluded={'vanity_main','vanity_guest','书房办公椅','主卧衣柜','主卫壁挂马桶','a_desktop','a_support','a_accessories','a_chair','l_adult_chair'}
 preserved=0
 for key,hashes in before.items():
     if key not in excluded:
@@ -71,7 +71,19 @@ for door in data['doors']:
     parts=[m for name,m in model.items() if m['extras'].get('openingId')==door['id'] and 'oak door leaf' in name.replace('_',' ')]
     assert len(parts)==1,(door['id'],len(parts))
     lo,hi=parts[0]['bounds'];vertical=door['x1']==door['x2']
-    if vertical:
+    operation=door.get('operation',{})
+    if operation.get('type')=='hinged':
+        p=operation['openLeafCm']
+        expected_lo=[p['x']/100,.02,p['y']/100]
+        expected_hi=[(p['x']+p['w'])/100,door['heightCm']/100-.055,(p['y']+p['d'])/100]
+        assert parts[0]['extras']['doorRole']=='hinged-open-panel'
+    elif operation.get('type')=='surface-sliding':
+        p=operation['panelCm'];q=operation['parkedCm']
+        expected_lo=[p['x']/100,.012,p['y']/100]
+        expected_hi=[(p['x']+p['w'])/100,door['heightCm']/100-.013,(p['y']+p['d'])/100]
+        shift=parts[0]['extras']['slideOpenOffsetM']
+        assert near(shift,[(q['x']-p['x'])/100,0,(q['y']-p['y'])/100])
+    elif vertical:
         expected_lo=[door['x1']/100-.019,.02,door['y1']/100+.055]
         expected_hi=[door['x1']/100+.019,door['heightCm']/100-.055,door['y2']/100-.055]
     else:

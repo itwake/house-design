@@ -54,6 +54,11 @@ export function buildWalkWorld(data){
     const parked=panel+(n-1)*c.stackStaggerCm;
     rect(door.id+'-parked-leaves',(door.x1-c.frameDepthCm/2)/100,(door.y1+c.jambCm)/100,c.frameDepthCm/100,parked/100,'sliding-stack');
   }
+  // R4B doors have explicit physical open poses, shared with plan and GLB.
+  for(const door of doors.filter(d=>d.operation)){
+    const p=door.operation.type==='hinged'?door.operation.openLeafCm:door.operation.parkedCm;
+    if(p)rect(door.id+'-open-leaf',p.x/100,p.y/100,p.w/100,p.d/100,'door-leaf');
+  }
   for(const [index,f]of (data.furniture||[]).entries()){
     const [x,z,w,d]=[f.x,f.y,f.w,f.d].map(v=>v/100);
     if(f.tone==='wet'&&f.name.includes('淋浴')){
@@ -112,7 +117,7 @@ export function findWalkStart(world,roomId,preferred){
   return best;
 }
 export function isWalkDoorInfill(name,metadata){
-  return metadata.kind==='door'&&metadata.doorRole!=='sliding-panel'&&metadata.openingId&&metadata.openingId!=='entry_door'&&/oak door leaf|handle escutcheon|lever handle|clear glazing|mullion/.test(String(name).replace(/[_/]+/g,' ').replace(/\s+/g,' '));
+  return metadata.kind==='door'&&!['sliding-panel','hinged-open-panel'].includes(metadata.doorRole)&&metadata.openingId&&metadata.openingId!=='entry_door'&&/oak door leaf|handle escutcheon|lever handle|clear glazing|mullion/.test(String(name).replace(/[_/]+/g,' ').replace(/\s+/g,' '));
 }
 export function movementVector(yaw,forward,strafe,distance){
   const length=Math.max(1,Math.hypot(forward,strafe));

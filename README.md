@@ -4,6 +4,8 @@
 
 **在线查看：[itwake.github.io/house-design](https://itwake.github.io/house-design/)**
 
+当前第二方案为 **V3.2.1 / R4B**：恢复两卧折线隔墙、次卧走廊尽头左转、主卧平开门先入小玄关、书房扩大至约7.78㎡并使用墙外挂推拉门。平面、GLB、Blender、16张效果图及第一人称碰撞同源更新；原方案保持不变。小玄关约730mm、公共走廊约780mm仍紧凑，主卫盆前须关门使用。详见[本轮几何及取舍](docs/suite-layout-v321.md)。下方V3.2.0直墙/小书房叙述为历史版本，不是当前第二方案。
+
 ![全屋Blender模型实际渲染](assets/blender-renders/overall.jpg)
 
 ## 装修知识库（2026-09-17）

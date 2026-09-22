@@ -13,12 +13,14 @@ const host={innerHTML:''};
 vm.runInNewContext(helpers+'\n'+source.slice(start,end)+'\nmakePlan();',{data,$:s=>{assert.equal(s,'#floor-plan');return host;},$$:()=>[],roomDescription:id=>({name:data.rooms.find(r=>r.id===id)?.name||id})});
 const svg=host.innerHTML;
 for(const door of data.doors){const tag=svg.match(new RegExp(`<line data-opening-id="${door.id}"[^>]+>`))?.[0];assert.ok(tag,door.id);for(const k of ['x1','y1','x2','y2'])assert.ok(tag.includes(`${k}="${door[k]}"`),'Exact door plan '+door.id+'/'+k);}
-assert.ok(svg.includes('data-suite-entry="private"')&&svg.includes('790 × 1530'),'Private foyer is labeled on actual plan');
+assert.ok(svg.includes('data-suite-entry="private"')&&svg.includes('730 × 1530'),'Private foyer is labeled on actual plan');
+assert.equal((svg.match(/data-hinged-door=/g)||[]).length,4,'Four real open hinged doors');
+assert.ok(svg.includes('data-surface-slider="door_c"'),'Study wall-mounted sliding door');
 for(const id of ['a_desktop','a_support','a_accessories','a_chair'])assert.ok(!svg.includes(`data-part-id="${id}"`),'Master item removed: '+id);
 assert.equal((svg.match(/data-bay-window=/g)||[]).length,3,'Keep three real bay windows');
 assert.equal((svg.match(/data-sliding-panel=/g)||[]).length,3,'Keep kitchen slider');
 for(const room of data.rooms)assert.ok(svg.includes(`points="${room.points.map(p=>p.join(',')).join(' ')}"`),'Actual polygon '+room.id);
-for(const [key,geometry]of [['主卧衣柜',[325,105,60,160]],['次卧衣柜',[20,262,180,60]]]){const f=data.furniture.find(f=>f.name===key);assert.deepEqual([f.x,f.y,f.w,f.d],geometry,'Latest owner wardrobe choice '+key);}
+for(const [key,geometry]of [['主卧衣柜',[281,65,60,160]],['次卧衣柜',[20,262,180,60]]]){const f=data.furniture.find(f=>f.name===key);assert.deepEqual([f.x,f.y,f.w,f.d],geometry,'Latest owner wardrobe choice '+key);}
 if(process.argv.includes('--render')){
   const sharp=createRequire(import.meta.url)('sharp');
   const out=new URL('tmp/',root);await mkdir(out,{recursive:true});
