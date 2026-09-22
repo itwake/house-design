@@ -7,11 +7,11 @@ const base='https://itwake.github.io/house-design/';
 const local=path=>new URL('../'+path,import.meta.url);
 const catalog=JSON.parse(await readFile(local('models/design-schemes.json'),'utf8'));
 const views=['overall','living','dining','master','bedroom-b','study','kitchen','master-bath','guest-bath','balcony','bay-master','bay-tea','bay-living','entry-storage','sideboard'];
-const files=new Set(['index.html','studio.html','schemes.js','studio.js','studio.css','walkthrough.js','walkthrough.css','models/design-schemes.json','models/design-data.json']);
+const files=new Set(['index.html','studio.html','schemes.js','studio.js','studio.css','walkthrough.js','walkthrough.css','schemes.css','models/design-schemes.json','models/design-data.json']);
 for(const scheme of catalog.schemes){
-  [scheme.model,scheme.blend,scheme.manifest].forEach(path=>files.add(path));
+  [scheme.model,scheme.blend,scheme.manifest,scheme.geometrySource||catalog.geometrySource].forEach(path=>files.add(path));
   const dir=scheme.id==='wood'?'assets/blender-renders':'assets/schemes/'+scheme.id;
-  views.forEach(view=>files.add(dir+'/'+view+'.jpg'));
+  (scheme.renderViews||views).forEach(view=>files.add(dir+'/'+view+'.jpg'));
 }
 const hash=(path,bytes)=>createHash('sha256').update(/\.(html|css|js|json)$/i.test(path)?bytes.toString('utf8').replace(/\r\n/g,'\n'):bytes).digest('hex');
 const checks=[],queue=[...files];

@@ -1,3 +1,4 @@
+// Regression name retained for compatibility; now verifies both real layouts.
 // Offline tests of the real routing / viewer initialization code. No browser,
 // network or duplicate geometry renderer. WebGL and DOM layout are not tested.
 import assert from 'node:assert/strict';
@@ -11,12 +12,13 @@ const [entry,html,helpers,viewer]=await Promise.all(['index.html','studio.html',
 const catalog=JSON.parse(await read('models/design-schemes.json'));
 const geometry=JSON.parse(await read(catalog.geometrySource));
 const manifest=JSON.parse(await read(catalog.schemes[0].manifest));
+const resources=new Map();for(const s of catalog.schemes){resources.set(s.geometrySource,{value:JSON.parse(await read(s.geometrySource)),revision:s.assetRevision});resources.set(s.manifest,{value:JSON.parse(await read(s.manifest)),revision:s.assetRevision});}
 const ids=new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]));
 const classes=new Set([...html.matchAll(/\bclass="([^"]+)"/g)].flatMap(m=>m[1].split(/\s+/)));
 const roomIds=['overall','living','dining','room_a','room_b','room_c','kitchen','bath_1','bath_2','balcony'];
 const retired=['terracotta','moss','cobalt'];
 const preference='house-design:room-card-visible';
-assert.deepEqual(catalog.schemes.map(s=>s.id),['wood']);
+assert.deepEqual(catalog.schemes.map(s=>s.id),['wood','suite']);
 assert.deepEqual(catalog.archivedPalettes.map(s=>s.id),retired);
 assert.equal(catalog.schemes[0].assetRevision,'3.1.4');
 assert.ok(catalog.futureSchemePolicy.includes('布局')&&catalog.futureSchemePolicy.includes('不作为新方案'));
@@ -24,7 +26,10 @@ for(const text of [entry,html,viewer]){
   for(const marker of ['id="scheme-grid"','id="scheme-dialog"','id="change-scheme"','四套','设计选集','showSchemeSelector','schemeCards'])assert.ok(!text.includes(marker),marker+' removed from active UI');
 }
 assert.ok(!html.includes('href="schemes.css'));
-assert.ok(entry.includes('data-single-scheme-entry'));
+assert.ok(entry.includes('data-layout-gallery'));
+assert.ok(entry.includes('data-scheme-card="wood"')&&entry.includes('data-scheme-card="suite"'));
+assert.notEqual(catalog.schemes[0].geometrySource,catalog.schemes[1].geometrySource);
+assert.notEqual(catalog.schemes[0].model,catalog.schemes[1].model);
 assert.ok(entry.includes('studio.html?scheme=wood&amp;v='+catalog.version));
 for(const m of viewer.matchAll(/\$\(['"]#([\w-]+)[^'"\n]*['"]\)/g))assert.ok(ids.has(m[1]),'Static selector still exists: '+m[1]);
 for(const id of ['toggle-room-card','room-card-toggle','open-bays','open-storage','open-plan','download-plan','download-blend','download-glb','active-render','future-scheme-policy'])assert.ok(ids.has(id),id);
@@ -43,7 +48,7 @@ function environment(href,{stored='false',entryPage=false,catalogResponse=catalo
     elements.set(key,result);return result;
   };
   const query=selector=>{
-    if(selector==='[data-single-scheme-entry]')return entryPage?node('entry'):null;
+    if(selector==='[data-layout-gallery]')return entryPage?node('entry'):null;
     if(selector==='#enter-home')return node(selector);
     const id=selector.match(/^#([\w-]+)/)?.[1],cls=selector.match(/^\.([\w-]+)/)?.[1];
     assert.ok(id?ids.has(id):classes.has(cls),'Real initialization selector missing: '+selector);
@@ -58,8 +63,8 @@ function environment(href,{stored='false',entryPage=false,catalogResponse=catalo
     setTimeout:()=>0,clearTimeout:()=>{},console:{error:(...e)=>errors.push(e)},
     fetch:async href=>{
       const requestURL=new URL(href),path=requestURL.pathname.replace('/house-design/','');requests.push(path);
-      assert.equal(requestURL.searchParams.get('v'),path==='models/design-schemes.json'?catalog.version:'3.1.4','Data/manifest asset revision stays separate from UI revision');
-      const value=path==='models/design-schemes.json'?catalogResponse:path===catalog.geometrySource?geometry:path===catalog.schemes[0].manifest?manifest:undefined;
+      assert.equal(requestURL.searchParams.get('v'),path==='models/design-schemes.json'?catalog.version:resources.get(path)?.revision,'Data/manifest asset revision stays separate from UI revision');
+      const value=path==='models/design-schemes.json'?catalogResponse:resources.get(path)?.value;
       assert.notEqual(value,undefined,'Unexpected/retired resource request: '+path);
       return {ok:path==='models/design-schemes.json'?status===200:true,status,json:async()=>structuredClone(value)};
     },built});
@@ -72,18 +77,18 @@ const api=vm.runInContext('({entryURL,resolveScheme,schemeRender,loadSchemeCatal
 assert.equal(api.SCHEME_REVISION,catalog.version);
 assert.ok(viewer.includes("const UI_REVISION = '"+catalog.version+"'"));
 assert.equal(new URL(api.schemeRender(catalog.schemes[0],'living')).searchParams.get('v'),'3.1.4');
-for(const name of ['', 'index.html'])for(const hash of ['',...roomIds.map(id=>'#'+id)])for(const style of ['', 'wood', ...retired, 'invalid']){
+for(const name of ['', 'index.html'])for(const hash of ['',...roomIds.map(id=>'#'+id)])for(const style of ['', 'wood', 'suite', ...retired, 'invalid']){
   const before=new URL(base+name+'?v=old&source=bookmark'+(style?'&scheme='+style:'')+hash);
-  const env=environment(before.href,{entryPage:true}),after=new URL(env.redirect);
+  const env=environment(before.href,{entryPage:true});if(!style&&!hash){assert.equal(env.redirect,null,'Plain homepage keeps the chooser');continue;}const after=new URL(env.redirect);
   assert.equal(after.pathname,'/house-design/studio.html');
   assert.equal(after.hash,hash);assert.equal(after.searchParams.get('source'),'bookmark');
   assert.equal(after.searchParams.get('scheme'),style||'wood');
   assert.equal(after.searchParams.get('v'),catalog.version);
   assert.equal(env.store.get(preference),'false');
-  assert.equal(env.node('#enter-home').href,env.redirect);
 }
 let initialized=0;
-for(const style of ['', 'wood',...retired])for(const room of roomIds){
+for(const style of ['', 'wood','suite',...retired])for(const room of roomIds){
+  const active=catalog.schemes.find(s=>s.id===style)||catalog.schemes[0];
   const env=environment(base+'studio.html?source=bookmark&v=old'+(style?'&scheme='+style:'')+'#'+room);
   vm.runInContext(viewer.replace(/^import .*\r?\n/gm,'').replace(/\binit\(\);\s*$/,''),env.context);
   // Geometry has a separate actual-SVG regression. Here only detach expensive
@@ -92,11 +97,11 @@ for(const style of ['', 'wood',...retired])for(const room of roomIds){
     selectRoom=id=>{state.room=id};switchView=()=>{};buildScene=()=>built.push({room:state.room,model:scheme.model});`,env.context);
   await vm.runInContext('init()',env.context);
   assert.equal(env.errors.length,0);
-  assert.equal(env.document.documentElement.dataset.scheme,'wood');
-  assert.equal(env.built[0]?.room,room);assert.equal(env.built[0]?.model,catalog.schemes[0].model);
-  assert.equal(env.url.hash,'#'+room);assert.equal(env.url.searchParams.get('scheme'),'wood');
+  assert.equal(env.document.documentElement.dataset.scheme,active.id);
+  assert.equal(env.built[0]?.room,room);assert.equal(env.built[0]?.model,active.model);
+  assert.equal(env.url.hash,'#'+room);assert.equal(env.url.searchParams.get('scheme'),active.id);
   assert.equal(env.url.searchParams.get('v'),catalog.version);assert.equal(env.url.searchParams.get('source'),'bookmark');
-  assert.deepEqual(env.requests,['models/design-schemes.json',catalog.geometrySource,catalog.schemes[0].manifest]);
+  assert.deepEqual(env.requests,['models/design-schemes.json',active.geometrySource,active.manifest]);
   assert.equal(env.node('#future-scheme-policy').textContent,catalog.futureSchemePolicy);
   assert.equal(env.node('#room-card').hidden,true);
   env.node('#toggle-room-card').listeners.click();
@@ -106,7 +111,7 @@ for(const style of ['', 'wood',...retired])for(const room of roomIds){
   assert.equal(env.node('#toggle-room-card').attrs['aria-expanded'],'false');
   for(const [id,key]of [['download-glb','model'],['download-blend','blend']]){
     const download=new URL(env.node('#'+id).href);
-    assert.equal(download.pathname,'/house-design/'+catalog.schemes[0][key]);assert.equal(download.searchParams.get('v'),'3.1.4');
+    assert.equal(download.pathname,'/house-design/'+active[key]);assert.equal(download.searchParams.get('v'),active.assetRevision);
   }
   initialized++;
 }
@@ -139,4 +144,11 @@ const expectedByPath=new Map(tree.map(line=>{const [meta,path]=line.split('\t');
 const actualHashes=execFileSync('git',['hash-object','--stdin-paths'],{cwd,encoding:'utf8',input:paths.join('\n')+'\n'}).trim().split('\n');
 assert.equal(actualHashes.length,paths.length);
 paths.forEach((path,i)=>assert.equal(actualHashes[i],expectedByPath.get(path),path+' must preserve existing asset/source bytes'));
-console.log(`PASS: 132 entry routes, ${initialized} real viewer initializations, retired/unknown IDs, catalog failure, preserved room/hash/preferences/downloads, and ${paths.length} unchanged historical/texture assets and unchanged unrelated active source geometry. Offline tests do not test WebGL or browser layout.`);
+// Adding a separate layout must not rewrite ANY original/archived source,
+// model, texture or render from the immediately preceding published revision.
+const beforeSuite='c918d0d';
+const protectedTree=execFileSync('git',['ls-tree','-r',beforeSuite,'models','assets'],{cwd,encoding:'utf8'}).trim().split('\n').map(line=>{const [meta,path]=line.split('\t');return {path,sha:meta.split(' ')[2]}}).filter(x=>x.path!=='models/design-schemes.json');
+const protectedHashes=execFileSync('git',['hash-object','--stdin-paths'],{cwd,encoding:'utf8',input:protectedTree.map(x=>x.path).join('\n')+'\n'}).trim().split('\n');
+protectedTree.forEach((entry,i)=>assert.equal(protectedHashes[i],entry.sha,'Original layout asset unchanged: '+entry.path));
+console.log(`PASS: ${protectedTree.length} source/model/texture/render assets exactly preserved from ${beforeSuite}.`);
+console.log(`PASS: two-layout entry routes (including non-redirecting chooser), ${initialized} real viewer initializations, retired/unknown IDs, catalog failure, preserved room/hash/preferences/downloads, and ${paths.length} unchanged historical/texture assets and unchanged unrelated active source geometry. Offline tests do not test WebGL or browser layout.`);

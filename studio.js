@@ -1,10 +1,10 @@
-import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.1.4';
-import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.1.4';
+import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.2.0';
+import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.2.0';
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
-const UI_REVISION = '3.1.4';
+const UI_REVISION = '3.2.0';
 document.documentElement.dataset.uiRevision = UI_REVISION;
-let ASSET_REVISION = '3.1.4';
+let ASSET_REVISION = '3.2.0';
 const revisedAsset = path => {const url=new URL(path,document.baseURI);url.searchParams.set('v',ASSET_REVISION);return url.href};
 const icons = {
   cube:'<path d="m8 2 6 3.5v5L8 14l-6-3.5v-5L8 2Z M2 5.5 8 9l6-3.5 M8 9v5 M5 3.8l6 3.5"/>',
@@ -58,7 +58,7 @@ const schemeTextOverride=(overrides,id)=>Object.fromEntries(Object.entries(overr
 const renderPath = id => schemeRender(scheme,roomDescription(id).render);
 const escapeHTML = value => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 async function getJSON(url){const response=await fetch(revisedAsset(url));if(!response.ok)throw new Error(`${url}: ${response.status}`);return response.json()}
-async function getDesignData(){return getJSON(schemeCatalog?.geometrySource||'models/design-data.json')}
+async function getDesignData(){return getJSON(scheme?.geometrySource||schemeCatalog?.geometrySource||'models/design-data.json')}
 
 function sourceNotes(value,roomId=null){
   if(typeof value==='string')return value.trim()?[{text:value.trim(),roomId}]:[];
@@ -205,6 +205,7 @@ function bathroomDescription(id){
   const vanity=data?.furniture?.find(item=>item.id===(id==='bath_1'?'vanity_main':'vanity_guest'));if(!vanity)return roomDescription(id).description;
   const horizontal=['east','west'].includes(vanity.face),width=(horizontal?vanity.d:vanity.w)*10,depth=(horizontal?vanity.w:vanity.d)*10;
   const back={east:'西',west:'东',south:'北',north:'南'}[vanity.face]||'墙';
+  if(data.layout?.id==='suite')return `${width} mm宽、${depth} mm深盆柜靠${back}墙；${id==='bath_1'?'西门只通主卧套内小玄关':'西门从公共走廊进入'}。马桶、淋浴位置保留，湿区施工条件待复核。`;
   return id==='bath_1'?`${width} mm宽、${depth} mm深浴室柜依${back}墙布置，镜面靠${back}；马桶和淋浴按阶梯边界安排。`:`${width} mm宽、${depth} mm深浅盆柜设在西北扩出位置，镜面靠${back}，保留紧凑马桶与东侧淋浴；选型及安装余量待复尺。`;
 }
 function bedroomSpecification(id){
@@ -214,6 +215,7 @@ function bedroomSpecification(id){
   const mattress=`${Number(bed.mattressWidthCm)*10}×${Number(bed.mattressLengthCm)*10}`,frame=`${Number(bed.frameWidthCm)*10}×${Number(bed.frameLengthCm)*10}`;
   const bay=data.windows?.find(window=>window.id===(id==='room_a'?'window_a':'window_b'))?.windowType==='bay';
   const fitout=bayFitoutFor(id),bayNote=fitout?`${detailText(fitout.summary)}${id==='room_b'?' 本轮取消独立书桌和办公椅；低台茶座仍为条件方案，非现场已确认。':' 具体尺寸与适用条件见飘窗方案。'}`:`浅木衣柜与柔和织物延续全屋配色${bay?'，北侧飘窗尺寸待复尺。':'。'}`;
+  if(fitout?.type==='bare_ledge')return {description:`床头朝${head}；床垫${mattress} mm，床架外包${frame} mm。主卧不设桌台或配椅，保留原飘窗台；衣柜在床尾西墙。`,features:['床头朝东','床尾西墙衣柜','无桌台与配椅']};
   return {description:`床头朝${head}；床垫${mattress} mm，床架外包${frame} mm。${bayNote}`,features:[`床头朝${head}`,`${Number(bed.mattressWidthCm)*10} mm床垫`,fitout?(id==='room_a'?'飘窗一体工作台':'条件茶座'):bay?'北侧飘窗':'柔和织物']};
 }
 
@@ -236,14 +238,17 @@ function selectRoom(id,{updateHash=true,animate=true}={}){
   const areaText=id==='dining'?'与客厅共享公共区 · ':r?.area?Number(r.area).toFixed(1)+(id==='living'?' ㎡（客餐厅及过道合计） · ':' ㎡ · '):'';
   $('#room-subtitle').textContent=id==='overall'?(scheme?.tagline||'把每一天，安放在光与木色之间。'):`${areaText}${scheme?.style||'现代原木'} / ${content.title}`;
   $('#card-kicker').textContent=content.en;$('#card-title').textContent=content.title;
-  const accessNote=id==='bath_1'?'主卫北门通主卧，按套内卫生间使用；门宽与侧面构造待复尺。':id==='bath_2'?'客卫从公共走廊进入；门宽与侧面构造待复尺。':'';
+  const accessNote=id==='bath_1'?(data.layout?.id==='suite'?'主卫西门通主卧小玄关，不直接向公共走廊开门。':'主卫北门通主卧，按套内卫生间使用；门宽与侧面构造待复尺。'):id==='bath_2'?'客卫从公共走廊进入；门宽与侧面构造待复尺。':'';
   const bedroom=bedroomSpecification(id),fitout=bayFitoutFor(id);
   const styleNote=scheme.id!=='wood'&&['room_a','room_b','bath_1','bath_2','dining'].includes(id)?scheme.roomOverrides?.[id]?.description:'';
   $('#card-description').textContent=[styleNote,(id==='dining'?diningSpecification():'') || bedroom?.description || bathroomDescription(id) || (fitout?content.description:'') || r?.description || content.description,accessNote,...designNotes().filter(note=>note.roomId===id).map(note=>note.text)].filter(Boolean).join(' ');
   $('#view-bay-fitout').hidden=!(fitout||id==='overall');
   $('#view-bay-fitout').innerHTML=`${id==='overall'?'三处飘窗功能设计':'飘窗方案 · 尺寸 / 参考'} <span>↗</span>`;
   $('#view-storage-fitout').hidden=!['overall','dining','living'].includes(id);
-  const features=bedroom?.features || ((scheme.id!=='wood'||fitout||id==='dining'||id==='bath_1'||id==='bath_2')?content.features:(r?.features || content.features));
+  $('#view-suite-entry').hidden=!(data.layout?.id==='suite'&&['overall','room_a','bath_1'].includes(id));
+  $('#project-suite-entry').hidden=data.layout?.id!=='suite';
+  $('#bath-access-note').textContent=data.layout?.id==='suite'?'新增布局：主卫西门通套内小玄关，北侧旧门封闭；客卫仍从公共走廊进入。两卫共墙拉直，具体墙位、门宽与防水排水需复核。':'主卫北门通主卧，客卫从公共走廊进入；两卫阶梯边界及门侧构造仍需现场复尺。';
+  const features=scheme.roomOverrides?.[id]?.features || bedroom?.features || ((scheme.id!=='wood'||fitout||id==='dining'||id==='bath_1'||id==='bath_2')?content.features:(r?.features || content.features));
   $('#room-tags').innerHTML=features.slice(0,3).map(t=>scheme.id==='wood'?t:({'现代原木':scheme.name,'暖色石材':'浅色卫浴','亚麻触感':'织物软包'})[t]||t).map(t=>`<span>${escapeHTML(t)}</span>`).join('');
   $('#room-preview').src=renderPath(id);$('#room-preview').alt=`${content.name} Blender 渲染预览`;
   $('#enter-room').innerHTML=`${id==='overall'?'探索客厅':'走进'+content.name} <span>↗</span>`;
@@ -388,9 +393,10 @@ function makePlan(){
   const fills={bedroom:'#eee5d5',living:'#eee8da',wet:'#e5e8e2',kitchen:'#e4e0d6',balcony:'#e6e9df'};
   const labels=[];
   const polygons=(data.rooms||[]).filter(r=>r.id!=='dining').map(r=>{
-    const [cx,cy]=r.id==='living'?[410,925]:r.id==='bath_1'?[535,419]:r.id==='bath_2'?[488,578]:centroid(r.points);labels.push(`<text x="${cx}" y="${cy}" text-anchor="middle" font-size="23" fill="#776d5b">${r.id==='living'?'客餐厅 · 过道':roomDescription(r.id).name}</text><text x="${cx}" y="${cy+30}" text-anchor="middle" font-size="16" fill="#a2937b">${(areaOf(r.points)/10000).toFixed(1)} ㎡${r.id==='living'?'（公共区合计）':''}</text>`);
+    const [cx,cy]=r.planLabel||(r.id==='living'?[410,925]:r.id==='bath_1'?[535,419]:r.id==='bath_2'?[488,578]:centroid(r.points));labels.push(`<text x="${cx}" y="${cy}" text-anchor="middle" font-size="23" fill="#776d5b">${r.id==='living'?'客餐厅 · 过道':roomDescription(r.id).name}</text><text x="${cx}" y="${cy+30}" text-anchor="middle" font-size="16" fill="#a2937b">${(areaOf(r.points)/10000).toFixed(1)} ㎡${r.id==='living'?'（公共区合计）':r.id==='room_a'&&data.layout?.id==='suite'?'（含入口）':''}</text>`);
     return `<polygon class="plan-room" data-plan-room="${r.id}" tabindex="0" role="button" aria-label="查看${roomDescription(r.id).name}" points="${r.points.map(p=>p.join(',')).join(' ')}" fill="${fills[r.tone]||'#ece3d5'}"/>`;
   }).join('');
+  if(data.layout?.entryZone){const z=data.layout.entryZone;labels.push(`<g data-suite-entry="private"><rect x="${z.x}" y="${z.y}" width="${z.w}" height="${z.d}" fill="none" stroke="#a98c63" stroke-dasharray="4 5" stroke-width="1.5"/><text x="${z.x+z.w/2}" y="${z.y+30}" text-anchor="middle" font-size="13" fill="#806b50">套内玄关</text><text x="${z.x+z.w/2}" y="${z.y+49}" text-anchor="middle" font-size="10" fill="#806b50">${z.w*10} × ${z.d*10}</text></g>`)}
   const storageIds=new Set((data.storageFitouts||[]).map(f=>f.id));
   const furniture=(data.furniture||[]).filter(f=>!storageIds.has(f.storageFitoutId)).map(planFurniture).join('');
   const fitouts=(data.bayFitouts||[]).flatMap(fitout=>[...(fitout.parts||[])].sort((a,b)=>(a.zCm||0)-(b.zCm||0)).map(part=>planFitoutPart(fitout,part))).join('');
@@ -699,6 +705,7 @@ function bindControls(){
   ['#open-storage','#view-storage-fitout','#project-storage-link'].forEach(id=>$(id).addEventListener('click',()=>{if($('#project-dialog').open)$('#project-dialog').close();showStorageFitouts()}));
   $$('.dialog-close').forEach(button=>button.addEventListener('click',()=>button.closest('dialog').close()));
   $$('dialog').forEach(dialog=>dialog.addEventListener('click',event=>{if(event.target===dialog){const rect=dialog.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)dialog.close()}}));
+  ['#view-suite-entry','#project-suite-entry'].forEach(id=>$(id).addEventListener('click',()=>{if(data?.layout?.id!=='suite')return;$('#large-render').src=schemeRender(scheme,'suite-entry');$('#large-render').alt='主卧套内小玄关：向北到床区、向东进主卫';$('#large-render-caption').textContent='主卧入口同源渲染 · 条件设计，非施工定位图';$('#image-dialog').showModal()}));
   $('#enlarge-render').addEventListener('click',()=>{if(!scheme||!data)return;$('#large-render').src=renderPath(state.room);$('#large-render').alt=$('#active-render').alt;$('#large-render-caption').textContent=scheme.name+' · '+roomDescription(state.room).name+' · Blender 同源模型渲染';$('#image-dialog').showModal()});
   $('#active-render').addEventListener('error',()=>{$('#render-unavailable').hidden=false});$('#active-render').addEventListener('load',()=>{$('#render-unavailable').hidden=true});
   $('#room-preview').addEventListener('error',()=>{$('#room-preview').style.display='none'});$('#room-preview').addEventListener('load',()=>{$('#room-preview').style.display=''});

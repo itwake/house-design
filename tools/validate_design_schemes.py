@@ -29,7 +29,7 @@ ROOT = Path(__file__).resolve().parents[1]
 VIEWS = ("overall", "living", "dining", "master", "bedroom-b", "study",
          "kitchen", "master-bath", "guest-bath", "balcony", "bay-master",
          "bay-tea", "bay-living", "entry-storage", "sideboard")
-ACTIVE_IDS = ("wood",)
+ACTIVE_IDS = ("wood", "suite")
 ARCHIVED_IDS = ("terracotta", "moss", "cobalt")
 ALLOWED_SHADES = {"Organic linen pendant", "Organic linen pendant.001"}
 # Ten micrometres is far below both survey precision and furniture tolerance.
@@ -293,7 +293,7 @@ def protected_manifest(manifest):
 
 def manifest_render_paths(manifest):
     paths = [manifest["overallRender"]]
-    for collection in ("rooms", "bayDetails", "storageDetails"):
+    for collection in ("rooms", "bayDetails", "storageDetails", "layoutDetails"):
         paths.extend(item["render"] for item in manifest.get(collection, []) if item.get("render"))
     return set(paths)
 
@@ -378,12 +378,14 @@ class Audit:
     def renders(self, scheme, manifest):
         sid = scheme["id"]
         prefix = "assets/blender-renders" if sid == "wood" else f"assets/schemes/{sid}"
-        expected = {f"{prefix}/{name}.jpg" for name in VIEWS}
-        self.check(manifest_render_paths(manifest) == expected, f"{sid}: manifest references all15 own-scheme views, without fallback")
+        views = scheme.get("renderViews", VIEWS)
+        expected = {f"{prefix}/{name}.jpg" for name in views}
+        self.check(manifest_render_paths(manifest) == expected, f"{sid}: manifest references all own-layout views, without fallback")
         self.check(scheme["hero"] in expected, f"{sid}: gallery hero belongs to this scheme")
         self.details[sid]["renderHashes"] = {}
         self.details[sid]["verifiedRenderHashes"] = {}
-        for name in VIEWS:
+        self.details[sid]["expectedViewCount"] = len(views)
+        for name in views:
             prior_errors = len(self.errors)
             path = relative_file(f"{prefix}/{name}.jpg")
             if not path.is_file():
@@ -406,7 +408,7 @@ class Audit:
                        f"{sid}/{name}: frame belongs to actual final baseline Blender scene")
             self.check(record.get("sourceSha256") == manifest.get("sourceSha256") == self.source_hash,
                        f"{sid}/{name}: frame belongs to current source geometry")
-            if sid == "wood":
+            if sid in ACTIVE_IDS:
                 frame = {"engine": "CYCLES", "width": spec["width"], "height": spec["height"],
                          "samples": spec["samples"], "denoise": True}
                 self.check(record.get("renderSpec") == frame and frame["samples"] == 8,
@@ -441,9 +443,15 @@ class Audit:
                        "overall: original22 m orthographic camera preserved")
             camera = manifest.get("overviewCamera", {})
         else:
-            views = [item for key in ("rooms", "bayDetails", "storageDetails") for item in manifest.get(key, [])]
+            views = [item for key in ("rooms", "bayDetails", "storageDetails", "layoutDetails") for item in manifest.get(key, [])]
             view = next((item for item in views if Path(item.get("render", "")).stem == name), {})
-            camera = view.get("interiorCamera", {})
+            camera = view.get("interiorCamera", view)
+            if name == "suite-entry" and "horizontalFov" not in camera:
+                # The dedicated layout view declares its position/target;
+                # its 17mm lens is independently read from the actual builder.
+                tree = ast.parse((ROOT / "tools/build_suite_layout.py").read_text(encoding="utf-8"))
+                preset = next(ast.literal_eval(n.value) for n in tree.body if isinstance(n, ast.Assign) and any(isinstance(t, ast.Subscript) and isinstance(t.slice, ast.Constant) and t.slice.value == name for t in n.targets))
+                camera = {**camera, "horizontalFov": math.degrees(2*math.atan(36/(2*preset[2])))}
         target = camera.get("target", [])
         expected = camera.get("position", [])
         self.check(len(expected) == 3 and max(abs(a-b) for a,b in zip(position,expected)) < .0001,
@@ -463,7 +471,7 @@ class Audit:
         self.self_test()
         data = load_json(ROOT / "models/design-schemes.json")
         schemes = data.get("schemes", [])
-        self.check(tuple(item.get("id") for item in schemes) == ACTIVE_IDS, "Only wood is an active design")
+        self.check(tuple(item.get("id") for item in schemes) == ACTIVE_IDS, "Wood and suite are the only active real layouts")
         archive = data.get("archivedPalettes", [])
         self.check(tuple(item.get("id") for item in archive) == ARCHIVED_IDS, "Former palette experiments are archived, not active layouts")
         if self.archived:
@@ -502,10 +510,22 @@ class Audit:
                 self.check(relative_file(scheme[key]).is_file(), f"{sid}: {key} file exists")
             manifest = load_json(relative_file(scheme["manifest"]))
             self.check(manifest.get("model") == scheme["model"] and manifest.get("blend") == scheme["blend"], f"{sid}: resource paths agree across catalog and manifest")
-            self.check(manifest.get("sourceSha256") == source_hash, f"{sid}: source geometry SHA matches actual source file")
+            layout_source = relative_file(scheme.get("geometrySource", data["geometrySource"]))
+            current_source_hash = sha(layout_source.read_text(encoding="utf-8").encode("utf-8"))
+            self.check(manifest.get("sourceSha256") == current_source_hash, f"{sid}: source geometry SHA matches its actual source file")
+            self.source_hash = current_source_hash
+            self.base_blend_hash = sha(relative_file(scheme["blend"]).read_bytes()) if sid in ACTIVE_IDS else base_blend_hash
             if sid == "wood":
                 self.check(scheme["model"] == "models/huiyayuan-wood.glb" and scheme["manifest"] == "models/scene-manifest.json" and scheme["blend"] == "models/huiyayuan-wood.blend",
                            "wood: original model, Blender source and manifest remain the referenced baseline")
+            elif sid == "suite":
+                self.check(scheme["geometrySource"] != data["geometrySource"] and manifest["source"] == scheme["geometrySource"], "suite: independent geometry source, not a palette alias")
+                self.check(manifest.get("layout", {}).get("baseSourceSha256") == source_hash, "suite: derives from the preserved baseline")
+                glbs[sid] = GLB(relative_file(scheme["model"]))
+                meshes[sid] = glbs[sid].world_meshes()
+                self.check(len(meshes[sid]) > 1000, "suite: complete actual apartment geometry")
+                self.check(set(glbs[sid].image_hashes) == set(base_glb.image_hashes), "suite: same original wood textures, not recolouring")
+                self.check(glbs[sid].file_hash != base_glb.file_hash, "suite: actual model differs from baseline")
             else:
                 self.check(protected_manifest(manifest) == protected_manifest(baseline), f"{sid}: rooms, openings, cameras, dimensions and conditions exactly match baseline")
                 self.check(all(note in manifest.get("notes", []) for note in baseline.get("notes", [])), f"{sid}: all baseline safety/measurement notes retained")
@@ -535,8 +555,8 @@ class Audit:
         if self.archived:
             self.check(len(appearance_hashes) == 3 and len(set(appearance_hashes)) == 3, "Three archived appearance definitions have distinct hashes")
             self.check(len(set(declared_geometry_hashes)) == 1 and bool(declared_geometry_hashes) and all(declared_geometry_hashes), "Archived palettes share protected base geometry")
-            self.check(len({item["modelSha256"] for item in self.details.values()}) == 4, "Baseline and archived GLB files remain distinct")
-            self.check(len({item["textureSetHash"] for item in self.details.values()}) == 4, "Baseline and archived texture sets remain distinct")
+            self.check(len({self.details[sid]["modelSha256"] for sid in ("wood",) + ARCHIVED_IDS}) == 4, "Baseline and archived GLB files remain distinct")
+            self.check(len({self.details[sid]["textureSetHash"] for sid in ("wood",) + ARCHIVED_IDS}) == 4, "Baseline and archived texture sets remain distinct")
         for name in VIEWS:
             hashes = [item["renderHashes"][name] for item in self.details.values() if name in item["renderHashes"]]
             self.check(len(hashes) == len(set(hashes)), f"{name}: every available scheme render has distinct image bytes")
@@ -564,7 +584,7 @@ def main():
         for sid, item in audit.details.items():
             print(f"  {sid}: {item.get('protectedMeshObjects', 'baseline')} protected meshes; "
                   f"{item.get('embeddedTextureCount', '?')} embedded textures; "
-                  f"{len(item.get('verifiedRenderHashes', {}))}/15 provenance-verified views "
+                  f"{len(item.get('verifiedRenderHashes', {}))}/{item.get('expectedViewCount', 15)} provenance-verified views "
                   f"({len(item.get('renderHashes', {}))} JPEG files present)")
         for error in audit.errors:
             print("ERROR:", error)
