@@ -1,10 +1,10 @@
 {
-  "version": "3.2.3 · suite kitchen window",
+  "version": "3.2.4 · suite study bookwall",
   "model": "models/schemes/suite/huiyayuan-wood.glb",
   "blend": "models/schemes/suite/huiyayuan-wood.blend",
   "units": "m",
   "source": "models/schemes/suite/design-data.json",
-  "sourceSha256": "1faaf6b989b5bb25ec4ce1faaa1bfdc35f7126657f3e89f10bc660231ae011a6",
+  "sourceSha256": "d5e4552bbff39aacc022116dcaa54cdc4cf1240675f8f779e32b1a242421ca42",
   "bounds": {
     "min": [
       0.0,
@@ -435,20 +435,20 @@
       },
       "interiorCamera": {
         "position": [
-          2.52,
-          1.65,
-          5.36
+          2.55,
+          1.62,
+          4.34
         ],
         "target": [
-          1.22,
-          1.03,
-          4.61
+          1.38,
+          1.5,
+          6.12
         ],
         "horizontalFov": 90.0,
         "fov": 67.38
       },
       "render": "assets/schemes/suite/study.jpg",
-      "description": "保留约7.78㎡书房及1000mm墙外挂推拉门。北墙2000×850mm沙发替换日床，原北墙小柜取消；南墙2720×550mm通长桌，含支承示意。沙发至桌前约1460mm，至图示椅背约910mm。",
+      "description": "保留约7.78㎡书房及1000mm墙外挂推拉门。北墙2000×850mm沙发替换日床，原北墙小柜取消；南墙2720×550mm通长桌，含支承示意。沙发至桌前约1460mm，至图示椅背约910mm。 沿现有2720mm通长书桌上方做280mm深浅书架：两排开放书格＋顶部暖白柜门。书架底1460mm，桌面760mm，留700mm操作空档；书架前沿较桌沿退后270mm。保留北墙沙发、原推拉门和桌下腿位。 吊挂承重、板材与锚固待专业深化。",
       "features": [
         "同一 Blender 场景生成模型和渲染",
         "原木 · 奶油白 · 亚麻",
@@ -1118,11 +1118,11 @@
     "C 级门窗、层高与统一墙厚仍为待现场复尺的建模假设。",
     "入户右侧浅鞋柜与左侧7字杯盘柜独立分腔；仅餐柜北两模块设闭合浅抽屉，250 mm 伸出限位、进出通道及桌椅退让均属条件校核，其余下柜为满高移门。封闭转角不计可用容量。柜体锚固、灯带/插座、门套把手限位、电箱与实际净深必须现场深化。",
     "三处飘窗外凸与原窗台高度均待复尺。新增方案取消主卧桌台与配椅，保留原台；次卧低台茶座仍是附条件方案，客厅双人桌保留。防坠、窗扇、外立面与结构条件须专业复核。",
+    "V3.2.4仅为书房现有南墙通长桌上方增加浅书架；墙、门窗、家具落地位置与暖白配色均保留。上柜悬挂高度与承重需复尺、试用及验算。",
     "V3.2.3补回厨房—阳台共墙内窗，暂定1200×1300mm、台高1000mm；仅窗洞、窗体、窗左厨房层板及相关镜头变化，已确认房间/家具布局与暖白配色不变。",
     "V3.2.2按确认的家具平面更新suite；原wood方案及其模型、效果图不变。",
     "只将两卧北段隔墙东移440mm回原x319，保留门口段和横向返墙；所有门位、公共走廊、套内玄关、两卫及书房边界不变。",
-    "次卧床尾470mm、床侧柜前620mm，主卧柜前800mm；均为模型外轮廓净距，不等于舒适度或合规认证。",
-    "书房桌面2720mm含端板钢架及支脚示意；北墙沙发2000×850mm为占位，非沙发床展开状态。柜体两端施工收口须复尺。"
+    "次卧床尾470mm、床侧柜前620mm，主卧柜前800mm；均为模型外轮廓净距，不等于舒适度或合规认证。"
   ],
   "bayDetails": [
     {
@@ -1338,6 +1338,1606 @@
     "preset": "soft-warm",
     "description": "暖白、浅米灰、低饱和浅木与少量鼠尾草绿；材质贴图、柜门、灯光和网页同步减黄。"
   },
+  "wallFitouts": [
+    {
+      "id": "study_bookwall",
+      "roomId": "room_c",
+      "name": "书房南墙 · 通长浅书架",
+      "x": 12,
+      "y": 591.75,
+      "w": 272,
+      "d": 28.25,
+      "zCm": 145.2,
+      "hCm": 104.8,
+      "face": "north",
+      "grade": "C",
+      "title": "桌面留空，书往墙上收",
+      "description": "沿现有2720mm通长书桌上方做280mm深浅书架：两排开放书格＋顶部暖白柜门。书架底1460mm，桌面760mm，留700mm操作空档；书架前沿较桌沿退后270mm。保留北墙沙发、原推拉门和桌下腿位。",
+      "conditions": [
+        "书架总宽2720mm含两侧收口，深280mm、底高1460mm、顶高2500mm均为模型假设，需复尺。",
+        "六个分格，每格净跨约428mm、下方两排净高318mm；模型板厚22mm不等于已验算承重。书籍重量、板材、层板支撑和墙体锚固必须由定制方复核。",
+        "顶部为低频收纳，不能站上桌面取物；儿童常读书应放桌面或较低可及处，不将高处书格当儿童自助书架。",
+        "上方柜门为关闭示意；高位开门与拿书操作、照明眩光、插座、空调管线和检修空间需现场试用深化。",
+        "书架不支在桌面上；基层与墙体不满足吊挂条件时须重新设计支撑，不能直接将示意图交木工固定。"
+      ],
+      "references": [
+        {
+          "title": "书核公寓 / 大海小燕设计工作室",
+          "url": "https://www.archdaily.cn/cn/975395/shu-he-gong-yu-da-hai-xiao-yan-she-ji-gong-zuo-shi",
+          "platform": "ArchDaily · 建成案例",
+          "borrow": "参考长桌与上方书架形成连续阅读墙的思路。",
+          "avoid": "不照搬该项目拆墙与4米长隔板，也不据照片推断本房承重。"
+        },
+        {
+          "title": "White Loft Home Office with Floating Shelves",
+          "url": "https://www.houzz.com/photos/white-loft-home-office-with-floating-shelves-contemporary-home-office-san-francisco-phvw-vp~111601574",
+          "platform": "Houzz · Jennifer Gustafson Interior Design",
+          "borrow": "参考桌面与墙面搁架分离、书与摆件留空陈列。",
+          "avoid": "不采用案例的亮黄绿色，延续本方案暖白浅木。"
+        },
+        {
+          "title": "宜家 · 风格协调的木韵家庭工作区",
+          "url": "https://www.ikea.cn/cn/zh/rooms/home-office/gallery/a-coordinated-brown-wood-dream-of-a-home-workspace-pub69a54a17",
+          "platform": "IKEA · 官方灵感",
+          "borrow": "参考桌面与柜体材质协调、用封闭收纳减少视觉杂乱。",
+          "avoid": "不照搬独立大书桌或深棕色整墙。"
+        }
+      ],
+      "parts": [
+        {
+          "id": "back",
+          "role": "back",
+          "x": 12,
+          "y": 618.8,
+          "zCm": 146,
+          "w": 272,
+          "d": 1.2,
+          "hCm": 104,
+          "material": "Cream"
+        },
+        {
+          "id": "upright_0",
+          "role": "upright",
+          "x": 12,
+          "y": 592,
+          "zCm": 146,
+          "w": 2.2,
+          "d": 26.8,
+          "hCm": 104,
+          "material": "Cream"
+        },
+        {
+          "id": "upright_1",
+          "role": "upright",
+          "x": 56.96666666666667,
+          "y": 592,
+          "zCm": 146,
+          "w": 2.2,
+          "d": 26.8,
+          "hCm": 104,
+          "material": "Cream"
+        },
+        {
+          "id": "upright_2",
+          "role": "upright",
+          "x": 101.93333333333334,
+          "y": 592,
+          "zCm": 146,
+          "w": 2.2,
+          "d": 26.8,
+          "hCm": 104,
+          "material": "Cream"
+        },
+        {
+          "id": "upright_3",
+          "role": "upright",
+          "x": 146.9,
+          "y": 592,
+          "zCm": 146,
+          "w": 2.2,
+          "d": 26.8,
+          "hCm": 104,
+          "material": "Cream"
+        },
+        {
+          "id": "upright_4",
+          "role": "upright",
+          "x": 191.86666666666667,
+          "y": 592,
+          "zCm": 146,
+          "w": 2.2,
+          "d": 26.8,
+          "hCm": 104,
+          "material": "Cream"
+        },
+        {
+          "id": "upright_5",
+          "role": "upright",
+          "x": 236.83333333333334,
+          "y": 592,
+          "zCm": 146,
+          "w": 2.2,
+          "d": 26.8,
+          "hCm": 104,
+          "material": "Cream"
+        },
+        {
+          "id": "upright_6",
+          "role": "upright",
+          "x": 281.8,
+          "y": 592,
+          "zCm": 146,
+          "w": 2.2,
+          "d": 26.8,
+          "hCm": 104,
+          "material": "Cream"
+        },
+        {
+          "id": "shelf_0_146",
+          "role": "shelf",
+          "x": 14.2,
+          "y": 594.2,
+          "zCm": 146,
+          "w": 42.766666666666666,
+          "d": 24.6,
+          "hCm": 2.2,
+          "material": "OakLight"
+        },
+        {
+          "id": "shelf_0_180",
+          "role": "shelf",
+          "x": 14.2,
+          "y": 594.2,
+          "zCm": 180,
+          "w": 42.766666666666666,
+          "d": 24.6,
+          "hCm": 2.2,
+          "material": "OakLight"
+        },
+        {
+          "id": "shelf_0_214",
+          "role": "shelf",
+          "x": 14.2,
+          "y": 594.2,
+          "zCm": 214,
+          "w": 42.766666666666666,
+          "d": 24.6,
+          "hCm": 2.2,
+          "material": "OakLight"
+        },
+        {
+          "id": "shelf_0_247.8",
+          "role": "shelf",
+          "x": 14.2,
+          "y": 594.2,
+          "zCm": 247.8,
+          "w": 42.766666666666666,
+          "d": 24.6,
+          "hCm": 2.2,
+          "material": "OakLight"
+        },
+        {
+          "id": "door_0",
+          "role": "door",
+          "x": 14.35,
+          "y": 592,
+          "zCm": 216.35,
+          "w": 42.46666666666667,
+          "d": 1.8,
+          "hCm": 31.3,
+          "material": "Cream"
+        },
+        {
+          "id": "pull_0",
+          "role": "pull",
+          "x": 32.58333333333333,
+          "y": 591.75,
+          "zCm": 217,
+          "w": 6,
+          "d": 0.25,
+          "hCm": 0.7,
+          "material": "WarmGrayMetal"
+        },
+        {
+          "id": "book_0_0_0",
+          "role": "book",
+          "x": 17.2,
+          "y": 595,
+          "zCm": 148.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 21,
+          "material": "WhiteLinen"
+        },
+        {
+          "id": "book_label_0_0_0",
+          "role": "book-label",
+          "x": 17.65,
+          "y": 594.9,
+          "zCm": 163.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_0_0_1",
+          "role": "book",
+          "x": 21.099999999999998,
+          "y": 595,
+          "zCm": 148.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 23,
+          "material": "Sage"
+        },
+        {
+          "id": "book_label_0_0_1",
+          "role": "book-label",
+          "x": 21.549999999999997,
+          "y": 594.9,
+          "zCm": 165.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_0_0_2",
+          "role": "book",
+          "x": 25,
+          "y": 595,
+          "zCm": 148.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 25,
+          "material": "OakLight"
+        },
+        {
+          "id": "book_label_0_0_2",
+          "role": "book-label",
+          "x": 25.45,
+          "y": 594.9,
+          "zCm": 167.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_0_1_0",
+          "role": "book",
+          "x": 17.2,
+          "y": 595,
+          "zCm": 182.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 23,
+          "material": "Sage"
+        },
+        {
+          "id": "book_label_0_1_0",
+          "role": "book-label",
+          "x": 17.65,
+          "y": 594.9,
+          "zCm": 199.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_0_1_1",
+          "role": "book",
+          "x": 21.099999999999998,
+          "y": 595,
+          "zCm": 182.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 25,
+          "material": "OakLight"
+        },
+        {
+          "id": "book_label_0_1_1",
+          "role": "book-label",
+          "x": 21.549999999999997,
+          "y": 594.9,
+          "zCm": 201.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_0_1_2",
+          "role": "book",
+          "x": 25,
+          "y": 595,
+          "zCm": 182.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 27,
+          "material": "Cream"
+        },
+        {
+          "id": "book_label_0_1_2",
+          "role": "book-label",
+          "x": 25.45,
+          "y": 594.9,
+          "zCm": 203.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_0_1_3",
+          "role": "book",
+          "x": 28.9,
+          "y": 595,
+          "zCm": 182.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 21,
+          "material": "WhiteLinen"
+        },
+        {
+          "id": "book_label_0_1_3",
+          "role": "book-label",
+          "x": 29.349999999999998,
+          "y": 594.9,
+          "zCm": 197.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "shelf_1_146",
+          "role": "shelf",
+          "x": 59.16666666666667,
+          "y": 594.2,
+          "zCm": 146,
+          "w": 42.766666666666666,
+          "d": 24.6,
+          "hCm": 2.2,
+          "material": "OakLight"
+        },
+        {
+          "id": "shelf_1_180",
+          "role": "shelf",
+          "x": 59.16666666666667,
+          "y": 594.2,
+          "zCm": 180,
+          "w": 42.766666666666666,
+          "d": 24.6,
+          "hCm": 2.2,
+          "material": "OakLight"
+        },
+        {
+          "id": "shelf_1_214",
+          "role": "shelf",
+          "x": 59.16666666666667,
+          "y": 594.2,
+          "zCm": 214,
+          "w": 42.766666666666666,
+          "d": 24.6,
+          "hCm": 2.2,
+          "material": "OakLight"
+        },
+        {
+          "id": "shelf_1_247.8",
+          "role": "shelf",
+          "x": 59.16666666666667,
+          "y": 594.2,
+          "zCm": 247.8,
+          "w": 42.766666666666666,
+          "d": 24.6,
+          "hCm": 2.2,
+          "material": "OakLight"
+        },
+        {
+          "id": "door_1",
+          "role": "door",
+          "x": 59.31666666666667,
+          "y": 592,
+          "zCm": 216.35,
+          "w": 42.46666666666667,
+          "d": 1.8,
+          "hCm": 31.3,
+          "material": "Cream"
+        },
+        {
+          "id": "pull_1",
+          "role": "pull",
+          "x": 77.55000000000001,
+          "y": 591.75,
+          "zCm": 217,
+          "w": 6,
+          "d": 0.25,
+          "hCm": 0.7,
+          "material": "WarmGrayMetal"
+        },
+        {
+          "id": "book_1_0_0",
+          "role": "book",
+          "x": 76.70733333333334,
+          "y": 595,
+          "zCm": 148.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 23,
+          "material": "Sage"
+        },
+        {
+          "id": "book_label_1_0_0",
+          "role": "book-label",
+          "x": 77.15733333333334,
+          "y": 594.9,
+          "zCm": 165.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_1_0_1",
+          "role": "book",
+          "x": 80.60733333333334,
+          "y": 595,
+          "zCm": 148.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 25,
+          "material": "OakLight"
+        },
+        {
+          "id": "book_label_1_0_1",
+          "role": "book-label",
+          "x": 81.05733333333335,
+          "y": 594.9,
+          "zCm": 167.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_1_0_2",
+          "role": "book",
+          "x": 84.50733333333334,
+          "y": 595,
+          "zCm": 148.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 27,
+          "material": "Cream"
+        },
+        {
+          "id": "book_label_1_0_2",
+          "role": "book-label",
+          "x": 84.95733333333334,
+          "y": 594.9,
+          "zCm": 169.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_1_0_3",
+          "role": "book",
+          "x": 88.40733333333334,
+          "y": 595,
+          "zCm": 148.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 21,
+          "material": "WhiteLinen"
+        },
+        {
+          "id": "book_label_1_0_3",
+          "role": "book-label",
+          "x": 88.85733333333334,
+          "y": 594.9,
+          "zCm": 163.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_1_1_0",
+          "role": "book",
+          "x": 76.70733333333334,
+          "y": 595,
+          "zCm": 182.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 25,
+          "material": "OakLight"
+        },
+        {
+          "id": "book_label_1_1_0",
+          "role": "book-label",
+          "x": 77.15733333333334,
+          "y": 594.9,
+          "zCm": 201.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_1_1_1",
+          "role": "book",
+          "x": 80.60733333333334,
+          "y": 595,
+          "zCm": 182.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 27,
+          "material": "Cream"
+        },
+        {
+          "id": "book_label_1_1_1",
+          "role": "book-label",
+          "x": 81.05733333333335,
+          "y": 594.9,
+          "zCm": 203.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_1_1_2",
+          "role": "book",
+          "x": 84.50733333333334,
+          "y": 595,
+          "zCm": 182.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 21,
+          "material": "WhiteLinen"
+        },
+        {
+          "id": "book_label_1_1_2",
+          "role": "book-label",
+          "x": 84.95733333333334,
+          "y": 594.9,
+          "zCm": 197.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_1_1_3",
+          "role": "book",
+          "x": 88.40733333333334,
+          "y": 595,
+          "zCm": 182.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 23,
+          "material": "Sage"
+        },
+        {
+          "id": "book_label_1_1_3",
+          "role": "book-label",
+          "x": 88.85733333333334,
+          "y": 594.9,
+          "zCm": 199.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_1_1_4",
+          "role": "book",
+          "x": 92.30733333333333,
+          "y": 595,
+          "zCm": 182.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 25,
+          "material": "OakLight"
+        },
+        {
+          "id": "book_label_1_1_4",
+          "role": "book-label",
+          "x": 92.75733333333334,
+          "y": 594.9,
+          "zCm": 201.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "shelf_2_146",
+          "role": "shelf",
+          "x": 104.13333333333334,
+          "y": 594.2,
+          "zCm": 146,
+          "w": 42.766666666666666,
+          "d": 24.6,
+          "hCm": 2.2,
+          "material": "OakLight"
+        },
+        {
+          "id": "shelf_2_180",
+          "role": "shelf",
+          "x": 104.13333333333334,
+          "y": 594.2,
+          "zCm": 180,
+          "w": 42.766666666666666,
+          "d": 24.6,
+          "hCm": 2.2,
+          "material": "OakLight"
+        },
+        {
+          "id": "shelf_2_214",
+          "role": "shelf",
+          "x": 104.13333333333334,
+          "y": 594.2,
+          "zCm": 214,
+          "w": 42.766666666666666,
+          "d": 24.6,
+          "hCm": 2.2,
+          "material": "OakLight"
+        },
+        {
+          "id": "shelf_2_247.8",
+          "role": "shelf",
+          "x": 104.13333333333334,
+          "y": 594.2,
+          "zCm": 247.8,
+          "w": 42.766666666666666,
+          "d": 24.6,
+          "hCm": 2.2,
+          "material": "OakLight"
+        },
+        {
+          "id": "door_2",
+          "role": "door",
+          "x": 104.28333333333335,
+          "y": 592,
+          "zCm": 216.35,
+          "w": 42.46666666666667,
+          "d": 1.8,
+          "hCm": 31.3,
+          "material": "Cream"
+        },
+        {
+          "id": "pull_2",
+          "role": "pull",
+          "x": 122.51666666666668,
+          "y": 591.75,
+          "zCm": 217,
+          "w": 6,
+          "d": 0.25,
+          "hCm": 0.7,
+          "material": "WarmGrayMetal"
+        },
+        {
+          "id": "book_2_0_0",
+          "role": "book",
+          "x": 107.13333333333334,
+          "y": 595,
+          "zCm": 148.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 25,
+          "material": "OakLight"
+        },
+        {
+          "id": "book_label_2_0_0",
+          "role": "book-label",
+          "x": 107.58333333333334,
+          "y": 594.9,
+          "zCm": 167.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_2_0_1",
+          "role": "book",
+          "x": 111.03333333333335,
+          "y": 595,
+          "zCm": 148.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 27,
+          "material": "Cream"
+        },
+        {
+          "id": "book_label_2_0_1",
+          "role": "book-label",
+          "x": 111.48333333333335,
+          "y": 594.9,
+          "zCm": 169.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_2_0_2",
+          "role": "book",
+          "x": 114.93333333333334,
+          "y": 595,
+          "zCm": 148.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 21,
+          "material": "WhiteLinen"
+        },
+        {
+          "id": "book_label_2_0_2",
+          "role": "book-label",
+          "x": 115.38333333333334,
+          "y": 594.9,
+          "zCm": 163.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_2_0_3",
+          "role": "book",
+          "x": 118.83333333333334,
+          "y": 595,
+          "zCm": 148.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 23,
+          "material": "Sage"
+        },
+        {
+          "id": "book_label_2_0_3",
+          "role": "book-label",
+          "x": 119.28333333333335,
+          "y": 594.9,
+          "zCm": 165.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_2_0_4",
+          "role": "book",
+          "x": 122.73333333333333,
+          "y": 595,
+          "zCm": 148.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 25,
+          "material": "OakLight"
+        },
+        {
+          "id": "book_label_2_0_4",
+          "role": "book-label",
+          "x": 123.18333333333334,
+          "y": 594.9,
+          "zCm": 167.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_2_1_0",
+          "role": "book",
+          "x": 107.13333333333334,
+          "y": 595,
+          "zCm": 182.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 27,
+          "material": "Cream"
+        },
+        {
+          "id": "book_label_2_1_0",
+          "role": "book-label",
+          "x": 107.58333333333334,
+          "y": 594.9,
+          "zCm": 203.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_2_1_1",
+          "role": "book",
+          "x": 111.03333333333335,
+          "y": 595,
+          "zCm": 182.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 21,
+          "material": "WhiteLinen"
+        },
+        {
+          "id": "book_label_2_1_1",
+          "role": "book-label",
+          "x": 111.48333333333335,
+          "y": 594.9,
+          "zCm": 197.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_2_1_2",
+          "role": "book",
+          "x": 114.93333333333334,
+          "y": 595,
+          "zCm": 182.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 23,
+          "material": "Sage"
+        },
+        {
+          "id": "book_label_2_1_2",
+          "role": "book-label",
+          "x": 115.38333333333334,
+          "y": 594.9,
+          "zCm": 199.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "shelf_3_146",
+          "role": "shelf",
+          "x": 149.1,
+          "y": 594.2,
+          "zCm": 146,
+          "w": 42.766666666666666,
+          "d": 24.6,
+          "hCm": 2.2,
+          "material": "OakLight"
+        },
+        {
+          "id": "shelf_3_180",
+          "role": "shelf",
+          "x": 149.1,
+          "y": 594.2,
+          "zCm": 180,
+          "w": 42.766666666666666,
+          "d": 24.6,
+          "hCm": 2.2,
+          "material": "OakLight"
+        },
+        {
+          "id": "shelf_3_214",
+          "role": "shelf",
+          "x": 149.1,
+          "y": 594.2,
+          "zCm": 214,
+          "w": 42.766666666666666,
+          "d": 24.6,
+          "hCm": 2.2,
+          "material": "OakLight"
+        },
+        {
+          "id": "shelf_3_247.8",
+          "role": "shelf",
+          "x": 149.1,
+          "y": 594.2,
+          "zCm": 247.8,
+          "w": 42.766666666666666,
+          "d": 24.6,
+          "hCm": 2.2,
+          "material": "OakLight"
+        },
+        {
+          "id": "door_3",
+          "role": "door",
+          "x": 149.25,
+          "y": 592,
+          "zCm": 216.35,
+          "w": 42.46666666666667,
+          "d": 1.8,
+          "hCm": 31.3,
+          "material": "Cream"
+        },
+        {
+          "id": "pull_3",
+          "role": "pull",
+          "x": 167.48333333333332,
+          "y": 591.75,
+          "zCm": 217,
+          "w": 6,
+          "d": 0.25,
+          "hCm": 0.7,
+          "material": "WarmGrayMetal"
+        },
+        {
+          "id": "book_3_0_0",
+          "role": "book",
+          "x": 166.64066666666668,
+          "y": 595,
+          "zCm": 148.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 27,
+          "material": "Cream"
+        },
+        {
+          "id": "book_label_3_0_0",
+          "role": "book-label",
+          "x": 167.09066666666666,
+          "y": 594.9,
+          "zCm": 169.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_3_0_1",
+          "role": "book",
+          "x": 170.54066666666668,
+          "y": 595,
+          "zCm": 148.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 21,
+          "material": "WhiteLinen"
+        },
+        {
+          "id": "book_label_3_0_1",
+          "role": "book-label",
+          "x": 170.99066666666667,
+          "y": 594.9,
+          "zCm": 163.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_3_0_2",
+          "role": "book",
+          "x": 174.4406666666667,
+          "y": 595,
+          "zCm": 148.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 23,
+          "material": "Sage"
+        },
+        {
+          "id": "book_label_3_0_2",
+          "role": "book-label",
+          "x": 174.89066666666668,
+          "y": 594.9,
+          "zCm": 165.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_3_1_0",
+          "role": "book",
+          "x": 166.64066666666668,
+          "y": 595,
+          "zCm": 182.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 21,
+          "material": "WhiteLinen"
+        },
+        {
+          "id": "book_label_3_1_0",
+          "role": "book-label",
+          "x": 167.09066666666666,
+          "y": 594.9,
+          "zCm": 197.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_3_1_1",
+          "role": "book",
+          "x": 170.54066666666668,
+          "y": 595,
+          "zCm": 182.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 23,
+          "material": "Sage"
+        },
+        {
+          "id": "book_label_3_1_1",
+          "role": "book-label",
+          "x": 170.99066666666667,
+          "y": 594.9,
+          "zCm": 199.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_3_1_2",
+          "role": "book",
+          "x": 174.4406666666667,
+          "y": 595,
+          "zCm": 182.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 25,
+          "material": "OakLight"
+        },
+        {
+          "id": "book_label_3_1_2",
+          "role": "book-label",
+          "x": 174.89066666666668,
+          "y": 594.9,
+          "zCm": 201.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_3_1_3",
+          "role": "book",
+          "x": 178.34066666666666,
+          "y": 595,
+          "zCm": 182.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 27,
+          "material": "Cream"
+        },
+        {
+          "id": "book_label_3_1_3",
+          "role": "book-label",
+          "x": 178.79066666666665,
+          "y": 594.9,
+          "zCm": 203.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "shelf_4_146",
+          "role": "shelf",
+          "x": 194.06666666666666,
+          "y": 594.2,
+          "zCm": 146,
+          "w": 42.766666666666666,
+          "d": 24.6,
+          "hCm": 2.2,
+          "material": "OakLight"
+        },
+        {
+          "id": "shelf_4_180",
+          "role": "shelf",
+          "x": 194.06666666666666,
+          "y": 594.2,
+          "zCm": 180,
+          "w": 42.766666666666666,
+          "d": 24.6,
+          "hCm": 2.2,
+          "material": "OakLight"
+        },
+        {
+          "id": "shelf_4_214",
+          "role": "shelf",
+          "x": 194.06666666666666,
+          "y": 594.2,
+          "zCm": 214,
+          "w": 42.766666666666666,
+          "d": 24.6,
+          "hCm": 2.2,
+          "material": "OakLight"
+        },
+        {
+          "id": "shelf_4_247.8",
+          "role": "shelf",
+          "x": 194.06666666666666,
+          "y": 594.2,
+          "zCm": 247.8,
+          "w": 42.766666666666666,
+          "d": 24.6,
+          "hCm": 2.2,
+          "material": "OakLight"
+        },
+        {
+          "id": "door_4",
+          "role": "door",
+          "x": 194.21666666666667,
+          "y": 592,
+          "zCm": 216.35,
+          "w": 42.46666666666667,
+          "d": 1.8,
+          "hCm": 31.3,
+          "material": "Cream"
+        },
+        {
+          "id": "pull_4",
+          "role": "pull",
+          "x": 212.45,
+          "y": 591.75,
+          "zCm": 217,
+          "w": 6,
+          "d": 0.25,
+          "hCm": 0.7,
+          "material": "WarmGrayMetal"
+        },
+        {
+          "id": "book_4_0_0",
+          "role": "book",
+          "x": 197.06666666666666,
+          "y": 595,
+          "zCm": 148.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 21,
+          "material": "WhiteLinen"
+        },
+        {
+          "id": "book_label_4_0_0",
+          "role": "book-label",
+          "x": 197.51666666666665,
+          "y": 594.9,
+          "zCm": 163.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_4_0_1",
+          "role": "book",
+          "x": 200.96666666666667,
+          "y": 595,
+          "zCm": 148.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 23,
+          "material": "Sage"
+        },
+        {
+          "id": "book_label_4_0_1",
+          "role": "book-label",
+          "x": 201.41666666666666,
+          "y": 594.9,
+          "zCm": 165.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_4_0_2",
+          "role": "book",
+          "x": 204.86666666666667,
+          "y": 595,
+          "zCm": 148.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 25,
+          "material": "OakLight"
+        },
+        {
+          "id": "book_label_4_0_2",
+          "role": "book-label",
+          "x": 205.31666666666666,
+          "y": 594.9,
+          "zCm": 167.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_4_0_3",
+          "role": "book",
+          "x": 208.76666666666665,
+          "y": 595,
+          "zCm": 148.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 27,
+          "material": "Cream"
+        },
+        {
+          "id": "book_label_4_0_3",
+          "role": "book-label",
+          "x": 209.21666666666664,
+          "y": 594.9,
+          "zCm": 169.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_4_1_0",
+          "role": "book",
+          "x": 197.06666666666666,
+          "y": 595,
+          "zCm": 182.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 23,
+          "material": "Sage"
+        },
+        {
+          "id": "book_label_4_1_0",
+          "role": "book-label",
+          "x": 197.51666666666665,
+          "y": 594.9,
+          "zCm": 199.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_4_1_1",
+          "role": "book",
+          "x": 200.96666666666667,
+          "y": 595,
+          "zCm": 182.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 25,
+          "material": "OakLight"
+        },
+        {
+          "id": "book_label_4_1_1",
+          "role": "book-label",
+          "x": 201.41666666666666,
+          "y": 594.9,
+          "zCm": 201.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_4_1_2",
+          "role": "book",
+          "x": 204.86666666666667,
+          "y": 595,
+          "zCm": 182.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 27,
+          "material": "Cream"
+        },
+        {
+          "id": "book_label_4_1_2",
+          "role": "book-label",
+          "x": 205.31666666666666,
+          "y": 594.9,
+          "zCm": 203.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_4_1_3",
+          "role": "book",
+          "x": 208.76666666666665,
+          "y": 595,
+          "zCm": 182.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 21,
+          "material": "WhiteLinen"
+        },
+        {
+          "id": "book_label_4_1_3",
+          "role": "book-label",
+          "x": 209.21666666666664,
+          "y": 594.9,
+          "zCm": 197.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_4_1_4",
+          "role": "book",
+          "x": 212.66666666666666,
+          "y": 595,
+          "zCm": 182.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 23,
+          "material": "Sage"
+        },
+        {
+          "id": "book_label_4_1_4",
+          "role": "book-label",
+          "x": 213.11666666666665,
+          "y": 594.9,
+          "zCm": 199.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "shelf_5_146",
+          "role": "shelf",
+          "x": 239.03333333333333,
+          "y": 594.2,
+          "zCm": 146,
+          "w": 42.766666666666666,
+          "d": 24.6,
+          "hCm": 2.2,
+          "material": "OakLight"
+        },
+        {
+          "id": "shelf_5_180",
+          "role": "shelf",
+          "x": 239.03333333333333,
+          "y": 594.2,
+          "zCm": 180,
+          "w": 42.766666666666666,
+          "d": 24.6,
+          "hCm": 2.2,
+          "material": "OakLight"
+        },
+        {
+          "id": "shelf_5_214",
+          "role": "shelf",
+          "x": 239.03333333333333,
+          "y": 594.2,
+          "zCm": 214,
+          "w": 42.766666666666666,
+          "d": 24.6,
+          "hCm": 2.2,
+          "material": "OakLight"
+        },
+        {
+          "id": "shelf_5_247.8",
+          "role": "shelf",
+          "x": 239.03333333333333,
+          "y": 594.2,
+          "zCm": 247.8,
+          "w": 42.766666666666666,
+          "d": 24.6,
+          "hCm": 2.2,
+          "material": "OakLight"
+        },
+        {
+          "id": "door_5",
+          "role": "door",
+          "x": 239.18333333333334,
+          "y": 592,
+          "zCm": 216.35,
+          "w": 42.46666666666667,
+          "d": 1.8,
+          "hCm": 31.3,
+          "material": "Cream"
+        },
+        {
+          "id": "pull_5",
+          "role": "pull",
+          "x": 257.4166666666667,
+          "y": 591.75,
+          "zCm": 217,
+          "w": 6,
+          "d": 0.25,
+          "hCm": 0.7,
+          "material": "WarmGrayMetal"
+        },
+        {
+          "id": "book_5_0_0",
+          "role": "book",
+          "x": 256.574,
+          "y": 595,
+          "zCm": 148.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 23,
+          "material": "Sage"
+        },
+        {
+          "id": "book_label_5_0_0",
+          "role": "book-label",
+          "x": 257.024,
+          "y": 594.9,
+          "zCm": 165.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_5_0_1",
+          "role": "book",
+          "x": 260.474,
+          "y": 595,
+          "zCm": 148.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 25,
+          "material": "OakLight"
+        },
+        {
+          "id": "book_label_5_0_1",
+          "role": "book-label",
+          "x": 260.924,
+          "y": 594.9,
+          "zCm": 167.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_5_0_2",
+          "role": "book",
+          "x": 264.374,
+          "y": 595,
+          "zCm": 148.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 27,
+          "material": "Cream"
+        },
+        {
+          "id": "book_label_5_0_2",
+          "role": "book-label",
+          "x": 264.824,
+          "y": 594.9,
+          "zCm": 169.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_5_0_3",
+          "role": "book",
+          "x": 268.274,
+          "y": 595,
+          "zCm": 148.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 21,
+          "material": "WhiteLinen"
+        },
+        {
+          "id": "book_label_5_0_3",
+          "role": "book-label",
+          "x": 268.724,
+          "y": 594.9,
+          "zCm": 163.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_5_0_4",
+          "role": "book",
+          "x": 272.17400000000004,
+          "y": 595,
+          "zCm": 148.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 23,
+          "material": "Sage"
+        },
+        {
+          "id": "book_label_5_0_4",
+          "role": "book-label",
+          "x": 272.624,
+          "y": 594.9,
+          "zCm": 165.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_5_1_0",
+          "role": "book",
+          "x": 256.574,
+          "y": 595,
+          "zCm": 182.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 25,
+          "material": "OakLight"
+        },
+        {
+          "id": "book_label_5_1_0",
+          "role": "book-label",
+          "x": 257.024,
+          "y": 594.9,
+          "zCm": 201.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_5_1_1",
+          "role": "book",
+          "x": 260.474,
+          "y": 595,
+          "zCm": 182.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 27,
+          "material": "Cream"
+        },
+        {
+          "id": "book_label_5_1_1",
+          "role": "book-label",
+          "x": 260.924,
+          "y": 594.9,
+          "zCm": 203.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "book_5_1_2",
+          "role": "book",
+          "x": 264.374,
+          "y": 595,
+          "zCm": 182.2,
+          "w": 3.1,
+          "d": 21,
+          "hCm": 21,
+          "material": "WhiteLinen"
+        },
+        {
+          "id": "book_label_5_1_2",
+          "role": "book-label",
+          "x": 264.824,
+          "y": 594.9,
+          "zCm": 197.7,
+          "w": 2.2,
+          "d": 0.1,
+          "hCm": 0.5,
+          "material": "Cream"
+        },
+        {
+          "id": "under_light",
+          "role": "light-diffuser",
+          "x": 18,
+          "y": 594,
+          "zCm": 145.2,
+          "w": 260,
+          "d": 1.6,
+          "hCm": 0.8,
+          "material": "Lamp"
+        }
+      ]
+    }
+  ],
   "layoutDetails": [
     {
       "id": "suite-entry",
@@ -1357,73 +2957,28 @@
     }
   ],
   "renderedViews": {
-    "kitchen": {
-      "sourceSha256": "1faaf6b989b5bb25ec4ce1faaa1bfdc35f7126657f3e89f10bc660231ae011a6",
-      "baseBlendSha256": "e5c7c9c5f7d58cd5cf33c3e8c0cf4d7f76af1cc7a4413e74d45642b8b9596a0e",
+    "study": {
+      "sourceSha256": "d5e4552bbff39aacc022116dcaa54cdc4cf1240675f8f779e32b1a242421ca42",
+      "baseBlendSha256": "9a71662f922bc8fbaf0332b3a75c9df87c884330fc276f327ee91be477416d73",
       "cameraState": {
         "matrix": [
           [
-            0.6930155158042908,
-            0.026806147769093513,
-            -0.7204241156578064,
-            6.0
+            -0.835644006729126,
+            -0.03089437074959278,
+            0.5484018921852112,
+            2.549999952316284
           ],
           [
-            -0.7209226489067078,
-            0.025768503546714783,
-            -0.6925362944602966,
-            -12.699999809265137
+            0.5492714047431946,
+            -0.04700157791376114,
+            0.834321141242981,
+            -4.340000152587891
           ],
           [
-            2.0567794578596477e-08,
-            0.9993084669113159,
-            0.03718313202261925,
-            1.600000023841858
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "lens": 20.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
-      },
-      "cameraHash": "3a9bf12cf9f4a2a554680d7d0a915bc964b9198423ef33ce0e6460f43e20e578",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "66ae63605a899a232e1e1f0d1e4bd6b71bec6b6797ec94f3d4fe8dd2bb080909"
-    },
-    "balcony": {
-      "sourceSha256": "1faaf6b989b5bb25ec4ce1faaa1bfdc35f7126657f3e89f10bc660231ae011a6",
-      "baseBlendSha256": "e5c7c9c5f7d58cd5cf33c3e8c0cf4d7f76af1cc7a4413e74d45642b8b9596a0e",
-      "cameraState": {
-        "matrix": [
-          [
-            -0.9138115048408508,
-            0.02879328653216362,
-            -0.4051166772842407,
-            7.179999828338623
-          ],
-          [
-            -0.4061385989189148,
-            -0.06478513777256012,
-            0.9115120768547058,
-            -10.3100004196167
-          ],
-          [
-            -1.1127433197088976e-07,
-            0.9974837303161621,
-            0.0708954706788063,
-            1.600000023841858
+            -7.262188717049867e-08,
+            0.9984169602394104,
+            0.05624598264694214,
+            1.6200000047683716
           ],
           [
             0.0,
@@ -1437,7 +2992,7 @@
         "type": "PERSP",
         "orthoScale": 6.0
       },
-      "cameraHash": "1a19dcabc2410dc6328c90b376ac219b67956a974d824ade1bb350f5d02d6ee8",
+      "cameraHash": "5cff31a93cd099f66a995f75f037459724343aa54ae45a8ce2cf8a01f1d5c57e",
       "renderSpec": {
         "engine": "CYCLES",
         "width": 960,
@@ -1445,11 +3000,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "6133ffca037eb07249dcba65a8f2159378af6fa304305d98f1960faa47558b77"
+      "imageSha256": "066bb31c22e419aba928a7666c4c0a387ff8b3becdb4454f137948e140e8ba72"
     },
     "overall": {
-      "sourceSha256": "1faaf6b989b5bb25ec4ce1faaa1bfdc35f7126657f3e89f10bc660231ae011a6",
-      "baseBlendSha256": "e5c7c9c5f7d58cd5cf33c3e8c0cf4d7f76af1cc7a4413e74d45642b8b9596a0e",
+      "sourceSha256": "d5e4552bbff39aacc022116dcaa54cdc4cf1240675f8f779e32b1a242421ca42",
+      "baseBlendSha256": "9a71662f922bc8fbaf0332b3a75c9df87c884330fc276f327ee91be477416d73",
       "cameraState": {
         "matrix": [
           [
@@ -1490,11 +3045,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "d6f0cf756687b4fcd8193963836fedb04627d39f08aba76bc69d8c1d7918f33b"
+      "imageSha256": "d043bd50a0c78ec8a8540b788a3a6dc7ca26d893a6e905eb823b04d0479a1e1e"
     },
     "living": {
-      "sourceSha256": "1faaf6b989b5bb25ec4ce1faaa1bfdc35f7126657f3e89f10bc660231ae011a6",
-      "baseBlendSha256": "e5c7c9c5f7d58cd5cf33c3e8c0cf4d7f76af1cc7a4413e74d45642b8b9596a0e",
+      "sourceSha256": "d5e4552bbff39aacc022116dcaa54cdc4cf1240675f8f779e32b1a242421ca42",
+      "baseBlendSha256": "9a71662f922bc8fbaf0332b3a75c9df87c884330fc276f327ee91be477416d73",
       "cameraState": {
         "matrix": [
           [
@@ -1535,11 +3090,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "a0e761027185153edbd5df4979c6806fc86b1e0d444c3b5a8f4ea524f1854862"
+      "imageSha256": "421ff53643257abfec99c2caecd262b1f322d9ff9d31be63dfd84d9d730636c3"
     },
     "dining": {
-      "sourceSha256": "1faaf6b989b5bb25ec4ce1faaa1bfdc35f7126657f3e89f10bc660231ae011a6",
-      "baseBlendSha256": "e5c7c9c5f7d58cd5cf33c3e8c0cf4d7f76af1cc7a4413e74d45642b8b9596a0e",
+      "sourceSha256": "d5e4552bbff39aacc022116dcaa54cdc4cf1240675f8f779e32b1a242421ca42",
+      "baseBlendSha256": "9a71662f922bc8fbaf0332b3a75c9df87c884330fc276f327ee91be477416d73",
       "cameraState": {
         "matrix": [
           [
@@ -1580,11 +3135,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "c7c04f79b59cb45f4692dc6ddbdc1ac42f0b046edc00efde7a98df338a349d67"
+      "imageSha256": "f910803f34439a3f255ce59dab5a133fa2a4f4bf1ef2b73996fbf08673682f62"
     },
     "master": {
-      "sourceSha256": "1faaf6b989b5bb25ec4ce1faaa1bfdc35f7126657f3e89f10bc660231ae011a6",
-      "baseBlendSha256": "e5c7c9c5f7d58cd5cf33c3e8c0cf4d7f76af1cc7a4413e74d45642b8b9596a0e",
+      "sourceSha256": "d5e4552bbff39aacc022116dcaa54cdc4cf1240675f8f779e32b1a242421ca42",
+      "baseBlendSha256": "9a71662f922bc8fbaf0332b3a75c9df87c884330fc276f327ee91be477416d73",
       "cameraState": {
         "matrix": [
           [
@@ -1625,11 +3180,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "cae9f495d3b47628b397fab396de75884ce43215f13b0693a8c1acbc9866596f"
+      "imageSha256": "0d7b0b00d9dfee8aaa5b8d887b1da6200f97ae1c8e038514839f28207dc2756e"
     },
     "bedroom-b": {
-      "sourceSha256": "1faaf6b989b5bb25ec4ce1faaa1bfdc35f7126657f3e89f10bc660231ae011a6",
-      "baseBlendSha256": "e5c7c9c5f7d58cd5cf33c3e8c0cf4d7f76af1cc7a4413e74d45642b8b9596a0e",
+      "sourceSha256": "d5e4552bbff39aacc022116dcaa54cdc4cf1240675f8f779e32b1a242421ca42",
+      "baseBlendSha256": "9a71662f922bc8fbaf0332b3a75c9df87c884330fc276f327ee91be477416d73",
       "cameraState": {
         "matrix": [
           [
@@ -1670,30 +3225,30 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "1e342f1b5e1c7e2baea245a4cd38071f80d7d6160ec3822324b7744c3ac6442d"
+      "imageSha256": "53caf9526e91f371babeacaf5226e05131c934d39312c31341b7db4b82f438d3"
     },
-    "study": {
-      "sourceSha256": "1faaf6b989b5bb25ec4ce1faaa1bfdc35f7126657f3e89f10bc660231ae011a6",
-      "baseBlendSha256": "e5c7c9c5f7d58cd5cf33c3e8c0cf4d7f76af1cc7a4413e74d45642b8b9596a0e",
+    "kitchen": {
+      "sourceSha256": "d5e4552bbff39aacc022116dcaa54cdc4cf1240675f8f779e32b1a242421ca42",
+      "baseBlendSha256": "9a71662f922bc8fbaf0332b3a75c9df87c884330fc276f327ee91be477416d73",
       "cameraState": {
         "matrix": [
           [
-            0.4997224509716034,
-            -0.3307165205478668,
-            0.8005648255348206,
-            2.5199999809265137
+            0.6930155158042908,
+            0.026806147769093513,
+            -0.7204241156578064,
+            6.0
           ],
           [
-            0.8661856055259705,
-            0.19079795479774475,
-            -0.46186432242393494,
-            -5.360000133514404
+            -0.7209226489067078,
+            0.025768503546714783,
+            -0.6925362944602966,
+            -12.699999809265137
           ],
           [
-            3.4576761009930124e-08,
-            0.9242417216300964,
-            0.3818078935146332,
-            1.649999976158142
+            2.0567794578596477e-08,
+            0.9993084669113159,
+            0.03718313202261925,
+            1.600000023841858
           ],
           [
             0.0,
@@ -1702,12 +3257,12 @@
             1.0
           ]
         ],
-        "lens": 18.0,
+        "lens": 20.0,
         "sensorWidth": 36.0,
         "type": "PERSP",
         "orthoScale": 6.0
       },
-      "cameraHash": "36f8b85ec7f58b3121cd982864dc36b3ecab39f6d8040f6d4d552383c6a787d8",
+      "cameraHash": "3a9bf12cf9f4a2a554680d7d0a915bc964b9198423ef33ce0e6460f43e20e578",
       "renderSpec": {
         "engine": "CYCLES",
         "width": 960,
@@ -1715,11 +3270,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "26e2b1b0b1031c3f51df5f1636319c0ffc8ed194ebd05faa524c5c7658d33c03"
+      "imageSha256": "efee67227627f3a83d6a4e8a75ad77958a99bab67e69fef081b4ec3a2ebe05f0"
     },
     "master-bath": {
-      "sourceSha256": "1faaf6b989b5bb25ec4ce1faaa1bfdc35f7126657f3e89f10bc660231ae011a6",
-      "baseBlendSha256": "e5c7c9c5f7d58cd5cf33c3e8c0cf4d7f76af1cc7a4413e74d45642b8b9596a0e",
+      "sourceSha256": "d5e4552bbff39aacc022116dcaa54cdc4cf1240675f8f779e32b1a242421ca42",
+      "baseBlendSha256": "9a71662f922bc8fbaf0332b3a75c9df87c884330fc276f327ee91be477416d73",
       "cameraState": {
         "matrix": [
           [
@@ -1760,11 +3315,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "8f22c2fd6701a2d79cae272de8d4443e5acb1a64092a83c838a45225e7031ffe"
+      "imageSha256": "b37c1bbefd56ea0a089872273d7996197f2a8943345d99ccea7c9ee20013f9bc"
     },
     "guest-bath": {
-      "sourceSha256": "1faaf6b989b5bb25ec4ce1faaa1bfdc35f7126657f3e89f10bc660231ae011a6",
-      "baseBlendSha256": "e5c7c9c5f7d58cd5cf33c3e8c0cf4d7f76af1cc7a4413e74d45642b8b9596a0e",
+      "sourceSha256": "d5e4552bbff39aacc022116dcaa54cdc4cf1240675f8f779e32b1a242421ca42",
+      "baseBlendSha256": "9a71662f922bc8fbaf0332b3a75c9df87c884330fc276f327ee91be477416d73",
       "cameraState": {
         "matrix": [
           [
@@ -1805,11 +3360,56 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "c687e6f45af212b5de10a4a507f2330fe548c3ffcc55fad0aec38c406542db1e"
+      "imageSha256": "da8d78ed0f2fca37022bd79ad48f242efc8945167eb4f66bbdbb42bb4162dbea"
+    },
+    "balcony": {
+      "sourceSha256": "d5e4552bbff39aacc022116dcaa54cdc4cf1240675f8f779e32b1a242421ca42",
+      "baseBlendSha256": "9a71662f922bc8fbaf0332b3a75c9df87c884330fc276f327ee91be477416d73",
+      "cameraState": {
+        "matrix": [
+          [
+            -0.9138115048408508,
+            0.02879328653216362,
+            -0.4051166772842407,
+            7.179999828338623
+          ],
+          [
+            -0.4061385989189148,
+            -0.06478513777256012,
+            0.9115120768547058,
+            -10.3100004196167
+          ],
+          [
+            -1.1127433197088976e-07,
+            0.9974837303161621,
+            0.0708954706788063,
+            1.600000023841858
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 18.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "1a19dcabc2410dc6328c90b376ac219b67956a974d824ade1bb350f5d02d6ee8",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "cd60e11ae1846da2790c0d896a1e4ab5f74edb431b3986e0a18aabac9c468556"
     },
     "bay-master": {
-      "sourceSha256": "1faaf6b989b5bb25ec4ce1faaa1bfdc35f7126657f3e89f10bc660231ae011a6",
-      "baseBlendSha256": "e5c7c9c5f7d58cd5cf33c3e8c0cf4d7f76af1cc7a4413e74d45642b8b9596a0e",
+      "sourceSha256": "d5e4552bbff39aacc022116dcaa54cdc4cf1240675f8f779e32b1a242421ca42",
+      "baseBlendSha256": "9a71662f922bc8fbaf0332b3a75c9df87c884330fc276f327ee91be477416d73",
       "cameraState": {
         "matrix": [
           [
@@ -1850,11 +3450,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "2eecbed98ba33e8222f6518434ddd093d90b4d4fda83b2e005d18b1cbd5b5d3d"
+      "imageSha256": "b37b086ca149dfd8b4709d2fe8ef80a9b9f778afea4839021b718de3e0b350d3"
     },
     "bay-tea": {
-      "sourceSha256": "1faaf6b989b5bb25ec4ce1faaa1bfdc35f7126657f3e89f10bc660231ae011a6",
-      "baseBlendSha256": "e5c7c9c5f7d58cd5cf33c3e8c0cf4d7f76af1cc7a4413e74d45642b8b9596a0e",
+      "sourceSha256": "d5e4552bbff39aacc022116dcaa54cdc4cf1240675f8f779e32b1a242421ca42",
+      "baseBlendSha256": "9a71662f922bc8fbaf0332b3a75c9df87c884330fc276f327ee91be477416d73",
       "cameraState": {
         "matrix": [
           [
@@ -1895,11 +3495,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "8ce2ca50dc5b9d2bbebfc7b563981966b354162e1a1ad91b07697388a5c34803"
+      "imageSha256": "d62f98b1379c794d1b487406b0fcf621e9666237f0bd9abfe6b3e1a3ff76bb61"
     },
     "bay-living": {
-      "sourceSha256": "1faaf6b989b5bb25ec4ce1faaa1bfdc35f7126657f3e89f10bc660231ae011a6",
-      "baseBlendSha256": "e5c7c9c5f7d58cd5cf33c3e8c0cf4d7f76af1cc7a4413e74d45642b8b9596a0e",
+      "sourceSha256": "d5e4552bbff39aacc022116dcaa54cdc4cf1240675f8f779e32b1a242421ca42",
+      "baseBlendSha256": "9a71662f922bc8fbaf0332b3a75c9df87c884330fc276f327ee91be477416d73",
       "cameraState": {
         "matrix": [
           [
@@ -1940,11 +3540,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "7a7bb5927f8154fcfcd97547d1fa4fc18a7a16b100ad815ec361e374bfb56f7d"
+      "imageSha256": "9db5a9c69888ed3409d3aef251167114dba47e6e82731198355cb8416d6cbfe5"
     },
     "entry-storage": {
-      "sourceSha256": "1faaf6b989b5bb25ec4ce1faaa1bfdc35f7126657f3e89f10bc660231ae011a6",
-      "baseBlendSha256": "e5c7c9c5f7d58cd5cf33c3e8c0cf4d7f76af1cc7a4413e74d45642b8b9596a0e",
+      "sourceSha256": "d5e4552bbff39aacc022116dcaa54cdc4cf1240675f8f779e32b1a242421ca42",
+      "baseBlendSha256": "9a71662f922bc8fbaf0332b3a75c9df87c884330fc276f327ee91be477416d73",
       "cameraState": {
         "matrix": [
           [
@@ -1985,11 +3585,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "100a9fd0345dc12a79b9a479ba8ce133d64b68b2f6617ddfece0a46cf943f4ec"
+      "imageSha256": "977e3736df2ac95bccb91074912dd190225fa21289e6f387317545a7d84e03be"
     },
     "sideboard": {
-      "sourceSha256": "1faaf6b989b5bb25ec4ce1faaa1bfdc35f7126657f3e89f10bc660231ae011a6",
-      "baseBlendSha256": "e5c7c9c5f7d58cd5cf33c3e8c0cf4d7f76af1cc7a4413e74d45642b8b9596a0e",
+      "sourceSha256": "d5e4552bbff39aacc022116dcaa54cdc4cf1240675f8f779e32b1a242421ca42",
+      "baseBlendSha256": "9a71662f922bc8fbaf0332b3a75c9df87c884330fc276f327ee91be477416d73",
       "cameraState": {
         "matrix": [
           [
@@ -2030,11 +3630,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "572d4e64e7a7a6f72160c644296037553341ee28a68f901a20214f8b0c21bb38"
+      "imageSha256": "24980801ade990ce786ee2d3ab0f1776d7c748dae88392009eb61e128559b768"
     },
     "suite-entry": {
-      "sourceSha256": "1faaf6b989b5bb25ec4ce1faaa1bfdc35f7126657f3e89f10bc660231ae011a6",
-      "baseBlendSha256": "e5c7c9c5f7d58cd5cf33c3e8c0cf4d7f76af1cc7a4413e74d45642b8b9596a0e",
+      "sourceSha256": "d5e4552bbff39aacc022116dcaa54cdc4cf1240675f8f779e32b1a242421ca42",
+      "baseBlendSha256": "9a71662f922bc8fbaf0332b3a75c9df87c884330fc276f327ee91be477416d73",
       "cameraState": {
         "matrix": [
           [
@@ -2075,10 +3675,10 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "22c9025890a3197d1de0e44ac2a6355751b487d260536d248d1bf71f4f0ef9f7"
+      "imageSha256": "e79c051919bad4d04df8599013dda6053ad675cac51e64ca9b2193315f2ee719"
     }
   },
-  "baseBlendSha256": "e5c7c9c5f7d58cd5cf33c3e8c0cf4d7f76af1cc7a4413e74d45642b8b9596a0e",
+  "baseBlendSha256": "9a71662f922bc8fbaf0332b3a75c9df87c884330fc276f327ee91be477416d73",
   "renderSpec": {
     "engine": "CYCLES",
     "width": 960,

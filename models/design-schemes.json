@@ -1,5 +1,5 @@
 {
-  "version": "3.2.3",
+  "version": "3.2.4",
   "defaultScheme": "wood",
   "updatedAt": "2026-09-22",
   "geometrySource": "models/design-data.json",
@@ -151,7 +151,7 @@
       "name": "木光 · 暖白套间",
       "en": "WOOD / PRIVATE SUITE",
       "tagline": "凹位做满，光线更柔和",
-      "summary": "保留R4B门位与套内玄关，仅两卧北段隔墙东移回原位；以浅台补齐次卧退台，主卧满凹位衣柜，书房北沙发南通长桌。 厨房与阳台之间补回大窗。",
+      "summary": "保留R4B门位与套内玄关，仅两卧北段隔墙东移回原位；以浅台补齐次卧退台，主卧满凹位衣柜，书房北沙发南通长桌。 厨房与阳台之间补回大窗。 书房桌墙新增浅书架与暖白顶柜。",
       "style": "暖白浅木 · 套间入口",
       "layoutKind": "alternative",
       "colors": [
@@ -203,7 +203,7 @@
       "model": "models/schemes/suite/huiyayuan-wood.glb",
       "blend": "models/schemes/suite/huiyayuan-wood.blend",
       "manifest": "models/schemes/suite/scene-manifest.json",
-      "assetRevision": "3.2.3",
+      "assetRevision": "3.2.4",
       "renderViews": [
         "overall",
         "living",
@@ -258,12 +258,12 @@
           ]
         },
         "room_c": {
-          "title": "北墙沙发，南墙通长桌",
-          "description": "保留约7.78㎡书房及1000mm墙外挂推拉门。北墙2000×850mm沙发替换日床，原北墙小柜取消；南墙2720×550mm通长桌，含支承示意。沙发至桌前约1460mm，至图示椅背约910mm。",
+          "title": "桌面留空，书往墙上收",
+          "description": "保留约7.78㎡书房及1000mm墙外挂推拉门。北墙2000×850mm沙发替换日床，原北墙小柜取消；南墙2720×550mm通长桌，含支承示意。沙发至桌前约1460mm，至图示椅背约910mm。 沿现有2720mm通长书桌上方做280mm深浅书架：两排开放书格＋顶部暖白柜门。书架底1460mm，桌面760mm，留700mm操作空档；书架前沿较桌沿退后270mm。保留北墙沙发、原推拉门和桌下腿位。 吊挂承重、板材与锚固待专业深化。",
           "features": [
-            "2720mm通长桌",
-            "北墙沙发",
-            "保留推拉门"
+            "通长浅书架",
+            "开放格＋封闭顶柜",
+            "保留桌面腿位"
           ]
         },
         "bath_1": {

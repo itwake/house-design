@@ -1,10 +1,10 @@
-import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.2.3';
-import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.2.3';
+import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.2.4';
+import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.2.4';
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
-const UI_REVISION = '3.2.3';
+const UI_REVISION = '3.2.4';
 document.documentElement.dataset.uiRevision = UI_REVISION;
-let ASSET_REVISION = '3.2.3';
+let ASSET_REVISION = '3.2.4';
 const revisedAsset = path => {const url=new URL(path,document.baseURI);url.searchParams.set('v',ASSET_REVISION);return url.href};
 const icons = {
   cube:'<path d="m8 2 6 3.5v5L8 14l-6-3.5v-5L8 2Z M2 5.5 8 9l6-3.5 M8 9v5 M5 3.8l6 3.5"/>',
@@ -72,7 +72,16 @@ function sourceNotes(value,roomId=null){
   return [];
 }
 function designNotes(){const seen=new Set();return [...sourceNotes(data?.renovationNotes),...sourceNotes(data?.geometryNotes)].filter(note=>{const key=note.roomId+'|'+note.text;if(seen.has(key))return false;seen.add(key);return true})}
-function renderDesignNotes(){const notes=designNotes();$('#source-notes').hidden=!notes.length;$('#source-notes-list').innerHTML=notes.map(note=>`<li>${note.roomId?escapeHTML(roomDescription(note.roomId).name)+'：':''}${escapeHTML(note.text)}</li>`).join('')}
+function renderDesignNotes(){
+  const notes=designNotes();$('#source-notes').hidden=!notes.length;$('#source-notes-list').innerHTML=notes.map(note=>`<li>${note.roomId?escapeHTML(roomDescription(note.roomId).name)+'：':''}${escapeHTML(note.text)}</li>`).join('');
+  $('#source-notes').querySelector('[data-study-bookwall]')?.remove();
+  const fit=data.wallFitouts?.find(f=>f.id==='study_bookwall');
+  if(fit){
+    const section=document.createElement('section');section.dataset.studyBookwall='';
+    section.innerHTML=`<h3>书房桌墙 · 浅书架设计</h3><p>${escapeHTML(fit.description)}</p><h4>落地前核对</h4><ul>${fit.conditions.map(n=>`<li>${escapeHTML(n)}</li>`).join('')}</ul><h4>参考原文 · 借鉴思路，不照搬尺寸</h4><div class="bay-references">${fit.references.map(ref=>`<article><a href="${escapeHTML(referenceURL(ref.url))}" target="_blank" rel="noopener noreferrer">${escapeHTML(ref.title)} ↗</a><small>${escapeHTML(ref.platform)}</small><p>${escapeHTML(ref.borrow)}</p><p>${escapeHTML(ref.avoid)}</p></article>`).join('')}</div>`;
+    $('#source-notes').append(section);
+  }
+}
 function configureScheme(){
   document.documentElement.dataset.scheme=scheme.id;document.title=`${scheme.name} · 荟雅苑的家`;
   $('.brand strong').textContent=scheme.name;$('.brand small').textContent=scheme.en;$('.brand').setAttribute('aria-label',scheme.name+'，返回全屋');
@@ -401,6 +410,7 @@ function makePlan(){
   if(data.layout?.entryZone){const z=data.layout.entryZone;labels.push(`<g data-suite-entry="private"><rect x="${z.x}" y="${z.y}" width="${z.w}" height="${z.d}" fill="none" stroke="#a98c63" stroke-dasharray="4 5" stroke-width="1.5"/><text x="${z.x+z.w/2}" y="${z.y+30}" text-anchor="middle" font-size="13" fill="#806b50">套内玄关</text><text x="${z.x+z.w/2}" y="${z.y+49}" text-anchor="middle" font-size="10" fill="#806b50">${z.w*10} × ${z.d*10}</text></g>`)}
   const storageIds=new Set((data.storageFitouts||[]).map(f=>f.id));
   const furniture=(data.furniture||[]).filter(f=>!storageIds.has(f.storageFitoutId)).map(planFurniture).join('');
+  const wallFitouts=(data.wallFitouts||[]).map(f=>`<g data-wall-fitout="${escapeHTML(f.id)}" pointer-events="none"><title>${escapeHTML(f.description)} 上方投影，非落地柜。</title><rect x="${f.x}" y="${f.y}" width="${f.w}" height="${f.d}" fill="#f5f2ed" fill-opacity=".4" stroke="#8b928b" stroke-width="1.4" stroke-dasharray="5 4"/><text x="${f.x+f.w/2}" y="${f.y+f.d/2+4}" text-anchor="middle" font-size="11" fill="#747970">上方浅书架 · 虚线投影</text></g>`).join('');
   const fitouts=(data.bayFitouts||[]).flatMap(fitout=>[...(fitout.parts||[])].sort((a,b)=>(a.zCm||0)-(b.zCm||0)).map(part=>planFitoutPart(fitout,part))).join('');
   const storage=(data.storageFitouts||[]).flatMap(fitout=>[...(fitout.parts||[])].sort((a,b)=>(a.zCm||0)-(b.zCm||0)).map(part=>planStoragePart(fitout,part))).join('');
   const walls=(data.walls||[]).map(w=>`<line x1="${w[0]}" y1="${w[1]}" x2="${w[2]}" y2="${w[3]}" stroke="#8c887b" stroke-width="${wallThickness}" stroke-linecap="square"/>`).join('');
@@ -419,7 +429,7 @@ function makePlan(){
   const bayFrames=bays.map(b=>`<g data-bay-frame-layer="${escapeHTML(b.window.id)}"><polygon data-bay-front-frame data-frame-finish="${escapeHTML(bayFrameFinish)}" points="${b.frame.map(p=>p.join(',')).join(' ')}" fill="${bayFrameColor}"/><line data-bay-glass x1="${b.frontA[0]}" y1="${b.frontA[1]}" x2="${b.frontB[0]}" y2="${b.frontB[1]}" stroke="#8fa6a8" stroke-width="4"/></g>`).join('');
   const topDimensionY=planMinY-52,leftDimensionX=planMinX-55;
   const dimensions=`<g stroke="#b4a58e" stroke-width="1.5" fill="none"><path d="M0 ${topDimensionY}H687 M0 ${topDimensionY-14}v28 M687 ${topDimensionY-14}v28 M${leftDimensionX} 0v1401 M${leftDimensionX-14} 0h28 M${leftDimensionX-14} 1401h28 M200 1455h641 M200 1441v28 M841 1441v28"/></g><g fill="#9c8d73" font-size="19" text-anchor="middle"><text x="343" y="${topDimensionY-17}">6,870</text><text x="520" y="1484">6,410</text><text x="${leftDimensionX-20}" y="700" transform="rotate(-90 ${leftDimensionX-20} 700)">14,010</text><text x="793" y="${topDimensionY-2}" font-size="23">N ↑</text></g>`;
-  $('#floor-plan').innerHTML=`<svg viewBox="${planMinX-115} ${planMinY-110} ${maxX-planMinX+160} ${maxY-planMinY+215}" role="img" aria-label="由同源尺寸数据绘制的三房两卫平面图，含飘窗与玄关餐边收纳条件方案；窗台投影不计入房间面积">${polygons}${furniture}${storage}${walls}${opening((data.windows||[]).filter(w=>w.windowType!=='bay'),'#8fa6a8')}${bayWindows}${opening(data.doors,'#c2a071')}${fitouts}${bayFrames}${labels.join('')}${dimensions}</svg>`;
+  $('#floor-plan').innerHTML=`<svg viewBox="${planMinX-115} ${planMinY-110} ${maxX-planMinX+160} ${maxY-planMinY+215}" role="img" aria-label="由同源尺寸数据绘制的三房两卫平面图，含飘窗与玄关餐边收纳条件方案；窗台投影不计入房间面积">${polygons}${furniture}${storage}${walls}${opening((data.windows||[]).filter(w=>w.windowType!=='bay'),'#8fa6a8')}${bayWindows}${opening(data.doors,'#c2a071')}${fitouts}${bayFrames}${wallFitouts}${labels.join('')}${dimensions}</svg>`;
   $$('#floor-plan [data-plan-room]').forEach(p=>{p.addEventListener('click',()=>selectRoom(p.dataset.planRoom));p.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectRoom(p.dataset.planRoom)}})});
 }
 

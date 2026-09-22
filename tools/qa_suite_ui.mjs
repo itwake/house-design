@@ -19,7 +19,7 @@ try{
     assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Chooser overflow');
     if(name!=='narrow')await page.screenshot({path:'tmp/v320-'+name+'-chooser.png',fullPage:true});
     for(const scheme of ['wood','suite']){
-      await page.goto(base+'studio.html?scheme='+scheme+'&v=3.2.3');
+      await page.goto(base+'studio.html?scheme='+scheme+'&v=3.2.4');
       await page.waitForFunction(()=>document.querySelector('#model-loading')?.hidden&&document.querySelectorAll('#floor-plan [data-plan-room]').length===8);
       assert.equal(await page.locator('html').getAttribute('data-scheme'),scheme);
       assert.ok(await page.locator('#model-fallback').evaluate(e=>e.hidden),'3D loaded without fallback');
@@ -30,6 +30,8 @@ try{
       }
       const isSuite=scheme==='suite';
       assert.equal(await page.locator('#floor-plan [data-opening-id="window_kitchen_balcony"]').count(),isSuite?1:0,'Internal kitchen window only in revised suite');
+      assert.equal(await page.locator('#floor-plan [data-wall-fitout="study_bookwall"]').count(),isSuite?1:0,'Study upper bookwall only in revised suite');
+      assert.equal(await page.locator('[data-study-bookwall] .bay-references a').count(),isSuite?3:0,'Live source reference links');
       assert.equal(await page.locator('[data-suite-entry="private"]').count(),isSuite?1:0);
       const geometry=(await page.locator('#floor-plan').innerHTML());
       if(isSuite){assert.ok(geometry.includes('（含入口）'));assert.equal(await page.locator('[data-hinged-door]').count(),4);assert.equal(await page.locator('[data-surface-slider="door_c"]').count(),1);assert.ok(geometry.includes('730 × 1530'));}
@@ -57,11 +59,12 @@ try{
       await page.locator('#tab-renders').click();
       await page.waitForFunction(()=>document.querySelector('#active-render').complete&&document.querySelector('#active-render').naturalWidth>0);
       if(isSuite){
-        for(const room of ['kitchen','balcony']){
+        for(const room of ['kitchen','balcony','room_c']){
+          const view=room==='room_c'?'study':room;
           await page.locator(`#room-nav [data-room="${room}"]`).click();
-          await page.waitForFunction(expected=>{const img=document.querySelector('#active-render');return img.complete&&img.naturalWidth>0&&new URL(img.src).pathname.endsWith('/'+expected+'.jpg')},room);
-          assert.ok((await page.locator('#card-description').textContent()).includes('大窗'),'Both room descriptions explain common-wall window');
-          if(name==='desktop')await page.screenshot({path:`tmp/v323-${room}-render-ui.png`});
+          await page.waitForFunction(expected=>{const img=document.querySelector('#active-render');return img.complete&&img.naturalWidth>0&&new URL(img.src).pathname.endsWith('/'+expected+'.jpg')},view);
+          assert.ok((await page.locator('#card-description').textContent()).includes(room==='room_c'?'书架':'大窗'),'Revised room description');
+          if(name==='desktop'||room==='room_c')await page.screenshot({path:`tmp/v324-${name}-${room}-render-ui.png`});
         }
       }
       await page.locator('#open-project').click();

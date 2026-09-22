@@ -14,6 +14,8 @@ vm.runInNewContext(helpers+'\n'+source.slice(start,end)+'\nmakePlan();',{data,$:
 const svg=host.innerHTML;
 for(const door of [...data.doors,...data.windows.filter(w=>w.windowType!=='bay')]){const tag=svg.match(new RegExp(`<line data-opening-id="${door.id}"[^>]+>`))?.[0];assert.ok(tag,door.id);for(const k of ['x1','y1','x2','y2'])assert.ok(tag.includes(`${k}="${door[k]}"`),'Exact opening plan '+door.id+'/'+k);}
 assert.equal((svg.match(/data-opening-id="window_kitchen_balcony"/g)||[]).length,1,'One real kitchen–balcony window in plan');
+assert.equal((svg.match(/data-wall-fitout="study_bookwall"/g)||[]).length,1,'One upper bookwall projection');
+assert.ok(svg.includes('上方浅书架 · 虚线投影'),'Upper cabinet is not drawn as floor furniture');
 assert.ok(svg.includes('data-suite-entry="private"')&&svg.includes('730 × 1530'),'Private foyer is labeled on actual plan');
 assert.equal((svg.match(/data-hinged-door=/g)||[]).length,4,'Four real open hinged doors');
 assert.ok(svg.includes('data-surface-slider="door_c"'),'Study wall-mounted sliding door');

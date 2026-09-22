@@ -18,7 +18,7 @@ b.TEX_DIR=b.MODEL_DIR/'textures'
 b.BAY_NOTE='三处飘窗外凸与原窗台高度均待复尺。新增方案取消主卧桌台与配椅，保留原台；次卧低台茶座仍是附条件方案，客厅双人桌保留。防坠、窗扇、外立面与结构条件须专业复核。'
 # Frame the revised sofa/desk and bedroom console from inside the real rooms.
 # Unaffected living, cabinet and bay cameras remain fixed for comparison.
-b.VIEWS['study']=((2.52,5.36,1.65),(1.22,4.61,1.03),18)
+b.VIEWS['study']=((2.55,4.34,1.62),(1.38,6.12,1.50),18)
 b.VIEWS['bedroom-b']=((1.99,2.46,1.65),(2.11,.94,.97),18)
 b.VIEWS['bay-tea']=((2.48,1.47,1.52),(1.53,-.11,1.03),18)
 b.VIEWS['master-bath']=((6.57,4.65,1.60),(4.95,3.72,1.12),18)
@@ -91,6 +91,12 @@ def furnish(data):
             b.book_stack(x+w*.58,y+.38,.762,.18)
         for obj in set(bpy.context.scene.objects)-before:
             obj['furnitureId']=f['id'];obj['furnitureName']=f['name'];obj['furnitureFace']=f['face']
+    for fit in data.get('wallFitouts',[]):
+        for p in fit['parts']:
+            obj=b.block(fit['id']+' / '+p['id'],p['x']/100,p['y']/100,p['zCm']/100,p['w']/100,p['d']/100,p['hCm']/100,
+                mat=p['material'],bevel=.001,kind='furniture',room=fit['roomId'])
+            obj['wallFitoutId']=fit['id'];obj['wallPartId']=p['id'];obj['wallPartRole']=p['role']
+            obj['furnitureId']=fit['id'];obj['furnitureFace']=fit['face']
 b.furnish=furnish
 
 original_kitchen_run=b.kitchen_run
@@ -187,6 +193,7 @@ def manifest(data,openings,src):
         return value
     result=paths(result);result.update(version=data['version'],schemeId='suite',layout=data['layout'],appearance=data['appearance'])
     result['design']={'style':'暖白浅木','palette':['#F5F2ED','#C5B9A7','#D5CFC6','#8D9B8F']}
+    result['wallFitouts']=data.get('wallFitouts',[])
     descriptions={n['roomId']:n['text'] for n in data['renovationNotes']}
     for room in result['rooms']:
         if room['id'] in descriptions:room['description']=descriptions[room['id']]

@@ -51,6 +51,16 @@ for fid in ['study_full_desk','bed_b_niche_console']:
     top=next(m for n,m in model.items() if m['extras'].get('furnitureId')==fid and 'continuous tabletop' in n.replace('_',' '))
     assert near([top['bounds'][0][1],top['bounds'][1][1]],[.73,.76]),'Actual tabletop, not a solid generic block'
 assert manifest['appearance']['preset']=='soft-warm'
+assert manifest['wallFitouts']==data['wallFitouts'],'Manifest bookwall must match source'
+for fit in data.get('wallFitouts',[]):
+    parts=[m for m in model.values() if m['extras'].get('wallFitoutId')==fit['id']]
+    assert len(parts)==len(fit['parts']),'Every declared bookcase component is a real mesh'
+    for p in fit['parts']:
+        mesh=next(m for m in parts if m['extras'].get('wallPartId')==p['id'])
+        assert mesh['extras']['wallPartRole']==p['role']
+        expected_lo=[p['x']/100,p['zCm']/100,p['y']/100]
+        expected_hi=[(p['x']+p['w'])/100,(p['zCm']+p['hCm'])/100,(p['y']+p['d'])/100]
+        assert near(mesh['bounds'][0],expected_lo) and near(mesh['bounds'][1],expected_hi),'Actual bookwall bounds differ: '+p['id']
 window_parts=[m for m in model.values() if m['extras'].get('openingId')=='window_kitchen_balcony']
 assert len(window_parts)==17,('Kitchen internal window real parts',len(window_parts))
 glass=[m for m in window_parts if m['extras'].get('windowRole')=='glazing']
