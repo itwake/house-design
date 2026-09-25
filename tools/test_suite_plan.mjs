@@ -5,7 +5,8 @@ import {createRequire} from 'node:module';
 import {fileURLToPath} from 'node:url';
 import vm from 'node:vm';
 const root=new URL('../',import.meta.url),read=p=>readFile(new URL(p,root),'utf8');
-const source=await read('studio.js'),data=JSON.parse(await read('models/schemes/suite/design-data.json'));
+const variant=process.argv.includes('--family')?'family':'suite';
+const source=await read('studio.js'),data=JSON.parse(await read(`models/schemes/${variant}/design-data.json`));
 const start=source.indexOf('function planFurniture('),end=source.indexOf('\nfunction exportPlan(',start);
 assert.ok(start>=0&&end>start);
 const helpers=['areaOf','centroid','escapeHTML','storageRoleName'].map(name=>source.split(/\r?\n/).find(l=>new RegExp(`^const ${name}\\s*=`).test(l))).join('\n');
@@ -26,12 +27,18 @@ for(const room of data.rooms)assert.ok(svg.includes(`points="${room.points.map(p
 for(const [key,geometry]of [['主卧衣柜',[325,12,60,224]],['次卧衣柜',[12,262,180,60]]]){const f=data.furniture.find(f=>f.name===key);assert.deepEqual([f.x,f.y,f.w,f.d],geometry,'Latest owner wardrobe choice '+key);}
 for(const id of ['study_north_sofa','study_full_desk','bed_b_niche_console'])assert.ok(svg.includes(`data-furniture-id="${id}"`),'Plan includes fitted furniture '+id);
 assert.ok(svg.includes('data-sofa-face="south"'),'Study sofa faces south, with back against north wall');
+if(variant==='family'){
+  assert.equal((svg.match(/data-family-garage=/g)||[]).length,1);
+  assert.equal((svg.match(/data-garage-item=/g)||[]).length,2);
+  assert.equal((svg.match(/data-garage-part=/g)||[]).length,7);
+  assert.ok(svg.includes('1630×1500')&&svg.includes('取车时暂占玄关'));
+}
 if(process.argv.includes('--render')){
   const sharp=createRequire(import.meta.url)('sharp');
   const out=new URL('tmp/',root);await mkdir(out,{recursive:true});
   // Browser XMLSerializer expands HTML's valueless data attributes to "".
   const image=svg.replace(/\s(data-[\w-]+)(?=[\s/>])/g,' $1=""').replace('<svg ','<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="2000" style="font-family:Microsoft YaHei,SimSun,sans-serif" ');
-  await writeFile(new URL('suite-plan.svg',out),image);
-  await sharp(Buffer.from(image)).flatten({background:'#fcfaf5'}).png().toFile(fileURLToPath(new URL('suite-plan.png',out)));
+  await writeFile(new URL(variant+'-plan.svg',out),image);
+  await sharp(Buffer.from(image)).flatten({background:'#fcfaf5'}).png().toFile(fileURLToPath(new URL(variant+'-plan.png',out)));
 }
 console.log('PASS actual suite SVG: own room polygons and relocated doors, labeled private foyer, master desk/chair absent, three bays/kitchen slider retained, west master wardrobe and south B wardrobe.');

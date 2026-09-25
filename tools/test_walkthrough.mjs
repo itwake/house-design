@@ -7,7 +7,7 @@ import * as THREE from '../vendor/three/three.module.js';
 import * as walk from '../walkthrough.js';
 const {buildWalkWorld,findWalkStart,advanceWalk,movementVector,WalkController,WALK_STARTS,WALK_RADIUS,WALK_EYE_HEIGHT,isWalkDoorInfill}=walk;
 const root=new URL('../',import.meta.url),read=p=>readFile(new URL(p,root),'utf8');
-const suite=process.argv.includes('--suite'),prefix=suite?'models/schemes/suite/':'models/';
+const family=process.argv.includes('--family'),suite=family||process.argv.includes('--suite'),schemeIndex=family?2:suite?1:0,prefix=family?'models/schemes/family/':suite?'models/schemes/suite/':'models/';
 const data=JSON.parse(await read(prefix+'design-data.json'));
 const manifest=JSON.parse(await read(prefix+'scene-manifest.json'));
 const catalog=JSON.parse(await read('models/design-schemes.json'));
@@ -124,7 +124,7 @@ c.dispose();for(const n of [e.win,e.doc,e.canvas,...e.pads])for(const handlers o
 const ui=environment(),camera=new THREE.PerspectiveCamera(37,1000/700,.35,80),calls={orbit:0,renders:0,frames:0,storage:0};
 const controls={enabled:true,target:new THREE.Vector3(4.2,.6,7),maxDistance:45,update:()=>calls.orbit++};
 const scene=new THREE.Scene(),model=new THREE.Group();
-const glb=await readFile(new URL(catalog.schemes[suite?1:0].model,root));
+const glb=await readFile(new URL(catalog.schemes[schemeIndex].model,root));
 const gltf=JSON.parse(glb.subarray(20,20+glb.readUInt32LE(12)).toString());
 const parents=new Map();gltf.nodes.forEach((n,i)=>(n.children||[]).forEach(c=>parents.set(c,i)));
 const semantics=i=>{const out={};for(let p=i;p!==undefined;p=parents.get(p))for(const [k,v]of Object.entries(gltf.nodes[p].extras||{}))if(out[k]===undefined)out[k]=v;return out};
@@ -147,9 +147,9 @@ const shade=shades.find(b=>Math.abs(b.getCenter(new THREE.Vector3()).x-6.48)<.01
 assert.ok(shade,'Actual GLB floor lampshade found');assert.ok(shade.min.x>=6.26-1e-5&&shade.max.x<=6.70+1e-5&&shade.min.z>=8.76-1e-5&&shade.max.z<=9.20+1e-5,'Supplementary collider encloses actual lampshade');
 assert.equal(new Set(doorNodes.map(d=>d.meta.openingId)).size,8,'Actual GLB has eight door assemblies');
 for(const {n,meta}of doorNodes){const m=new THREE.Mesh(new THREE.BoxGeometry(.1,.1,.1),new THREE.MeshStandardMaterial());m.name=n.name;m.userData=meta;model.add(m)}
-const context=vm.createContext({...walk,THREE,URL,URLSearchParams,console,document:ui.doc,window:ui.win,matchMedia:()=>({matches:false}),setTimeout:()=>0,clearTimeout:()=>{},requestAnimationFrame:()=>++calls.frames,cancelAnimationFrame:()=>{},performance:{now:()=>0},sessionStorage:{setItem:()=>calls.storage++},test:{data,manifest,catalog,camera,controls,scene,model,canvas:ui.canvas,calls,suite}});
+const context=vm.createContext({...walk,THREE,URL,URLSearchParams,console,document:ui.doc,window:ui.win,matchMedia:()=>({matches:false}),setTimeout:()=>0,clearTimeout:()=>{},requestAnimationFrame:()=>++calls.frames,cancelAnimationFrame:()=>{},performance:{now:()=>0},sessionStorage:{setItem:()=>calls.storage++},test:{data,manifest,catalog,camera,controls,scene,model,canvas:ui.canvas,calls,suite,schemeIndex}});
 vm.runInContext(source.replace(/^import .*\r?\n/gm,'').replace(/\binit\(\);\s*$/,''),context);
-vm.runInContext(`data=test.data;manifest=test.manifest;scheme=test.catalog.schemes[test.suite?1:0];rooms=manifest.rooms;three=THREE;camera=test.camera;controls=test.controls;scene=test.scene;model=optimizeStaticModel(test.model,THREE,()=>{throw Error('Door should not be merged')});renderer={domElement:test.canvas,setSize:()=>{},render:()=>test.calls.renders++};state.ready=true;setupWalk();`,context);
+vm.runInContext(`data=test.data;manifest=test.manifest;scheme=test.catalog.schemes[test.schemeIndex];rooms=manifest.rooms;three=THREE;camera=test.camera;controls=test.controls;scene=test.scene;model=optimizeStaticModel(test.model,THREE,()=>{throw Error('Door should not be merged')});renderer={domElement:test.canvas,setSize:()=>{},render:()=>test.calls.renders++};state.ready=true;setupWalk();`,context);
 const api=vm.runInContext('({startWalk,stopWalk,focusRoom,switchView,resizeScene,tick,state,walkthrough,walkWorld,walkDoorParts,walkSlidingParts,walkThresholds,setWalls,bindControls,model})',context);
 assert.equal(ui.node('#start-walk').disabled,false);assert.equal(api.walkthrough.listeners.length,37,'Four direction pads and canvas input wired');
 assert.ok(!api.walkDoorParts.some(p=>p.userData.openingId==='door_kitchen'),'Kitchen leaves must never disappear');

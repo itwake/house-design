@@ -1,10 +1,10 @@
-import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.2.4';
-import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.2.4';
+import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.3.0';
+import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.3.0';
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
-const UI_REVISION = '3.2.4';
+const UI_REVISION = '3.3.0';
 document.documentElement.dataset.uiRevision = UI_REVISION;
-let ASSET_REVISION = '3.2.4';
+let ASSET_REVISION = '3.3.0';
 const revisedAsset = path => {const url=new URL(path,document.baseURI);url.searchParams.set('v',ASSET_REVISION);return url.href};
 const icons = {
   cube:'<path d="m8 2 6 3.5v5L8 14l-6-3.5v-5L8 2Z M2 5.5 8 9l6-3.5 M8 9v5 M5 3.8l6 3.5"/>',
@@ -147,7 +147,7 @@ function renderBayFitouts(){
     img.addEventListener('error',failed);img.addEventListener('load',loaded);if(img.complete){if(img.naturalWidth)loaded();else failed()}
   });
 }
-const storageRenderPath=fitout=>schemeRender(scheme,fitout.type==='entry'?'entry-storage':'sideboard');
+const storageRenderPath=fitout=>schemeRender(scheme,fitout.type==='garage'?'storage-library':fitout.type==='entry'?'entry-storage':'sideboard');
 const storageRoleName=role=>({shoe_lower:'闭门鞋柜',key_niche:'钥匙置物格',upper_cabinet:'浅上柜',entry_accessories:'随手置物占位',shoe_bench:'换鞋坐位',bench_back:'镜面 / 挂物背板',sideboard_base:'杯盘下柜',sideboard_niche:'干式饮品格',dining_accessories:'杯具 / 茶罐示意',sideboard_blind_base:'转角盲区',sideboard_corner_niche:'转角开放衔接',upper_blind_corner:'上柜盲角'})[role]||role;
 function storageElevation(fitout){
   const parts=fitout.parts||[];if(!parts.length)return '';
@@ -193,7 +193,13 @@ function storageElevation(fitout){
 }
 function showStorageFitouts(){if(!data){toast('空间数据正在载入，请稍后重试');return}const dialog=$('#storage-dialog');if(!dialog.open)dialog.showModal();dialog.scrollTop=0}
 function renderStorageFitouts(){
-  const fitouts=data?.storageFitouts||[],references=data?.designReferences||[];
+  const fitouts=[...(data?.storageFitouts||[])],references=[...(data?.designReferences||[])];
+  if(data.garage){
+    const entryIndex=fitouts.findIndex(f=>f.type==='entry');
+    if(entryIndex>=0)fitouts[entryIndex]={...fitouts[entryIndex],title:'玄关 · 左侧取车，右侧存鞋',summary:'本图展示入户左侧新取车区。右手边浅鞋柜保持原位，鞋柜的分层尺寸见下方立面，完整位置可在平面与3D查看；鞋、车辆与餐具分区。'};
+    const g=data.garage;references.push(...g.references.map((r,i)=>({...r,id:'garage-ref-'+i,platform:'已核实公开原文',avoid:'不照搬案例户型、车辆或柜体尺寸。'})));
+    fitouts.push({id:g.id,title:g.title,type:'garage',roomId:'living',parts:[],summary:'以完整地面停车位替代密集柜格；东侧取车，图示四叶折叠门已向库内收起。高处层架放轻量、低频物品；重物低放，固定防倾倒与儿童防攀爬须深化。',dimensions:[`外包 ${g.w*10}×${g.d*10}mm，约${g.metrics.footprintM2.toFixed(2)}㎡占地`,`模型净开${g.opening.clearWidthCm*10}mm；库外至右鞋柜约${g.metrics.entryAisleCm*10}mm`,...g.items.map(f=>`${f.label}包络 ${f.w*10}×${f.d*10}×${f.hCm*10}mm（非实物测量）`)],conditions:[...g.conditions,'模拟取车时先保持入户门关闭，转向后将车向北移开门的扫掠范围，再开门。尚未计入人体操作余量、具体车型转向和门外走廊，须实车排演。'],references:g.references.map((r,i)=>'garage-ref-'+i)});
+  }
   $('#storage-fitout-cards').innerHTML=fitouts.map((fitout,index)=>{
     const refs=(fitout.references||[]).map(id=>references.find(ref=>ref.id===id)).filter(ref=>ref&&referenceURL(ref.url));
     return `<article class="bay-fitout-card storage-fitout-card" data-storage-card="${escapeHTML(fitout.id)}"><button class="bay-fitout-image" data-storage-render="${escapeHTML(fitout.id)}" aria-label="放大${escapeHTML(fitout.title)}同源渲染"><img src="${storageRenderPath(fitout)}" alt="${escapeHTML(fitout.title)} · Blender 条件收纳方案" loading="lazy"/><span class="bay-render-pending" hidden></span><span class="bay-image-label">BLENDER / 同源收纳设计${icon('expand')}</span></button><div class="bay-fitout-copy"><p class="bay-fitout-kicker">0${index+1} / ${fitout.type==='entry'?'ARRIVE & UNWIND':'STORE & SERVE'}</p><h3>${escapeHTML(fitout.title)}</h3><p class="bay-fitout-summary">${escapeHTML(fitout.summary||'')}</p><ul class="bay-fitout-dimensions" aria-label="方案尺寸">${(fitout.dimensions||[]).map(text=>`<li>${escapeHTML(detailText(text))}</li>`).join('')}</ul>${storageElevation(fitout)}<details><summary>适用条件与参考原文 <span>＋</span></summary><div class="bay-fitout-details"><h4>现场复核后，再深化下单</h4><ul>${(fitout.conditions||[]).map(text=>`<li>${escapeHTML(detailText(text))}</li>`).join('')}</ul><h4>参考原文 · 借鉴，不照搬</h4><div class="bay-references">${refs.map(ref=>`<article><a href="${escapeHTML(referenceURL(ref.url))}" target="_blank" rel="noopener noreferrer">${escapeHTML(ref.title)} <span>↗</span></a><small>${escapeHTML([ref.platform,ref.author].filter(Boolean).join(' / '))}</small><p><b>借鉴</b>${escapeHTML(detailText(ref.borrow))}</p><p><b>不照搬</b>${escapeHTML(detailText(ref.avoid))}</p></article>`).join('')}</div></div></details><button class="bay-room-button" data-storage-room="${escapeHTML(fitout.id)}">回到玄关 · 餐厅模型 <span>↗</span></button></div></article>`;
@@ -306,6 +312,7 @@ function updateRender(){
 }
 
 function planFurniture(f){
+  if(f.garageFitoutId)return '';
   const direction=f.headDirection,isBed=['east','west','north','south'].includes(direction);
   const frame=`<rect data-furniture-frame x="${f.x}" y="${f.y}" width="${f.w}" height="${f.d}" rx="${f.tone==='fabric'?6:2}" fill="${({wood:'#d2b791',cabinet:'#d4c9b4',fabric:'#f8f3e8',sanitary:'#faf9f3',wet:'#d5dedb',metal:'#babbb0'})[f.tone]||'#e3d9c5'}" stroke="#b4a68e" stroke-width="1.5"${!isBed&&f.a?` transform="rotate(${f.a} ${f.x+f.w/2} ${f.y+f.d/2})"`:''}/>`;
   if(!isBed){
@@ -385,6 +392,13 @@ function planSlidingDoor(door){
   return `<g data-sliding-door="${escapeHTML(door.id)}"><title>1700mm条件门洞；三扇三轨向北叠停，模型净开约1033mm；此平面显示合拢位置。</title>${leaves}<text x="${door.x1+24}" y="${door.y2-25}" transform="rotate(-90 ${door.x1+24} ${door.y2-25})" font-size="14" fill="#807056">1700 三轨推拉</text></g>`;
 }
 
+function planGarage(){
+  const g=data.garage;if(!g)return '';
+  const sides=g.parts.filter(p=>['panel','folded-door'].includes(p.role)).map(p=>`<rect data-garage-part="${escapeHTML(p.id)}" x="${p.x}" y="${p.y}" width="${p.w}" height="${p.d}" fill="${p.role==='panel'?'#908d87':'#c5b9a7'}"/>`).join('');
+  const vehicles=g.items.map(p=>`<g data-garage-item="${escapeHTML(p.id)}"><rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.d}" rx="5" fill="${p.kind==='child-bike'?'#c8d3c5':'#e0d8cc'}" stroke="#8a9a88" stroke-width="1.3"/><text x="${p.x+p.w/2}" y="${p.y+p.d/2-1}" text-anchor="middle" font-size="10" fill="#5d685c">${escapeHTML(p.label)}</text><text x="${p.x+p.w/2}" y="${p.y+p.d/2+13}" text-anchor="middle" font-size="9" fill="#727a6b">${p.w*10}×${p.d*10}</text></g>`).join('');
+  return `<g data-family-garage="${escapeHTML(g.id)}" pointer-events="none"><title>外包1630×1500；东向取车。车辆仅示意；层架位于车上方，非地面隔板。</title><rect x="${g.x}" y="${g.y}" width="${g.w}" height="${g.d}" fill="#efeee6"/>${sides}${vehicles}<rect data-garage-upper-rack x="215" y="1243" width="49" height="142" fill="none" stroke="#9d8e73" stroke-dasharray="4 4"/><path d="M375 1272h65m-8-6 8 6-8 6 M375 1342h65m-8-6 8 6-8 6" fill="none" stroke="#829781" stroke-width="2"/><text x="293" y="${g.y-10}" text-anchor="middle" font-size="14" fill="#6e8069">大件库 · 1630×1500</text><text x="423" y="1390" text-anchor="middle" font-size="9" fill="#829781">取车时暂占玄关</text></g>`;
+}
+
 function makePlan(){
   const e=data.envelope||[[0,0],[841,0],[841,1401],[0,1401]],xs=e.map(p=>p[0]),ys=e.map(p=>p[1]);
   const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
@@ -429,7 +443,7 @@ function makePlan(){
   const bayFrames=bays.map(b=>`<g data-bay-frame-layer="${escapeHTML(b.window.id)}"><polygon data-bay-front-frame data-frame-finish="${escapeHTML(bayFrameFinish)}" points="${b.frame.map(p=>p.join(',')).join(' ')}" fill="${bayFrameColor}"/><line data-bay-glass x1="${b.frontA[0]}" y1="${b.frontA[1]}" x2="${b.frontB[0]}" y2="${b.frontB[1]}" stroke="#8fa6a8" stroke-width="4"/></g>`).join('');
   const topDimensionY=planMinY-52,leftDimensionX=planMinX-55;
   const dimensions=`<g stroke="#b4a58e" stroke-width="1.5" fill="none"><path d="M0 ${topDimensionY}H687 M0 ${topDimensionY-14}v28 M687 ${topDimensionY-14}v28 M${leftDimensionX} 0v1401 M${leftDimensionX-14} 0h28 M${leftDimensionX-14} 1401h28 M200 1455h641 M200 1441v28 M841 1441v28"/></g><g fill="#9c8d73" font-size="19" text-anchor="middle"><text x="343" y="${topDimensionY-17}">6,870</text><text x="520" y="1484">6,410</text><text x="${leftDimensionX-20}" y="700" transform="rotate(-90 ${leftDimensionX-20} 700)">14,010</text><text x="793" y="${topDimensionY-2}" font-size="23">N ↑</text></g>`;
-  $('#floor-plan').innerHTML=`<svg viewBox="${planMinX-115} ${planMinY-110} ${maxX-planMinX+160} ${maxY-planMinY+215}" role="img" aria-label="由同源尺寸数据绘制的三房两卫平面图，含飘窗与玄关餐边收纳条件方案；窗台投影不计入房间面积">${polygons}${furniture}${storage}${walls}${opening((data.windows||[]).filter(w=>w.windowType!=='bay'),'#8fa6a8')}${bayWindows}${opening(data.doors,'#c2a071')}${fitouts}${bayFrames}${wallFitouts}${labels.join('')}${dimensions}</svg>`;
+  $('#floor-plan').innerHTML=`<svg viewBox="${planMinX-115} ${planMinY-110} ${maxX-planMinX+160} ${maxY-planMinY+215}" role="img" aria-label="由同源尺寸数据绘制的三房两卫平面图，含飘窗与玄关餐边收纳条件方案；窗台投影不计入房间面积">${polygons}${furniture}${storage}${planGarage()}${walls}${opening((data.windows||[]).filter(w=>w.windowType!=='bay'),'#8fa6a8')}${bayWindows}${opening(data.doors,'#c2a071')}${fitouts}${bayFrames}${wallFitouts}${labels.join('')}${dimensions}</svg>`;
   $$('#floor-plan [data-plan-room]').forEach(p=>{p.addEventListener('click',()=>selectRoom(p.dataset.planRoom));p.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectRoom(p.dataset.planRoom)}})});
 }
 

@@ -29,7 +29,7 @@ ROOT = Path(__file__).resolve().parents[1]
 VIEWS = ("overall", "living", "dining", "master", "bedroom-b", "study",
          "kitchen", "master-bath", "guest-bath", "balcony", "bay-master",
          "bay-tea", "bay-living", "entry-storage", "sideboard")
-ACTIVE_IDS = ("wood", "suite")
+ACTIVE_IDS = ("wood", "suite", "family")
 ARCHIVED_IDS = ("terracotta", "moss", "cobalt")
 ALLOWED_SHADES = {"Organic linen pendant", "Organic linen pendant.001"}
 # Ten micrometres is far below both survey precision and furniture tolerance.
@@ -471,7 +471,7 @@ class Audit:
         self.self_test()
         data = load_json(ROOT / "models/design-schemes.json")
         schemes = data.get("schemes", [])
-        self.check(tuple(item.get("id") for item in schemes) == ACTIVE_IDS, "Wood and suite are the only active real layouts")
+        self.check(tuple(item.get("id") for item in schemes) == ACTIVE_IDS, "Wood, suite and family are the only active real layouts")
         archive = data.get("archivedPalettes", [])
         self.check(tuple(item.get("id") for item in archive) == ARCHIVED_IDS, "Former palette experiments are archived, not active layouts")
         if self.archived:
@@ -518,7 +518,7 @@ class Audit:
             if sid == "wood":
                 self.check(scheme["model"] == "models/huiyayuan-wood.glb" and scheme["manifest"] == "models/scene-manifest.json" and scheme["blend"] == "models/huiyayuan-wood.blend",
                            "wood: original model, Blender source and manifest remain the referenced baseline")
-            elif sid == "suite":
+            elif sid in ("suite", "family"):
                 self.check(scheme["geometrySource"] != data["geometrySource"] and manifest["source"] == scheme["geometrySource"], "suite: independent geometry source, not a palette alias")
                 self.check(manifest.get("layout", {}).get("baseSourceSha256") == source_hash, "suite: derives from the preserved baseline")
                 glbs[sid] = GLB(relative_file(scheme["model"]))
@@ -527,6 +527,10 @@ class Audit:
                 self.check(len(set(glbs[sid].image_hashes)-set(base_glb.image_hashes)) >= 4, "suite: four genuinely new low-yellow embedded wood/fabric/stone textures")
                 self.check(manifest.get('appearance') == scheme.get('appearance') and manifest.get('appearance',{}).get('preset') == 'soft-warm', "suite: declared warm-white palette matches model manifest")
                 self.check(glbs[sid].file_hash != base_glb.file_hash, "suite: actual model differs from baseline")
+                if sid == 'family':
+                    parent = relative_file(manifest['layout']['parentSource'])
+                    self.check(manifest['layout']['parentSourceSha256'] == sha(parent.read_text(encoding='utf-8').encode('utf-8')), 'family: derives from preserved suite source')
+                    self.check(manifest.get('schemeId') == 'family' and manifest.get('garage',{}).get('id') == 'family_garage', 'family: independent garage and manifest identity')
             else:
                 self.check(protected_manifest(manifest) == protected_manifest(baseline), f"{sid}: rooms, openings, cameras, dimensions and conditions exactly match baseline")
                 self.check(all(note in manifest.get("notes", []) for note in baseline.get("notes", [])), f"{sid}: all baseline safety/measurement notes retained")
