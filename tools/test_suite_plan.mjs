@@ -21,6 +21,7 @@ assert.ok(svg.includes('data-suite-entry="private"')&&svg.includes('730 × 1530'
 assert.equal((svg.match(/data-hinged-door=/g)||[]).length,4,'Four real open hinged doors');
 assert.ok(svg.includes('data-surface-slider="door_c"'),'Study wall-mounted sliding door');
 for(const id of ['a_desktop','a_support','a_accessories','a_chair'])assert.ok(!svg.includes(`data-part-id="${id}"`),'Master item removed: '+id);
+for(const id of ['l_desktop','l_support','l_accessories','l_adult_chair','l_child_chair'])assert.ok(!svg.includes(`data-part-id="${id}"`),'Living item removed: '+id);
 assert.equal((svg.match(/data-bay-window=/g)||[]).length,3,'Keep three real bay windows');
 assert.equal((svg.match(/data-sliding-panel=/g)||[]).length,variant==='laundry'?6:3,'Keep kitchen and laundry sliders');
 for(const room of data.rooms)assert.ok(svg.includes(`points="${room.points.map(p=>p.join(',')).join(' ')}"`),'Actual polygon '+room.id);

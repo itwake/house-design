@@ -57,8 +57,10 @@ for(const item of g.items){
   assert.ok(!hit(parked,door),'Park vehicle north before opening entry door');
  }
 }
-// Explicitly retain all prior source/model/render bytes from the published version.
-const baseline='5a13e8b',tree=execFileSync('git',['ls-tree','-r',baseline,'models','assets'],{cwd,encoding:'utf8'}).trim().split('\n').map(line=>{const [meta,path]=line.split('\t');return {path,sha:meta.split(' ')[2]}}).filter(p=>p.path!=='models/design-schemes.json');
+// Keep the historical originals/textures. The active suite's V3.4.1 desk
+// removal is verified mesh-by-mesh in validate_living_bay_models.py.
+const activeRefresh=/^(?:models\/schemes\/suite\/(?:design-data\.json|scene-manifest\.json|huiyayuan-wood\.(?:blend|glb))|assets\/schemes\/suite\/[^/]+\.jpg)$/;
+const baseline='5a13e8b',tree=execFileSync('git',['ls-tree','-r',baseline,'models','assets'],{cwd,encoding:'utf8'}).trim().split('\n').map(line=>{const [meta,path]=line.split('\t');return {path,sha:meta.split(' ')[2]}}).filter(p=>p.path!=='models/design-schemes.json'&&!activeRefresh.test(p.path));
 const hashes=execFileSync('git',['hash-object','--stdin-paths'],{cwd,encoding:'utf8',input:tree.map(p=>p.path).join('\n')+'\n'}).trim().split('\n');
 tree.forEach((p,i)=>assert.equal(hashes[i],p.sha,'Preserve existing asset '+p.path));
 console.log(`PASS family storage: inherited shell/rooms/furniture protected, four dining chairs, two vehicle envelopes, ${poses} sampled extraction/rotation poses, ${tree.length} old assets byte-identical. Vehicle test excludes user body and unspecified real hardware.`);

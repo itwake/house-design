@@ -1,6 +1,6 @@
 {
   "name": "荟雅苑 · 家政整墙方案",
-  "version": "3.4.0 · laundry wall",
+  "version": "3.4.1 · laundry · 客厅窗前留白",
   "unit": "cm",
   "north": "图上方（临道路侧）",
   "palette": [
@@ -1749,7 +1749,8 @@
     "次卧床尾470mm、床侧柜前620mm，主卧柜前800mm；均为模型外轮廓净距，不等于舒适度或合规认证。",
     "书房桌面2720mm含端板钢架及支脚示意；北墙沙发2000×850mm为占位，非沙发床展开状态。柜体两端施工收口须复尺。",
     "730mm小玄关、780mm公共走廊仍紧凑；主卫开门板在盆前，洗手须先关门。",
-    "厘米坐标并非实测；改墙、门框五金、承重梁柱、排水防水和窗台防坠须专业核验。"
+    "厘米坐标并非实测；改墙、门框五金、承重梁柱、排水防水和窗台防坠须专业核验。",
+    "V3.4.1：客厅飘窗前的长桌、支架、桌面用品及两把椅子全部移除，窗前留空。保留窗体、原台体和已有薄饰面，不凭照片拆改或猜高度。现模型900mm台高是旧占位，并非照片实测；低台软垫休憩只作后续建议，尚未加建。"
   ],
   "renovationNotes": [
     {
@@ -1774,7 +1775,7 @@
     },
     {
       "roomId": "living",
-      "text": "A洗衣机与烘干机在靠厨房共墙落地并排，980mm浅盆台面；B东侧300mm浅书架，C阳台推拉门外移约288mm拉齐门框与柜面。沙发和茶几西移800mm、电视柜西移400mm，餐桌及7字柜保留。"
+      "text": "A洗衣机与烘干机在靠厨房共墙落地并排，980mm浅盆台面；B东侧300mm浅书架，C阳台推拉门外移约288mm拉齐门框与柜面。沙发和茶几西移800mm、电视柜西移400mm，餐桌及7字柜保留。 客厅飘窗前的长桌、支架、桌面用品及两把椅子全部移除，窗前留空。保留窗体、原台体和已有薄饰面，不凭照片拆改或猜高度。现模型900mm台高是旧占位，并非照片实测；低台软垫休憩只作后续建议，尚未加建。"
     },
     {
       "roomId": "kitchen",
@@ -1885,83 +1886,26 @@
       "id": "bay_living_family",
       "openingId": "window_living_west",
       "roomId": "living",
-      "type": "family_desk",
-      "title": "客厅 · 并肩办公与学习",
-      "summary": "完整2米浅木长台放在飘窗室内侧，成人与孩子各约1米工作面；桌下不借实台空间，电视仍在北侧实墙。 新走廊方案仅将成人活动椅向南150mm，固定桌面和儿童椅不动，给走廊入口转角让位。",
+      "type": "clear_ledge",
+      "title": "客厅 · 窗前留白，低台待复尺",
+      "summary": "客厅飘窗前的长桌、支架、桌面用品及两把椅子全部移除，窗前留空。保留窗体、原台体和已有薄饰面，不凭照片拆改或猜高度。现模型900mm台高是旧占位，并非照片实测；低台软垫休憩只作后续建议，尚未加建。",
       "dimensions": [
-        "整桌2000×650，高750mm，台板30mm",
-        "两席各约1000mm；椅52×52cm示意",
-        "示意椅后800mm通道，椅不得无限后退",
-        "腿位在室内侧，台体不拆、不开脚洞"
+        "原长桌2000×650mm及两把520×520mm椅已移除",
+        "客厅窗台模型暂仍为900mm旧占位，照片显示更低，实高待量",
+        "原窗体、台体和薄饰面保留；不增加地台或窗前柜"
       ],
       "conditions": [
-        "儿童身高未知，750mm桌面不是通用儿童规格；需试坐，调整桌椅/足托，不合适时采用分段升降工作面。",
-        "临窗桌椅增加攀爬风险，完成专业防坠与限位前不得启用儿童学习位。",
-        "西向眩光用可调无绳卷帘、屏幕位置与独立任务灯控制，不能凭照片承诺不晒。",
-        "中央及两端薄支架示意，木板跨度、防挠与固定承载由厂家深化；无贯穿桌下抽屉。"
+        "先量完成地面至台面高度、台面净深、有效长度及窗扇扫掠范围，再决定软垫厚度。",
+        "优先考虑原台加可拆洗薄垫及少量靠垫，不抬高、不外挑。仅为成人短时休憩建议，未在本次模型中实施。",
+        "家有幼童：专业核对防坠、护栏、开窗限位及无绳窗帘后再决定是否设坐席；纱窗不能替代防坠。",
+        "不能从白色立面判断台下是否空心；不预设可挖空做抽屉或可拆原台。",
+        "先排查窗框渗水、返潮与石材边缘，再选透气、可拆洗材料；靠垫不得依靠玻璃受力。"
       ],
       "references": [
-        "xhs-desk-caution",
-        "smzdm-adjustable",
-        "sawyer-fitted-desk"
+        "living-low-bay-ideas",
+        "living-window-child-safety"
       ],
       "parts": [
-        {
-          "id": "l_desktop",
-          "role": "desktop",
-          "x": 214,
-          "y": 647,
-          "w": 65,
-          "d": 200,
-          "zCm": 72,
-          "hCm": 3,
-          "face": "east"
-        },
-        {
-          "id": "l_support",
-          "role": "desk_support",
-          "x": 214,
-          "y": 647,
-          "w": 65,
-          "d": 200,
-          "zCm": 0,
-          "hCm": 72,
-          "face": "east"
-        },
-        {
-          "id": "l_accessories",
-          "role": "desk_accessories",
-          "x": 217,
-          "y": 653,
-          "w": 56,
-          "d": 187,
-          "zCm": 75,
-          "hCm": 45,
-          "face": "east"
-        },
-        {
-          "id": "l_adult_chair",
-          "role": "chair",
-          "x": 285,
-          "y": 692,
-          "w": 52,
-          "d": 52,
-          "zCm": 0,
-          "hCm": 80,
-          "face": "west"
-        },
-        {
-          "id": "l_child_chair",
-          "role": "chair",
-          "x": 285,
-          "y": 775,
-          "w": 52,
-          "d": 52,
-          "zCm": 0,
-          "hCm": 80,
-          "face": "west",
-          "footrest": true
-        },
         {
           "id": "l_ledge",
           "role": "raised_ledge",
@@ -2628,6 +2572,22 @@
       "url": "https://www.cpsc.gov/Newsroom/News-Releases/2026/CPSC-Urges-Families-to-Protect-Children-During-National-Window-Safety-Week",
       "borrow": "家具贴窗增加攀爬风险；纱窗不能防坠，应专门防护及限位。",
       "avoid": "仅作为风险提醒，不替代广州项目的专业设计、审查与验收。"
+    },
+    {
+      "id": "living-low-bay-ideas",
+      "title": "窗边卧榻：尺寸与软垫做法",
+      "platform": "100室内设计 · 案例汇编",
+      "url": "https://www.100.com.tw/article/1414",
+      "borrow": "参考可拆软垫、简洁窗边休憩位；常用坐面高度只作为试坐起点。",
+      "avoid": "网文不是本户量房或结构证明，不照搬台下柜和改台高度。"
+    },
+    {
+      "id": "living-window-child-safety",
+      "title": "让孩子尽情玩乐的空间 · 窗边安全",
+      "platform": "IKEA 官方安全指引",
+      "url": "https://www.ikea.com.tw/zh/safety-at-home/child/play",
+      "borrow": "避免窗边可攀爬家具，防坠与安全锁优先，窗帘避免可接触拉绳。",
+      "avoid": "不代替本户高层窗体、防护及限位的专业复核；不把纱窗当防坠。"
     }
   ],
   "layout": {
@@ -2649,7 +2609,7 @@
     "revision": "Fitted",
     "variant": "laundry-wall",
     "parentSource": "models/schemes/suite/design-data.json",
-    "parentSourceSha256": "d5e4552bbff39aacc022116dcaa54cdc4cf1240675f8f779e32b1a242421ca42"
+    "parentSourceSha256": "c4794770b3154edc5c9feede29eeb44cb60e53c73878166f4131f948cd901e78"
   },
   "appearance": {
     "preset": "soft-warm",
@@ -4257,7 +4217,7 @@
   ],
   "kitchenReference": {
     "source": "models/schemes/family/design-data.json",
-    "sourceSha256": "a634202224ccb252d58201807f9cd459047f64fc534a8b40eaa4130b9ebea678",
+    "sourceSha256": "d27ed51ecb653be8a811975b19cfacd05e7d1a0e063e2dba69579fb88c87cefc",
     "scope": "只同步厨房开窗、地柜和高柜布局，不继承方案3的餐桌和大件库。"
   },
   "modelAddons": {
@@ -6537,5 +6497,19 @@
         "borrow": "参考集中洗烘、台面和家政收纳的组织方式，不照搬案例尺度。"
       }
     ]
+  },
+  "livingBayRevision": {
+    "version": "3.4.1",
+    "removedPartIds": [
+      "l_desktop",
+      "l_support",
+      "l_accessories",
+      "l_adult_chair",
+      "l_child_chair"
+    ],
+    "measured": false,
+    "photoObservation": "用户2026-09-26照片显示客厅飘窗较低；照片无可靠尺寸标定。",
+    "sillHeightStatus": "unmeasured-legacy-placeholder",
+    "scope": "只移除窗前工作家具；不改变原窗和台体。"
   }
 }

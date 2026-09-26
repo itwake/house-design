@@ -1615,6 +1615,8 @@ def manifest(data, openings, src):
     }
     if any(op.get("windowType")=="bay" for op in openings):
         desc.update(BAY_DESCRIPTIONS)
+    if data.get('livingBayRevision'):
+        desc['living']='客厅西飘窗前不再设置书桌或椅子，电视与其他家具保留。'
     fitouts_by_room={item["roomId"]:item for item in data.get("bayFitouts",[])}
     for view,rid,_name in mapping:
         if rid in fitouts_by_room and view!="dining":
@@ -1643,7 +1645,7 @@ def manifest(data, openings, src):
             rooms[-1]["conditions"]=[condition for item in storage for condition in item.get("conditions",[])]
     result={"version":"3.0 Blender 原木实景模型","model":"models/huiyayuan-wood.glb","blend":"models/huiyayuan-wood.blend","units":"m","source":str(src.relative_to(ROOT)).replace("\\","/"),"sourceSha256":hashlib.sha256(src.read_bytes().replace(b"\r\n", b"\n")).hexdigest(),"bounds":{"min":[0,-.012,0],"max":[8.41,2.7,14.01]},"overviewCamera":{"position":three(VIEWS["overall"][0]),"target":three(VIEWS["overall"][1])},"overallRender":"assets/blender-renders/overall.jpg","rooms":rooms,"openings":openings,"design":{"style":"现代原木","palette":["#eee9df","#bb956b","#d4c9b5","#758364","#b98165"]},"notes":["真实网格由厘米平面数据转换为米；渲染与交互使用同一 Blender 场景。","整体与房间鸟瞰采用可拆墙展示；室内机位使用完整墙体与实际开口。","C 级门窗、层高与统一墙厚仍为待现场复尺的建模假设。"]}
     result["bounds"]=geometry_bounds(data,openings)
-    detail_views={"office_vanity":"bay-master","bare_ledge":"bay-master","tea_seat":"bay-tea","family_desk":"bay-living"}
+    detail_views={"office_vanity":"bay-master","bare_ledge":"bay-master","tea_seat":"bay-tea","family_desk":"bay-living","clear_ledge":"bay-living"}
     result["bayDetails"]=[]
     for fitout in data.get("bayFitouts",[]):
         view=detail_views[fitout["type"]]
@@ -1658,6 +1660,10 @@ def manifest(data, openings, src):
         result["notes"].append("入户右侧浅鞋柜与左侧7字杯盘柜独立分腔；仅餐柜北两模块设闭合浅抽屉，250 mm 伸出限位、进出通道及桌椅退让均属条件校核，其余下柜为满高移门。封闭转角不计可用容量。柜体锚固、灯带/插座、门套把手限位、电箱与实际净深必须现场深化。")
     if any(op.get("windowType")=="bay" for op in openings):
         result["notes"].append(BAY_NOTE)
+    if data.get('livingBayRevision'):
+        result['livingBayRevision']=data['livingBayRevision']
+        result['notes']=[note.replace('客厅双人桌保留。','客厅窗前桌椅已移除，原台高待复尺。') for note in result['notes']]
+        result['notes'].append(next(f for f in data['bayFitouts'] if f['roomId']=='living')['summary'])
     (MODEL_DIR/"scene-manifest.json").write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding="utf-8")
 
 

@@ -404,10 +404,24 @@ class Audit:
                 self.errors.append(f"{sid}/{name}: existing image has no current final render provenance")
                 continue
             self.check(record.get("imageSha256") == image_hash, f"{sid}/{name}: actual JPEG hash matches final frame record")
-            self.check(record.get("baseBlendSha256") == manifest.get("baseBlendSha256") == self.base_blend_hash,
-                       f"{sid}/{name}: frame belongs to actual final baseline Blender scene")
-            self.check(record.get("sourceSha256") == manifest.get("sourceSha256") == self.source_hash,
-                       f"{sid}/{name}: frame belongs to current source geometry")
+            retained = record.get('retainedFrom')
+            if retained:
+                import subprocess
+                commit='c2e5a5f399709185b2e843c64e622a0373927602'
+                self.check(retained.get('commit')==commit and retained.get('manifest')==scheme['manifest'] and retained.get('view')==name,
+                           f'{sid}/{name}: retained reference has an explicit reviewed Git origin')
+                self.check(name not in ('overall','living','dining','bay-living'),f'{sid}/{name}: affected living views cannot use old frames')
+                previous=json.loads(subprocess.check_output(['git','show',commit+':'+scheme['manifest']],cwd=ROOT))
+                self.check({k:v for k,v in record.items() if k!='retainedFrom'}==previous['renderedViews'][name],
+                           f'{sid}/{name}: original image/camera/model provenance is preserved, not retrofitted')
+                prior_image=subprocess.check_output(['git','show',commit+':'+f'{prefix}/{name}.jpg'],cwd=ROOT)
+                self.check(sha(prior_image)==image_hash,f'{sid}/{name}: actual reference bytes equal the prior published image')
+                self.check(manifest.get('livingBayRevision',{}).get('removedPartIds')==['l_desktop','l_support','l_accessories','l_adult_chair','l_child_chair'],f'{sid}/{name}: reuse is limited to the scoped living furniture removal')
+            else:
+                self.check(record.get("baseBlendSha256") == manifest.get("baseBlendSha256") == self.base_blend_hash,
+                           f"{sid}/{name}: frame belongs to actual final baseline Blender scene")
+                self.check(record.get("sourceSha256") == manifest.get("sourceSha256") == self.source_hash,
+                           f"{sid}/{name}: frame belongs to current source geometry")
             if sid in ACTIVE_IDS:
                 frame = {"engine": "CYCLES", "width": spec["width"], "height": spec["height"],
                          "samples": spec["samples"], "denoise": True}

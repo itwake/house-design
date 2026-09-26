@@ -1,13 +1,13 @@
 {
-  "version": "3.3.0 · family storage",
+  "version": "3.4.1 · family · 客厅窗前留白",
   "model": "models/schemes/family/huiyayuan-wood.glb",
   "blend": "models/schemes/family/huiyayuan-wood.blend",
   "units": "m",
   "source": "models/schemes/family/design-data.json",
-  "sourceSha256": "a634202224ccb252d58201807f9cd459047f64fc534a8b40eaa4130b9ebea678",
+  "sourceSha256": "d27ed51ecb653be8a811975b19cfacd05e7d1a0e063e2dba69579fb88c87cefc",
   "bounds": {
     "min": [
-      0.0,
+      0,
       -0.012,
       -0.65
     ],
@@ -26,7 +26,7 @@
     "target": [
       4.2,
       0.3,
-      7.0
+      7
     ]
   },
   "overallRender": "assets/schemes/family/overall.jpg",
@@ -112,22 +112,22 @@
         "fov": 55.11
       },
       "render": "assets/schemes/family/living.jpg",
-      "description": "入户左侧新增1630×1500mm亲子大件库；1200×700mm四人餐桌北移950、西移250mm，7字餐柜改900mm短柜。储物库朝东取车，右鞋柜、厨房推拉门、客厅沙发和书房不动。儿童车、折叠婴儿车为待核型号的示意包络；出库转向时临时占用玄关。",
+      "description": "入户左侧新增1630×1500mm亲子大件库；1200×700mm四人餐桌北移950、西移250mm，7字餐柜改900mm短柜。储物库朝东取车，右鞋柜、厨房推拉门、客厅沙发和书房不动。儿童车、折叠婴儿车为待核型号的示意包络；出库转向时临时占用玄关。 客厅飘窗前的长桌、支架、桌面用品及两把椅子全部移除，窗前留空。保留窗体、原台体和已有薄饰面，不凭照片拆改或猜高度。现模型900mm台高是旧占位，并非照片实测；低台软垫休憩只作后续建议，尚未加建。",
       "features": [
         "同一 Blender 场景生成模型和渲染",
         "原木 · 奶油白 · 亚麻",
         "门窗尺寸现场复尺",
-        "整桌2000×650，高750mm，台板30mm",
-        "两席各约1000mm；椅52×52cm示意",
-        "示意椅后800mm通道，椅不得无限后退",
-        "腿位在室内侧，台体不拆、不开脚洞"
+        "原长桌2000×650mm及两把520×520mm椅已移除",
+        "客厅窗台模型暂仍为900mm旧占位，照片显示更低，实高待量",
+        "原窗体、台体和薄饰面保留；不增加地台或窗前柜"
       ],
       "fitoutId": "bay_living_family",
       "conditions": [
-        "儿童身高未知，750mm桌面不是通用儿童规格；需试坐，调整桌椅/足托，不合适时采用分段升降工作面。",
-        "临窗桌椅增加攀爬风险，完成专业防坠与限位前不得启用儿童学习位。",
-        "西向眩光用可调无绳卷帘、屏幕位置与独立任务灯控制，不能凭照片承诺不晒。",
-        "中央及两端薄支架示意，木板跨度、防挠与固定承载由厂家深化；无贯穿桌下抽屉。"
+        "先量完成地面至台面高度、台面净深、有效长度及窗扇扫掠范围，再决定软垫厚度。",
+        "优先考虑原台加可拆洗薄垫及少量靠垫，不抬高、不外挑。仅为成人短时休憩建议，未在本次模型中实施。",
+        "家有幼童：专业核对防坠、护栏、开窗限位及无绳窗帘后再决定是否设坐席；纱窗不能替代防坠。",
+        "不能从白色立面判断台下是否空心；不预设可挖空做抽屉或可拆原台。",
+        "先排查窗框渗水、返潮与石材边缘，再选透气、可拆洗材料；靠垫不得依靠玻璃受力。"
       ]
     },
     {
@@ -198,7 +198,7 @@
       },
       "interiorCamera": {
         "position": [
-          5.0,
+          5,
           1.68,
           11.92
         ],
@@ -298,10 +298,10 @@
         ],
         "target": [
           5.33,
-          1.0,
+          1,
           1.27
         ],
-        "horizontalFov": 90.0,
+        "horizontalFov": 90,
         "fov": 67.38
       },
       "render": "assets/schemes/family/master.jpg",
@@ -373,7 +373,7 @@
           0.97,
           0.94
         ],
-        "horizontalFov": 90.0,
+        "horizontalFov": 90,
         "fov": 67.38
       },
       "render": "assets/schemes/family/bedroom-b.jpg",
@@ -440,7 +440,7 @@
           1.5,
           6.12
         ],
-        "horizontalFov": 90.0,
+        "horizontalFov": 90,
         "fov": 67.38
       },
       "render": "assets/schemes/family/study.jpg",
@@ -487,7 +487,7 @@
       },
       "interiorCamera": {
         "position": [
-          6.0,
+          6,
           1.6,
           12.7
         ],
@@ -552,7 +552,7 @@
           1.12,
           3.72
         ],
-        "horizontalFov": 90.0,
+        "horizontalFov": 90,
         "fov": 67.38
       },
       "render": "assets/schemes/family/master-bath.jpg",
@@ -664,7 +664,7 @@
           1.53,
           11.21
         ],
-        "horizontalFov": 90.0,
+        "horizontalFov": 90,
         "fov": 67.38
       },
       "render": "assets/schemes/family/balcony.jpg",
@@ -839,7 +839,7 @@
       },
       "source": "业主确认厨房与阳台之间应有大窗；共墙位置沿用模型，洞宽1200/高1300/台高1000及双扇推拉窗型均为暂定，不是实测。",
       "notes": "厨房与家政阳台之间的内窗，不是通往客厅的窗或阳台外窗。保留窗下墙、两边台下柜和现有门；阳台外侧采光通风条件另核。",
-      "sill": 1.0,
+      "sill": 1,
       "height": 1.3
     },
     {
@@ -854,7 +854,7 @@
       "grade": "C",
       "sillCm": 0,
       "heightCm": 220,
-      "sill": 0.0,
+      "sill": 0,
       "height": 2.2
     },
     {
@@ -869,7 +869,7 @@
       "grade": "C",
       "sillCm": 0,
       "heightCm": 220,
-      "sill": 0.0,
+      "sill": 0,
       "height": 2.2
     },
     {
@@ -910,7 +910,7 @@
           "sweep": 1
         }
       },
-      "sill": 0.0,
+      "sill": 0,
       "height": 2.15
     },
     {
@@ -950,7 +950,7 @@
           "sweep": 0
         }
       },
-      "sill": 0.0,
+      "sill": 0,
       "height": 2.15
     },
     {
@@ -986,7 +986,7 @@
           "d": 108
         }
       },
-      "sill": 0.0,
+      "sill": 0,
       "height": 2.15
     },
     {
@@ -1026,7 +1026,7 @@
           "sweep": 0
         }
       },
-      "sill": 0.0,
+      "sill": 0,
       "height": 2.1
     },
     {
@@ -1066,7 +1066,7 @@
           "sweep": 0
         }
       },
-      "sill": 0.0,
+      "sill": 0,
       "height": 2.1
     },
     {
@@ -1095,7 +1095,7 @@
         "condition": "三扇洞内向北叠停；1700mm洞口不等于净开，模型净开约1033mm，五金深化后以约1000mm为目标而非保证。"
       },
       "notes": "原900mm门洞向北300mm、向南500mm拓宽；北端墙中心线剩240mm、南端800mm。南端距鞋柜起点50mm、南柜140mm，门套与承重/管线须现场核验，不能据图直接扩洞。",
-      "sill": 0.0,
+      "sill": 0,
       "height": 2.2
     }
   ],
@@ -1112,7 +1112,7 @@
     "真实网格由厘米平面数据转换为米；渲染与交互使用同一 Blender 场景。",
     "整体与房间鸟瞰采用可拆墙展示；室内机位使用完整墙体与实际开口。",
     "C 级门窗、层高与统一墙厚仍为待现场复尺的建模假设。",
-    "三处飘窗外凸与原窗台高度均待复尺。新增方案取消主卧桌台与配椅，保留原台；次卧低台茶座仍是附条件方案，客厅双人桌保留。防坠、窗扇、外立面与结构条件须专业复核。",
+    "三处飘窗外凸与原窗台高度均待复尺。新增方案取消主卧桌台与配椅，保留原台；次卧低台茶座仍是附条件方案，客厅桌椅已移除；原台高待复尺。防坠、窗扇、外立面与结构条件须专业复核。",
     "V3.3.0第三个独立布局，直接派生V3.2.4暖白套间；原wood、suite数据和模型不改写。",
     "新方案所有改动均为家具/柜体，不新增拆墙；保持套间、书房书架和厨房阳台大窗。",
     "儿童自行车1100×500×750mm、折叠婴儿车750×550×1050mm仅为选定示意包络，必须以自家实物含把手/脚踏/车轮复核。",
@@ -1122,7 +1122,8 @@
     "儿童自行车1100×500×750mm、折叠婴儿车750×550×1050mm仅为选定示意包络，必须以自家实物含把手/脚踏/车轮复核。",
     "约2.45㎡为储物库外包占地，不是净储物容量；不宣称800mm进深一定够。",
     "柜门按四叶内折打开状态建模，净开约1340mm；承重五金、折叠过程与防夹须专业深化。",
-    "同一时刻取一辆车；库外转向需临时占用玄关主路，取车时不可同时通行。"
+    "同一时刻取一辆车；库外转向需临时占用玄关主路，取车时不可同时通行。",
+    "客厅飘窗前的长桌、支架、桌面用品及两把椅子全部移除，窗前留空。保留窗体、原台体和已有薄饰面，不凭照片拆改或猜高度。现模型900mm台高是旧占位，并非照片实测；低台软垫休憩只作后续建议，尚未加建。"
   ],
   "bayDetails": [
     {
@@ -1143,7 +1144,7 @@
           1.04,
           0.24
         ],
-        "horizontalFov": 90.0,
+        "horizontalFov": 90,
         "fov": 67.38
       },
       "summary": "不设桌台、梳妆桌和配椅，只保留飘窗石台及窗体。主卧西侧衣柜沿凹位做满2240×600mm。",
@@ -1175,7 +1176,7 @@
           1.03,
           -0.11
         ],
-        "horizontalFov": 90.0,
+        "horizontalFov": 90,
         "fov": 67.38
       },
       "summary": "删除独立书桌和书椅，次卧只保留睡眠、衣物收纳与单人飘窗茶座；暖灰坐垫配浅木可移茶托及无绳卷帘。",
@@ -1197,7 +1198,7 @@
       "fitoutId": "bay_living_family",
       "openingId": "window_living_west",
       "roomId": "living",
-      "title": "客厅 · 并肩办公与学习",
+      "title": "客厅 · 窗前留白，低台待复尺",
       "render": "assets/schemes/family/bay-living.jpg",
       "interiorCamera": {
         "position": [
@@ -1213,18 +1214,18 @@
         "horizontalFov": 78.58,
         "fov": 57.22
       },
-      "summary": "完整2米浅木长台放在飘窗室内侧，成人与孩子各约1米工作面；桌下不借实台空间，电视仍在北侧实墙。 新走廊方案仅将成人活动椅向南150mm，固定桌面和儿童椅不动，给走廊入口转角让位。",
+      "summary": "客厅飘窗前的长桌、支架、桌面用品及两把椅子全部移除，窗前留空。保留窗体、原台体和已有薄饰面，不凭照片拆改或猜高度。现模型900mm台高是旧占位，并非照片实测；低台软垫休憩只作后续建议，尚未加建。",
       "dimensions": [
-        "整桌2000×650，高750mm，台板30mm",
-        "两席各约1000mm；椅52×52cm示意",
-        "示意椅后800mm通道，椅不得无限后退",
-        "腿位在室内侧，台体不拆、不开脚洞"
+        "原长桌2000×650mm及两把520×520mm椅已移除",
+        "客厅窗台模型暂仍为900mm旧占位，照片显示更低，实高待量",
+        "原窗体、台体和薄饰面保留；不增加地台或窗前柜"
       ],
       "conditions": [
-        "儿童身高未知，750mm桌面不是通用儿童规格；需试坐，调整桌椅/足托，不合适时采用分段升降工作面。",
-        "临窗桌椅增加攀爬风险，完成专业防坠与限位前不得启用儿童学习位。",
-        "西向眩光用可调无绳卷帘、屏幕位置与独立任务灯控制，不能凭照片承诺不晒。",
-        "中央及两端薄支架示意，木板跨度、防挠与固定承载由厂家深化；无贯穿桌下抽屉。"
+        "先量完成地面至台面高度、台面净深、有效长度及窗扇扫掠范围，再决定软垫厚度。",
+        "优先考虑原台加可拆洗薄垫及少量靠垫，不抬高、不外挑。仅为成人短时休憩建议，未在本次模型中实施。",
+        "家有幼童：专业核对防坠、护栏、开窗限位及无绳窗帘后再决定是否设坐席；纱窗不能替代防坠。",
+        "不能从白色立面判断台下是否空心；不预设可挖空做抽屉或可拆原台。",
+        "先排查窗框渗水、返潮与石材边缘，再选透气、可拆洗材料；靠垫不得依靠玻璃受力。"
       ]
     }
   ],
@@ -1327,7 +1328,7 @@
     "revision": "Fitted",
     "variant": "family-storage",
     "parentSource": "models/schemes/suite/design-data.json",
-    "parentSourceSha256": "d5e4552bbff39aacc022116dcaa54cdc4cf1240675f8f779e32b1a242421ca42"
+    "parentSourceSha256": "c4794770b3154edc5c9feede29eeb44cb60e53c73878166f4131f948cd901e78"
   },
   "appearance": {
     "preset": "soft-warm",
@@ -3349,100 +3350,24 @@
       "vehicleTakeout": "沿东侧开口单车取出；库外转弯占用玄关通路。不是通行/无障碍认证。"
     }
   },
+  "livingBayRevision": {
+    "version": "3.4.1",
+    "removedPartIds": [
+      "l_desktop",
+      "l_support",
+      "l_accessories",
+      "l_adult_chair",
+      "l_child_chair"
+    ],
+    "measured": false,
+    "photoObservation": "用户2026-09-26照片显示客厅飘窗较低；照片无可靠尺寸标定。",
+    "sillHeightStatus": "unmeasured-legacy-placeholder",
+    "scope": "只移除窗前工作家具；不改变原窗和台体。"
+  },
   "renderedViews": {
-    "storage-library": {
-      "sourceSha256": "a634202224ccb252d58201807f9cd459047f64fc534a8b40eaa4130b9ebea678",
-      "baseBlendSha256": "7961154be54127272c10652e2c32524f60ed37aa042c572843d74910eaddaef3",
-      "cameraState": {
-        "matrix": [
-          [
-            0.004784760531038046,
-            -0.09525633603334427,
-            0.9954412579536438,
-            4.869999885559082
-          ],
-          [
-            0.9999885559082031,
-            0.0004557047213893384,
-            -0.004763010423630476,
-            -13.119999885559082
-          ],
-          [
-            7.960198189493894e-08,
-            0.9954527020454407,
-            0.09525742381811142,
-            1.399999976158142
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "lens": 17.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
-      },
-      "cameraHash": "7d37dfa3cbb51e9a4ecc6dafe30bce5c9fa430029e02f3c9c0eba93abd14e183",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "99179fd144a9efb874f0ad8adfc1e62e23058ad18fae9417b1ff0c5b0ad8d96c"
-    },
-    "dining": {
-      "sourceSha256": "a634202224ccb252d58201807f9cd459047f64fc534a8b40eaa4130b9ebea678",
-      "baseBlendSha256": "7961154be54127272c10652e2c32524f60ed37aa042c572843d74910eaddaef3",
-      "cameraState": {
-        "matrix": [
-          [
-            0.555709719657898,
-            -0.22094176709651947,
-            0.801480770111084,
-            5.0
-          ],
-          [
-            0.8313764333724976,
-            0.14768220484256744,
-            -0.5357268452644348,
-            -11.920000076293945
-          ],
-          [
-            -1.7173549693438872e-08,
-            0.9640408158302307,
-            0.26575422286987305,
-            1.6799999475479126
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "lens": 19.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
-      },
-      "cameraHash": "ce052d91e50364636802bacb5cb7f4e2302c4ed5618739655240f3bf5f8f15e7",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "bea10fcdb3e5ea67e8d94fc3c68bd9e997fa3f8b9020734052c0ff2a212ec1ee"
-    },
     "overall": {
-      "sourceSha256": "a634202224ccb252d58201807f9cd459047f64fc534a8b40eaa4130b9ebea678",
-      "baseBlendSha256": "7961154be54127272c10652e2c32524f60ed37aa042c572843d74910eaddaef3",
+      "sourceSha256": "d27ed51ecb653be8a811975b19cfacd05e7d1a0e063e2dba69579fb88c87cefc",
+      "baseBlendSha256": "7f4bac4f175b6e1ef524429033df22837f4a36d527a3f5e6cfc2fd21be67cb52",
       "cameraState": {
         "matrix": [
           [
@@ -3483,11 +3408,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "faec486356dc236e93bca1e042bfde84511e7f3f42b66a896b69d14107df6bff"
+      "imageSha256": "c730c34e574c60519b56b08f84dea787d80bd8d33a4d337399b86b6235eb4e3a"
     },
     "living": {
-      "sourceSha256": "a634202224ccb252d58201807f9cd459047f64fc534a8b40eaa4130b9ebea678",
-      "baseBlendSha256": "7961154be54127272c10652e2c32524f60ed37aa042c572843d74910eaddaef3",
+      "sourceSha256": "d27ed51ecb653be8a811975b19cfacd05e7d1a0e063e2dba69579fb88c87cefc",
+      "baseBlendSha256": "7f4bac4f175b6e1ef524429033df22837f4a36d527a3f5e6cfc2fd21be67cb52",
       "cameraState": {
         "matrix": [
           [
@@ -3528,11 +3453,56 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "f21b6291fb441ea59a5aa12c44493f1c97ce8522ee9d80f70e4f874362f888e2"
+      "imageSha256": "fe02d6644f20cbb6db2579bf802a07a9b9eda8962f943d010ab3225519c055a7"
+    },
+    "dining": {
+      "sourceSha256": "d27ed51ecb653be8a811975b19cfacd05e7d1a0e063e2dba69579fb88c87cefc",
+      "baseBlendSha256": "7f4bac4f175b6e1ef524429033df22837f4a36d527a3f5e6cfc2fd21be67cb52",
+      "cameraState": {
+        "matrix": [
+          [
+            0.555709719657898,
+            -0.22094176709651947,
+            0.801480770111084,
+            5.0
+          ],
+          [
+            0.8313764333724976,
+            0.14768220484256744,
+            -0.5357268452644348,
+            -11.920000076293945
+          ],
+          [
+            -1.7173549693438872e-08,
+            0.9640408158302307,
+            0.26575422286987305,
+            1.6799999475479126
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 19.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "ce052d91e50364636802bacb5cb7f4e2302c4ed5618739655240f3bf5f8f15e7",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "c3430725487963fb6b671963783072e171738069f4c684852bb969039fb13d49"
     },
     "master": {
-      "sourceSha256": "a634202224ccb252d58201807f9cd459047f64fc534a8b40eaa4130b9ebea678",
-      "baseBlendSha256": "7961154be54127272c10652e2c32524f60ed37aa042c572843d74910eaddaef3",
+      "sourceSha256": "d27ed51ecb653be8a811975b19cfacd05e7d1a0e063e2dba69579fb88c87cefc",
+      "baseBlendSha256": "7f4bac4f175b6e1ef524429033df22837f4a36d527a3f5e6cfc2fd21be67cb52",
       "cameraState": {
         "matrix": [
           [
@@ -3573,11 +3543,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "2e6214d33e6dc3fea38c907f0c03a9b65322a66d22113cf8546f713b4c9e3f99"
+      "imageSha256": "cf3bd163a289696d433165204388f12c91efdd214d93a22fdda29ec5ed6c9f21"
     },
     "bedroom-b": {
-      "sourceSha256": "a634202224ccb252d58201807f9cd459047f64fc534a8b40eaa4130b9ebea678",
-      "baseBlendSha256": "7961154be54127272c10652e2c32524f60ed37aa042c572843d74910eaddaef3",
+      "sourceSha256": "d27ed51ecb653be8a811975b19cfacd05e7d1a0e063e2dba69579fb88c87cefc",
+      "baseBlendSha256": "7f4bac4f175b6e1ef524429033df22837f4a36d527a3f5e6cfc2fd21be67cb52",
       "cameraState": {
         "matrix": [
           [
@@ -3618,11 +3588,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "b9f837f601393911a14ac21f7200b7193a466303782d0e395b46a586feea058a"
+      "imageSha256": "2158cdbb05f02d169369c7f073b354c5e7d47f697ada198697fe8ba2c02b9936"
     },
     "study": {
-      "sourceSha256": "a634202224ccb252d58201807f9cd459047f64fc534a8b40eaa4130b9ebea678",
-      "baseBlendSha256": "7961154be54127272c10652e2c32524f60ed37aa042c572843d74910eaddaef3",
+      "sourceSha256": "d27ed51ecb653be8a811975b19cfacd05e7d1a0e063e2dba69579fb88c87cefc",
+      "baseBlendSha256": "7f4bac4f175b6e1ef524429033df22837f4a36d527a3f5e6cfc2fd21be67cb52",
       "cameraState": {
         "matrix": [
           [
@@ -3663,11 +3633,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "a66ac5d7eed6d68a192928f45e582a371696c06c31ff307c2e2b265ceaf816d8"
+      "imageSha256": "7464b02f0f7b3f68bcbd9f527843287c60d9e921bf47bd353355df86e75d0574"
     },
     "kitchen": {
-      "sourceSha256": "a634202224ccb252d58201807f9cd459047f64fc534a8b40eaa4130b9ebea678",
-      "baseBlendSha256": "7961154be54127272c10652e2c32524f60ed37aa042c572843d74910eaddaef3",
+      "sourceSha256": "d27ed51ecb653be8a811975b19cfacd05e7d1a0e063e2dba69579fb88c87cefc",
+      "baseBlendSha256": "7f4bac4f175b6e1ef524429033df22837f4a36d527a3f5e6cfc2fd21be67cb52",
       "cameraState": {
         "matrix": [
           [
@@ -3708,11 +3678,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "3288c722464834ded79a6a11a5ccebf11d42fd25d3330092d5363fd1643e0529"
+      "imageSha256": "b8959461739b924ec47f07e18952fe2e8eb5637034d3e82031c1804efacdd817"
     },
     "master-bath": {
-      "sourceSha256": "a634202224ccb252d58201807f9cd459047f64fc534a8b40eaa4130b9ebea678",
-      "baseBlendSha256": "7961154be54127272c10652e2c32524f60ed37aa042c572843d74910eaddaef3",
+      "sourceSha256": "d27ed51ecb653be8a811975b19cfacd05e7d1a0e063e2dba69579fb88c87cefc",
+      "baseBlendSha256": "7f4bac4f175b6e1ef524429033df22837f4a36d527a3f5e6cfc2fd21be67cb52",
       "cameraState": {
         "matrix": [
           [
@@ -3753,7 +3723,52 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "8d24b9da2cd138dbeffc9b41355b649f69f996e2f2ec4df7a56aec42a98c37e3"
+      "imageSha256": "2fc22bd4c6bf1373f39f5fe6f5aa7aebef9b147bce6598f2244f8544db7d80be"
+    },
+    "bay-living": {
+      "sourceSha256": "d27ed51ecb653be8a811975b19cfacd05e7d1a0e063e2dba69579fb88c87cefc",
+      "baseBlendSha256": "7f4bac4f175b6e1ef524429033df22837f4a36d527a3f5e6cfc2fd21be67cb52",
+      "cameraState": {
+        "matrix": [
+          [
+            0.6605352163314819,
+            -0.15087266266345978,
+            0.7354798913002014,
+            4.130000114440918
+          ],
+          [
+            0.7507950663566589,
+            0.13273492455482483,
+            -0.6470612287521362,
+            -9.079999923706055
+          ],
+          [
+            -1.946109762229753e-08,
+            0.9796013832092285,
+            0.20095054805278778,
+            1.649999976158142
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 22.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "2a27670782bad5b09701b4218bb7692661f75d47004ad8f63d14af7155acb57f",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "9f888cbbc74f21b799afe7cf2607685be7790b6a4ceaf8b16152a126515a3ca9"
     },
     "guest-bath": {
       "sourceSha256": "a634202224ccb252d58201807f9cd459047f64fc534a8b40eaa4130b9ebea678",
@@ -3798,7 +3813,13 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "9ea38d8edc85897ff8ff0bb9b910901357d8acc7b8cd5ae8a1e3887e7221bebb"
+      "imageSha256": "9ea38d8edc85897ff8ff0bb9b910901357d8acc7b8cd5ae8a1e3887e7221bebb",
+      "retainedFrom": {
+        "commit": "c2e5a5f399709185b2e843c64e622a0373927602",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "guest-bath",
+        "reason": "本轮仅移除客厅窗前家具；此未改房间或不含窗前桌椅的视角沿用原图，未重新计算间接照明。"
+      }
     },
     "balcony": {
       "sourceSha256": "a634202224ccb252d58201807f9cd459047f64fc534a8b40eaa4130b9ebea678",
@@ -3843,7 +3864,13 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "c32c0918722eb69214f4f88b42dc37b4bf1cfac335e490c72db597636f5edbad"
+      "imageSha256": "c32c0918722eb69214f4f88b42dc37b4bf1cfac335e490c72db597636f5edbad",
+      "retainedFrom": {
+        "commit": "c2e5a5f399709185b2e843c64e622a0373927602",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "balcony",
+        "reason": "本轮仅移除客厅窗前家具；此未改房间或不含窗前桌椅的视角沿用原图，未重新计算间接照明。"
+      }
     },
     "bay-master": {
       "sourceSha256": "a634202224ccb252d58201807f9cd459047f64fc534a8b40eaa4130b9ebea678",
@@ -3888,7 +3915,13 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "744135f1000ed0909d72a09b408d13ee9799dd57dba83ee8693917eb43d57881"
+      "imageSha256": "744135f1000ed0909d72a09b408d13ee9799dd57dba83ee8693917eb43d57881",
+      "retainedFrom": {
+        "commit": "c2e5a5f399709185b2e843c64e622a0373927602",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "bay-master",
+        "reason": "本轮仅移除客厅窗前家具；此未改房间或不含窗前桌椅的视角沿用原图，未重新计算间接照明。"
+      }
     },
     "bay-tea": {
       "sourceSha256": "a634202224ccb252d58201807f9cd459047f64fc534a8b40eaa4130b9ebea678",
@@ -3933,52 +3966,13 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "9e3c3eb7ab4843b815d783455183919fa252eaaaa4432262565660bc19ad66e3"
-    },
-    "bay-living": {
-      "sourceSha256": "a634202224ccb252d58201807f9cd459047f64fc534a8b40eaa4130b9ebea678",
-      "baseBlendSha256": "7961154be54127272c10652e2c32524f60ed37aa042c572843d74910eaddaef3",
-      "cameraState": {
-        "matrix": [
-          [
-            0.6605352163314819,
-            -0.15087266266345978,
-            0.7354798913002014,
-            4.130000114440918
-          ],
-          [
-            0.7507950663566589,
-            0.13273492455482483,
-            -0.6470612287521362,
-            -9.079999923706055
-          ],
-          [
-            -1.946109762229753e-08,
-            0.9796013832092285,
-            0.20095054805278778,
-            1.649999976158142
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "lens": 22.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
-      },
-      "cameraHash": "2a27670782bad5b09701b4218bb7692661f75d47004ad8f63d14af7155acb57f",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "a00602b7f368915ee55486f4397d43463ccb7efa13924e4bd47dca6f89ee8179"
+      "imageSha256": "9e3c3eb7ab4843b815d783455183919fa252eaaaa4432262565660bc19ad66e3",
+      "retainedFrom": {
+        "commit": "c2e5a5f399709185b2e843c64e622a0373927602",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "bay-tea",
+        "reason": "本轮仅移除客厅窗前家具；此未改房间或不含窗前桌椅的视角沿用原图，未重新计算间接照明。"
+      }
     },
     "entry-storage": {
       "sourceSha256": "a634202224ccb252d58201807f9cd459047f64fc534a8b40eaa4130b9ebea678",
@@ -4023,7 +4017,13 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "3eecfe6af634a0c4841506e73579030de8af54dcd574a590bc76961278898f9f"
+      "imageSha256": "3eecfe6af634a0c4841506e73579030de8af54dcd574a590bc76961278898f9f",
+      "retainedFrom": {
+        "commit": "c2e5a5f399709185b2e843c64e622a0373927602",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "entry-storage",
+        "reason": "本轮仅移除客厅窗前家具；此未改房间或不含窗前桌椅的视角沿用原图，未重新计算间接照明。"
+      }
     },
     "sideboard": {
       "sourceSha256": "a634202224ccb252d58201807f9cd459047f64fc534a8b40eaa4130b9ebea678",
@@ -4068,7 +4068,13 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "e96b4c052e247c39825f9452760d36bcc8919718779967df1c20ff30d73e3861"
+      "imageSha256": "e96b4c052e247c39825f9452760d36bcc8919718779967df1c20ff30d73e3861",
+      "retainedFrom": {
+        "commit": "c2e5a5f399709185b2e843c64e622a0373927602",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "sideboard",
+        "reason": "本轮仅移除客厅窗前家具；此未改房间或不含窗前桌椅的视角沿用原图，未重新计算间接照明。"
+      }
     },
     "suite-entry": {
       "sourceSha256": "a634202224ccb252d58201807f9cd459047f64fc534a8b40eaa4130b9ebea678",
@@ -4113,15 +4119,98 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "0d9833b3575e55599ebd41071b56ae0ad0eb7cd4eacf5aeabdeca599e374419a"
+      "imageSha256": "0d9833b3575e55599ebd41071b56ae0ad0eb7cd4eacf5aeabdeca599e374419a",
+      "retainedFrom": {
+        "commit": "c2e5a5f399709185b2e843c64e622a0373927602",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "suite-entry",
+        "reason": "本轮仅移除客厅窗前家具；此未改房间或不含窗前桌椅的视角沿用原图，未重新计算间接照明。"
+      }
+    },
+    "storage-library": {
+      "sourceSha256": "a634202224ccb252d58201807f9cd459047f64fc534a8b40eaa4130b9ebea678",
+      "baseBlendSha256": "7961154be54127272c10652e2c32524f60ed37aa042c572843d74910eaddaef3",
+      "cameraState": {
+        "matrix": [
+          [
+            0.004784760531038046,
+            -0.09525633603334427,
+            0.9954412579536438,
+            4.869999885559082
+          ],
+          [
+            0.9999885559082031,
+            0.0004557047213893384,
+            -0.004763010423630476,
+            -13.119999885559082
+          ],
+          [
+            7.960198189493894e-08,
+            0.9954527020454407,
+            0.09525742381811142,
+            1.399999976158142
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 17.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "7d37dfa3cbb51e9a4ecc6dafe30bce5c9fa430029e02f3c9c0eba93abd14e183",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "99179fd144a9efb874f0ad8adfc1e62e23058ad18fae9417b1ff0c5b0ad8d96c",
+      "retainedFrom": {
+        "commit": "c2e5a5f399709185b2e843c64e622a0373927602",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "storage-library",
+        "reason": "本轮仅移除客厅窗前家具；此未改房间或不含窗前桌椅的视角沿用原图，未重新计算间接照明。"
+      }
     }
   },
-  "baseBlendSha256": "7961154be54127272c10652e2c32524f60ed37aa042c572843d74910eaddaef3",
+  "baseBlendSha256": "7f4bac4f175b6e1ef524429033df22837f4a36d527a3f5e6cfc2fd21be67cb52",
   "renderSpec": {
     "engine": "CYCLES",
     "width": 960,
     "height": 640,
     "samples": 8,
     "denoise": true
+  },
+  "renderInheritance": {
+    "reviewedAt": "3.4.1",
+    "baselineCommit": "c2e5a5f399709185b2e843c64e622a0373927602",
+    "currentViews": [
+      "overall",
+      "living",
+      "dining",
+      "master",
+      "bedroom-b",
+      "study",
+      "kitchen",
+      "master-bath",
+      "bay-living"
+    ],
+    "referenceViews": [
+      "guest-bath",
+      "balcony",
+      "bay-master",
+      "bay-tea",
+      "entry-storage",
+      "sideboard",
+      "suite-entry",
+      "storage-library"
+    ],
+    "note": "客厅相关四视角已重渲；保留图有原图哈希、相机及旧模型来源，不伪造为当前模型新帧。"
   }
 }

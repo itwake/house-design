@@ -23,17 +23,19 @@ def geometry_groups(meshes,key):
         if value:groups[value].append(item['geometry'])
     return {k:sorted(v) for k,v in groups.items()}
 before=geometry_groups(base,'furnitureId');after=geometry_groups(model,'furnitureId')
-excluded={'vanity_main','vanity_guest','书房办公椅','主卧衣柜','主卫壁挂马桶','a_desktop','a_support','a_accessories','a_chair','l_adult_chair','bed_b','次卧衣柜','书房日床','书房客衣柜','1100书桌'}
+living_removed={'l_desktop','l_support','l_accessories','l_adult_chair','l_child_chair'}
+excluded={'vanity_main','vanity_guest','书房办公椅','主卧衣柜','主卫壁挂马桶','a_desktop','a_support','a_accessories','a_chair','bed_b','次卧衣柜','书房日床','书房客衣柜','1100书桌'}|living_removed
 preserved=0
 for key,hashes in before.items():
     if key not in excluded:
         assert after.get(key)==hashes,'Unrelated furniture actual triangles changed: '+key
         preserved+=len(hashes)
-for field,excluded in [('openingId',{'door_a','door_b','door_c','door_bath_1','door_bath_2'}),('storagePartId',set()),('fitoutPartId',{'a_desktop','a_support','a_accessories','a_chair','l_adult_chair'})]:
+for field,excluded in [('openingId',{'door_a','door_b','door_c','door_bath_1','door_bath_2'}),('storagePartId',set()),('fitoutPartId',{'a_desktop','a_support','a_accessories','a_chair'}|living_removed)]:
     original=geometry_groups(base,field);current=geometry_groups(model,field)
     for key,hashes in original.items():
         if key not in excluded:assert current.get(key)==hashes,field+' moved: '+key
 assert not any(m['extras'].get('fitoutPartId','').startswith('a_') for m in model.values()),'Master desk/chair geometry still exported'
+assert not any(m['extras'].get('fitoutPartId') in living_removed for m in model.values()),'Living desk/chair geometry still exported'
 assert not any(m['extras'].get('fitoutId')=='bay_a_office_vanity' for m in model.values()),'Old master desk components still exported'
 assert not any(m['extras'].get('furnitureId') in {'书房日床','书房客衣柜','1100书桌'} for m in model.values()),'Removed study furniture exported'
 # Decode real meshes for every newly fitted footprint, including its details.

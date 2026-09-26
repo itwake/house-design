@@ -65,9 +65,11 @@ print(f'PASS laundry actual GLB: {len(model)} meshes, {len(l["parts"])} exact pa
 wood=GLB(ROOT/'models/schemes/wood/huiyayuan-wood.glb').world_meshes()
 assert groups(wood,'openingId')['window_kitchen_balcony']==groups(base,'openingId')['window_kitchen_balcony'],'Scheme1 actual kitchen window matches scheme2/3'
 original=GLB(ROOT/'models/huiyayuan-wood.glb').world_meshes()
+living_removed={'l_desktop','l_support','l_accessories','l_adult_chair','l_child_chair'}
 for key in ('fitoutPartId','storagePartId'):
-    assert groups(wood,key)==groups(original,key),'Wood non-kitchen fitout changed '+key
+    expected={k:v for k,v in groups(original,key).items() if key!='fitoutPartId' or k not in living_removed}
+    assert groups(wood,key)==expected,'Wood non-kitchen fitout changed beyond requested desk removal '+key
 for k,v in groups(original,'openingId').items():assert groups(wood,'openingId').get(k)==v,'Original opening retained '+str(k)
 for k,v in groups(original,'furnitureId').items():
-    if '厨房北侧地柜' not in str(k):assert groups(wood,'furnitureId').get(k)==v,'Original scheme furniture remains in place '+str(k)
+    if '厨房北侧地柜' not in str(k) and k not in living_removed:assert groups(wood,'furnitureId').get(k)==v,'Original scheme furniture remains in place '+str(k)
 print('PASS isolated wood kitchen refresh: original bays/storage/furniture/openings remain, shared kitchen window is real exported geometry.')

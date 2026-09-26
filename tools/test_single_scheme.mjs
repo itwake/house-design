@@ -20,7 +20,7 @@ const retired=['terracotta','moss','cobalt'];
 const preference='house-design:room-card-visible';
 assert.deepEqual(catalog.schemes.map(s=>s.id),['wood','suite','family','laundry']);
 assert.deepEqual(catalog.archivedPalettes.map(s=>s.id),retired);
-assert.equal(catalog.schemes[0].assetRevision,'3.4.0');
+assert.equal(catalog.schemes[0].assetRevision,'3.4.1');
 assert.ok(catalog.futureSchemePolicy.includes('布局')&&catalog.futureSchemePolicy.includes('不作为新方案'));
 for(const text of [entry,html,viewer]){
   for(const marker of ['id="scheme-grid"','id="scheme-dialog"','id="change-scheme"','设计选集','showSchemeSelector','schemeCards'])assert.ok(!text.includes(marker),marker+' removed from active UI');
@@ -76,7 +76,7 @@ const helperEnv=environment(base);
 const api=vm.runInContext('({entryURL,resolveScheme,schemeRender,loadSchemeCatalog,SCHEME_REVISION})',helperEnv.context);
 assert.equal(api.SCHEME_REVISION,catalog.version);
 assert.ok(viewer.includes("const UI_REVISION = '"+catalog.version+"'"));
-assert.equal(new URL(api.schemeRender(catalog.schemes[0],'living')).searchParams.get('v'),'3.4.0');
+assert.equal(new URL(api.schemeRender(catalog.schemes[0],'living')).searchParams.get('v'),'3.4.1');
 for(const name of ['', 'index.html'])for(const hash of ['',...roomIds.map(id=>'#'+id)])for(const style of ['', 'wood', 'suite','family','laundry', ...retired, 'invalid']){
   const before=new URL(base+name+'?v=old&source=bookmark'+(style?'&scheme='+style:'')+hash);
   const env=environment(before.href,{entryPage:true});if(!style&&!hash){assert.equal(env.redirect,null,'Plain homepage keeps the chooser');continue;}const after=new URL(env.redirect);

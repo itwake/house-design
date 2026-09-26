@@ -15,7 +15,8 @@ for(const [i,name]of views.entries()){
   assert.equal(createHash('sha256').update(raw).digest('hex'),manifest.renderedViews[name]?.imageSha256,'Only verified current frame: '+name);
   const left=(i%4)*width,top=Math.floor(i/4)*height;
   composites.push({input:await sharp(raw).resize(width,267).toBuffer(),left,top:top+25});
-  const label=Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="400" height="25"><rect width="400" height="25" fill="#f4f1ec"/><text x="12" y="18" font-family="Arial" font-size="14" fill="#444">${i+1}. ${name} / V${catalog.version}</text></svg>`);
+  const provenance=manifest.renderedViews[name]?.retainedFrom?'PRIOR REFERENCE':'CURRENT V'+catalog.version;
+  const label=Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="400" height="25"><rect width="400" height="25" fill="#f4f1ec"/><text x="12" y="18" font-family="Arial" font-size="13" fill="#444">${i+1}. ${name} / ${provenance}</text></svg>`);
   composites.push({input:label,left,top});
 }
 await mkdir('tmp',{recursive:true});
