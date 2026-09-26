@@ -1,13 +1,13 @@
 {
-  "version": "3.4.1 · family · 客厅窗前留白",
+  "version": "3.4.2 · family · 客厅低飘窗软垫",
   "model": "models/schemes/family/huiyayuan-wood.glb",
   "blend": "models/schemes/family/huiyayuan-wood.blend",
   "units": "m",
   "source": "models/schemes/family/design-data.json",
-  "sourceSha256": "d27ed51ecb653be8a811975b19cfacd05e7d1a0e063e2dba69579fb88c87cefc",
+  "sourceSha256": "a2191f090412854497d65649c888fcbc188bdccf7f3c2d8038b234bc0f37ff0f",
   "bounds": {
     "min": [
-      0,
+      0.0,
       -0.012,
       -0.65
     ],
@@ -26,7 +26,7 @@
     "target": [
       4.2,
       0.3,
-      7
+      7.0
     ]
   },
   "overallRender": "assets/schemes/family/overall.jpg",
@@ -112,22 +112,23 @@
         "fov": 55.11
       },
       "render": "assets/schemes/family/living.jpg",
-      "description": "入户左侧新增1630×1500mm亲子大件库；1200×700mm四人餐桌北移950、西移250mm，7字餐柜改900mm短柜。储物库朝东取车，右鞋柜、厨房推拉门、客厅沙发和书房不动。儿童车、折叠婴儿车为待核型号的示意包络；出库转向时临时占用玄关。 客厅飘窗前的长桌、支架、桌面用品及两把椅子全部移除，窗前留空。保留窗体、原台体和已有薄饰面，不凭照片拆改或猜高度。现模型900mm台高是旧占位，并非照片实测；低台软垫休憩只作后续建议，尚未加建。",
+      "description": "入户左侧新增1630×1500mm亲子大件库；1200×700mm四人餐桌北移950、西移250mm，7字餐柜改900mm短柜。储物库朝东取车，右鞋柜、厨房推拉门、客厅沙发和书房不动。儿童车、折叠婴儿车为待核型号的示意包络；出库转向时临时占用玄关。 按业主授权暂估：客厅飘窗台面离地400mm，铺50mm可拆洗软垫，坐面约450mm。两片暖灰米色软垫各960×550mm，不向客厅外扩，不加书桌、椅子或台下柜。窗顶沿用2300mm占位，台高、净深、窗框及防护均待量房；这不是把实墙从900mm切低的施工指令。",
       "features": [
         "同一 Blender 场景生成模型和渲染",
         "原木 · 奶油白 · 亚麻",
         "门窗尺寸现场复尺",
-        "原长桌2000×650mm及两把520×520mm椅已移除",
-        "客厅窗台模型暂仍为900mm旧占位，照片显示更低，实高待量",
-        "原窗体、台体和薄饰面保留；不增加地台或窗前柜"
+        "暂估完成台面400mm＋软垫50mm＝坐面约450mm（非实测）",
+        "两片坐垫各960×550mm，中间留20mm拆洗缝",
+        "沿用2000mm窗宽、600mm外凸包络；净深与窗框均待量尺",
+        "软垫留在飘窗内，不占客厅通道，不加桌椅或台下柜"
       ],
       "fitoutId": "bay_living_family",
       "conditions": [
-        "先量完成地面至台面高度、台面净深、有效长度及窗扇扫掠范围，再决定软垫厚度。",
-        "优先考虑原台加可拆洗薄垫及少量靠垫，不抬高、不外挑。仅为成人短时休憩建议，未在本次模型中实施。",
-        "家有幼童：专业核对防坠、护栏、开窗限位及无绳窗帘后再决定是否设坐席；纱窗不能替代防坠。",
-        "不能从白色立面判断台下是否空心；不预设可挖空做抽屉或可拆原台。",
-        "先排查窗框渗水、返潮与石材边缘，再选透气、可拆洗材料；靠垫不得依靠玻璃受力。"
+        "本轮按业主同意做估算方案，不是现状测绘。量房后按完成地面、原台面和窗框实际尺寸修订。",
+        "原900mm只是旧模型占位；当前400mm不表示允许把现状结构降低500mm。禁止依据本图拆改原台。",
+        "软垫分两片可取下、可拆洗；先查渗水、返潮及排水口，不封死窗框排水与检修。",
+        "28楼且家有幼童：先由专业人员核验防坠、开窗限位和无绳窗帘；软垫不等于安全措施，纱窗不能替代防坠。",
+        "按成人短时休憩展示，不布置儿童攀玩设施；不加靠玻璃受力的靠背，不默认台下可挖空收纳。"
       ]
     },
     {
@@ -198,7 +199,7 @@
       },
       "interiorCamera": {
         "position": [
-          5,
+          5.0,
           1.68,
           11.92
         ],
@@ -298,10 +299,10 @@
         ],
         "target": [
           5.33,
-          1,
+          1.0,
           1.27
         ],
-        "horizontalFov": 90,
+        "horizontalFov": 90.0,
         "fov": 67.38
       },
       "render": "assets/schemes/family/master.jpg",
@@ -373,7 +374,7 @@
           0.97,
           0.94
         ],
-        "horizontalFov": 90,
+        "horizontalFov": 90.0,
         "fov": 67.38
       },
       "render": "assets/schemes/family/bedroom-b.jpg",
@@ -440,7 +441,7 @@
           1.5,
           6.12
         ],
-        "horizontalFov": 90,
+        "horizontalFov": 90.0,
         "fov": 67.38
       },
       "render": "assets/schemes/family/study.jpg",
@@ -487,7 +488,7 @@
       },
       "interiorCamera": {
         "position": [
-          6,
+          6.0,
           1.6,
           12.7
         ],
@@ -552,7 +553,7 @@
           1.12,
           3.72
         ],
-        "horizontalFov": 90,
+        "horizontalFov": 90.0,
         "fov": 67.38
       },
       "render": "assets/schemes/family/master-bath.jpg",
@@ -664,7 +665,7 @@
           1.53,
           11.21
         ],
-        "horizontalFov": 90,
+        "horizontalFov": 90.0,
         "fov": 67.38
       },
       "render": "assets/schemes/family/balcony.jpg",
@@ -753,7 +754,7 @@
     },
     {
       "id": "window_living_west",
-      "name": "客厅西飘窗（存在确认，尺寸待复尺）",
+      "name": "客厅西低飘窗（400台高暂估，非实测）",
       "kind": "window",
       "windowType": "bay",
       "bay": {
@@ -774,10 +775,13 @@
       "y2": 847,
       "widthMm": 2000,
       "grade": "C",
-      "sillCm": 90,
-      "heightCm": 140,
-      "sill": 0.9,
-      "height": 1.4
+      "sillCm": 40,
+      "heightCm": 190,
+      "baselineSillCm": 90,
+      "baselineHeightCm": 140,
+      "designScenario": "业主允许先暂估：完成台面400mm＋可拆软垫50mm，完成坐面约450mm；窗顶2300mm沿用占位。不是拆改结构或降低现状窗台的施工许可，窗体和防坠需实测核查。",
+      "sill": 0.4,
+      "height": 1.9
     },
     {
       "id": "window_bath_1_east",
@@ -839,7 +843,7 @@
       },
       "source": "业主确认厨房与阳台之间应有大窗；共墙位置沿用模型，洞宽1200/高1300/台高1000及双扇推拉窗型均为暂定，不是实测。",
       "notes": "厨房与家政阳台之间的内窗，不是通往客厅的窗或阳台外窗。保留窗下墙、两边台下柜和现有门；阳台外侧采光通风条件另核。",
-      "sill": 1,
+      "sill": 1.0,
       "height": 1.3
     },
     {
@@ -854,7 +858,7 @@
       "grade": "C",
       "sillCm": 0,
       "heightCm": 220,
-      "sill": 0,
+      "sill": 0.0,
       "height": 2.2
     },
     {
@@ -869,7 +873,7 @@
       "grade": "C",
       "sillCm": 0,
       "heightCm": 220,
-      "sill": 0,
+      "sill": 0.0,
       "height": 2.2
     },
     {
@@ -910,7 +914,7 @@
           "sweep": 1
         }
       },
-      "sill": 0,
+      "sill": 0.0,
       "height": 2.15
     },
     {
@@ -950,7 +954,7 @@
           "sweep": 0
         }
       },
-      "sill": 0,
+      "sill": 0.0,
       "height": 2.15
     },
     {
@@ -986,7 +990,7 @@
           "d": 108
         }
       },
-      "sill": 0,
+      "sill": 0.0,
       "height": 2.15
     },
     {
@@ -1026,7 +1030,7 @@
           "sweep": 0
         }
       },
-      "sill": 0,
+      "sill": 0.0,
       "height": 2.1
     },
     {
@@ -1066,7 +1070,7 @@
           "sweep": 0
         }
       },
-      "sill": 0,
+      "sill": 0.0,
       "height": 2.1
     },
     {
@@ -1095,7 +1099,7 @@
         "condition": "三扇洞内向北叠停；1700mm洞口不等于净开，模型净开约1033mm，五金深化后以约1000mm为目标而非保证。"
       },
       "notes": "原900mm门洞向北300mm、向南500mm拓宽；北端墙中心线剩240mm、南端800mm。南端距鞋柜起点50mm、南柜140mm，门套与承重/管线须现场核验，不能据图直接扩洞。",
-      "sill": 0,
+      "sill": 0.0,
       "height": 2.2
     }
   ],
@@ -1112,7 +1116,8 @@
     "真实网格由厘米平面数据转换为米；渲染与交互使用同一 Blender 场景。",
     "整体与房间鸟瞰采用可拆墙展示；室内机位使用完整墙体与实际开口。",
     "C 级门窗、层高与统一墙厚仍为待现场复尺的建模假设。",
-    "三处飘窗外凸与原窗台高度均待复尺。新增方案取消主卧桌台与配椅，保留原台；次卧低台茶座仍是附条件方案，客厅桌椅已移除；原台高待复尺。防坠、窗扇、外立面与结构条件须专业复核。",
+    "三处飘窗外凸与原窗台高度均待复尺。新增方案取消主卧桌台与配椅，保留原台；次卧低台茶座仍是附条件方案，客厅窗前桌椅已移除，原台高待复尺。防坠、窗扇、外立面与结构条件须专业复核。",
+    "按业主授权暂估：客厅飘窗台面离地400mm，铺50mm可拆洗软垫，坐面约450mm。两片暖灰米色软垫各960×550mm，不向客厅外扩，不加书桌、椅子或台下柜。窗顶沿用2300mm占位，台高、净深、窗框及防护均待量房；这不是把实墙从900mm切低的施工指令。",
     "V3.3.0第三个独立布局，直接派生V3.2.4暖白套间；原wood、suite数据和模型不改写。",
     "新方案所有改动均为家具/柜体，不新增拆墙；保持套间、书房书架和厨房阳台大窗。",
     "儿童自行车1100×500×750mm、折叠婴儿车750×550×1050mm仅为选定示意包络，必须以自家实物含把手/脚踏/车轮复核。",
@@ -1122,8 +1127,7 @@
     "儿童自行车1100×500×750mm、折叠婴儿车750×550×1050mm仅为选定示意包络，必须以自家实物含把手/脚踏/车轮复核。",
     "约2.45㎡为储物库外包占地，不是净储物容量；不宣称800mm进深一定够。",
     "柜门按四叶内折打开状态建模，净开约1340mm；承重五金、折叠过程与防夹须专业深化。",
-    "同一时刻取一辆车；库外转向需临时占用玄关主路，取车时不可同时通行。",
-    "客厅飘窗前的长桌、支架、桌面用品及两把椅子全部移除，窗前留空。保留窗体、原台体和已有薄饰面，不凭照片拆改或猜高度。现模型900mm台高是旧占位，并非照片实测；低台软垫休憩只作后续建议，尚未加建。"
+    "同一时刻取一辆车；库外转向需临时占用玄关主路，取车时不可同时通行。"
   ],
   "bayDetails": [
     {
@@ -1144,7 +1148,7 @@
           1.04,
           0.24
         ],
-        "horizontalFov": 90,
+        "horizontalFov": 90.0,
         "fov": 67.38
       },
       "summary": "不设桌台、梳妆桌和配椅，只保留飘窗石台及窗体。主卧西侧衣柜沿凹位做满2240×600mm。",
@@ -1176,7 +1180,7 @@
           1.03,
           -0.11
         ],
-        "horizontalFov": 90,
+        "horizontalFov": 90.0,
         "fov": 67.38
       },
       "summary": "删除独立书桌和书椅，次卧只保留睡眠、衣物收纳与单人飘窗茶座；暖灰坐垫配浅木可移茶托及无绳卷帘。",
@@ -1198,7 +1202,7 @@
       "fitoutId": "bay_living_family",
       "openingId": "window_living_west",
       "roomId": "living",
-      "title": "客厅 · 窗前留白，低台待复尺",
+      "title": "客厅 · 低飘窗软垫休憩",
       "render": "assets/schemes/family/bay-living.jpg",
       "interiorCamera": {
         "position": [
@@ -1214,18 +1218,19 @@
         "horizontalFov": 78.58,
         "fov": 57.22
       },
-      "summary": "客厅飘窗前的长桌、支架、桌面用品及两把椅子全部移除，窗前留空。保留窗体、原台体和已有薄饰面，不凭照片拆改或猜高度。现模型900mm台高是旧占位，并非照片实测；低台软垫休憩只作后续建议，尚未加建。",
+      "summary": "按业主授权暂估：客厅飘窗台面离地400mm，铺50mm可拆洗软垫，坐面约450mm。两片暖灰米色软垫各960×550mm，不向客厅外扩，不加书桌、椅子或台下柜。窗顶沿用2300mm占位，台高、净深、窗框及防护均待量房；这不是把实墙从900mm切低的施工指令。",
       "dimensions": [
-        "原长桌2000×650mm及两把520×520mm椅已移除",
-        "客厅窗台模型暂仍为900mm旧占位，照片显示更低，实高待量",
-        "原窗体、台体和薄饰面保留；不增加地台或窗前柜"
+        "暂估完成台面400mm＋软垫50mm＝坐面约450mm（非实测）",
+        "两片坐垫各960×550mm，中间留20mm拆洗缝",
+        "沿用2000mm窗宽、600mm外凸包络；净深与窗框均待量尺",
+        "软垫留在飘窗内，不占客厅通道，不加桌椅或台下柜"
       ],
       "conditions": [
-        "先量完成地面至台面高度、台面净深、有效长度及窗扇扫掠范围，再决定软垫厚度。",
-        "优先考虑原台加可拆洗薄垫及少量靠垫，不抬高、不外挑。仅为成人短时休憩建议，未在本次模型中实施。",
-        "家有幼童：专业核对防坠、护栏、开窗限位及无绳窗帘后再决定是否设坐席；纱窗不能替代防坠。",
-        "不能从白色立面判断台下是否空心；不预设可挖空做抽屉或可拆原台。",
-        "先排查窗框渗水、返潮与石材边缘，再选透气、可拆洗材料；靠垫不得依靠玻璃受力。"
+        "本轮按业主同意做估算方案，不是现状测绘。量房后按完成地面、原台面和窗框实际尺寸修订。",
+        "原900mm只是旧模型占位；当前400mm不表示允许把现状结构降低500mm。禁止依据本图拆改原台。",
+        "软垫分两片可取下、可拆洗；先查渗水、返潮及排水口，不封死窗框排水与检修。",
+        "28楼且家有幼童：先由专业人员核验防坠、开窗限位和无绳窗帘；软垫不等于安全措施，纱窗不能替代防坠。",
+        "按成人短时休憩展示，不布置儿童攀玩设施；不加靠玻璃受力的靠背，不默认台下可挖空收纳。"
       ]
     }
   ],
@@ -1308,6 +1313,24 @@
       "references": []
     }
   ],
+  "livingBayRevision": {
+    "version": "3.4.2",
+    "removedPartIds": [
+      "l_desktop",
+      "l_support",
+      "l_accessories",
+      "l_adult_chair",
+      "l_child_chair"
+    ],
+    "measured": false,
+    "photoObservation": "用户2026-09-26照片显示客厅飘窗较低；照片无可靠尺寸标定。",
+    "sillHeightStatus": "user-authorized-estimate",
+    "scope": "仅客厅西飘窗降低建模占位并铺两片软垫；其他墙体、家具及门窗不变。",
+    "estimatedSillCm": 40,
+    "cushionThicknessCm": 5,
+    "finishedSeatCm": 45,
+    "estimateAuthorized": true
+  },
   "schemeId": "family",
   "layout": {
     "id": "suite",
@@ -1328,7 +1351,7 @@
     "revision": "Fitted",
     "variant": "family-storage",
     "parentSource": "models/schemes/suite/design-data.json",
-    "parentSourceSha256": "c4794770b3154edc5c9feede29eeb44cb60e53c73878166f4131f948cd901e78"
+    "parentSourceSha256": "7d82a9d8aa5be26cfee29a9c33cbe4c2e8166f3c348f9309868b4d640ea18201"
   },
   "appearance": {
     "preset": "soft-warm",
@@ -3350,24 +3373,55 @@
       "vehicleTakeout": "沿东侧开口单车取出；库外转弯占用玄关通路。不是通行/无障碍认证。"
     }
   },
-  "livingBayRevision": {
-    "version": "3.4.1",
-    "removedPartIds": [
-      "l_desktop",
-      "l_support",
-      "l_accessories",
-      "l_adult_chair",
-      "l_child_chair"
-    ],
-    "measured": false,
-    "photoObservation": "用户2026-09-26照片显示客厅飘窗较低；照片无可靠尺寸标定。",
-    "sillHeightStatus": "unmeasured-legacy-placeholder",
-    "scope": "只移除窗前工作家具；不改变原窗和台体。"
-  },
   "renderedViews": {
+    "bay-living": {
+      "sourceSha256": "a2191f090412854497d65649c888fcbc188bdccf7f3c2d8038b234bc0f37ff0f",
+      "baseBlendSha256": "ebe4e8ab60bbaa41d1b97a9042152e5ddf53ca0c3345326d2df3975ffc3fbb0e",
+      "cameraState": {
+        "matrix": [
+          [
+            0.6605352163314819,
+            -0.15087266266345978,
+            0.7354798913002014,
+            4.130000114440918
+          ],
+          [
+            0.7507950663566589,
+            0.13273492455482483,
+            -0.6470612287521362,
+            -9.079999923706055
+          ],
+          [
+            -1.946109762229753e-08,
+            0.9796013832092285,
+            0.20095054805278778,
+            1.649999976158142
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 22.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "2a27670782bad5b09701b4218bb7692661f75d47004ad8f63d14af7155acb57f",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "27580d8bcc6c21c8ec024bd9462c4ebab453a6fe322fbad7491f88a7c0d5641b"
+    },
     "overall": {
-      "sourceSha256": "d27ed51ecb653be8a811975b19cfacd05e7d1a0e063e2dba69579fb88c87cefc",
-      "baseBlendSha256": "7f4bac4f175b6e1ef524429033df22837f4a36d527a3f5e6cfc2fd21be67cb52",
+      "sourceSha256": "a2191f090412854497d65649c888fcbc188bdccf7f3c2d8038b234bc0f37ff0f",
+      "baseBlendSha256": "ebe4e8ab60bbaa41d1b97a9042152e5ddf53ca0c3345326d2df3975ffc3fbb0e",
       "cameraState": {
         "matrix": [
           [
@@ -3408,11 +3462,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "c730c34e574c60519b56b08f84dea787d80bd8d33a4d337399b86b6235eb4e3a"
+      "imageSha256": "e5fd6e7c71093f4aea5bca96d177b4a26f7cc77564ecfc45ae5f5dbd1c70ee38"
     },
     "living": {
-      "sourceSha256": "d27ed51ecb653be8a811975b19cfacd05e7d1a0e063e2dba69579fb88c87cefc",
-      "baseBlendSha256": "7f4bac4f175b6e1ef524429033df22837f4a36d527a3f5e6cfc2fd21be67cb52",
+      "sourceSha256": "a2191f090412854497d65649c888fcbc188bdccf7f3c2d8038b234bc0f37ff0f",
+      "baseBlendSha256": "ebe4e8ab60bbaa41d1b97a9042152e5ddf53ca0c3345326d2df3975ffc3fbb0e",
       "cameraState": {
         "matrix": [
           [
@@ -3453,11 +3507,11 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "fe02d6644f20cbb6db2579bf802a07a9b9eda8962f943d010ab3225519c055a7"
+      "imageSha256": "45475d67070b25a632084e49c4eae6ddab3c60588770ecd630a66699e316c429"
     },
     "dining": {
-      "sourceSha256": "d27ed51ecb653be8a811975b19cfacd05e7d1a0e063e2dba69579fb88c87cefc",
-      "baseBlendSha256": "7f4bac4f175b6e1ef524429033df22837f4a36d527a3f5e6cfc2fd21be67cb52",
+      "sourceSha256": "a2191f090412854497d65649c888fcbc188bdccf7f3c2d8038b234bc0f37ff0f",
+      "baseBlendSha256": "ebe4e8ab60bbaa41d1b97a9042152e5ddf53ca0c3345326d2df3975ffc3fbb0e",
       "cameraState": {
         "matrix": [
           [
@@ -3498,7 +3552,7 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "c3430725487963fb6b671963783072e171738069f4c684852bb969039fb13d49"
+      "imageSha256": "e88da262f14871ba2bb4411366a5e011effd528509fed2cf46a89fb288b09af5"
     },
     "master": {
       "sourceSha256": "d27ed51ecb653be8a811975b19cfacd05e7d1a0e063e2dba69579fb88c87cefc",
@@ -3543,7 +3597,13 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "cf3bd163a289696d433165204388f12c91efdd214d93a22fdda29ec5ed6c9f21"
+      "imageSha256": "cf3bd163a289696d433165204388f12c91efdd214d93a22fdda29ec5ed6c9f21",
+      "retainedFrom": {
+        "commit": "647d219fdc52e0bc71810f6a8e2daa97135be0cc",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "master",
+        "reason": "本轮仅客厅西飘窗暂估低台及坐垫；此未改空间或不含该窗的视角沿用原图，未重新计算间接照明。"
+      }
     },
     "bedroom-b": {
       "sourceSha256": "d27ed51ecb653be8a811975b19cfacd05e7d1a0e063e2dba69579fb88c87cefc",
@@ -3588,7 +3648,13 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "2158cdbb05f02d169369c7f073b354c5e7d47f697ada198697fe8ba2c02b9936"
+      "imageSha256": "2158cdbb05f02d169369c7f073b354c5e7d47f697ada198697fe8ba2c02b9936",
+      "retainedFrom": {
+        "commit": "647d219fdc52e0bc71810f6a8e2daa97135be0cc",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "bedroom-b",
+        "reason": "本轮仅客厅西飘窗暂估低台及坐垫；此未改空间或不含该窗的视角沿用原图，未重新计算间接照明。"
+      }
     },
     "study": {
       "sourceSha256": "d27ed51ecb653be8a811975b19cfacd05e7d1a0e063e2dba69579fb88c87cefc",
@@ -3633,7 +3699,13 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "7464b02f0f7b3f68bcbd9f527843287c60d9e921bf47bd353355df86e75d0574"
+      "imageSha256": "7464b02f0f7b3f68bcbd9f527843287c60d9e921bf47bd353355df86e75d0574",
+      "retainedFrom": {
+        "commit": "647d219fdc52e0bc71810f6a8e2daa97135be0cc",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "study",
+        "reason": "本轮仅客厅西飘窗暂估低台及坐垫；此未改空间或不含该窗的视角沿用原图，未重新计算间接照明。"
+      }
     },
     "kitchen": {
       "sourceSha256": "d27ed51ecb653be8a811975b19cfacd05e7d1a0e063e2dba69579fb88c87cefc",
@@ -3678,7 +3750,13 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "b8959461739b924ec47f07e18952fe2e8eb5637034d3e82031c1804efacdd817"
+      "imageSha256": "b8959461739b924ec47f07e18952fe2e8eb5637034d3e82031c1804efacdd817",
+      "retainedFrom": {
+        "commit": "647d219fdc52e0bc71810f6a8e2daa97135be0cc",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "kitchen",
+        "reason": "本轮仅客厅西飘窗暂估低台及坐垫；此未改空间或不含该窗的视角沿用原图，未重新计算间接照明。"
+      }
     },
     "master-bath": {
       "sourceSha256": "d27ed51ecb653be8a811975b19cfacd05e7d1a0e063e2dba69579fb88c87cefc",
@@ -3723,52 +3801,13 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "2fc22bd4c6bf1373f39f5fe6f5aa7aebef9b147bce6598f2244f8544db7d80be"
-    },
-    "bay-living": {
-      "sourceSha256": "d27ed51ecb653be8a811975b19cfacd05e7d1a0e063e2dba69579fb88c87cefc",
-      "baseBlendSha256": "7f4bac4f175b6e1ef524429033df22837f4a36d527a3f5e6cfc2fd21be67cb52",
-      "cameraState": {
-        "matrix": [
-          [
-            0.6605352163314819,
-            -0.15087266266345978,
-            0.7354798913002014,
-            4.130000114440918
-          ],
-          [
-            0.7507950663566589,
-            0.13273492455482483,
-            -0.6470612287521362,
-            -9.079999923706055
-          ],
-          [
-            -1.946109762229753e-08,
-            0.9796013832092285,
-            0.20095054805278778,
-            1.649999976158142
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "lens": 22.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
-      },
-      "cameraHash": "2a27670782bad5b09701b4218bb7692661f75d47004ad8f63d14af7155acb57f",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "9f888cbbc74f21b799afe7cf2607685be7790b6a4ceaf8b16152a126515a3ca9"
+      "imageSha256": "2fc22bd4c6bf1373f39f5fe6f5aa7aebef9b147bce6598f2244f8544db7d80be",
+      "retainedFrom": {
+        "commit": "647d219fdc52e0bc71810f6a8e2daa97135be0cc",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "master-bath",
+        "reason": "本轮仅客厅西飘窗暂估低台及坐垫；此未改空间或不含该窗的视角沿用原图，未重新计算间接照明。"
+      }
     },
     "guest-bath": {
       "sourceSha256": "a634202224ccb252d58201807f9cd459047f64fc534a8b40eaa4130b9ebea678",
@@ -4179,7 +4218,7 @@
       }
     }
   },
-  "baseBlendSha256": "7f4bac4f175b6e1ef524429033df22837f4a36d527a3f5e6cfc2fd21be67cb52",
+  "baseBlendSha256": "ebe4e8ab60bbaa41d1b97a9042152e5ddf53ca0c3345326d2df3975ffc3fbb0e",
   "renderSpec": {
     "engine": "CYCLES",
     "width": 960,
@@ -4188,20 +4227,20 @@
     "denoise": true
   },
   "renderInheritance": {
-    "reviewedAt": "3.4.1",
-    "baselineCommit": "c2e5a5f399709185b2e843c64e622a0373927602",
+    "reviewedAt": "3.4.2",
+    "baselineCommit": "647d219fdc52e0bc71810f6a8e2daa97135be0cc",
     "currentViews": [
       "overall",
       "living",
       "dining",
+      "bay-living"
+    ],
+    "referenceViews": [
       "master",
       "bedroom-b",
       "study",
       "kitchen",
       "master-bath",
-      "bay-living"
-    ],
-    "referenceViews": [
       "guest-bath",
       "balcony",
       "bay-master",

@@ -7,9 +7,13 @@ const base=await read('models/design-data.json'),d=await read('models/schemes/su
 const equal=(a,b,label)=>assert.deepEqual(a,b,label);
 for(const w of [[319,6,319,242],[275,242,380,242],[380,242,380,493]])assert.ok(d.walls.some(v=>v.join()===w.join()),'Approved upper wall and retained return '+w);
 for(const key of ['envelope','storageFitouts'])equal(d[key],base[key],key+' preserved');
-equal(d.windows.filter(w=>w.id!=='window_kitchen_balcony'),base.windows,'All existing windows preserved');
+const targetLiving=w=>w.id==='window_living_west';
+equal(d.windows.filter(w=>w.id!=='window_kitchen_balcony'&&!targetLiving(w)),base.windows.filter(w=>!targetLiving(w)),'All unrelated windows preserved');
+const activeWood=await read('models/schemes/wood/design-data.json');
+equal(d.windows.find(targetLiving),activeWood.windows.find(targetLiving),'Four schemes share the user-authorized low-bay estimate');
 assert.equal(d.windows.filter(w=>w.id==='window_kitchen_balcony').length,1,'Exactly one kitchen–balcony window added');
-for(const fitout of d.bayFitouts)for(const part of fitout.parts){const old=base.bayFitouts.find(f=>f.id===fitout.id).parts.find(p=>p.id===part.id);equal(part,part.id==='l_adult_chair'?{...old,y:old.y+15}:old,'Bay part '+part.id);}
+for(const fitout of d.bayFitouts)if(fitout.roomId!=='living')for(const part of fitout.parts){const old=base.bayFitouts.find(f=>f.id===fitout.id).parts.find(p=>p.id===part.id);equal(part,old,'Unrelated bay part '+part.id);}
+equal(d.bayFitouts.find(f=>f.roomId==='living'),activeWood.bayFitouts.find(f=>f.roomId==='living'),'Same low-bay pad design across layouts');
 equal(d.bayFitouts.find(f=>f.roomId==='room_a').parts,[],'Master desk AND chair removed only in new layout');
 assert.equal(d.bayFitouts.find(f=>f.roomId==='room_a').type,'bare_ledge');
 for(const f of base.furniture)if(!['vanity_main','vanity_guest','书房办公椅','主卧衣柜','主卫壁挂马桶','1100书桌','bed_b','次卧衣柜','书房日床','书房客衣柜'].includes(f.id||f.name))equal(d.furniture.find(x=>(x.id||x.name)===(f.id||f.name)),f,'No unrelated furniture move: '+f.name);

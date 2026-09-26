@@ -1,10 +1,10 @@
-import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.4.1';
-import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.4.1';
+import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.4.2';
+import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.4.2';
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
-const UI_REVISION = '3.4.1';
+const UI_REVISION = '3.4.2';
 document.documentElement.dataset.uiRevision = UI_REVISION;
-let ASSET_REVISION = '3.4.1';
+let ASSET_REVISION = '3.4.2';
 const revisedAsset = path => {const url=new URL(path,document.baseURI);url.searchParams.set('v',ASSET_REVISION);return url.href};
 const icons = {
   cube:'<path d="m8 2 6 3.5v5L8 14l-6-3.5v-5L8 2Z M2 5.5 8 9l6-3.5 M8 9v5 M5 3.8l6 3.5"/>',
@@ -31,7 +31,7 @@ const icon = (name) => `<svg viewBox="0 0 16 16" aria-hidden="true">${icons[name
 $$('[data-icon]').forEach(el => el.insertAdjacentHTML('afterbegin', icon(el.dataset.icon)));
 const descriptions = {
   overall:{name:'全屋概览',en:'THE ENTIRE HOME',title:'木色里的日常',icon:'cube',render:'overall',description:'浅橡木、暖白与柔和织物串起三房两卫。恢复完整客餐厅，让自然光在家中连贯流动。',features:['现代原木','三房两卫','同源模型']},
-  living:{name:'客厅',en:'LIVING ROOM',title:'让窗前留白',icon:'sofa',render:'living',description:'客厅飘窗前不再设置书桌和椅子，原窗台保留。照片显示台面较低，准确高度待实测，模型旧占位不作为现场尺寸。',features:['窗前无桌椅','台高待复尺','实墙电视']},
+  living:{name:'客厅',en:'LIVING ROOM',title:'低飘窗，铺上柔软',icon:'sofa',render:'living',description:'客厅暂估400mm低台＋50mm可拆软垫，坐面约450mm；不外扩、不加桌椅，尺寸待量房。',features:['暂估400＋50mm','分片软垫','不向客厅外扩']},
   dining:{name:'玄关 · 餐厅',en:'ENTRY & DINING',title:'把回家与围坐，收得妥帖',icon:'dining',render:'dining',description:'进门东侧右手鞋柜面向西；西墙餐柜向南墙转折成7字。鞋与杯盘分开收纳，开放台面连接日常饮品操作；分段尺寸、盲角与通行动线仍需现场复核。',features:['右手鞋柜','7字餐柜','转角盲区复核']},
   room_a:{name:'主卧',en:'MASTER BEDROOM',title:'把喧嚣留在窗外',icon:'bed',render:'master',description:'柔和床头与浅木柜体营造安静背景，保留床侧通行。北窗的隔声与遮光，是舒适睡眠的重点。',features:['1500 mm 床','亚麻触感','北向采光']},
   room_b:{name:'次卧 B',en:'SECOND BEDROOM',title:'让睡眠与茶歇更从容',icon:'bed',render:'bedroom-b',description:'保留紧凑床、衣柜与条件飘窗茶座，取消独立书桌和办公椅。卧室入口保持通行，浅色材质减轻压迫感。',features:['1350 mm 床','条件茶座','不设独立书桌']},
@@ -56,7 +56,7 @@ const roomById = id => rooms.find(r=>r.id===id);
 const roomDescription = id => descriptions[id] || descriptions.overall;
 const schemeTextOverride=(overrides,id)=>Object.fromEntries(Object.entries(overrides?.[id]||{}).filter(([key])=>['title','description','summary','features'].includes(key)));
 const renderPath = id => schemeRender(scheme,roomDescription(id).render);
-const renderProvenance = view => manifest?.renderedViews?.[String(view).split('/').pop().split(/[?.]/)[0]]?.retainedFrom?'沿用上版模型图 · 本轮未重渲':'当前模型重渲 · 条件设计，非施工图';
+const renderProvenance = view => manifest?.renderedViews?.[String(view).split('/').pop().split(/[?.]/)[0]]?.retainedFrom?'沿用历史模型图 · 本轮未重渲':'当前模型重渲 · 条件设计，非施工图';
 const escapeHTML = value => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 async function getJSON(url){const response=await fetch(revisedAsset(url));if(!response.ok)throw new Error(`${url}: ${response.status}`);return response.json()}
 async function getDesignData(){return getJSON(scheme?.geometrySource||schemeCatalog?.geometrySource||'models/design-data.json')}
@@ -355,7 +355,7 @@ function planFitoutPart(fitout,part){
   const {x,y,w,d}=Object.fromEntries(['x','y','w','d'].map(key=>[key,Number(part[key])])),sourceRole=part.role||'ledge';
   const role=({raised_ledge:'ledge',seat_cushion:'cushion',back_cushion:'cushion',tea_tray:'tray'})[sourceRole]||sourceRole;
   const subordinate=['desk_support','desk_accessories','ledge_objects'].includes(role);
-  const fill=subordinate?'none':({desktop:'#c7a578',ledge:'#d7c5a6',cushion:'#aab59c',tray:'#9c7854',chair:'#c5b89e'}[role]||'#d4c5ac');
+  const fill=subordinate?'none':fitout.roomId==='living'&&role==='cushion'?'#c7c2b8':({desktop:'#c7a578',ledge:'#d7c5a6',cushion:'#aab59c',tray:'#9c7854',chair:'#c5b89e'}[role]||'#d4c5ac');
   const face=part.face||'north',back={east:'west',west:'east',south:'north',north:'south'}[face];
   const backLine=back==='west'?`x1="${x+3}" y1="${y+5}" x2="${x+3}" y2="${y+d-5}"`:back==='east'?`x1="${x+w-3}" y1="${y+5}" x2="${x+w-3}" y2="${y+d-5}"`:back==='south'?`x1="${x+5}" y1="${y+d-3}" x2="${x+w-5}" y2="${y+d-3}"`:`x1="${x+5}" y1="${y+3}" x2="${x+w-5}" y2="${y+3}"`;
   const detail=role==='chair'?`<line ${backLine} stroke="#8f7f65" stroke-width="5" stroke-linecap="round"/>`:role==='cushion'?`<rect x="${x+4}" y="${y+4}" width="${Math.max(0,w-8)}" height="${Math.max(0,d-8)}" rx="5" fill="none" stroke="#e9eddf" stroke-width="1.5" stroke-dasharray="3 3"/>`:role==='tray'?`<rect x="${x+3}" y="${y+3}" width="${Math.max(0,w-6)}" height="${Math.max(0,d-6)}" rx="2" fill="none" stroke="#d1b694" stroke-width="1.5"/>`:'';

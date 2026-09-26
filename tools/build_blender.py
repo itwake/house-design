@@ -1645,7 +1645,7 @@ def manifest(data, openings, src):
             rooms[-1]["conditions"]=[condition for item in storage for condition in item.get("conditions",[])]
     result={"version":"3.0 Blender 原木实景模型","model":"models/huiyayuan-wood.glb","blend":"models/huiyayuan-wood.blend","units":"m","source":str(src.relative_to(ROOT)).replace("\\","/"),"sourceSha256":hashlib.sha256(src.read_bytes().replace(b"\r\n", b"\n")).hexdigest(),"bounds":{"min":[0,-.012,0],"max":[8.41,2.7,14.01]},"overviewCamera":{"position":three(VIEWS["overall"][0]),"target":three(VIEWS["overall"][1])},"overallRender":"assets/blender-renders/overall.jpg","rooms":rooms,"openings":openings,"design":{"style":"现代原木","palette":["#eee9df","#bb956b","#d4c9b5","#758364","#b98165"]},"notes":["真实网格由厘米平面数据转换为米；渲染与交互使用同一 Blender 场景。","整体与房间鸟瞰采用可拆墙展示；室内机位使用完整墙体与实际开口。","C 级门窗、层高与统一墙厚仍为待现场复尺的建模假设。"]}
     result["bounds"]=geometry_bounds(data,openings)
-    detail_views={"office_vanity":"bay-master","bare_ledge":"bay-master","tea_seat":"bay-tea","family_desk":"bay-living","clear_ledge":"bay-living"}
+    detail_views={"office_vanity":"bay-master","bare_ledge":"bay-master","tea_seat":"bay-tea","family_desk":"bay-living","clear_ledge":"bay-living","low_lounge":"bay-living"}
     result["bayDetails"]=[]
     for fitout in data.get("bayFitouts",[]):
         view=detail_views[fitout["type"]]

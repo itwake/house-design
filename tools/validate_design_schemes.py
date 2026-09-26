@@ -407,9 +407,12 @@ class Audit:
             retained = record.get('retainedFrom')
             if retained:
                 import subprocess
-                commit='c2e5a5f399709185b2e843c64e622a0373927602'
-                self.check(retained.get('commit')==commit and retained.get('manifest')==scheme['manifest'] and retained.get('view')==name,
+                commit=retained.get('commit')
+                allowed_commits={'c2e5a5f399709185b2e843c64e622a0373927602','647d219fdc52e0bc71810f6a8e2daa97135be0cc'}
+                valid_origin=commit in allowed_commits and retained.get('manifest')==scheme['manifest'] and retained.get('view')==name
+                self.check(valid_origin,
                            f'{sid}/{name}: retained reference has an explicit reviewed Git origin')
+                if not valid_origin:continue
                 self.check(name not in ('overall','living','dining','bay-living'),f'{sid}/{name}: affected living views cannot use old frames')
                 previous=json.loads(subprocess.check_output(['git','show',commit+':'+scheme['manifest']],cwd=ROOT))
                 self.check({k:v for k,v in record.items() if k!='retainedFrom'}==previous['renderedViews'][name],
@@ -417,6 +420,8 @@ class Audit:
                 prior_image=subprocess.check_output(['git','show',commit+':'+f'{prefix}/{name}.jpg'],cwd=ROOT)
                 self.check(sha(prior_image)==image_hash,f'{sid}/{name}: actual reference bytes equal the prior published image')
                 self.check(manifest.get('livingBayRevision',{}).get('removedPartIds')==['l_desktop','l_support','l_accessories','l_adult_chair','l_child_chair'],f'{sid}/{name}: reuse is limited to the scoped living furniture removal')
+                if manifest.get('livingBayRevision',{}).get('version')=='3.4.2':
+                    self.check(manifest['livingBayRevision'].get('estimatedSillCm')==40 and manifest['livingBayRevision'].get('cushionThicknessCm')==5 and manifest['livingBayRevision'].get('measured') is False,f'{sid}/{name}: low-bay estimate remains explicitly unmeasured')
             else:
                 self.check(record.get("baseBlendSha256") == manifest.get("baseBlendSha256") == self.base_blend_hash,
                            f"{sid}/{name}: frame belongs to actual final baseline Blender scene")
@@ -425,8 +430,9 @@ class Audit:
             if sid in ACTIVE_IDS:
                 frame = {"engine": "CYCLES", "width": spec["width"], "height": spec["height"],
                          "samples": spec["samples"], "denoise": True}
-                self.check(record.get("renderSpec") == frame and frame["samples"] >= 8,
-                           f"{sid}/{name}: final declared Cycles denoised render quality")
+                actual_spec=record.get('renderSpec',{})
+                self.check(all(actual_spec.get(k)==v for k,v in frame.items() if k!='samples') and actual_spec.get('samples',0)>=frame['samples']>=8,
+                           f"{sid}/{name}: actual Cycles denoised render meets declared minimum quality")
             else:
                 self.check(record.get("appearanceHash") == manifest["appearanceHash"] and record.get("baseGeometryHash") == manifest["baseGeometryHash"],
                            f"{sid}/{name}: render provenance matches appearance and geometry")

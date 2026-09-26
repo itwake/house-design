@@ -4,7 +4,9 @@
 
 **在线查看：[itwake.github.io/house-design](https://itwake.github.io/house-design/)**
 
-最新 **V3.4.1 / 客厅窗前留白**：[查看四方案](https://itwake.github.io/house-design/index.html?v=3.4.1)。全部取消客厅飘窗前长桌、支架、桌面用品和两把椅子，其他布局与窗体不变。照片显示原台较低，但无实测，模型900mm仅保留为明确标注的旧占位；没有擅自改台或加软垫。详见[低飘窗建议、参考与复尺项目](docs/living-low-bay-v341.md)。
+最新 **V3.4.2 / 客厅低飘窗软垫**：[查看四方案](https://itwake.github.io/house-design/index.html?v=3.4.2)。按业主授权暂估台高400mm，铺50mm分片软垫，完成坐面约450mm。软垫每片960×550mm，不外扩、不加桌椅或台下柜；其他布局不变。全部为估算，非实测或拆台施工指令。详见[尺寸、构造与验证](docs/living-low-bay-v342.md)。
+
+**V3.4.1 / 客厅窗前留白**：上一版先取消客厅桌椅，保留旧台高占位。[历史建议与复尺项目](docs/living-low-bay-v341.md)。
 
 **V3.4.0 / 方案4 · 家政整墙**：基于方案2，A洗烘落地并排靠厨房墙、980mm浅盆台面；B客厅300mm深书架与C外移约288mm的阳台门框齐平。沙发/茶几西移800mm给书架留路，餐桌及7字柜保留。阳台操作带仅690mm，浅盆后排水、3cm机顶间隙须厂家复核。四方案厨房窗与柜体同步方案3。详见[尺寸、参考和验证](docs/laundry-wall-v340.md)。下文为版本历史。
 
@@ -16,7 +18,7 @@
 
 上一版V3.2.2保留R4B门位、走廊、套内玄关与书房推拉门；两卧北段隔墙东移回原位。次卧床头及南墙衣柜贴西墙，床尾2240×440mm浅台补齐门口退台；主卧2240×600mm衣柜满凹位；书房北墙沙发、南墙2720×550mm通长桌。次卧床尾约470mm仍窄。详见[家具尺寸与验证](docs/suite-fitted-v322.md)。下方V3.2.0及[R4B](docs/suite-layout-v321.md)为历史记录。
 
-![全屋Blender模型实际渲染](assets/blender-renders/overall.jpg)
+![现行方案2全屋Blender渲染：客厅低飘窗软垫](assets/schemes/suite/overall.jpg)
 
 ## 装修知识库（2026-09-17）
 

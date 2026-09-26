@@ -24,13 +24,13 @@ def geometry_groups(meshes,key):
     return {k:sorted(v) for k,v in groups.items()}
 before=geometry_groups(base,'furnitureId');after=geometry_groups(model,'furnitureId')
 living_removed={'l_desktop','l_support','l_accessories','l_adult_chair','l_child_chair'}
-excluded={'vanity_main','vanity_guest','书房办公椅','主卧衣柜','主卫壁挂马桶','a_desktop','a_support','a_accessories','a_chair','bed_b','次卧衣柜','书房日床','书房客衣柜','1100书桌'}|living_removed
+excluded={'vanity_main','vanity_guest','书房办公椅','主卧衣柜','主卫壁挂马桶','a_desktop','a_support','a_accessories','a_chair','bed_b','次卧衣柜','书房日床','书房客衣柜','1100书桌','l_ledge'}|living_removed
 preserved=0
 for key,hashes in before.items():
     if key not in excluded:
         assert after.get(key)==hashes,'Unrelated furniture actual triangles changed: '+key
         preserved+=len(hashes)
-for field,excluded in [('openingId',{'door_a','door_b','door_c','door_bath_1','door_bath_2'}),('storagePartId',set()),('fitoutPartId',{'a_desktop','a_support','a_accessories','a_chair'}|living_removed)]:
+for field,excluded in [('openingId',{'door_a','door_b','door_c','door_bath_1','door_bath_2','window_living_west'}),('storagePartId',set()),('fitoutPartId',{'a_desktop','a_support','a_accessories','a_chair','l_ledge'}|living_removed)]:
     original=geometry_groups(base,field);current=geometry_groups(model,field)
     for key,hashes in original.items():
         if key not in excluded:assert current.get(key)==hashes,field+' moved: '+key
