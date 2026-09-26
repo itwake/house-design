@@ -49,10 +49,11 @@ export function buildWalkWorld(data){
   // visible and solid instead of granting the whole opening as a passage.
   for(const door of doors.filter(d=>d.sliding)){
     const c=door.sliding,n=c.panelCount;
-    if(door.x1!==door.x2||c.stackTo!=='north')throw Error('Unsupported slider parking');
+    if(door.x1!==door.x2||!['north','south'].includes(c.stackTo))throw Error('Unsupported slider parking');
     const inner=(door.y2-door.y1)-2*c.jambCm,panel=(inner+(n-1)*c.overlapCm)/n;
     const parked=panel+(n-1)*c.stackStaggerCm;
-    rect(door.id+'-parked-leaves',(door.x1-c.frameDepthCm/2)/100,(door.y1+c.jambCm)/100,c.frameDepthCm/100,parked/100,'sliding-stack');
+    const parkedY=c.stackTo==='south'?door.y2-c.jambCm-parked:door.y1+c.jambCm;
+    rect(door.id+'-parked-leaves',(door.x1-c.frameDepthCm/2)/100,parkedY/100,c.frameDepthCm/100,parked/100,'sliding-stack');
   }
   // R4B doors have explicit physical open poses, shared with plan and GLB.
   for(const door of doors.filter(d=>d.operation)){
@@ -77,7 +78,8 @@ export function buildWalkWorld(data){
   // This floor lamp is authored directly in build_blender.py, not in the
   // plan furniture list. Its 440 mm shade is the widest standing obstruction.
   // Keep the source coordinate/GLB bound regression in test_walkthrough.mjs.
-  rect('living-floor-lamp',6.26,8.76,.44,.44,'model-addon');
+  const lamp=data.modelAddons?.livingFloorLampCm||{x:648,y:898};
+  rect('living-floor-lamp',lamp.x/100-.22,lamp.y/100-.22,.44,.44,'model-addon');
   const canStand=(x,z,radius=WALK_RADIUS)=>{
     if(!finite(x,z,radius)||radius<0||!insidePolygon(x,z,boundary))return false;
     const r2=radius*radius-1e-10;

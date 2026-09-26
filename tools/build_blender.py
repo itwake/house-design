@@ -445,8 +445,8 @@ def sliding_opening_details(op):
     """Three tracked leaves; model real parking, not one pane with mullions."""
     config=op["sliding"]
     x1,y1,x2,y2=[op[k]/100 for k in ("x1","y1","x2","y2")]
-    if abs(x1-x2)>.0001 or config["stackTo"]!="north":
-        raise ValueError("This calibrated kitchen slider is vertical and parks north")
+    if abs(x1-x2)>.0001 or config["stackTo"] not in ("north","south"):
+        raise ValueError("This calibrated slider must be vertical and park north/south")
     n=int(config["panelCount"])
     frame=config["jambCm"]/100
     length=y2-y1
@@ -459,7 +459,8 @@ def sliding_opening_details(op):
     frame_depth=config["frameDepthCm"]/100
     h=op["height"]
     def part(label,x,y,z,w,d,height,role="sliding-static",mat="WarmGrayMetal"):
-        obj=box(op["id"]+" / "+label,x,y,z,w,d,height,mat,.0015,"door","kitchen")
+        if mat=="WarmGrayMetal" and config.get('frameFinish')=='warm-white':mat='Cream'
+        obj=box(op["id"]+" / "+label,x,y,z,w,d,height,mat,.0015,"door",op.get('roomId','kitchen'))
         obj["openingId"]=op["id"]
         obj["doorRole"]=role
         return obj
@@ -470,7 +471,7 @@ def sliding_opening_details(op):
         lane=(i-(n-1)/2)*pitch
         part("recessed guide track "+str(i+1),x1+lane,(y1+y2)/2,0,.010,length,.006)
         start=y1+frame+i*(panel-overlap)
-        shift=-i*(panel-overlap-stagger)
+        shift=(-i if config['stackTo']=='north' else n-1-i)*(panel-overlap-stagger)
         def leaf(label,along,z,span,height,mat="WarmGrayMetal",thickness=depth):
             obj=part("sliding leaf "+str(i+1)+" "+label,x1+lane,start+along,z,thickness,span,height,"sliding-panel",mat)
             obj["slidingPanelIndex"]=i

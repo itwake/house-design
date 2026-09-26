@@ -1,9 +1,9 @@
 {
-  "version": "3.3.0",
+  "version": "3.4.0",
   "defaultScheme": "wood",
-  "updatedAt": "2026-09-25",
+  "updatedAt": "2026-09-26",
   "geometrySource": "models/design-data.json",
-  "scope": "三个独立布局：原木基准、暖白套间、基于暖白套间的亲子储物库与餐区重排。",
+  "scope": "四套实质布局；方案4基于方案2，方案1/2/4厨房对齐方案3。",
   "futureSchemePolicy": "新增方案必须在家具布局、动线或空间功能上有实质差异，并分别校核同源2D、3D和效果图；仅更换颜色或材质不作为新方案。",
   "archiveNote": "archivedPalettes仅保存已下线的三套饰面实验，不是可选布局；旧查看链接统一回到wood。历史模型和图片保留供追溯。",
   "researchNote": "参考近年有署名的公开住宅案例，不宣称流行度排名；第三方案例照片不作为本房效果图。",
@@ -94,7 +94,7 @@
       "name": "木光原境",
       "en": "WOOD & WARMTH",
       "tagline": "原来的布局，完整保留",
-      "summary": "延续浅橡木、奶白与柔和织物。三房两卫及飘窗功能保留，玄关按业主新参考调整为右手浅鞋柜、左手7字整墙餐柜。",
+      "summary": "保留浅橡木、奶白与柔和织物、原三房两卫与飘窗功能，以及右手鞋柜和左手7字餐柜。V3.4.0仅将厨房大窗及柜体摆设同步方案3，原版资产留档。",
       "style": "现代原木",
       "colors": [
         {
@@ -117,7 +117,7 @@
       "differences": [
         "保留原三房、北侧过道、主卧直通主卫与两卫阶梯共墙。",
         "厨房已拓宽为1700mm三轨推拉门；右鞋柜、左7字餐柜保留。",
-        "作为新增入口套间方案的对照，原模型和15张效果图不重写。"
+        "原版模型与15张效果图留档；厨房同步更新另存独立模型与新效果图。"
       ],
       "tradeoffs": [
         "整体较克制；喜欢强烈个性的人可能觉得变化不足。",
@@ -127,15 +127,34 @@
         "antibes"
       ],
       "planPalette": {},
-      "roomOverrides": {},
+      "roomOverrides": {
+        "kitchen": {
+          "title": "让厨房与阳台之间通透起来",
+          "description": "补回厨房北侧与家政阳台共墙大窗，暂定1200×1300mm、窗台高1000mm，双扇推拉窗型仅为示意。台下柜、洗菜盆和1700mm厨房推拉门不动；北墙层板缩回窗左侧实墙，不横挡玻璃。窗洞、墙体、五金与防水收口须复尺。",
+          "features": [
+            "共墙大窗",
+            "窗下台面保留",
+            "尺寸待复尺"
+          ]
+        },
+        "balcony": {
+          "title": "窗与门各归其位",
+          "description": "南侧与厨房共墙补大窗；阳台家政矮柜仍在窗下、洗烘塔及西侧客厅入口保留。这是厨房借光内窗，不是阳台外窗；外侧采光、通风及封窗情况仍待核实。",
+          "features": [
+            "南侧厨房内窗",
+            "西侧客厅入口",
+            "洗烘及矮柜保留"
+          ]
+        }
+      },
       "appearance": {
         "preset": "base"
       },
-      "hero": "assets/blender-renders/living.jpg",
-      "model": "models/huiyayuan-wood.glb",
-      "blend": "models/huiyayuan-wood.blend",
-      "manifest": "models/scene-manifest.json",
-      "assetRevision": "3.1.4",
+      "hero": "assets/schemes/wood/overall.jpg",
+      "model": "models/schemes/wood/huiyayuan-wood.glb",
+      "blend": "models/schemes/wood/huiyayuan-wood.blend",
+      "manifest": "models/schemes/wood/scene-manifest.json",
+      "assetRevision": "3.4.0",
       "renderSpec": {
         "engine": "Cycles",
         "width": 960,
@@ -143,8 +162,9 @@
         "samples": 8,
         "denoising": true
       },
-      "geometrySource": "models/design-data.json",
-      "layoutKind": "baseline"
+      "geometrySource": "models/schemes/wood/design-data.json",
+      "layoutKind": "baseline",
+      "renderDirectory": "assets/schemes/wood"
     },
     {
       "id": "suite",
@@ -483,6 +503,180 @@
           ]
         }
       }
+    },
+    {
+      "id": "laundry",
+      "name": "木光 · 家政整墙",
+      "en": "WOOD / LAUNDRY WALL",
+      "tagline": "把家务藏在一面整墙之后",
+      "summary": "A洗衣机与烘干机在靠厨房共墙落地并排，980mm浅盆台面；B东侧300mm浅书架，C阳台推拉门外移约288mm拉齐门框与柜面。沙发和茶几西移800mm、电视柜西移400mm，餐桌及7字柜保留。",
+      "style": "暖白浅木 · 洗烘并排",
+      "layoutKind": "alternative",
+      "colors": [
+        {
+          "name": "低饱和浅木",
+          "hex": "#C5B9A7"
+        },
+        {
+          "name": "暖白",
+          "hex": "#F5F2ED"
+        },
+        {
+          "name": "浅米灰织物",
+          "hex": "#D5CFC6"
+        },
+        {
+          "name": "鼠尾草绿",
+          "hex": "#8D9B8F"
+        }
+      ],
+      "differences": [
+        "两机各按600×650×850mm外包占位，含前门；型号及安装间隙待选型。",
+        "A台面1680×800mm，完成面980mm；专用浅盆外深100mm，盆底880mm。",
+        "B书架3180mm长、300mm深、2400mm高；C门框外沿向客厅移287.5mm，与书架正面齐平。",
+        "阳台操作过道约690mm；沙发西移800mm，书架前约700mm。",
+        "C洞口1500mm、向南三轨叠停，名义净开约900mm；台面限制使实际北侧入内段约690mm。"
+      ],
+      "tradeoffs": [
+        "所有尺寸为现有模型中的条件推演，不是量房成果或施工图。",
+        "上方是真台盆，但必须是专用浅盆/后置排水定制，不能直接用普通深台下盆；980mm盆沿偏高，不是儿童独立洗手位。",
+        "机器顶面与盆底仅30mm，需厂家确认震动、检修和散热；台盆与台面由独立支架承重，不能压在机器上。",
+        "厨房内窗保持1200×1300mm、台高1000mm；980mm台面仅低20mm，收口、窗框和龙头必须复尺。龙头偏左布置，避开窗洞。",
+        "阳台前后仅1490mm，两机开门时过道紧张，一次操作一台，从侧面取衣；未选定机门铰链和实际开门包络。",
+        "外移的是室内隔断，不是外立面扩建；原窗下墙、梁柱、门垛可拆性和湿区防水须专业核查。",
+        "原有主卧套内玄关、书房书架、7字餐边柜及四人餐桌保留；不加入方案3大件库。"
+      ],
+      "references": [],
+      "planPalette": {
+        "wood": "#C5B9A7",
+        "cabinet": "#EAE6E0",
+        "fabric": "#F3F0EA",
+        "metal": "#AEAFAC",
+        "wall": "#908D87",
+        "wet": "#E1E7E5",
+        "floor": "#F0ECE5"
+      },
+      "appearance": {
+        "preset": "soft-warm",
+        "description": "暖白、浅米灰、低饱和浅木与少量鼠尾草绿；材质贴图、柜门、灯光和网页同步减黄。"
+      },
+      "geometrySource": "models/schemes/laundry/design-data.json",
+      "hero": "assets/schemes/laundry/overall.jpg",
+      "model": "models/schemes/laundry/huiyayuan-wood.glb",
+      "blend": "models/schemes/laundry/huiyayuan-wood.blend",
+      "manifest": "models/schemes/laundry/scene-manifest.json",
+      "assetRevision": "3.4.0",
+      "renderViews": [
+        "overall",
+        "living",
+        "dining",
+        "master",
+        "bedroom-b",
+        "study",
+        "kitchen",
+        "master-bath",
+        "guest-bath",
+        "balcony",
+        "bay-master",
+        "bay-tea",
+        "bay-living",
+        "entry-storage",
+        "sideboard",
+        "suite-entry",
+        "laundry-detail",
+        "living-wall"
+      ],
+      "renderSpec": {
+        "engine": "Cycles",
+        "width": 960,
+        "height": 640,
+        "samples": 12,
+        "denoising": true
+      },
+      "roomOverrides": {
+        "overall": {
+          "title": "A洗烘 · B书架 · C推拉门",
+          "description": "A洗衣机与烘干机在靠厨房共墙落地并排，980mm浅盆台面；B东侧300mm浅书架，C阳台推拉门外移约288mm拉齐门框与柜面。沙发和茶几西移800mm、电视柜西移400mm，餐桌及7字柜保留。",
+          "features": [
+            "独立第4布局",
+            "专用浅盆条件方案",
+            "厨房参照方案3"
+          ]
+        },
+        "room_a": {
+          "title": "衣柜铺满凹位，保留床尾通路",
+          "description": "主卧先经平开门入730×1530mm套内玄关，再到床区或主卫。两卧北段隔墙恢复原x319；衣柜沿西侧凹位做满2240×600mm，柜前至床尾约800mm。不设桌椅，模型约11.53㎡含入口。",
+          "features": [
+            "2240mm满凹位柜",
+            "约800mm柜前",
+            "无桌椅"
+          ]
+        },
+        "room_b": {
+          "title": "贴西归位，浅台补齐门口",
+          "description": "走廊尽头左转入次卧。床头和南墙1800×600mm衣柜西端贴西墙；床尾新增2240×440mm浅台，前沿齐门口内墙。模型约8.95㎡；床尾470mm仍窄，不配办公椅。",
+          "features": [
+            "2240×440mm浅台",
+            "南墙衣柜",
+            "床尾约470mm"
+          ]
+        },
+        "room_c": {
+          "title": "桌面留空，书往墙上收",
+          "description": "保留约7.78㎡书房及1000mm墙外挂推拉门。北墙2000×850mm沙发替换日床，原北墙小柜取消；南墙2720×550mm通长桌，含支承示意。沙发至桌前约1460mm，至图示椅背约910mm。 沿现有2720mm通长书桌上方做280mm深浅书架：两排开放书格＋顶部暖白柜门。书架底1460mm，桌面760mm，留700mm操作空档；书架前沿较桌沿退后270mm。保留北墙沙发、原推拉门和桌下腿位。 吊挂承重、板材与锚固待专业深化。",
+          "features": [
+            "通长浅书架",
+            "开放格＋封闭顶柜",
+            "保留桌面腿位"
+          ]
+        },
+        "bath_1": {
+          "title": "从小玄关进入主卫",
+          "description": "主卫西门北铰内开，约3.12㎡。600mm浅盆柜与马桶位置调整，门开着时在盆前，洗手须先关门；排水及净空待深化。",
+          "features": [
+            "约3.12㎡",
+            "套内入口",
+            "盆前关门使用"
+          ]
+        },
+        "bath_2": {
+          "title": "公共走廊独立进入",
+          "description": "客卫约3.50㎡，北墙600×380mm浅盆柜，西门北铰内开，淋浴和外窗不变。门框及洁具操作空间待现场复核。",
+          "features": [
+            "约3.50㎡",
+            "独立西门",
+            "北墙浅盆柜"
+          ]
+        },
+        "living": {
+          "title": "书架与门面，连成一面墙",
+          "description": "A洗衣机与烘干机在靠厨房共墙落地并排，980mm浅盆台面；B东侧300mm浅书架，C阳台推拉门外移约288mm拉齐门框与柜面。沙发和茶几西移800mm、电视柜西移400mm，餐桌及7字柜保留。",
+          "features": [
+            "独立第4布局",
+            "专用浅盆条件方案",
+            "厨房参照方案3"
+          ]
+        },
+        "kitchen": {
+          "title": "让厨房与阳台之间通透起来",
+          "description": "补回厨房北侧与家政阳台共墙大窗，暂定1200×1300mm、窗台高1000mm，双扇推拉窗型仅为示意。台下柜、洗菜盆和1700mm厨房推拉门不动；北墙层板缩回窗左侧实墙，不横挡玻璃。窗洞、墙体、五金与防水收口须复尺。",
+          "features": [
+            "共墙大窗",
+            "窗下台面保留",
+            "尺寸待复尺"
+          ]
+        },
+        "balcony": {
+          "title": "洗烘落地，台盆在上",
+          "description": "A洗衣机与烘干机在靠厨房共墙落地并排，980mm浅盆台面；B东侧300mm浅书架，C阳台推拉门外移约288mm拉齐门框与柜面。沙发和茶几西移800mm、电视柜西移400mm，餐桌及7字柜保留。",
+          "features": [
+            "独立第4布局",
+            "专用浅盆条件方案",
+            "厨房参照方案3"
+          ]
+        }
+      },
+      "renderDirectory": "assets/schemes/laundry"
     }
   ],
   "archivedPalettes": [

@@ -1,10 +1,10 @@
-import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.3.0';
-import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.3.0';
+import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.4.0';
+import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.4.0';
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
-const UI_REVISION = '3.3.0';
+const UI_REVISION = '3.4.0';
 document.documentElement.dataset.uiRevision = UI_REVISION;
-let ASSET_REVISION = '3.3.0';
+let ASSET_REVISION = '3.4.0';
 const revisedAsset = path => {const url=new URL(path,document.baseURI);url.searchParams.set('v',ASSET_REVISION);return url.href};
 const icons = {
   cube:'<path d="m8 2 6 3.5v5L8 14l-6-3.5v-5L8 2Z M2 5.5 8 9l6-3.5 M8 9v5 M5 3.8l6 3.5"/>',
@@ -312,7 +312,7 @@ function updateRender(){
 }
 
 function planFurniture(f){
-  if(f.garageFitoutId)return '';
+  if(f.garageFitoutId||f.laundryFitoutId)return '';
   const direction=f.headDirection,isBed=['east','west','north','south'].includes(direction);
   const frame=`<rect data-furniture-frame x="${f.x}" y="${f.y}" width="${f.w}" height="${f.d}" rx="${f.tone==='fabric'?6:2}" fill="${({wood:'#d2b791',cabinet:'#d4c9b4',fabric:'#f8f3e8',sanitary:'#faf9f3',wet:'#d5dedb',metal:'#babbb0'})[f.tone]||'#e3d9c5'}" stroke="#b4a68e" stroke-width="1.5"${!isBed&&f.a?` transform="rotate(${f.a} ${f.x+f.w/2} ${f.y+f.d/2})"`:''}/>`;
   if(!isBed){
@@ -389,7 +389,28 @@ function planSlidingDoor(door){
     const x=door.x1+(i-(n-1)/2)*c.trackPitchCm-c.panelDepthCm/2,y=door.y1+c.jambCm+i*(panel-c.overlapCm);
     return `<rect data-sliding-panel="${i}" x="${x}" y="${y}" width="${c.panelDepthCm}" height="${panel}" fill="#ccd8d5" stroke="#8d9089" stroke-width="1"/>`;
   }).join('');
-  return `<g data-sliding-door="${escapeHTML(door.id)}"><title>1700mm条件门洞；三扇三轨向北叠停，模型净开约1033mm；此平面显示合拢位置。</title>${leaves}<text x="${door.x1+24}" y="${door.y2-25}" transform="rotate(-90 ${door.x1+24} ${door.y2-25})" font-size="14" fill="#807056">1700 三轨推拉</text></g>`;
+  const width=(door.y2-door.y1)*10,direction=c.stackTo==='south'?'南':'北';
+  const frame=`<rect data-slider-frame="${escapeHTML(door.id)}" x="${door.x1-c.frameDepthCm/2}" y="${door.y1}" width="${c.frameDepthCm}" height="${door.y2-door.y1}" fill="none" stroke="#9ca09a" stroke-width=".8"/>`;
+  return `<g data-sliding-door="${escapeHTML(door.id)}" data-stack-to="${c.stackTo}"><title>${width}mm条件门洞；三扇三轨向${direction}叠停；此平面显示合拢位置。${escapeHTML(c.condition||'')}</title>${frame}${leaves}<text x="${door.x1+24}" y="${door.y2-25}" transform="rotate(-90 ${door.x1+24} ${door.y2-25})" font-size="14" fill="#807056">${door.id==='balcony_door'?'':width+' 三轨推拉'}</text></g>`;
+}
+
+function renderLaundryFitout(){
+  const l=data.laundry;if(!l)return;
+  const dialog=document.createElement('dialog');dialog.id='laundry-dialog';dialog.className='bay-dialog';dialog.setAttribute('aria-label','方案4家政整墙设计');
+  dialog.innerHTML=`<button class="dialog-close icon-button" aria-label="关闭家政设计">${icon('close')}</button><header class="bay-dialog-heading"><p class="eyebrow">LAYOUT 04 / LAUNDRY WALL</p><h2>A洗烘 · B书架 · C推拉门</h2><p>基于方案2，机器靠厨房共墙落地并排；书架正面与外移门框拉齐。玻璃门扇因三轨而内退。</p><span class="bay-conditional-badge">专用浅盆条件方案 · 尚未选定设备</span></header><div class="bay-fitout-grid">${[['laundry-detail','A · 洗烘并排，浅盆在上'],['living-wall','B + C · 书架与门框齐平']].map(([id,title])=>`<article class="bay-fitout-card"><button class="bay-fitout-image" data-laundry-render="${id}" aria-label="放大${title}"><img src="${schemeRender(scheme,id)}" alt="${title} · 同源3D渲染" loading="lazy"/><span class="bay-image-label">BLENDER / 同源设计 ${icon('expand')}</span></button><div class="bay-fitout-copy"><h3>${title}</h3><ul class="bay-fitout-dimensions">${l.dimensions.filter((_,i)=>id==='laundry-detail'?[0,1,3].includes(i):[2,3,4].includes(i)).map(t=>`<li>${escapeHTML(t)}</li>`).join('')}</ul></div></article>`).join('')}</div><footer class="bay-dialog-notes"><h3>先核对条件，再定制</h3><ul>${l.conditions.map(t=>`<li>${escapeHTML(t)}</li>`).join('')}</ul><h3>参考原文 · 不照搬适配结论</h3><div class="bay-references">${l.references.map(r=>`<article><a href="${escapeHTML(referenceURL(r.url))}" target="_blank" rel="noopener noreferrer">${escapeHTML(r.title)} ↗</a><p>${escapeHTML(r.borrow)}</p></article>`).join('')}</div></footer>`;
+  document.body.append(dialog);dialog.querySelector('.dialog-close').onclick=()=>dialog.close();
+  dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close()});
+  const show=()=>{if($('#project-dialog').open)$('#project-dialog').close();if(state.walking)stopWalk();dialog.showModal()};
+  for(const [parent,id,cls]of [['.sidebar-bottom','open-laundry','quiet-link'],['#project-dialog','project-laundry','project-bay-link'],['.room-card-copy','view-laundry-fitout','secondary-link']]){const button=document.createElement('button');button.id=id;button.className=cls;button.textContent='家政整墙 · A/B/C设计与参考 ↗';button.onclick=show;$(parent).append(button);}
+  dialog.querySelectorAll('[data-laundry-render]').forEach(button=>button.onclick=()=>{$('#large-render').src=schemeRender(scheme,button.dataset.laundryRender);$('#large-render').alt=button.getAttribute('aria-label');$('#large-render-caption').textContent='方案4 · 同源模型渲染 / 条件设计，非施工图';$('#image-dialog').showModal()});
+}
+
+function planLaundry(){
+  const l=data.laundry;if(!l)return '';
+  const c=l.counter,b=l.bookcase,s=l.basin;
+  const rect=(p,attrs)=>`<rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.d}" ${attrs}/>`;
+  const parts=l.parts.filter(p=>p.roomId==='living'&&p.role==='book-panel').map(p=>rect(p,`data-laundry-part="${p.id}" fill="#ddd8cc" stroke="#aa9c85" stroke-width=".5"`)).join('');
+  return `<g data-laundry-plan="${l.id}" pointer-events="none"><title>A两台机器靠厨房共墙；台面与浅盆在上，机器虚线为台面下投影。B柜正面与C门框齐平。</title>${rect(b,'fill="#eee9df" stroke="#aa9c85" stroke-width="1"')}${parts}<text x="${b.x+20}" y="${b.y+85}" transform="rotate(90 ${b.x+20} ${b.y+85})" font-size="12" fill="#766952">B · 300深书架</text>${rect(c,'data-laundry-counter fill="#ded9cd" stroke="#a79b87" stroke-width="1.3"')}${l.machines.map(m=>`${rect(m,`data-laundry-machine="${m.id}" fill="none" stroke="#928876" stroke-dasharray="4 3" stroke-width="1"`)}<text x="${m.x+m.w/2}" y="${m.y+28}" text-anchor="middle" font-size="11" fill="#726c61">${m.id.includes('washer')?'洗衣机':'烘干机'}</text>`).join('')}${rect(s,'data-laundry-basin fill="#fcfaf6" fill-opacity=".8" stroke="#a3aca6" stroke-width="1.2"')}<text x="${s.x+s.w/2}" y="${s.y+s.d/2}" text-anchor="middle" font-size="10" fill="#777569">上方浅盆</text><text x="${c.x+c.w/2}" y="${c.y+c.d-6}" text-anchor="middle" font-size="11" fill="#746b5b">A · 台高980 / 独立承重</text><path data-laundry-alignment d="M645 630V1115" fill="none" stroke="#698575" stroke-width="1" stroke-dasharray="5 4"/><text x="636" y="1017" text-anchor="end" font-size="11" fill="#698575">C · 门框齐柜面</text><text x="${c.x+c.w/2}" y="1030" text-anchor="middle" font-size="9" fill="#9b6855">前方操作带690</text><text x="610" y="934" text-anchor="middle" font-size="10" fill="#9b6855">净距700</text></g>`;
 }
 
 function planGarage(){
@@ -418,7 +439,7 @@ function makePlan(){
   const fills={bedroom:'#eee5d5',living:'#eee8da',wet:'#e5e8e2',kitchen:'#e4e0d6',balcony:'#e6e9df'};
   const labels=[];
   const polygons=(data.rooms||[]).filter(r=>r.id!=='dining').map(r=>{
-    const [cx,cy]=r.planLabel||(r.id==='living'?[410,925]:r.id==='bath_1'?[535,419]:r.id==='bath_2'?[488,578]:centroid(r.points));labels.push(`<text x="${cx}" y="${cy}" text-anchor="middle" font-size="23" fill="#776d5b">${r.id==='living'?'客餐厅 · 过道':roomDescription(r.id).name}</text><text x="${cx}" y="${cy+30}" text-anchor="middle" font-size="16" fill="#a2937b">${(areaOf(r.points)/10000).toFixed(1)} ㎡${r.id==='living'?'（公共区合计）':r.id==='room_a'&&data.layout?.id==='suite'?'（含入口）':''}</text>`);
+    const [cx,cy]=(data.laundry&&r.id==='balcony'?[745,981]:r.planLabel)||(r.id==='living'?[410,925]:r.id==='bath_1'?[535,419]:r.id==='bath_2'?[488,578]:centroid(r.points));labels.push(`<text x="${cx}" y="${cy}" text-anchor="middle" font-size="23" fill="#776d5b">${r.id==='living'?'客餐厅 · 过道':roomDescription(r.id).name}</text><text x="${cx}" y="${cy+30}" text-anchor="middle" font-size="16" fill="#a2937b">${(areaOf(r.points)/10000).toFixed(1)} ㎡${r.id==='living'?'（公共区合计）':r.id==='room_a'&&data.layout?.id==='suite'?'（含入口）':''}</text>`);
     return `<polygon class="plan-room" data-plan-room="${r.id}" tabindex="0" role="button" aria-label="查看${roomDescription(r.id).name}" points="${r.points.map(p=>p.join(',')).join(' ')}" fill="${fills[r.tone]||'#ece3d5'}"/>`;
   }).join('');
   if(data.layout?.entryZone){const z=data.layout.entryZone;labels.push(`<g data-suite-entry="private"><rect x="${z.x}" y="${z.y}" width="${z.w}" height="${z.d}" fill="none" stroke="#a98c63" stroke-dasharray="4 5" stroke-width="1.5"/><text x="${z.x+z.w/2}" y="${z.y+30}" text-anchor="middle" font-size="13" fill="#806b50">套内玄关</text><text x="${z.x+z.w/2}" y="${z.y+49}" text-anchor="middle" font-size="10" fill="#806b50">${z.w*10} × ${z.d*10}</text></g>`)}
@@ -443,7 +464,7 @@ function makePlan(){
   const bayFrames=bays.map(b=>`<g data-bay-frame-layer="${escapeHTML(b.window.id)}"><polygon data-bay-front-frame data-frame-finish="${escapeHTML(bayFrameFinish)}" points="${b.frame.map(p=>p.join(',')).join(' ')}" fill="${bayFrameColor}"/><line data-bay-glass x1="${b.frontA[0]}" y1="${b.frontA[1]}" x2="${b.frontB[0]}" y2="${b.frontB[1]}" stroke="#8fa6a8" stroke-width="4"/></g>`).join('');
   const topDimensionY=planMinY-52,leftDimensionX=planMinX-55;
   const dimensions=`<g stroke="#b4a58e" stroke-width="1.5" fill="none"><path d="M0 ${topDimensionY}H687 M0 ${topDimensionY-14}v28 M687 ${topDimensionY-14}v28 M${leftDimensionX} 0v1401 M${leftDimensionX-14} 0h28 M${leftDimensionX-14} 1401h28 M200 1455h641 M200 1441v28 M841 1441v28"/></g><g fill="#9c8d73" font-size="19" text-anchor="middle"><text x="343" y="${topDimensionY-17}">6,870</text><text x="520" y="1484">6,410</text><text x="${leftDimensionX-20}" y="700" transform="rotate(-90 ${leftDimensionX-20} 700)">14,010</text><text x="793" y="${topDimensionY-2}" font-size="23">N ↑</text></g>`;
-  $('#floor-plan').innerHTML=`<svg viewBox="${planMinX-115} ${planMinY-110} ${maxX-planMinX+160} ${maxY-planMinY+215}" role="img" aria-label="由同源尺寸数据绘制的三房两卫平面图，含飘窗与玄关餐边收纳条件方案；窗台投影不计入房间面积">${polygons}${furniture}${storage}${planGarage()}${walls}${opening((data.windows||[]).filter(w=>w.windowType!=='bay'),'#8fa6a8')}${bayWindows}${opening(data.doors,'#c2a071')}${fitouts}${bayFrames}${wallFitouts}${labels.join('')}${dimensions}</svg>`;
+  $('#floor-plan').innerHTML=`<svg viewBox="${planMinX-115} ${planMinY-110} ${maxX-planMinX+160} ${maxY-planMinY+215}" role="img" aria-label="由同源尺寸数据绘制的三房两卫平面图，含飘窗与玄关餐边收纳条件方案；窗台投影不计入房间面积">${polygons}${furniture}${storage}${planGarage()}${planLaundry()}${walls}${opening((data.windows||[]).filter(w=>w.windowType!=='bay'),'#8fa6a8')}${bayWindows}${opening(data.doors,'#c2a071')}${fitouts}${bayFrames}${wallFitouts}${labels.join('')}${dimensions}</svg>`;
   $$('#floor-plan [data-plan-room]').forEach(p=>{p.addEventListener('click',()=>selectRoom(p.dataset.planRoom));p.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectRoom(p.dataset.planRoom)}})});
 }
 
@@ -775,7 +796,7 @@ async function init(){
     const base=rawRooms.find(r=>r.id===(id==='dining'?'living':id))||{},extra=manifest.rooms?.find(r=>r.id===id)||{};
     return {...base,...extra,...schemeTextOverride(scheme.roomOverrides,id),id,name:roomDescription(id).name};
   });
-  makeNavigation();makePlan();renderDesignNotes();renderBayFitouts();renderStorageFitouts();paintSchemePlan($('#floor-plan'));paintSchemePlan($('#storage-fitout-cards'));selectRoom(descriptions[location.hash.slice(1)]?location.hash.slice(1):'overall',{updateHash:false,animate:false});switchView('model');
+  makeNavigation();makePlan();renderDesignNotes();renderBayFitouts();renderStorageFitouts();renderLaundryFitout();paintSchemePlan($('#floor-plan'));paintSchemePlan($('#storage-fitout-cards'));selectRoom(descriptions[location.hash.slice(1)]?location.hash.slice(1):'overall',{updateHash:false,animate:false});switchView('model');
   buildScene();
 }
 init();

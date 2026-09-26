@@ -1,11 +1,11 @@
 // Real layouts have independent sources. Colour-only variants stay archived.
-export const SCHEME_REVISION='3.3.0';
+export const SCHEME_REVISION='3.4.0';
 export const RETIRED_PALETTE_IDS=Object.freeze(['terracotta','moss','cobalt']);
 export const assetURL=(path,revision=SCHEME_REVISION)=>{
   const url=new URL(path,document.baseURI);url.searchParams.set('v',revision);return url.href;
 };
 export const schemeRender=(scheme,view)=>assetURL(
-  `${scheme.id==='wood'?'assets/blender-renders':`assets/schemes/${scheme.id}`}/${view}.jpg`,
+  `${scheme.renderDirectory||(scheme.id==='wood'?'assets/blender-renders':`assets/schemes/${scheme.id}`)}/${view}.jpg`,
   scheme.assetRevision||SCHEME_REVISION
 );
 export function resolveScheme(catalog,requested){
@@ -26,8 +26,8 @@ export async function loadSchemeCatalog(){
   const response=await fetch(assetURL('models/design-schemes.json'));
   if(!response.ok)throw new Error('设计资料暂未载入');
   const catalog=await response.json();
-  if(catalog.defaultScheme!=='wood'||catalog.schemes?.length!==3||catalog.schemes.map(s=>s.id).join(',')!=='wood,suite,family'||catalog.schemes.some(s=>!s.geometrySource)){
-    throw new Error('设计目录与当前三布局版本不一致，请刷新重试');
+  if(catalog.defaultScheme!=='wood'||catalog.schemes?.length!==4||catalog.schemes.map(s=>s.id).join(',')!=='wood,suite,family,laundry'||catalog.schemes.some(s=>!s.geometrySource)){
+    throw new Error('设计目录与当前四布局版本不一致，请刷新重试');
   }
   return catalog;
 }

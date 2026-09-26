@@ -10,7 +10,7 @@ const views=['overall','living','dining','master','bedroom-b','study','kitchen',
 const files=new Set(['index.html','studio.html','schemes.js','studio.js','studio.css','walkthrough.js','walkthrough.css','schemes.css','models/design-schemes.json','models/design-data.json']);
 for(const scheme of catalog.schemes){
   [scheme.model,scheme.blend,scheme.manifest,scheme.geometrySource||catalog.geometrySource].forEach(path=>files.add(path));
-  const dir=scheme.id==='wood'?'assets/blender-renders':'assets/schemes/'+scheme.id;
+  const dir=scheme.renderDirectory||(scheme.id==='wood'?'assets/blender-renders':'assets/schemes/'+scheme.id);
   (scheme.renderViews||views).forEach(view=>files.add(dir+'/'+view+'.jpg'));
 }
 const hash=(path,bytes)=>createHash('sha256').update(/\.(html|css|js|json)$/i.test(path)?bytes.toString('utf8').replace(/\r\n/g,'\n'):bytes).digest('hex');

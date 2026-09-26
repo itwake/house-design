@@ -14,12 +14,12 @@ try{
     page.setDefaultTimeout(60000);
     page.on('pageerror',e=>errors.push(name+': '+e.message));
     await page.goto(base);
-    assert.equal(await page.locator('[data-scheme-card]').count(),3);
+    assert.equal(await page.locator('[data-scheme-card]').count(),4);
     assert.equal(new URL(page.url()).pathname,'/','Chooser must not auto-redirect');
     assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Chooser overflow');
-    if(name!=='narrow')await page.screenshot({path:'tmp/v330-'+name+'-chooser.png',fullPage:true});
-    for(const scheme of ['wood','suite','family']){
-      await page.goto(base+'studio.html?scheme='+scheme+'&v=3.3.0');
+    if(name!=='narrow')await page.screenshot({path:'tmp/v340-'+name+'-chooser.png',fullPage:true});
+    for(const scheme of ['wood','suite','family','laundry']){
+      await page.goto(base+'studio.html?scheme='+scheme+'&v=3.4.0');
       await page.waitForFunction(()=>document.querySelector('#model-loading')?.hidden&&document.querySelectorAll('#floor-plan [data-plan-room]').length===8);
       assert.equal(await page.locator('html').getAttribute('data-scheme'),scheme);
       assert.ok(await page.locator('#model-fallback').evaluate(e=>e.hidden),'3D loaded without fallback');
@@ -29,7 +29,7 @@ try{
         assert.ok(box&&box.x>=0&&box.x+box.width<=width+1&&box.height<46,name+' header fits: '+selector);
       }
       const isSuite=scheme!=='wood',isFamily=scheme==='family';
-      assert.equal(await page.locator('#floor-plan [data-opening-id="window_kitchen_balcony"]').count(),isSuite?1:0,'Internal kitchen window only in revised suite');
+      assert.equal(await page.locator('#floor-plan [data-opening-id="window_kitchen_balcony"]').count(),1,'Internal kitchen window in all four schemes');
       assert.equal(await page.locator('#floor-plan [data-wall-fitout="study_bookwall"]').count(),isSuite?1:0,'Study upper bookwall only in revised suite');
       assert.equal(await page.locator('[data-study-bookwall] .bay-references a').count(),isSuite?3:0,'Live source reference links');
       assert.equal(await page.locator('[data-suite-entry="private"]').count(),isSuite?1:0);
@@ -38,25 +38,25 @@ try{
       if(isSuite){
         for(const id of ['study_north_sofa','study_full_desk','bed_b_niche_console'])assert.equal(await page.locator(`#floor-plan [data-furniture-id="${id}"]`).count(),1,'Approved fitted component '+id);
         assert.equal(await page.locator('#floor-plan [data-sofa-face]').getAttribute('data-sofa-face'),'south');
-        assert.equal(await page.locator('.brand strong').textContent(),isFamily?'木光 · 亲子储物':'木光 · 暖白套间');
+        assert.equal(await page.locator('.brand strong').textContent(),scheme==='laundry'?'木光 · 家政整墙':isFamily?'木光 · 亲子储物':'木光 · 暖白套间');
       }
-      const renderPrefix=isSuite?'/assets/schemes/'+scheme+'/':'/assets/blender-renders/';
+      const renderPrefix='/assets/schemes/'+scheme+'/';
       assert.ok((await page.locator('#room-preview').getAttribute('src')).includes(renderPrefix));
-      assert.ok((await page.locator('#download-glb').getAttribute('href')).includes(isSuite?'models/schemes/'+scheme+'/':'models/huiyayuan'));
+      assert.ok((await page.locator('#download-glb').getAttribute('href')).includes('models/schemes/'+scheme+'/'));
       assert.equal(await page.locator('#floor-plan [data-garage-item]').count(),isFamily?2:0);
       if(await page.locator('#room-card').evaluate(e=>e.hidden))await page.locator('#toggle-room-card').click();
       assert.ok(await page.locator('#room-card').isVisible(),'Show card');
       await page.locator('#toggle-room-card').click();
       assert.ok(await page.locator('#room-card').evaluate(e=>e.hidden),'Hide card');
       await page.locator('#tab-plan').click();
-      if(isSuite)await page.screenshot({path:`tmp/v330-${name}-${scheme}-plan.png`});
+      if(isSuite)await page.screenshot({path:`tmp/v340-${name}-${scheme}-plan.png`});
       await page.locator('#tab-model').click();
       await page.locator('#start-walk').click();
       assert.ok(await page.locator('#workspace').evaluate(e=>e.classList.contains('walking')));
       await page.keyboard.press('ArrowUp');
       await page.locator('#exit-walk').click();
       assert.ok(await page.locator('#workspace').evaluate(e=>!e.classList.contains('walking')));
-      if(isSuite&&name==='desktop')await page.screenshot({path:`tmp/v330-desktop-${scheme}-model.png`});
+      if(isSuite&&name==='desktop')await page.screenshot({path:`tmp/v340-desktop-${scheme}-model.png`});
       await page.locator('#tab-renders').click();
       await page.waitForFunction(()=>document.querySelector('#active-render').complete&&document.querySelector('#active-render').naturalWidth>0);
       if(isSuite){
@@ -64,11 +64,24 @@ try{
           const view=room==='room_c'?'study':room;
           await page.locator(`#room-nav [data-room="${room}"]`).click();
           await page.waitForFunction(expected=>{const img=document.querySelector('#active-render');return img.complete&&img.naturalWidth>0&&new URL(img.src).pathname.endsWith('/'+expected+'.jpg')},view);
-          assert.ok((await page.locator('#card-description').textContent()).includes(room==='room_c'?'书架':'大窗'),'Revised room description');
-          if(name==='desktop'||room==='room_c')await page.screenshot({path:`tmp/v330-${name}-${scheme}-${room}-render-ui.png`});
+          assert.ok((await page.locator('#card-description').textContent()).includes(room==='room_c'?'书架':scheme==='laundry'&&room==='balcony'?'浅盆':'大窗'),'Revised room description');
+          if(name==='desktop'||room==='room_c')await page.screenshot({path:`tmp/v340-${name}-${scheme}-${room}-render-ui.png`});
         }
       }
       await page.locator('#open-project').click();
+      if(scheme==='laundry'){
+        assert.equal(await page.locator('#floor-plan [data-laundry-machine]').count(),2);
+        assert.equal(await page.locator('#floor-plan [data-sliding-door="balcony_door"]').getAttribute('data-stack-to'),'south');
+        await page.locator('#project-laundry').click();
+        assert.equal(await page.locator('#laundry-dialog .bay-references a').count(),3);
+        assert.ok((await page.locator('#laundry-dialog').textContent()).includes('690'));
+        await page.locator('[data-laundry-render="laundry-detail"]').click();
+        await page.waitForFunction(()=>document.querySelector('#large-render').complete&&document.querySelector('#large-render').naturalWidth>0);
+        await page.screenshot({path:`tmp/v340-${name}-laundry-detail.png`});
+        await page.locator('#image-dialog .dialog-close').click();
+        await page.locator('#laundry-dialog .dialog-close').click();
+        await page.locator('#open-project').click();
+      }
       if(isFamily){
         await page.locator('#project-storage-link').click();
         const garage=page.locator('#storage-fitout-cards [data-storage-card="family_garage"]');
@@ -78,7 +91,7 @@ try{
         await garage.locator('[data-storage-render]').click();
         await page.waitForFunction(()=>document.querySelector('#large-render').complete&&document.querySelector('#large-render').naturalWidth>0);
         assert.ok((await page.locator('#large-render').getAttribute('src')).includes('/storage-library.jpg'));
-        await page.screenshot({path:`tmp/v330-${name}-family-garage.png`});
+        await page.screenshot({path:`tmp/v340-${name}-family-garage.png`});
         await page.locator('#image-dialog .dialog-close').click();
         await page.locator('#storage-dialog .dialog-close').click();
         await page.locator('#open-project').click();
@@ -91,13 +104,13 @@ try{
       }
       await page.locator('#project-dialog .dialog-close').click();
       await page.locator('.scheme-switch-button').click();
-      assert.equal(await page.locator('[data-scheme-card]').count(),3);
+      assert.equal(await page.locator('[data-scheme-card]').count(),4);
       results.push(name+'/'+scheme+': model/plan/render, header, card, walk, chooser'+(isSuite?', foyer detail':''));
       console.log('PASS '+results.at(-1));
     }
     await context.close();
   }
   assert.deepEqual(errors,[]);
-  await writeFile('tmp/v330-browser-qa.json',JSON.stringify({results,errors},null,2));
-  console.log('PASS nine real Chrome viewer sessions, three viewport sizes; no page exceptions.');
+  await writeFile('tmp/v340-browser-qa.json',JSON.stringify({results,errors},null,2));
+  console.log('PASS twelve real Chrome viewer sessions, three viewport sizes; no page exceptions.');
 }finally{await browser.close()}

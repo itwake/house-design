@@ -29,7 +29,7 @@ ROOT = Path(__file__).resolve().parents[1]
 VIEWS = ("overall", "living", "dining", "master", "bedroom-b", "study",
          "kitchen", "master-bath", "guest-bath", "balcony", "bay-master",
          "bay-tea", "bay-living", "entry-storage", "sideboard")
-ACTIVE_IDS = ("wood", "suite", "family")
+ACTIVE_IDS = ("wood", "suite", "family", "laundry")
 ARCHIVED_IDS = ("terracotta", "moss", "cobalt")
 ALLOWED_SHADES = {"Organic linen pendant", "Organic linen pendant.001"}
 # Ten micrometres is far below both survey precision and furniture tolerance.
@@ -377,7 +377,7 @@ class Audit:
 
     def renders(self, scheme, manifest):
         sid = scheme["id"]
-        prefix = "assets/blender-renders" if sid == "wood" else f"assets/schemes/{sid}"
+        prefix = scheme.get('renderDirectory') or ("assets/blender-renders" if sid == "wood" else f"assets/schemes/{sid}")
         views = scheme.get("renderViews", VIEWS)
         expected = {f"{prefix}/{name}.jpg" for name in views}
         self.check(manifest_render_paths(manifest) == expected, f"{sid}: manifest references all own-layout views, without fallback")
@@ -411,8 +411,8 @@ class Audit:
             if sid in ACTIVE_IDS:
                 frame = {"engine": "CYCLES", "width": spec["width"], "height": spec["height"],
                          "samples": spec["samples"], "denoise": True}
-                self.check(record.get("renderSpec") == frame and frame["samples"] == 8,
-                           f"wood/{name}: final Cycles8 denoised render quality")
+                self.check(record.get("renderSpec") == frame and frame["samples"] >= 8,
+                           f"{sid}/{name}: final declared Cycles denoised render quality")
             else:
                 self.check(record.get("appearanceHash") == manifest["appearanceHash"] and record.get("baseGeometryHash") == manifest["baseGeometryHash"],
                            f"{sid}/{name}: render provenance matches appearance and geometry")
@@ -516,9 +516,12 @@ class Audit:
             self.source_hash = current_source_hash
             self.base_blend_hash = sha(relative_file(scheme["blend"]).read_bytes()) if sid in ACTIVE_IDS else base_blend_hash
             if sid == "wood":
-                self.check(scheme["model"] == "models/huiyayuan-wood.glb" and scheme["manifest"] == "models/scene-manifest.json" and scheme["blend"] == "models/huiyayuan-wood.blend",
-                           "wood: original model, Blender source and manifest remain the referenced baseline")
-            elif sid in ("suite", "family"):
+                self.check(scheme["model"] == "models/schemes/wood/huiyayuan-wood.glb" and manifest['layout']['baseSourceSha256'] == source_hash,
+                           "wood: separate kitchen refresh derives from preserved original")
+                glbs[sid] = GLB(relative_file(scheme['model']))
+                meshes[sid] = glbs[sid].world_meshes()
+                self.check(manifest.get('kitchenReference',{}).get('source') == 'models/schemes/family/design-data.json', 'wood: kitchen synchronization provenance')
+            elif sid in ("suite", "family", "laundry"):
                 self.check(scheme["geometrySource"] != data["geometrySource"] and manifest["source"] == scheme["geometrySource"], "suite: independent geometry source, not a palette alias")
                 self.check(manifest.get("layout", {}).get("baseSourceSha256") == source_hash, "suite: derives from the preserved baseline")
                 glbs[sid] = GLB(relative_file(scheme["model"]))
@@ -527,10 +530,11 @@ class Audit:
                 self.check(len(set(glbs[sid].image_hashes)-set(base_glb.image_hashes)) >= 4, "suite: four genuinely new low-yellow embedded wood/fabric/stone textures")
                 self.check(manifest.get('appearance') == scheme.get('appearance') and manifest.get('appearance',{}).get('preset') == 'soft-warm', "suite: declared warm-white palette matches model manifest")
                 self.check(glbs[sid].file_hash != base_glb.file_hash, "suite: actual model differs from baseline")
-                if sid == 'family':
+                if sid in ('family', 'laundry'):
                     parent = relative_file(manifest['layout']['parentSource'])
                     self.check(manifest['layout']['parentSourceSha256'] == sha(parent.read_text(encoding='utf-8').encode('utf-8')), 'family: derives from preserved suite source')
-                    self.check(manifest.get('schemeId') == 'family' and manifest.get('garage',{}).get('id') == 'family_garage', 'family: independent garage and manifest identity')
+                    self.check(manifest.get('schemeId') == sid, sid + ': independent manifest identity')
+                    self.check(manifest.get('garage',{}).get('id') == 'family_garage' if sid == 'family' else manifest.get('laundry',{}).get('id') == 'laundry_wall', sid + ': actual fitout identity')
             else:
                 self.check(protected_manifest(manifest) == protected_manifest(baseline), f"{sid}: rooms, openings, cameras, dimensions and conditions exactly match baseline")
                 self.check(all(note in manifest.get("notes", []) for note in baseline.get("notes", [])), f"{sid}: all baseline safety/measurement notes retained")
