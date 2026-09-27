@@ -5,11 +5,15 @@ import {execFileSync} from 'node:child_process';
 const ids=['wood','suite','family','laundry'],baseline='647d219fdc52e0bc71810f6a8e2daa97135be0cc';
 const removed=['l_desktop','l_support','l_accessories','l_adult_chair','l_child_chair'];
 const catalog=JSON.parse(await readFile('models/design-schemes.json','utf8'));
-assert.equal(catalog.version,'3.4.2');
+assert.equal(catalog.version,'3.4.3');
 for(const id of ids){
  const path=`models/schemes/${id}/design-data.json`,now=JSON.parse(await readFile(path,'utf8'));
  const old=JSON.parse(execFileSync('git',['show',baseline+':'+path],{encoding:'utf8'}));
- for(const key of ['envelope','rooms','walls','wallSpecs','doors','furniture','wallFitouts','storageFitouts','laundry','garage','modelAddons','appearance'])assert.deepEqual(now[key],old[key],id+': no unrelated change '+key);
+ const compactFamily=id==='family'&&now.garageRevision?.version==='3.4.3';
+ for(const key of ['envelope','rooms','walls','wallSpecs','doors','furniture','wallFitouts','storageFitouts','laundry','garage','modelAddons','appearance']){
+  if(compactFamily&&['furniture','storageFitouts','garage'].includes(key))continue; // Separately checked against ac2b91d by test_family_storage + validate_compact_family.
+  assert.deepEqual(now[key],old[key],id+': no unrelated change '+key);
+ }
  for(const w of now.windows){const before=old.windows.find(x=>x.id===w.id);if(w.id!=='window_living_west')assert.deepEqual(w,before);else{
   for(const k of ['x1','y1','x2','y2','bay','widthMm','grade','windowType'])assert.deepEqual(w[k],before[k]);
   assert.equal(w.sillCm,40);assert.equal(w.heightCm,190);assert.equal(w.sillCm+w.heightCm,before.sillCm+before.heightCm);
@@ -22,7 +26,7 @@ for(const id of ids){
   assert.equal(f.parts[1].y-f.parts[0].y-f.parts[0].d,2);assert.ok(f.summary.includes('非')||f.summary.includes('不是'));
  }}
  assert.equal(now.livingBayRevision.measured,false);assert.equal(now.livingBayRevision.estimateAuthorized,true);
- assert.equal(catalog.schemes.find(s=>s.id===id).assetRevision,'3.4.2');
- console.log('PASS '+id+': 400 mm living sill + two 50 mm pads; only targeted bay changes; unrelated geometry and wardrobes preserved.');
+ assert.equal(catalog.schemes.find(s=>s.id===id).assetRevision,compactFamily?'3.4.3':'3.4.2');
+ console.log('PASS '+id+': 400 mm living sill + two 50 mm pads; protected non-bay geometry retained'+(compactFamily?' except separately audited V3.4.3 compact storage.':'.'));
 }
 for(const path of ['index.html','studio.html','studio.js']){const text=await readFile(path,'utf8');assert.ok(!text.includes('窗边一起学习')&&!text.includes('客厅窗台900mm为旧占位'),path+': no stale high-sill promise');}

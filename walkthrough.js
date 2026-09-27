@@ -75,6 +75,11 @@ export function buildWalkWorld(data){
     // and support boxes are not solid geometry and must not fill empty space.
     if(['desktop','chair'].includes(p.role))rect(p.id,p.x/100,p.y/100,p.w/100,p.d/100,'bay-furniture');
   }
+  // The compact garage doors fold into the hall, outside its closed footprint.
+  // Use the same physical leaf rectangles as the plan/GLB, not an invisible wall.
+  if(data.garage?.doorFoldDirection==='outward')for(const p of data.garage.parts.filter(p=>p.role==='folded-door')){
+    rect('garage-'+p.id,p.x/100,p.y/100,p.w/100,p.d/100,'door-leaf');
+  }
   // This floor lamp is authored directly in build_blender.py, not in the
   // plan furniture list. Its 440 mm shade is the widest standing obstruction.
   // Keep the source coordinate/GLB bound regression in test_walkthrough.mjs.

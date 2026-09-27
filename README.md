@@ -4,7 +4,9 @@
 
 **在线查看：[itwake.github.io/house-design](https://itwake.github.io/house-design/)**
 
-最新 **V3.4.2 / 客厅低飘窗软垫**：[查看四方案](https://itwake.github.io/house-design/index.html?v=3.4.2)。按业主授权暂估台高400mm，铺50mm分片软垫，完成坐面约450mm。软垫每片960×550mm，不外扩、不加桌椅或台下柜；其他布局不变。全部为估算，非实测或拆台施工指令。详见[尺寸、构造与验证](docs/living-low-bay-v342.md)。
+最新 **V3.4.3 / 方案3面厅紧凑800库**：[进入方案3](https://itwake.github.io/house-design/studio.html?scheme=family&v=3.4.3#dining)。储物库改为1500×1200mm、约1.80㎡，较原2.445㎡减少约26%；北侧开口朝厅内和餐桌，儿童车与折叠婴儿车纵向并排，上部350mm浅架。900mm短餐边柜向北移500mm，餐桌与四椅不再移动。取车须收好南餐椅，仍需实车排演；尺寸不是实测。方案1、2、4不改。详见[布局、条件与验证](docs/compact-family-storage-v343.md)。
+
+**V3.4.2 / 客厅低飘窗软垫**：[查看四方案](https://itwake.github.io/house-design/index.html?v=3.4.3)。按业主授权暂估台高400mm，铺50mm分片软垫，完成坐面约450mm。软垫每片960×550mm，不外扩、不加桌椅或台下柜；其他布局不变。全部为估算，非实测或拆台施工指令。详见[尺寸、构造与验证](docs/living-low-bay-v342.md)。
 
 **V3.4.1 / 客厅窗前留白**：上一版先取消客厅桌椅，保留旧台高占位。[历史建议与复尺项目](docs/living-low-bay-v341.md)。
 

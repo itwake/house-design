@@ -16,14 +16,26 @@ assert.equal(d.furniture.filter(f=>f.name.includes('餐椅')).length,4);
 const overlaps=(a,b)=>Math.min(a.x+a.w,b.x+b.w)>Math.max(a.x,b.x)+.001&&Math.min(a.y+a.d,b.y+b.d)>Math.max(a.y,b.y)+.001;
 const room=d.rooms.find(r=>r.id==='living'),changedObjects=d.furniture.filter(f=>/餐桌|餐椅/.test(f.name)||['family_sideboard','family_garage'].includes(f.id));
 for(const a of changedObjects)for(const b of d.furniture)if(a!==b)assert.ok(!overlaps(a,b),a.name+' overlaps '+b.name);
+// Conservative front folding zone. This is not a real hinge/track simulation.
+const foldSweep={x:g.inner.x,y:g.y-g.inner.w/4,w:g.inner.w,d:g.inner.w/4};
+for(const f of [...d.furniture.filter(f=>!f.garageFitoutId),...g.items])assert.ok(!overlaps(foldSweep,f),'Outward folded-door zone intersects '+(f.name||f.id));
 assert.equal(g.w*g.d/10000,g.metrics.footprintM2);
-assert.equal(g.opening.y2-g.opening.y1,g.opening.clearWidthCm);
+assert.equal(g.face,'north');
+assert.equal(g.doorFoldDirection,'outward');
+assert.equal(g.parts.filter(p=>p.role==='folded-door').length,4);
+for(const p of g.parts.filter(p=>p.role==='folded-door'))assert.ok(p.y+p.d<=g.y,'Folded leaves stay outside parked-vehicle volume');
+assert.deepEqual([g.w,g.d],[150,120]);
+assert.equal(g.opening.x2-g.opening.x1,g.opening.clearWidthCm);
+assert.ok(g.metrics.footprintM2<2.445*.75,'Reduce old footprint by at least one quarter');
+assert.equal(d.furniture.find(f=>f.id==='family_sideboard').y,1099);
 assert.equal(495-(g.x+g.w),g.metrics.entryAisleCm);
 const southChair=d.furniture.find(f=>f.name==='餐椅南1');
 assert.equal(g.y-(southChair.y+southChair.d+30),g.metrics.southChairPulledGapCm);
 for(const item of g.items){
  assert.ok(item.x>=g.inner.x&&item.x+item.w<=g.inner.x+g.inner.w&&item.y>=g.inner.y&&item.y+item.d<=g.inner.y+g.inner.d,'Stored envelope fits '+item.id);
- assert.ok(item.y>=g.opening.y1&&item.y+item.d<=g.opening.y2,'Door opening clears '+item.id);
+ assert.ok(item.x>=g.opening.x1&&item.x+item.w<=g.opening.x2,'North door opening clears '+item.id);
+ assert.equal(item.rotationDeg,90);
+ assert.equal(item.w,item.modelDepthCm);assert.equal(item.d,item.modelWidthCm);
  assert.ok(item.hCm<g.shelves[0].zCm,'Upper shelf clears '+item.id);
  for(const other of g.items)if(other!==item)assert.ok(!overlaps(item,other));
  for(const p of g.parts)if(p.zCm<item.hCm&&p.role!=='roof')assert.ok(!overlaps(item,p),'Vehicle intersects part '+p.id);
@@ -46,21 +58,23 @@ function pose(item,cx,cy,angle=0,extra=[]){const shape=poly(cx,cy,item.w,item.d,
 const bike=g.items[0],stroller=g.items[1];
 for(const item of g.items){
  const other=g.items.find(o=>o!==item),block={id:'other parked vehicle',shape:poly(other.x+other.w/2,other.y+other.d/2,other.w,other.d)};
- const cy=item.y+item.d/2,targetX=item.id==='child_bike'?445:435;
- for(let cx=item.x+item.w/2;cx<=targetX;cx+=1)pose(item,cx,cy,0,[block]);
- for(let deg=0;deg<=90;deg+=1)pose(item,targetX,cy,deg*Math.PI/180);
- // Keep the entry door closed while turning, then move north out of its sweep.
- for(let yy=cy;yy>=1225;yy-=1)pose(item,targetX,yy,Math.PI/2);
- const parked=poly(targetX,1225,item.w,item.d,Math.PI/2);
+ const cx=item.x+item.w/2,cy=item.y+item.d/2,targetY=g.y-2-item.d/2,targetX=435;
+ // Each north-facing lane can extract with the other vehicle still parked.
+ // South dining chairs must be tucked (their model pose), not pulled 300 mm.
+ for(let yy=cy;yy>=targetY;yy-=1)pose(item,cx,yy,0,[block]);
+ pose(item,cx,targetY,0,[block]);
+ for(let xx=cx;xx<=targetX;xx+=1)pose(item,xx,targetY,0,[block]);
+ pose(item,targetX,targetY,0,[block]);
+ for(let deg=0;deg<=90;deg+=1)pose(item,targetX,targetY,deg*Math.PI/180,[block]);
+ const parked=poly(targetX,targetY,item.w,item.d,Math.PI/2);
  for(let deg=0;deg<=90;deg++){
   const a=deg*Math.PI/180,door=poly(490-50*Math.cos(a),1395-50*Math.sin(a),100,4,a);
   assert.ok(!hit(parked,door),'Park vehicle north before opening entry door');
  }
 }
-// Keep the historical originals/textures. The active suite's V3.4.1 desk
-// removal is verified mesh-by-mesh in validate_living_bay_models.py.
-const activeRefresh=/^(?:models\/schemes\/suite\/(?:design-data\.json|scene-manifest\.json|huiyayuan-wood\.(?:blend|glb))|assets\/schemes\/suite\/[^/]+\.jpg)$/;
-const baseline='5a13e8b',tree=execFileSync('git',['ls-tree','-r',baseline,'models','assets'],{cwd,encoding:'utf8'}).trim().split('\n').map(line=>{const [meta,path]=line.split('\t');return {path,sha:meta.split(' ')[2]}}).filter(p=>p.path!=='models/design-schemes.json'&&!activeRefresh.test(p.path));
+// Every other scheme, historical asset and family texture remains byte-identical.
+const activeRefresh=/^(?:models\/schemes\/family\/(?:design-data\.json|scene-manifest\.json|huiyayuan-wood\.(?:blend|glb))|assets\/schemes\/family\/[^/]+\.jpg)$/;
+const baseline='ac2b91d366b8aeb0f53744b03b1ca48f95e95fdc',tree=execFileSync('git',['ls-tree','-r',baseline,'models','assets'],{cwd,encoding:'utf8'}).trim().split('\n').map(line=>{const [meta,path]=line.split('\t');return {path,sha:meta.split(' ')[2]}}).filter(p=>p.path!=='models/design-schemes.json'&&!activeRefresh.test(p.path));
 const hashes=execFileSync('git',['hash-object','--stdin-paths'],{cwd,encoding:'utf8',input:tree.map(p=>p.path).join('\n')+'\n'}).trim().split('\n');
 tree.forEach((p,i)=>assert.equal(hashes[i],p.sha,'Preserve existing asset '+p.path));
 console.log(`PASS family storage: inherited shell/rooms/furniture protected, four dining chairs, two vehicle envelopes, ${poses} sampled extraction/rotation poses, ${tree.length} old assets byte-identical. Vehicle test excludes user body and unspecified real hardware.`);

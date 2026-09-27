@@ -1,10 +1,10 @@
-import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.4.2';
-import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.4.2';
+import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.4.3';
+import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.4.3';
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
-const UI_REVISION = '3.4.2';
+const UI_REVISION = '3.4.3';
 document.documentElement.dataset.uiRevision = UI_REVISION;
-let ASSET_REVISION = '3.4.2';
+let ASSET_REVISION = '3.4.3';
 const revisedAsset = path => {const url=new URL(path,document.baseURI);url.searchParams.set('v',ASSET_REVISION);return url.href};
 const icons = {
   cube:'<path d="m8 2 6 3.5v5L8 14l-6-3.5v-5L8 2Z M2 5.5 8 9l6-3.5 M8 9v5 M5 3.8l6 3.5"/>',
@@ -199,7 +199,7 @@ function renderStorageFitouts(){
     const entryIndex=fitouts.findIndex(f=>f.type==='entry');
     if(entryIndex>=0)fitouts[entryIndex]={...fitouts[entryIndex],title:'玄关 · 左侧取车，右侧存鞋',summary:'本图展示入户左侧新取车区。右手边浅鞋柜保持原位，鞋柜的分层尺寸见下方立面，完整位置可在平面与3D查看；鞋、车辆与餐具分区。'};
     const g=data.garage;references.push(...g.references.map((r,i)=>({...r,id:'garage-ref-'+i,platform:'已核实公开原文',avoid:'不照搬案例户型、车辆或柜体尺寸。'})));
-    fitouts.push({id:g.id,title:g.title,type:'garage',roomId:'living',parts:[],summary:'以完整地面停车位替代密集柜格；东侧取车，图示四叶折叠门已向库内收起。高处层架放轻量、低频物品；重物低放，固定防倾倒与儿童防攀爬须深化。',dimensions:[`外包 ${g.w*10}×${g.d*10}mm，约${g.metrics.footprintM2.toFixed(2)}㎡占地`,`模型净开${g.opening.clearWidthCm*10}mm；库外至右鞋柜约${g.metrics.entryAisleCm*10}mm`,...g.items.map(f=>`${f.label}包络 ${f.w*10}×${f.d*10}×${f.hCm*10}mm（非实物测量）`)],conditions:[...g.conditions,'模拟取车时先保持入户门关闭，转向后将车向北移开门的扫掠范围，再开门。尚未计入人体操作余量、具体车型转向和门外走廊，须实车排演。'],references:g.references.map((r,i)=>'garage-ref-'+i)});
+    fitouts.push({id:g.id,title:g.title,type:'garage',roomId:'living',parts:[],summary:'参考业主照片改成紧凑面厅储物库，北侧开口朝餐桌；四叶柜门向厅内外折、在西侧叠停，地面纵向并排放儿童车与折叠婴儿车。后部350mm浅层架放轻量低频物品，不设底台，满载时不按可步入储物间使用；900mm餐边柜向北移500mm，餐桌及四椅不变。',dimensions:[`外包 ${g.w*10}×${g.d*10}mm，约${g.metrics.footprintM2.toFixed(2)}㎡，较前版减约26%`,`北向模型净开${g.opening.clearWidthCm*10}mm；库体东侧至右鞋柜约${g.metrics.entryAisleCm*10}mm`,...g.items.map(f=>`${f.label}纵向停放包络 ${f.w*10}×${f.d*10}×${f.hCm*10}mm（非实物测量）`)],conditions:[...g.conditions,'模拟取车时先保持入户门关闭，南餐椅收好；向北出库、向东转移至门扫范围之外，再开门。尚未计入人体操作余量、具体车型转向和门外走廊，须实车排演。'],references:g.references.map((r,i)=>'garage-ref-'+i)});
   }
   $('#storage-fitout-cards').innerHTML=fitouts.map((fitout,index)=>{
     const refs=(fitout.references||[]).map(id=>references.find(ref=>ref.id===id)).filter(ref=>ref&&referenceURL(ref.url));
@@ -418,8 +418,9 @@ function planLaundry(){
 function planGarage(){
   const g=data.garage;if(!g)return '';
   const sides=g.parts.filter(p=>['panel','folded-door'].includes(p.role)).map(p=>`<rect data-garage-part="${escapeHTML(p.id)}" x="${p.x}" y="${p.y}" width="${p.w}" height="${p.d}" fill="${p.role==='panel'?'#908d87':'#c5b9a7'}"/>`).join('');
-  const vehicles=g.items.map(p=>`<g data-garage-item="${escapeHTML(p.id)}"><rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.d}" rx="5" fill="${p.kind==='child-bike'?'#c8d3c5':'#e0d8cc'}" stroke="#8a9a88" stroke-width="1.3"/><text x="${p.x+p.w/2}" y="${p.y+p.d/2-1}" text-anchor="middle" font-size="10" fill="#5d685c">${escapeHTML(p.label)}</text><text x="${p.x+p.w/2}" y="${p.y+p.d/2+13}" text-anchor="middle" font-size="9" fill="#727a6b">${p.w*10}×${p.d*10}</text></g>`).join('');
-  return `<g data-family-garage="${escapeHTML(g.id)}" pointer-events="none"><title>外包1630×1500；东向取车。车辆仅示意；层架位于车上方，非地面隔板。</title><rect x="${g.x}" y="${g.y}" width="${g.w}" height="${g.d}" fill="#efeee6"/>${sides}${vehicles}<rect data-garage-upper-rack x="215" y="1243" width="49" height="142" fill="none" stroke="#9d8e73" stroke-dasharray="4 4"/><path d="M375 1272h65m-8-6 8 6-8 6 M375 1342h65m-8-6 8 6-8 6" fill="none" stroke="#829781" stroke-width="2"/><text x="293" y="${g.y-10}" text-anchor="middle" font-size="14" fill="#6e8069">大件库 · 1630×1500</text><text x="423" y="1390" text-anchor="middle" font-size="9" fill="#829781">取车时暂占玄关</text></g>`;
+  const vehicles=g.items.map(p=>`<g data-garage-item="${escapeHTML(p.id)}" data-rotation="${p.rotationDeg||0}"><rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.d}" rx="5" fill="${p.kind==='child-bike'?'#c8d3c5':'#e0d8cc'}" stroke="#8a9a88" stroke-width="1.3"/><text x="${p.x+p.w/2}" y="${p.y+p.d/2-1}" text-anchor="middle" font-size="9" fill="#5d685c">${p.kind==='child-bike'?'儿童车':'折叠婴儿车'}</text><text x="${p.x+p.w/2}" y="${p.y+p.d/2+13}" text-anchor="middle" font-size="8" fill="#727a6b">${p.w*10}×${p.d*10}</text></g>`).join('');
+  const shelf=g.shelves[0],arrows=g.items.map(p=>`M${p.x+p.w/2} ${g.y-2}v-50m-5 8 5-8 5 8`).join(' ');
+  return `<g data-family-garage="${escapeHTML(g.id)}" data-opening-face="${g.face}" pointer-events="none"><title>外包${g.w*10}×${g.d*10}；北向开口朝厅内与餐桌。车辆仅示意；层架位于车上方，非地面隔板。</title><rect x="${g.x}" y="${g.y}" width="${g.w}" height="${g.d}" fill="#efeee6"/>${sides}${vehicles}<rect data-garage-upper-rack x="${shelf.x}" y="${shelf.y}" width="${shelf.w}" height="${shelf.d}" fill="none" stroke="#9d8e73" stroke-dasharray="4 4"/><path data-garage-exit="north" d="${arrows}" fill="none" stroke="#829781" stroke-width="2"/><text x="${g.x+g.w/2}" y="${g.y+g.d+19}" text-anchor="middle" font-size="13" fill="#6e8069">800库 · ${g.w*10}×${g.d*10}</text><text x="${g.x+g.w+60}" y="${g.y-16}" text-anchor="middle" font-size="11" fill="#829781">开口朝厅 / 餐桌</text><text x="423" y="${g.y+14}" text-anchor="middle" font-size="9" fill="#829781">取车时暂占前场</text></g>`;
 }
 
 function makePlan(){

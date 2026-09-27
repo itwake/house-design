@@ -13,6 +13,7 @@ const manifest=JSON.parse(await read(prefix+'scene-manifest.json'));
 const catalog=JSON.parse(await read('models/design-schemes.json'));
 const source=await read('studio.js'),html=await read('studio.html');
 const world=buildWalkWorld(data),near=(a,b,message)=>assert.ok(Math.abs(a-b)<1e-7,message||`${a} != ${b}`);
+if(family){assert.equal(world.obstacles.filter(o=>o.id.startsWith('garage-folded-leaf-')).length,4,'Four external folded-door collision leaves');}
 assert.equal(WALK_EYE_HEIGHT,1.6);assert.equal(WALK_RADIUS,.25);
 assert.equal(world.doors.length,7);
 assert.equal(world.rooms.length,8);

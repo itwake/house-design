@@ -1,5 +1,6 @@
 """Compare every actual mesh against the published V3.4.1 Git blob."""
 from pathlib import Path
+import json
 import subprocess
 import sys
 from validate_design_schemes import GLB
@@ -11,16 +12,20 @@ class GitVersion:
  def __init__(self,path):self.path=path
  def read_bytes(self):return subprocess.check_output(['git','show',BASE+':'+self.path],cwd=ROOT)
  def __str__(self):return BASE+':'+self.path
-def targeted(name,obj):
- return name=='Wall 03 / sill' or obj['extras'].get('openingId')==OPENING
+def targeted(name,obj,compact_family=False):
+ e=obj['extras']
+ return name=='Wall 03 / sill' or e.get('openingId')==OPENING or (compact_family and (e.get('garageId')=='family_garage' or str(e.get('storagePartId','')).startswith('family_sideboard_')))
 def near(a,b):
  assert abs(a-b)<.0001,(a,b)
 for sid in (sys.argv[1:] or ('wood','suite','family','laundry')):
  assert sid in ('wood','suite','family','laundry')
  relative=f'models/schemes/{sid}/huiyayuan-wood.glb'
  old=GLB(GitVersion(relative)).world_meshes();new=GLB(ROOT/relative).world_meshes()
- before={k:v for k,v in old.items() if not targeted(k,v)}
- after={k:v for k,v in new.items() if not targeted(k,v)}
+ data=json.loads((ROOT/f'models/schemes/{sid}/design-data.json').read_text(encoding='utf-8'))
+ compact_family=sid=='family' and data.get('garageRevision',{}).get('version')=='3.4.3'
+ # Compact storage is independently scoped by validate_compact_family.py.
+ before={k:v for k,v in old.items() if not targeted(k,v,compact_family)}
+ after={k:v for k,v in new.items() if not targeted(k,v,compact_family)}
  assert set(before)==set(after),(sid,'Unrelated objects added or removed')
  for name,obj in after.items():
   for key in ('geometry','bounds','materials','extras'):assert obj[key]==before[name][key],(sid,name,key)

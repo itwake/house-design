@@ -32,7 +32,8 @@ if(variant==='family'){
   assert.equal((svg.match(/data-family-garage=/g)||[]).length,1);
   assert.equal((svg.match(/data-garage-item=/g)||[]).length,2);
   assert.equal((svg.match(/data-garage-part=/g)||[]).length,7);
-  assert.ok(svg.includes('1630×1500')&&svg.includes('取车时暂占玄关'));
+  assert.ok(svg.includes('1500×1200')&&svg.includes('取车时暂占前场'));
+  assert.ok(svg.includes('data-opening-face="north"')&&svg.includes('data-garage-exit="north"'));
 }
 if(variant==='laundry'){
   assert.equal((svg.match(/data-laundry-machine=/g)||[]).length,2);

@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 const {chromium}=createRequire(import.meta.url)('playwright');
 const browser=await chromium.launch({headless:true,channel:'chrome'});
 const base='http://127.0.0.1:4173/',results=[],errors=[];
+const targetSchemes=process.argv.includes('--family-only')?['family']:['wood','suite','family','laundry'];
 await mkdir('tmp',{recursive:true});
 try{
   for(const [name,width,height] of [['desktop',1440,1000],['mobile',390,844],['narrow',320,640]]){
@@ -17,10 +18,10 @@ try{
     assert.equal(await page.locator('[data-scheme-card]').count(),4);
     assert.equal(new URL(page.url()).pathname,'/','Chooser must not auto-redirect');
     assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Chooser overflow');
-    if(name!=='narrow')await page.screenshot({path:'tmp/v342-'+name+'-chooser.png',fullPage:true});
-    for(const scheme of ['wood','suite','family','laundry']){
+    if(name!=='narrow')await page.screenshot({path:'tmp/v343-'+name+'-chooser.png',fullPage:true});
+    for(const scheme of targetSchemes){
       const expectedManifest=JSON.parse(await readFile(`models/schemes/${scheme}/scene-manifest.json`,'utf8'));
-      await page.goto(base+'studio.html?scheme='+scheme+'&v=3.4.2');
+      await page.goto(base+'studio.html?scheme='+scheme+'&v=3.4.3');
       await page.waitForFunction(()=>document.querySelector('#model-loading')?.hidden&&document.querySelectorAll('#floor-plan [data-plan-room]').length===8);
       assert.equal(await page.locator('html').getAttribute('data-scheme'),scheme);
       assert.ok(await page.locator('#model-fallback').evaluate(e=>e.hidden),'3D loaded without fallback');
@@ -49,19 +50,24 @@ try{
       assert.ok((await page.locator('#room-preview').getAttribute('src')).includes(renderPrefix));
       assert.ok((await page.locator('#download-glb').getAttribute('href')).includes('models/schemes/'+scheme+'/'));
       assert.equal(await page.locator('#floor-plan [data-garage-item]').count(),isFamily?2:0);
+      if(isFamily){
+        assert.equal(await page.locator('[data-family-garage]').getAttribute('data-opening-face'),'north');
+        assert.equal(await page.locator('[data-garage-exit="north"]').count(),1);
+        assert.equal(await page.locator('[data-garage-item][data-rotation="90"]').count(),2);
+      }
       if(await page.locator('#room-card').evaluate(e=>e.hidden))await page.locator('#toggle-room-card').click();
       assert.ok(await page.locator('#room-card').isVisible(),'Show card');
       await page.locator('#toggle-room-card').click();
       assert.ok(await page.locator('#room-card').evaluate(e=>e.hidden),'Hide card');
       await page.locator('#tab-plan').click();
-      if(isSuite)await page.screenshot({path:`tmp/v342-${name}-${scheme}-plan.png`});
+      if(isSuite)await page.screenshot({path:`tmp/v343-${name}-${scheme}-plan.png`});
       await page.locator('#tab-model').click();
       await page.locator('#start-walk').click();
       assert.ok(await page.locator('#workspace').evaluate(e=>e.classList.contains('walking')));
       await page.keyboard.press('ArrowUp');
       await page.locator('#exit-walk').click();
       assert.ok(await page.locator('#workspace').evaluate(e=>!e.classList.contains('walking')));
-      if(isSuite&&name==='desktop')await page.screenshot({path:`tmp/v342-desktop-${scheme}-model.png`});
+      if(isSuite&&name==='desktop')await page.screenshot({path:`tmp/v343-desktop-${scheme}-model.png`});
       await page.locator('#tab-renders').click();
       await page.waitForFunction(()=>document.querySelector('#active-render').complete&&document.querySelector('#active-render').naturalWidth>0);
       assert.ok((await page.locator('#render-provenance').textContent()).includes('当前模型重渲'),'Overview uses a current furniture-free scene render');
@@ -72,7 +78,7 @@ try{
           await page.waitForFunction(expected=>{const img=document.querySelector('#active-render');return img.complete&&img.naturalWidth>0&&new URL(img.src).pathname.endsWith('/'+expected+'.jpg')},view);
           assert.ok((await page.locator('#card-description').textContent()).includes(room==='room_c'?'书架':scheme==='laundry'&&room==='balcony'?'浅盆':'大窗'),'Revised room description');
           assert.equal((await page.locator('#render-provenance').textContent()).includes('沿用历史模型图'),!!expectedManifest.renderedViews[view]?.retainedFrom,'Correct current/reference caption for '+view);
-          if(name==='desktop'||room==='room_c')await page.screenshot({path:`tmp/v342-${name}-${scheme}-${room}-render-ui.png`});
+          if(name==='desktop'||room==='room_c')await page.screenshot({path:`tmp/v343-${name}-${scheme}-${room}-render-ui.png`});
         }
       }
       await page.locator('#open-project').click();
@@ -84,7 +90,7 @@ try{
         assert.ok((await page.locator('#laundry-dialog').textContent()).includes('690'));
         await page.locator('[data-laundry-render="laundry-detail"]').click();
         await page.waitForFunction(()=>document.querySelector('#large-render').complete&&document.querySelector('#large-render').naturalWidth>0);
-        await page.screenshot({path:`tmp/v342-${name}-laundry-detail.png`});
+        await page.screenshot({path:`tmp/v343-${name}-laundry-detail.png`});
         await page.locator('#image-dialog .dialog-close').click();
         await page.locator('#laundry-dialog .dialog-close').click();
         await page.locator('#open-project').click();
@@ -94,11 +100,12 @@ try{
         const garage=page.locator('#storage-fitout-cards [data-storage-card="family_garage"]');
         assert.equal(await garage.count(),1);
         assert.ok((await garage.textContent()).includes('入户门关闭'));
+        assert.ok((await garage.textContent()).includes('1.80㎡')&&(await garage.textContent()).includes('北侧开口朝餐桌'));
         assert.equal(await garage.locator('.bay-references a').count(),2);
         await garage.locator('[data-storage-render]').click();
         await page.waitForFunction(()=>document.querySelector('#large-render').complete&&document.querySelector('#large-render').naturalWidth>0);
         assert.ok((await page.locator('#large-render').getAttribute('src')).includes('/storage-library.jpg'));
-        await page.screenshot({path:`tmp/v342-${name}-family-garage.png`});
+        await page.screenshot({path:`tmp/v343-${name}-family-garage.png`});
         await page.locator('#image-dialog .dialog-close').click();
         await page.locator('#storage-dialog .dialog-close').click();
         await page.locator('#open-project').click();
@@ -117,7 +124,7 @@ try{
       assert.ok(await page.locator('#bay-dialog').evaluate(e=>e.scrollWidth<=e.clientWidth+1),'Bay dialog has no horizontal overflow');
       if(await lowBay.locator('details').evaluate(e=>e.open))await lowBay.locator('summary').click();
       await lowBay.scrollIntoViewIfNeeded();
-      await page.screenshot({path:`tmp/v342-${name}-${scheme}-low-bay-card.png`});
+      await page.screenshot({path:`tmp/v343-${name}-${scheme}-low-bay-card.png`});
       await page.locator('#bay-dialog .dialog-close').click();
       await page.locator('.scheme-switch-button').click();
       assert.equal(await page.locator('[data-scheme-card]').count(),4);
@@ -127,6 +134,6 @@ try{
     await context.close();
   }
   assert.deepEqual(errors,[]);
-  await writeFile('tmp/v342-browser-qa.json',JSON.stringify({results,errors},null,2));
-  console.log('PASS twelve real Chrome viewer sessions, three viewport sizes; no page exceptions.');
+  await writeFile('tmp/v343-browser-qa.json',JSON.stringify({results,errors},null,2));
+  console.log(`PASS ${results.length} real Chrome viewer sessions, three viewport sizes; no page exceptions.`);
 }finally{await browser.close()}

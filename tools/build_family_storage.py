@@ -4,6 +4,7 @@ import json
 import math
 from pathlib import Path
 import bpy
+from mathutils import Matrix
 
 ROOT=Path(__file__).resolve().parents[1]
 spec=importlib.util.spec_from_file_location('suite_builder',ROOT/'tools/build_suite_layout.py')
@@ -14,8 +15,8 @@ b.RENDER_DIR=ROOT/'assets/schemes/family'
 b.TEX_DIR=b.MODEL_DIR/'textures'
 b.VIEWS['dining']=((5.00,11.92,1.68),(3.10,10.65,1.05),19)
 b.VIEWS['entry-storage']=((4.66,12.04,1.60),(3.17,13.18,1.22),17)
-b.VIEWS['sideboard']=((4.56,11.90,1.60),(2.37,11.94,1.30),22)
-b.VIEWS['storage-library']=((4.87,13.12,1.40),(2.78,13.11,1.20),17)
+b.VIEWS['sideboard']=((4.56,12.20,1.60),(2.37,11.44,1.30),22)
+b.VIEWS['storage-library']=((3.80,11.48,1.55),(2.87,13.55,1.25),18)
 
 def wheel(name,x,y,z,r,width):
     bpy.ops.mesh.primitive_torus_add(major_segments=32,minor_segments=8,location=(x,-y,z),
@@ -51,16 +52,27 @@ def stroller(f):
     b.box('Folded stroller securing strap',x+.19,y+d/2,.46,.035,d-.23,.07,'Charcoal',.006)
 
 original_furnish=b.furnish
-def furnish(data):
-    original_furnish({**data,'furniture':[f for f in data['furniture'] if not f.get('garageFitoutId')]})
+def garage(data):
     g=data['garage'];b.CURRENT_ROOM='living'
     for p in g['parts']:
         obj=b.block('Family garage / '+p['id'],p['x']/100,p['y']/100,p['zCm']/100,p['w']/100,p['d']/100,p['hCm']/100,mat=p['material'],bevel=.001,room='living')
         obj['garagePartId']=p['id'];obj['garageRole']=p['role'];obj['garageId']=g['id']
     for f in g['items']:
         before=set(bpy.context.scene.objects)
-        (child_bike if f['kind']=='child-bike' else stroller)(f)
-        for obj in set(bpy.context.scene.objects)-before:obj['garageItemId']=f['id'];obj['garageId']=g['id']
+        native={**f,'x':0,'y':0,'w':f.get('modelWidthCm',f['w']),'d':f.get('modelDepthCm',f['d'])}
+        (child_bike if f['kind']=='child-bike' else stroller)(native)
+        bpy.context.view_layer.update()
+        transform=(Matrix.Translation(((f['x']+f['w']/2)/100,-(f['y']+f['d']/2)/100,0))
+                   @ Matrix.Rotation(-math.radians(f.get('rotationDeg',0)),4,'Z')
+                   @ Matrix.Translation((-native['w']/200,native['d']/200,0)))
+        for obj in set(bpy.context.scene.objects)-before:
+            obj.matrix_world=transform @ obj.matrix_world
+            obj['garageItemId']=f['id'];obj['garageId']=g['id']
+            obj['garageRotationDeg']=f.get('rotationDeg',0)
+
+def furnish(data):
+    original_furnish({**data,'furniture':[f for f in data['furniture'] if not f.get('garageFitoutId')]})
+    garage(data)
 b.furnish=furnish
 original_manifest=b.manifest
 def manifest(data,openings,src):
@@ -73,6 +85,7 @@ def manifest(data,openings,src):
         if isinstance(v,dict):return {k:paths(a) for k,a in v.items()}
         return v
     result=paths(result);result['schemeId']='family';result['garage']=data['garage']
+    if data.get('garageRevision'):result['garageRevision']=data['garageRevision']
     # Asset URLs use the new directory; provenance must still point at suite.
     result['layout']=data['layout']
     result['notes']=[n for n in result['notes'] if '7字' not in n and '仅餐柜北两模块' not in n]+data['storageDesign']['assumptions']
@@ -83,7 +96,7 @@ def render(args):
     path=b.MODEL_DIR/'scene-manifest.json';result=json.loads(path.read_text(encoding='utf-8'))
     pos,target,lens=b.VIEWS['storage-library']
     result['layoutDetails']=[v for v in result.get('layoutDetails',[]) if v['id']!='storage-library']+[{
-        'id':'storage-library','title':'亲子大件库 · 折叠门打开示意','roomId':'living',
+        'id':'storage-library','title':'面厅紧凑800库 · 北侧折叠门打开示意','roomId':'living',
         'render':'assets/schemes/family/storage-library.jpg',
         'interiorCamera':{'position':b.three(pos),'target':b.three(target),'horizontalFov':round(math.degrees(2*math.atan(36/(2*lens))),2)}}]
     path.write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
@@ -92,7 +105,7 @@ b.render=render
 original_lighting=b.lighting
 def lighting(data):
     original_lighting(data)
-    b.area('Family garage soft fill',(3.65,13.12,2.30),(2.45,13.12,.60),20,.65,(1,.96,.90))
+    b.area('Family garage soft fill',(2.87,13.26,2.30),(2.87,13.65,.60),20,.65,(1,.96,.90))
 b.lighting=lighting
 
 if __name__=='__main__':b.main()
