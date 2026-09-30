@@ -4,10 +4,20 @@ import {execFileSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 const root=new URL('../',import.meta.url),cwd=fileURLToPath(root),read=async p=>JSON.parse(await readFile(new URL(p,root),'utf8'));
 const d=await read('models/schemes/family/design-data.json'),base=await read('models/schemes/suite/design-data.json'),g=d.garage;
-for(const key of ['rooms','walls','wallSpecs','doors','windows','bayFitouts','wallFitouts','appearance'])assert.deepEqual(d[key],base[key],'Inherited '+key);
+const mergedLaundry=Boolean(d.familyLaundryRevision);
+if(mergedLaundry){
+ assert.equal(d.familyLaundryRevision.version,'3.5.0');
+ assert.equal(d.familyLaundryRevision.baselineCommit,'9e9a10f');
+ await import('./test_family_laundry.mjs'); // Exact allowed changes and merged clearance are checked, not silently skipped.
+}
+for(const key of ['rooms','walls','wallSpecs','doors','windows','bayFitouts','wallFitouts','appearance']){
+ if(mergedLaundry&&['rooms','walls','wallSpecs','doors'].includes(key))continue;
+ assert.deepEqual(d[key],base[key],'Inherited '+key);
+}
 const changed=new Set(['dining_sideboard','dining_sideboard_corner','dining_sideboard_return']);
+if(mergedLaundry)for(const name of ['洗烘塔','阳台家政柜','三人沙发','茶几','电视薄柜'])changed.add(name);
 for(const f of base.furniture){
- if(changed.has(f.id))continue;
+ if(changed.has(f.id)||changed.has(f.name))continue;
  const now=d.furniture.find(p=>(p.id||p.name)===(f.id||f.name));
  if(/餐桌|餐椅/.test(f.name)){assert.deepEqual(now,{...f,x:f.x-25,y:f.y-95});}
  else assert.deepEqual(now,f,'Unchanged furniture '+f.name);

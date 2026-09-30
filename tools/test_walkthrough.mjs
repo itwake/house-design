@@ -7,10 +7,11 @@ import * as THREE from '../vendor/three/three.module.js';
 import * as walk from '../walkthrough.js';
 const {buildWalkWorld,findWalkStart,advanceWalk,movementVector,WalkController,WALK_STARTS,WALK_RADIUS,WALK_EYE_HEIGHT,isWalkDoorInfill}=walk;
 const root=new URL('../',import.meta.url),read=p=>readFile(new URL(p,root),'utf8');
-const laundry=process.argv.includes('--laundry'),family=process.argv.includes('--family'),suite=laundry||family||process.argv.includes('--suite'),schemeIndex=laundry?3:family?2:suite?1:0,prefix=laundry?'models/schemes/laundry/':family?'models/schemes/family/':suite?'models/schemes/suite/':'models/schemes/wood/';
+const laundry=process.argv.includes('--laundry'),family=process.argv.includes('--family'),suite=laundry||family||process.argv.includes('--suite'),schemeId=laundry?'laundry':family?'family':suite?'suite':'wood',prefix=`models/schemes/${schemeId}/`;
 const data=JSON.parse(await read(prefix+'design-data.json'));
 const manifest=JSON.parse(await read(prefix+'scene-manifest.json'));
 const catalog=JSON.parse(await read('models/design-schemes.json'));
+const activeScheme=catalog.schemes.find(s=>s.id===schemeId)||{id:schemeId,model:prefix+'huiyayuan-wood.glb'},hasLaundry=Boolean(data.laundry);
 const source=await read('studio.js'),html=await read('studio.html');
 const world=buildWalkWorld(data),near=(a,b,message)=>assert.ok(Math.abs(a-b)<1e-7,message||`${a} != ${b}`);
 if(family){assert.equal(world.obstacles.filter(o=>o.id.startsWith('garage-folded-leaf-')).length,4,'Four external folded-door collision leaves');}
@@ -125,14 +126,15 @@ c.dispose();for(const n of [e.win,e.doc,e.canvas,...e.pads])for(const handlers o
 const ui=environment(),camera=new THREE.PerspectiveCamera(37,1000/700,.35,80),calls={orbit:0,renders:0,frames:0,storage:0};
 const controls={enabled:true,target:new THREE.Vector3(4.2,.6,7),maxDistance:45,update:()=>calls.orbit++};
 const scene=new THREE.Scene(),model=new THREE.Group();
-const glb=await readFile(new URL(catalog.schemes[schemeIndex].model,root));
+const glb=await readFile(new URL(activeScheme.model,root));
 const gltf=JSON.parse(glb.subarray(20,20+glb.readUInt32LE(12)).toString());
 const parents=new Map();gltf.nodes.forEach((n,i)=>(n.children||[]).forEach(c=>parents.set(c,i)));
 const semantics=i=>{const out={};for(let p=i;p!==undefined;p=parents.get(p))for(const [k,v]of Object.entries(gltf.nodes[p].extras||{}))if(out[k]===undefined)out[k]=v;return out};
 const doorNodes=gltf.nodes.map((n,i)=>({n,meta:semantics(i)})).filter(({n,meta})=>n.mesh!==undefined&&meta.kind==='door');
 // Protect the one model-authored obstacle not represented by plan furniture.
 assert.ok((await read('tools/build_blender.py')).includes('lamp(6.48,8.98)'),'Source-only lamp location must stay in sync');
-assert.equal(world.canStand(laundry?3.35:6.48,laundry?8.75:8.80),false,'Floor lampshade blocks the virtual body');
+const lamp=data.modelAddons?.livingFloorLampCm||{x:648,y:898};
+assert.equal(world.canStand(lamp.x/100,lamp.y/100),false,'Floor lampshade blocks the virtual body');
 const matrices=new Map(),matrix=i=>{
   if(matrices.has(i))return matrices.get(i);const n=gltf.nodes[i],m=new THREE.Matrix4();
   if(n.matrix)m.fromArray(n.matrix);else m.compose(new THREE.Vector3(...(n.translation||[0,0,0])),new THREE.Quaternion(...(n.rotation||[0,0,0,1])),new THREE.Vector3(...(n.scale||[1,1,1])));
@@ -144,17 +146,17 @@ const shades=gltf.nodes.flatMap((n,i)=>{
   for(const p of gltf.meshes[n.mesh].primitives){const a=gltf.accessors[p.attributes.POSITION];for(const x of [a.min[0],a.max[0]])for(const y of [a.min[1],a.max[1]])for(const z of [a.min[2],a.max[2]])bounds.expandByPoint(new THREE.Vector3(x,y,z).applyMatrix4(matrix(i)))}
   return [bounds];
 });
-const shade=shades.find(b=>Math.abs(b.getCenter(new THREE.Vector3()).x-(laundry?3.35:6.48))<.01&&Math.abs(b.getCenter(new THREE.Vector3()).z-(laundry?8.75:8.98))<.01);
-assert.ok(shade,'Actual GLB floor lampshade found');assert.ok(shade.min.x>=(laundry?3.13:6.26)-1e-5&&shade.max.x<=(laundry?3.57:6.70)+1e-5&&shade.min.z>=(laundry?8.53:8.76)-1e-5&&shade.max.z<=(laundry?8.97:9.20)+1e-5,'Supplementary collider encloses actual lampshade');
+const shade=shades.find(b=>Math.abs(b.getCenter(new THREE.Vector3()).x-lamp.x/100)<.01&&Math.abs(b.getCenter(new THREE.Vector3()).z-lamp.y/100)<.01);
+assert.ok(shade,'Actual GLB floor lampshade found');assert.ok(shade.min.x>=lamp.x/100-.22-1e-5&&shade.max.x<=lamp.x/100+.22+1e-5&&shade.min.z>=lamp.y/100-.22-1e-5&&shade.max.z<=lamp.y/100+.22+1e-5,'Supplementary collider encloses actual lampshade');
 assert.equal(new Set(doorNodes.map(d=>d.meta.openingId)).size,8,'Actual GLB has eight door assemblies');
 for(const {n,meta}of doorNodes){const m=new THREE.Mesh(new THREE.BoxGeometry(.1,.1,.1),new THREE.MeshStandardMaterial());m.name=n.name;m.userData=meta;model.add(m)}
-const context=vm.createContext({...walk,THREE,URL,URLSearchParams,console,document:ui.doc,window:ui.win,matchMedia:()=>({matches:false}),setTimeout:()=>0,clearTimeout:()=>{},requestAnimationFrame:()=>++calls.frames,cancelAnimationFrame:()=>{},performance:{now:()=>0},sessionStorage:{setItem:()=>calls.storage++},test:{data,manifest,catalog,camera,controls,scene,model,canvas:ui.canvas,calls,suite,schemeIndex}});
+const context=vm.createContext({...walk,THREE,URL,URLSearchParams,console,document:ui.doc,window:ui.win,matchMedia:()=>({matches:false}),setTimeout:()=>0,clearTimeout:()=>{},requestAnimationFrame:()=>++calls.frames,cancelAnimationFrame:()=>{},performance:{now:()=>0},sessionStorage:{setItem:()=>calls.storage++},test:{data,manifest,catalog,camera,controls,scene,model,canvas:ui.canvas,calls,suite,scheme:activeScheme}});
 vm.runInContext(source.replace(/^import .*\r?\n/gm,'').replace(/\binit\(\);\s*$/,''),context);
-vm.runInContext(`data=test.data;manifest=test.manifest;scheme=test.catalog.schemes[test.schemeIndex];rooms=manifest.rooms;three=THREE;camera=test.camera;controls=test.controls;scene=test.scene;model=optimizeStaticModel(test.model,THREE,()=>{throw Error('Door should not be merged')});renderer={domElement:test.canvas,setSize:()=>{},render:()=>test.calls.renders++};state.ready=true;setupWalk();`,context);
+vm.runInContext(`data=test.data;manifest=test.manifest;scheme=test.scheme;rooms=manifest.rooms;three=THREE;camera=test.camera;controls=test.controls;scene=test.scene;model=optimizeStaticModel(test.model,THREE,()=>{throw Error('Door should not be merged')});renderer={domElement:test.canvas,setSize:()=>{},render:()=>test.calls.renders++};state.ready=true;setupWalk();`,context);
 const api=vm.runInContext('({startWalk,stopWalk,focusRoom,switchView,resizeScene,tick,state,walkthrough,walkWorld,walkDoorParts,walkSlidingParts,walkThresholds,setWalls,bindControls,model})',context);
 assert.equal(ui.node('#start-walk').disabled,false);assert.equal(api.walkthrough.listeners.length,37,'Four direction pads and canvas input wired');
 assert.ok(!api.walkDoorParts.some(p=>p.userData.openingId==='door_kitchen'),'Kitchen leaves must never disappear');
-assert.equal(api.walkSlidingParts.length,laundry?38:suite?20:18,'Kitchen leaves plus real study leaf and flush pull in R4B');
+assert.equal(api.walkSlidingParts.length,hasLaundry?38:suite?20:18,'Kitchen leaves plus real study leaf and flush pull in R4B');
 assert.deepEqual([...new Set(api.walkSlidingParts.filter(p=>p.userData.openingId==='door_kitchen').map(p=>p.userData.slidingPanelIndex))].sort(),[0,1,2]);
 const openHinges=api.model.children.filter(p=>p.userData.doorRole==='hinged-open-panel');
 assert.equal(openHinges.length,suite?8:0);
@@ -162,7 +164,7 @@ assert.ok(openHinges.every(p=>!api.walkDoorParts.includes(p)),'Open hinged leave
 const closedPositions=api.walkSlidingParts.map(p=>p.position.clone());
 assert.equal(world.canStand(5.36,11.90),false,'North parked stack blocks walking');
 assert.ok(world.canStand(5.36,12.55),'Only the remaining south gap is passable');
-assert.equal(api.walkThresholds.children.length,laundry?0:suite?1:6,'R4B custom door assemblies also have persistent floors');
+assert.equal(api.walkThresholds.children.length,hasLaundry?0:suite?1:6,'R4B custom door assemblies also have persistent floors');
 for(const floor of api.walkThresholds.children){
   const door=data.doors.find(d=>d.id===floor.userData.openingId),bounds=new THREE.Box3().setFromObject(floor);
   assert.ok(door&&door.id!=='entry_door');near(floor.position.x,(door.x1+door.x2)/200);near(floor.position.z,(door.y1+door.y2)/200);near(bounds.max.y,0);

@@ -6,7 +6,7 @@ import {fileURLToPath} from 'node:url';
 import {buildWalkWorld,findWalkStart,advanceWalk} from '../walkthrough.js';
 const root=new URL('../',import.meta.url),read=async p=>JSON.parse(await readFile(new URL(p,root),'utf8'));
 const catalog=await read('models/design-schemes.json'),d=await read('models/schemes/laundry/design-data.json'),s=await read('models/schemes/suite/design-data.json'),family=await read('models/schemes/family/design-data.json');
-assert.deepEqual(catalog.schemes.map(s=>s.id),['wood','suite','family','laundry']);
+assert.deepEqual(catalog.schemes.map(s=>s.id),['wood','family','laundry']);
 for(const key of ['envelope','bayFitouts','wallFitouts','storageFitouts','appearance'])assert.deepEqual(d[key],s[key],key+' must stay scheme2');
 for(const r of d.rooms.filter(r=>!['living','balcony'].includes(r.id)))assert.deepEqual(r.points,s.rooms.find(v=>v.id===r.id).points,'Bedroom/bath/kitchen polygon preserved '+r.id);
 for(const [i,w]of s.walls.entries())if(i!==8)assert.deepEqual(d.walls[i],w,'Only balcony internal partition moves');
@@ -31,11 +31,11 @@ for(const name of ['三人沙发','茶几','电视薄柜']){
  const f=d.furniture.find(v=>v.name===name);
  for(const other of d.furniture.filter(v=>v!==f))assert.ok(!overlap(f,other),'Moved furniture overlap '+name+' / '+other.name);
 }
-// Historical assets and textures stay byte-identical. V3.4.1 intentionally
-// updates active source/model/render assets; exact scope is separately tested.
-const baseline='60bfd694e9231216dc49de2c38cfaf91a02773bf',cwd=fileURLToPath(root);
-const activeRefresh=/^(?:models\/schemes\/(?:suite|family)\/(?:design-data\.json|scene-manifest\.json|huiyayuan-wood\.(?:blend|glb))|assets\/schemes\/(?:suite|family)\/[^/]+\.jpg)$/;
+// Current merge refreshes family only; all existing laundry/wood assets and
+// historical textures remain byte-identical to the last published chooser.
+const baseline='9e9a10f8a6cca9a212b656e83940fd783094d6b9',cwd=fileURLToPath(root);
+const activeRefresh=/^(?:models\/schemes\/family\/(?:design-data\.json|scene-manifest\.json|huiyayuan-wood\.(?:blend|glb))|assets\/schemes\/family\/[^/]+\.jpg)$/;
 const tree=execFileSync('git',['ls-tree','-r',baseline,'models','assets'],{cwd,encoding:'utf8'}).trim().split('\n').map(line=>{const [meta,path]=line.split('\t');return {path,sha:meta.split(' ')[2]}}).filter(v=>v.path!=='models/design-schemes.json'&&!activeRefresh.test(v.path));
 const hashes=execFileSync('git',['hash-object','--stdin-paths'],{cwd,encoding:'utf8',input:tree.map(v=>v.path).join('\n')+'\n'}).trim().split('\n');
 tree.forEach((v,i)=>assert.equal(hashes[i],v.sha,'Existing asset preserved '+v.path));
-console.log(`PASS laundry source: A ground appliances, true shallow basin clearance/rear service, B/C alignment, walkable north entrance, kitchen shared across four schemes; ${tree.length} old assets untouched.`);
+console.log(`PASS laundry source: A ground appliances, true shallow basin clearance/rear service, B/C alignment, walkable north entrance, kitchen shared across three active schemes; ${tree.length} old assets untouched.`);

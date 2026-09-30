@@ -17,6 +17,17 @@ b.VIEWS['dining']=((5.00,11.92,1.68),(3.10,10.65,1.05),19)
 b.VIEWS['entry-storage']=((4.66,12.04,1.60),(3.17,13.18,1.22),17)
 b.VIEWS['sideboard']=((4.56,12.20,1.60),(2.37,11.44,1.30),22)
 b.VIEWS['storage-library']=((3.80,11.48,1.55),(2.87,13.55,1.25),18)
+laundry_spec=importlib.util.spec_from_file_location('family_laundry_builder',ROOT/'tools/build_laundry_layout.py')
+laundry=importlib.util.module_from_spec(laundry_spec);laundry_spec.loader.exec_module(laundry);laundry.b=b
+b.VIEWS['living']=((3.25,10.68,1.60),(6.50,8.20,1.25),20)
+b.VIEWS['balcony']=((7.44,9.86,1.28),(7.44,10.78,.68),16)
+b.VIEWS['laundry-detail']=((8.03,9.90,1.45),(7.28,10.70,.90),17)
+b.VIEWS['living-wall']=((3.23,10.95,1.62),(6.57,8.85,1.28),18)
+original_lamp=b.lamp
+def lamp(x,y,*args,**kwargs):
+    if abs(x-6.48)<.0001 and abs(y-8.98)<.0001:x,y=3.35,7.35
+    return original_lamp(x,y,*args,**kwargs)
+b.lamp=lamp
 
 def wheel(name,x,y,z,r,width):
     bpy.ops.mesh.primitive_torus_add(major_segments=32,minor_segments=8,location=(x,-y,z),
@@ -71,8 +82,9 @@ def garage(data):
             obj['garageRotationDeg']=f.get('rotationDeg',0)
 
 def furnish(data):
-    original_furnish({**data,'furniture':[f for f in data['furniture'] if not f.get('garageFitoutId')]})
+    original_furnish({**data,'furniture':[f for f in data['furniture'] if not f.get('garageFitoutId') and not f.get('laundryFitoutId')]})
     garage(data)
+    if data.get('laundry'):laundry.add_laundry(data)
 b.furnish=furnish
 original_manifest=b.manifest
 def manifest(data,openings,src):
@@ -86,6 +98,11 @@ def manifest(data,openings,src):
         return v
     result=paths(result);result['schemeId']='family';result['garage']=data['garage']
     if data.get('garageRevision'):result['garageRevision']=data['garageRevision']
+    if data.get('laundry'):
+        result['laundry']=data['laundry'];result['familyLaundryRevision']=data['familyLaundryRevision']
+        for name,title in [('laundry-detail','并排洗烘与上方浅盆'),('living-wall','亲子客厅 · 整墙书架与阳台门')]:
+            pos,target,lens=b.VIEWS[name];result['layoutDetails'].append({'id':name,'title':title,'roomId':'balcony' if name=='laundry-detail' else 'living','render':f'assets/schemes/family/{name}.jpg','interiorCamera':{'position':b.three(pos),'target':b.three(target),'horizontalFov':round(math.degrees(2*math.atan(36/(2*lens))),2)}})
+        result['notes']+=data['laundry']['conditions']
     # Asset URLs use the new directory; provenance must still point at suite.
     result['layout']=data['layout']
     result['notes']=[n for n in result['notes'] if '7字' not in n and '仅餐柜北两模块' not in n]+data['storageDesign']['assumptions']

@@ -23,7 +23,7 @@ assert.ok(svg.includes('data-surface-slider="door_c"'),'Study wall-mounted slidi
 for(const id of ['a_desktop','a_support','a_accessories','a_chair'])assert.ok(!svg.includes(`data-part-id="${id}"`),'Master item removed: '+id);
 for(const id of ['l_desktop','l_support','l_accessories','l_adult_chair','l_child_chair'])assert.ok(!svg.includes(`data-part-id="${id}"`),'Living item removed: '+id);
 assert.equal((svg.match(/data-bay-window=/g)||[]).length,3,'Keep three real bay windows');
-assert.equal((svg.match(/data-sliding-panel=/g)||[]).length,variant==='laundry'?6:3,'Keep kitchen and laundry sliders');
+assert.equal((svg.match(/data-sliding-panel=/g)||[]).length,data.laundry?6:3,'Keep kitchen and laundry sliders');
 for(const room of data.rooms)assert.ok(svg.includes(`points="${room.points.map(p=>p.join(',')).join(' ')}"`),'Actual polygon '+room.id);
 for(const [key,geometry]of [['主卧衣柜',[325,12,60,224]],['次卧衣柜',[12,262,180,60]]]){const f=data.furniture.find(f=>f.name===key);assert.deepEqual([f.x,f.y,f.w,f.d],geometry,'Latest owner wardrobe choice '+key);}
 for(const id of ['study_north_sofa','study_full_desk','bed_b_niche_console'])assert.ok(svg.includes(`data-furniture-id="${id}"`),'Plan includes fitted furniture '+id);
@@ -35,7 +35,7 @@ if(variant==='family'){
   assert.ok(svg.includes('1500×1200')&&svg.includes('取车时暂占前场'));
   assert.ok(svg.includes('data-opening-face="north"')&&svg.includes('data-garage-exit="north"'));
 }
-if(variant==='laundry'){
+if(data.laundry){
   assert.equal((svg.match(/data-laundry-machine=/g)||[]).length,2);
   const frame=svg.match(/<rect data-slider-frame="balcony_door"[^>]+>/)?.[0];
   assert.ok(frame?.includes('x="645"')&&frame.includes('width="14.5"'),'Plan C frame matches actual B face');

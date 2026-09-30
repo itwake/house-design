@@ -60,6 +60,9 @@ def sink(l):
 original_furnish=b.furnish
 def furnish(data):
     original_furnish({**data,'furniture':[f for f in data['furniture'] if not f.get('laundryFitoutId')]})
+    add_laundry(data)
+
+def add_laundry(data):
     l=data['laundry']
     for p in l['parts']:
         obj=b.block('Laundry scheme / '+p['id'],p['x']/100,p['y']/100,p['zCm']/100,p['w']/100,p['d']/100,p['hCm']/100,mat=p['material'],bevel=.001,room=p['roomId'])

@@ -1,10 +1,10 @@
-import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.4.4';
-import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.4.4';
+import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.5.0';
+import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.5.0';
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
-const UI_REVISION = '3.4.4';
+const UI_REVISION = '3.5.0';
 document.documentElement.dataset.uiRevision = UI_REVISION;
-let ASSET_REVISION = '3.4.4';
+let ASSET_REVISION = '3.5.0';
 const revisedAsset = path => {const url=new URL(path,document.baseURI);url.searchParams.set('v',ASSET_REVISION);return url.href};
 const icons = {
   cube:'<path d="m8 2 6 3.5v5L8 14l-6-3.5v-5L8 2Z M2 5.5 8 9l6-3.5 M8 9v5 M5 3.8l6 3.5"/>',
@@ -399,12 +399,12 @@ function planSlidingDoor(door){
 function renderLaundryFitout(){
   const l=data.laundry;if(!l)return;
   const dialog=document.createElement('dialog');dialog.id='laundry-dialog';dialog.className='bay-dialog';dialog.setAttribute('aria-label','方案4家政整墙设计');
-  dialog.innerHTML=`<button class="dialog-close icon-button" aria-label="关闭家政设计">${icon('close')}</button><header class="bay-dialog-heading"><p class="eyebrow">LAYOUT 04 / LAUNDRY WALL</p><h2>A洗烘 · B书架 · C推拉门</h2><p>基于方案2，机器靠厨房共墙落地并排；书架正面与外移门框拉齐。玻璃门扇因三轨而内退。</p><span class="bay-conditional-badge">专用浅盆条件方案 · 尚未选定设备</span></header><div class="bay-fitout-grid">${[['laundry-detail','A · 洗烘并排，浅盆在上'],['living-wall','B + C · 书架与门框齐平']].map(([id,title])=>`<article class="bay-fitout-card"><button class="bay-fitout-image" data-laundry-render="${id}" aria-label="放大${title}"><img src="${schemeRender(scheme,id)}" alt="${title} · 同源3D渲染" loading="lazy"/><span class="bay-image-label">${escapeHTML(renderProvenance(id))} ${icon('expand')}</span></button><div class="bay-fitout-copy"><h3>${title}</h3><ul class="bay-fitout-dimensions">${l.dimensions.filter((_,i)=>id==='laundry-detail'?[0,1,3].includes(i):[2,3,4].includes(i)).map(t=>`<li>${escapeHTML(t)}</li>`).join('')}</ul></div></article>`).join('')}</div><footer class="bay-dialog-notes"><h3>先核对条件，再定制</h3><ul>${l.conditions.map(t=>`<li>${escapeHTML(t)}</li>`).join('')}</ul><h3>参考原文 · 不照搬适配结论</h3><div class="bay-references">${l.references.map(r=>`<article><a href="${escapeHTML(referenceURL(r.url))}" target="_blank" rel="noopener noreferrer">${escapeHTML(r.title)} ↗</a><p>${escapeHTML(r.borrow)}</p></article>`).join('')}</div></footer>`;
+  dialog.innerHTML=`<button class="dialog-close icon-button" aria-label="关闭家政设计">${icon('close')}</button><header class="bay-dialog-heading"><p class="eyebrow">LAUNDRY WALL / SHARED FITOUT</p><h2>A洗烘 · B书架 · C推拉门</h2><p>本方案机器靠厨房共墙落地并排；书架正面与外移门框拉齐。玻璃门扇因三轨而内退。</p><span class="bay-conditional-badge">专用浅盆条件方案 · 尚未选定设备</span></header><div class="bay-fitout-grid">${[['laundry-detail','A · 洗烘并排，浅盆在上'],['living-wall','B + C · 书架与门框齐平']].map(([id,title])=>`<article class="bay-fitout-card"><button class="bay-fitout-image" data-laundry-render="${id}" aria-label="放大${title}"><img src="${schemeRender(scheme,id)}" alt="${title} · 同源3D渲染" loading="lazy"/><span class="bay-image-label">${escapeHTML(renderProvenance(id))} ${icon('expand')}</span></button><div class="bay-fitout-copy"><h3>${title}</h3><ul class="bay-fitout-dimensions">${l.dimensions.filter((_,i)=>id==='laundry-detail'?[0,1,3].includes(i):[2,3,4].includes(i)).map(t=>`<li>${escapeHTML(t)}</li>`).join('')}</ul></div></article>`).join('')}</div><footer class="bay-dialog-notes"><h3>先核对条件，再定制</h3><ul>${l.conditions.map(t=>`<li>${escapeHTML(t)}</li>`).join('')}</ul><h3>参考原文 · 不照搬适配结论</h3><div class="bay-references">${l.references.map(r=>`<article><a href="${escapeHTML(referenceURL(r.url))}" target="_blank" rel="noopener noreferrer">${escapeHTML(r.title)} ↗</a><p>${escapeHTML(r.borrow)}</p></article>`).join('')}</div></footer>`;
   document.body.append(dialog);dialog.querySelector('.dialog-close').onclick=()=>dialog.close();
   dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close()});
   const show=()=>{if($('#project-dialog').open)$('#project-dialog').close();if(state.walking)stopWalk();dialog.showModal()};
   for(const [parent,id,cls]of [['.sidebar-bottom','open-laundry','quiet-link'],['#project-dialog','project-laundry','project-bay-link'],['.room-card-copy','view-laundry-fitout','secondary-link']]){const button=document.createElement('button');button.id=id;button.className=cls;button.textContent='家政整墙 · A/B/C设计与参考 ↗';button.onclick=show;$(parent).append(button);}
-  dialog.querySelectorAll('[data-laundry-render]').forEach(button=>button.onclick=()=>{$('#large-render').src=schemeRender(scheme,button.dataset.laundryRender);$('#large-render').alt=button.getAttribute('aria-label');$('#large-render-caption').textContent='方案4 · '+renderProvenance(button.dataset.laundryRender);$('#image-dialog').showModal()});
+  dialog.querySelectorAll('[data-laundry-render]').forEach(button=>button.onclick=()=>{$('#large-render').src=schemeRender(scheme,button.dataset.laundryRender);$('#large-render').alt=button.getAttribute('aria-label');$('#large-render-caption').textContent=scheme.name+' · '+renderProvenance(button.dataset.laundryRender);$('#image-dialog').showModal()});
 }
 
 function planLaundry(){
