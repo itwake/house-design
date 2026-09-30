@@ -9,6 +9,42 @@ const base='http://127.0.0.1:4173/',results=[],errors=[];
 const catalog=JSON.parse(await readFile('models/design-schemes.json','utf8'));
 const targetSchemes=process.argv.includes('--family-only')?['family']:['wood','family','laundry'];
 await mkdir('tmp',{recursive:true});
+// Optional native-model smoke while Blender is rendering. This deliberately
+// does not validate unfinished JPEG provenance and cannot substitute for the
+// default final nine-session audit below.
+if(process.argv.includes('--model-only')){
+  const sessions=[];
+  try{
+    for(const [name,width,height]of [['desktop',1440,1000],['mobile',390,844],['narrow',320,640]]){
+      const context=await browser.newContext({viewport:{width,height},deviceScaleFactor:1});
+      for(const scheme of targetSchemes){
+        const page=await context.newPage();page.setDefaultTimeout(60000);page.on('pageerror',e=>errors.push(name+'/'+scheme+': '+e.message));
+        await page.goto(base+`studio.html?scheme=${scheme}&v=model-only-3.5.3`);
+        await page.waitForFunction(()=>document.querySelector('#start-walk')&&!document.querySelector('#start-walk').disabled);
+        assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Native viewer fits '+name+'/'+scheme);
+        assert.ok(await page.locator('#model-view canvas').count(),'Real loaded WebGL canvas '+scheme);
+        const design=JSON.parse(await readFile(`models/schemes/${scheme}/design-data.json`,'utf8'));
+        if(design.familyDiningRevision){
+          await page.locator('#toggle-room-card').click();
+          const toggle=page.locator('#toggle-dining-state');assert.ok(await toggle.isVisible());assert.equal(await toggle.getAttribute('aria-pressed'),'false');
+          await page.screenshot({path:`tmp/v353-${name}-family-expanded-model.png`});
+          await toggle.click();assert.equal(await toggle.getAttribute('aria-pressed'),'true');
+          await page.screenshot({path:`tmp/v353-${name}-family-closed-model.png`});
+          await page.locator('#tab-plan').click();assert.equal(await page.locator('#floor-plan [data-dining-furniture]').count(),4);assert.equal(await page.locator('#floor-plan [data-dining-furniture="四人餐桌"]').count(),0);
+          for(const f of design.pulloutDining.closedFurniture){const g=page.locator(`#floor-plan [data-dining-furniture="${f.name}"]`);assert.equal(await g.getAttribute('data-dining-face'),'east');const frame=g.locator('[data-furniture-frame]');for(const [key,value]of [['x',f.x],['y',f.y],['width',f.w],['height',f.d]])assert.equal(Number(await frame.getAttribute(key)),value);}
+          await page.locator('#tab-model').click();await page.locator('#start-walk').click();assert.ok(await page.locator('#workspace').evaluate(e=>e.classList.contains('walking')));await page.keyboard.press('ArrowUp');await page.locator('#exit-walk').click();
+          await toggle.click();assert.equal(await toggle.getAttribute('aria-pressed'),'false');await page.locator('#tab-plan').click();assert.equal(await page.locator('#floor-plan [data-dining-furniture]').count(),5);await page.locator('#tab-model').click();
+        }
+        await page.locator('#start-walk').click();assert.ok(await page.locator('#workspace').evaluate(e=>e.classList.contains('walking')));await page.keyboard.press('ArrowRight');await page.locator('#exit-walk').click();
+        sessions.push(name+'/'+scheme);console.log('PASS native-model smoke '+sessions.at(-1));await page.close();
+      }
+      await context.close();
+    }
+    assert.deepEqual(errors,[]);await writeFile('tmp/v353-model-only-qa.json',JSON.stringify({modelOnly:true,finalRenderProvenanceChecked:false,sessions,errors},null,2));
+  }finally{await browser.close()}
+  console.log(`PASS ${sessions.length} current-model-only Chrome sessions; final 20-frame provenance remains a separate default audit.`);
+  process.exit(0);
+}
 try{
   for(const [name,width,height] of [['desktop',1440,1000],['mobile',390,844],['narrow',320,640]]){
     const context=await browser.newContext({viewport:{width,height},deviceScaleFactor:1});
@@ -26,6 +62,12 @@ try{
       if(design.familyFlowRevision){
         assert.ok(expectedManifest.renderedViews,'Run final flow browser QA after render provenance has been assembled');
         for(const view of ['kitchen','balcony','study'])assert.ok(expectedManifest.renderedViews[view],'Explicit provenance for '+view);
+      }
+      if(design.familyDiningRevision){
+        assert.ok(catalog.schemes.find(s=>s.id===scheme).renderViews.includes('dining-closed'),'Closed dining state is a public render choice');
+        assert.equal(Object.keys(expectedManifest.renderedViews).length,20,'Every expanded/closed and retained render has explicit provenance');
+        assert.equal(Object.values(expectedManifest.renderedViews).filter(v=>!v.retainedFrom).length,12,'Twelve current public-room renders');
+        assert.equal(Object.values(expectedManifest.renderedViews).filter(v=>v.retainedFrom).length,8,'Eight retained unaffected private-room renders');
       }
       await page.goto(base+'studio.html?scheme='+scheme+'&v='+catalog.version);
       await page.waitForFunction(()=>document.querySelector('#model-loading')?.hidden&&document.querySelectorAll('#floor-plan [data-plan-room]').length===8);
@@ -81,6 +123,26 @@ try{
       await page.locator('#toggle-room-card').click();
       assert.ok(await page.locator('#room-card').evaluate(e=>e.hidden),'Hide card');
       await page.locator('#tab-plan').click();
+      if(design.familyDiningRevision){
+        const toggle=page.locator('#toggle-dining-state');assert.equal(await toggle.count(),1);assert.ok(await toggle.isVisible(),'Dining state switch is visible on all viewport sizes');
+        const matches=async f=>page.locator('#floor-plan [data-furniture-frame]').evaluateAll((frames,expected)=>frames.filter(frame=>['x','y','width','height'].every((attribute,i)=>Math.abs(Number(frame.getAttribute(attribute))-expected[i])<1e-7)).length,[f.x,f.y,f.w,f.d]);
+        for(const f of design.furniture.filter(f=>f.diningFitoutId===design.pulloutDining.id))assert.equal(await matches(f),1,'Expanded dining component really exists '+f.name);
+        assert.equal(design.pulloutDining.closedFurniture.filter(f=>f.name.includes('餐椅')).length,4,'Closed layout retains four full chairs');
+        await toggle.click();
+        for(const f of design.pulloutDining.closedFurniture)assert.equal(await matches(f),1,'Closed chair remains full visible furniture '+f.name);
+        assert.equal(await matches(design.pulloutDining.table),0,'Retracted table no longer occupies the hall');
+        await page.screenshot({path:`tmp/v353-${name}-family-dining-closed-plan.png`});
+        await page.locator('#tab-model').click();await page.locator('#start-walk').click();
+        assert.ok(await page.locator('#workspace').evaluate(e=>e.classList.contains('walking')),'Closed-state walkthrough remains usable');
+        await page.keyboard.press('ArrowUp');await page.locator('#exit-walk').click();
+        await page.locator('#room-nav [data-room="dining"]').click();await page.locator('#tab-renders').click();
+        await page.waitForFunction(()=>{const img=document.querySelector('#active-render');return img.complete&&img.naturalWidth>0&&new URL(img.src).pathname.endsWith('/dining-closed.jpg')});
+        assert.ok((await page.locator('#render-provenance').textContent()).includes('当前模型重渲'),'Closed dining render is actual current model output');
+        await page.screenshot({path:`tmp/v353-${name}-family-dining-closed-render.png`});await page.locator('#tab-plan').click();
+        await toggle.click();
+        for(const f of design.furniture.filter(f=>f.diningFitoutId===design.pulloutDining.id))assert.equal(await matches(f),1,'Restored expanded dining component '+f.name);
+        const planText=await page.locator('#floor-plan').textContent();assert.ok(!/NaN|undefined/.test(planText),'Two-state plan has no missing coordinate labels');
+      }
       if(isSuite)await page.screenshot({path:`tmp/v343-${name}-${scheme}-plan.png`});
       await page.locator('#tab-model').click();
       await page.locator('#start-walk').click();
@@ -125,8 +187,9 @@ try{
         if(design.familyEntryRevision){
           const text=await garage.textContent();
           assert.equal(await garage.getAttribute('data-storage-opening-face'),'east');
-          assert.ok(/0\.(?:975|98)㎡/.test(text)&&text.includes('抬放')&&text.includes('东侧'));
-          const currentDimensions=design.familyFlowRevision?['1230mm','610mm','4210mm','1275mm','180°']:['1230mm','610mm','720mm','4610mm','先关闭储物柜门'];
+          if(design.familyDiningRevision)assert.ok(text.includes('1500×650mm')&&text.includes('抬放')&&text.includes('东向'),'Current compact garage size and east-facing opening remain explicit');
+          else assert.ok(/0\.(?:975|98)㎡/.test(text)&&text.includes('抬放')&&text.includes('东侧'));
+          const currentDimensions=design.familyDiningRevision?['1230mm','610mm','570mm','305mm']:design.familyFlowRevision?['1230mm','610mm','4210mm','1275mm','180°']:['1230mm','610mm','720mm','4610mm','先关闭储物柜门'];
           for(const expected of currentDimensions)assert.ok(text.includes(expected),'Current garage card contains '+expected);
           if(design.familyFlowRevision){
             assert.ok(/双折|两叶|双叶/.test(text)&&/外翻|外折/.test(text),'Current garage card explains two physically folded leaves');
@@ -140,6 +203,13 @@ try{
             }
             assert.ok(await sideboard.locator('[data-elevation-blind-area]').count()>0,'Blind corner is visibly marked, not fake usable storage');
             for(const obsolete of ['720mm','4610mm','90°打开后端部'])assert.ok(!text.includes(obsolete),'No superseded single-leaf dimensions '+obsolete);
+          }
+          if(design.familyDiningRevision){
+            const allStorageText=await page.locator('#storage-fitout-cards').textContent();
+            for(const expected of ['1155','705','250','650'])assert.ok(allStorageText.includes(expected),'Actual dining/back-cabinet dimensions '+expected);
+            assert.ok(/抽拉|收桌|收起/.test(allStorageText)&&/四椅|四把|四席/.test(allStorageText),'Storage topic explains four actual chairs and dining retraction');
+            assert.ok(/净|安装/.test(allStorageText)&&/440|44cm/.test(allStorageText),'Local deeper hardware pocket is disclosed');
+            assert.ok(!/NaN|undefined/.test(allStorageText),'Every new dining/back cabinet card has real copy');
           }
           for(const obsolete of ['NaN','undefined','北侧开口','四叶','900mm短','900短柜','餐桌及四椅不变'])assert.ok(!text.includes(obsolete),'No stale garage copy '+obsolete);
         }

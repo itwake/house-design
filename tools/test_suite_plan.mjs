@@ -10,9 +10,23 @@ const source=await read('studio.js'),data=JSON.parse(await read(`models/schemes/
 const start=source.indexOf('function planFurniture('),end=source.indexOf('\nfunction exportPlan(',start);
 assert.ok(start>=0&&end>start);
 const helpers=['areaOf','centroid','escapeHTML','storageRoleName'].map(name=>source.split(/\r?\n/).find(l=>new RegExp(`^const ${name}\\s*=`).test(l))).join('\n');
-const host={innerHTML:''};
-vm.runInNewContext(helpers+'\n'+source.slice(start,end)+'\nmakePlan();',{data,$:s=>{assert.equal(s,'#floor-plan');return host;},$$:()=>[],roomDescription:id=>({name:data.rooms.find(r=>r.id===id)?.name||id})});
+const host={innerHTML:''},state={diningClosed:false};
+const context=vm.createContext({data,state,$:s=>{assert.equal(s,'#floor-plan');return host;},$$:()=>[],roomDescription:id=>({name:data.rooms.find(r=>r.id===id)?.name||id})});
+vm.runInContext(helpers+'\n'+source.slice(start,end)+'\nmakePlan();',context);
 const svg=host.innerHTML;
+let closedSvg='';
+if(data.familyDiningRevision){
+  state.diningClosed=true;vm.runInContext('makePlan();',context);closedSvg=host.innerHTML;
+  state.diningClosed=false;vm.runInContext('makePlan();',context);assert.equal(host.innerHTML,svg,'Actual view returns to identical expanded drawing');
+  const pose=(image,f)=>image.match(new RegExp(`<g data-dining-furniture="${f.name}"[^>]*>[\\s\\S]*?<\/g>`))?.[0];
+  const check=(image,f)=>{const group=pose(image,f);assert.ok(group,'Full actual dining element '+f.name);assert.ok(group.includes(`data-dining-face="${f.face}"`),'Actual dining face '+f.name);const frame=group.match(/<rect data-furniture-frame[^>]+>/)?.[0];assert.ok(frame);for(const [key,value]of [['x',f.x],['y',f.y],['width',f.w],['height',f.d]])assert.ok(frame.includes(`${key}="${value}"`),'Exact state furniture '+f.name+'/'+key);if(/餐椅/.test(f.name)){const back=group.match(/<line data-dining-chair-back[^>]+>/)?.[0];assert.ok(back,'Physical chair-back line '+f.name);const expect=f.face==='west'?[f.x+f.w-2,f.y+3,f.x+f.w-2,f.y+f.d-3]:f.face==='east'?[f.x+2,f.y+3,f.x+2,f.y+f.d-3]:f.face==='south'?[f.x+3,f.y+2,f.x+f.w-3,f.y+2]:[f.x+3,f.y+f.d-2,f.x+f.w-3,f.y+f.d-2];for(const [i,key]of ['x1','y1','x2','y2'].entries())assert.ok(back.includes(`${key}="${expect[i]}"`),'Actual oriented back '+f.name+'/'+key);}};
+  assert.ok(svg.includes('data-dining-state="expanded"')&&closedSvg.includes('data-dining-state="closed"'));
+  assert.equal((svg.match(/data-dining-furniture=/g)||[]).length,5);assert.equal((closedSvg.match(/data-dining-furniture=/g)||[]).length,4,'No chairs disappear when table is retracted');
+  for(const f of data.furniture.filter(f=>f.diningFitoutId===data.pulloutDining.id))check(svg,f);
+  for(const f of data.pulloutDining.closedFurniture)check(closedSvg,f);
+  assert.ok(!pose(closedSvg,data.pulloutDining.table)&&!closedSvg.includes('data-dining-fold-seam'),'Closed table genuinely inside cabinet, not still drawn in walk area');
+  for(const image of [svg,closedSvg]){assert.ok(image.includes('data-storage-id="sofa_back_storage"'));const local=image.match(/<rect data-storage-id="dining_sideboard_wall" data-storage-part-id="family_sideboard_1_base"[^>]+>/)?.[0];assert.ok(local&&local.includes('width="44"')&&local.includes('height="120"'),'Actual local deep cabinet, not global 40 cm aggregate');}
+}
 for(const door of [...data.doors,...data.windows.filter(w=>w.windowType!=='bay')]){const tag=svg.match(new RegExp(`<line data-opening-id="${door.id}"[^>]+>`))?.[0];assert.ok(tag,door.id);for(const k of ['x1','y1','x2','y2'])assert.ok(tag.includes(`${k}="${door[k]}"`),'Exact opening plan '+door.id+'/'+k);}
 assert.equal((svg.match(/data-opening-id="window_kitchen_balcony"/g)||[]).length,1,'One real kitchen–balcony window in plan');
 assert.equal((svg.match(/data-wall-fitout="study_bookwall"/g)||[]).length,1,'One upper bookwall projection');
@@ -40,7 +54,7 @@ if(variant==='family'){
     for(const p of data.garage.parts.filter(p=>p.role==='folded-door'))assert.ok(svg.includes(`data-garage-part="${p.id}"`),'Real externally parked folded door '+p.id);
     for(const item of data.garage.items){const tag=svg.match(new RegExp(`<g data-garage-item="${item.id}"[^>]+>`))?.[0];assert.ok(tag?.includes(`data-z-cm="${item.zCm||0}"`),'Floor and raised vehicles '+item.id);}
     const fitout=data.storageFitouts.find(f=>f.id==='dining_sideboard_wall');
-    for(const p of fitout.parts.filter(p=>p.role==='sideboard_base'))assert.ok(svg.includes(`data-storage-part-id="${p.id}"`),'Both actual L-sideboard arms '+p.id);
+    for(const p of fitout.parts.filter(p=>['sideboard_base','pullout_table_cabinet'].includes(p.role)))assert.ok(svg.includes(`data-storage-part-id="${p.id}"`),'Both actual L-sideboard arms '+p.id);
     assert.ok(svg.includes('data-storage-part-id="family_return_base"'),'Actual north return is visible, not its aggregate bounding box');
     const rug=svg.match(/<rect data-living-rug[^>]+>/)?.[0],lamp=svg.match(/<circle data-living-lamp[^>]+>/)?.[0];
     assert.ok(rug&&lamp,'Actual cropped rug and relocated lamp projections');
@@ -71,8 +85,10 @@ if(process.argv.includes('--render')){
   const sharp=createRequire(import.meta.url)('sharp');
   const out=new URL('tmp/',root);await mkdir(out,{recursive:true});
   // Browser XMLSerializer expands HTML's valueless data attributes to "".
-  const image=svg.replace(/\s(data-[\w-]+)(?=[\s/>])/g,' $1=""').replace('<svg ','<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="2000" style="font-family:Microsoft YaHei,SimSun,sans-serif" ');
-  await writeFile(new URL(variant+'-plan.svg',out),image);
-  await sharp(Buffer.from(image)).flatten({background:'#fcfaf5'}).png().toFile(fileURLToPath(new URL(variant+'-plan.png',out)));
+  for(const [name,drawing]of [[variant+'-plan',svg],...(closedSvg?[[variant+'-plan-closed',closedSvg]]:[])]){
+    const image=drawing.replace(/\s(data-[\w-]+)(?=[\s/>])/g,' $1=""').replace('<svg ','<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="2000" style="font-family:Microsoft YaHei,SimSun,sans-serif" ');
+    await writeFile(new URL(name+'.svg',out),image);
+    await sharp(Buffer.from(image)).flatten({background:'#fcfaf5'}).png().toFile(fileURLToPath(new URL(name+'.png',out)));
+  }
 }
 console.log('PASS actual suite SVG: own room polygons and relocated doors, labeled private foyer, master desk/chair absent, three bays/kitchen slider retained, west master wardrobe and south B wardrobe.');

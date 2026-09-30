@@ -380,6 +380,18 @@ class Audit:
         prefix = scheme.get('renderDirectory') or ("assets/blender-renders" if sid == "wood" else f"assets/schemes/{sid}")
         views = scheme.get("renderViews", VIEWS)
         expected = {f"{prefix}/{name}.jpg" for name in views}
+        dining_revision = sid == 'family' and manifest.get('familyDiningRevision', {}).get('version') == '3.5.3'
+        if dining_revision:
+            records = manifest.get('renderedViews', {})
+            self.check(len(views) == len(records) == 20 and 'dining-closed' in views,
+                       'family: all 20 endpoint/private views have final provenance')
+            self.check(sum(not record.get('retainedFrom') for record in records.values()) == 12 and
+                       sum(bool(record.get('retainedFrom')) for record in records.values()) == 8,
+                       'family: exactly 12 current public frames and 8 honest retained private frames')
+            expanded, closed = records.get('dining', {}), records.get('dining-closed', {})
+            self.check(bool(expanded) and bool(closed) and expanded.get('cameraState') == closed.get('cameraState') and
+                       expanded.get('imageSha256') != closed.get('imageSha256'),
+                       'family: two physical table states use the same camera and different actual image bytes')
         self.check(manifest_render_paths(manifest) == expected, f"{sid}: manifest references all own-layout views, without fallback")
         self.check(scheme["hero"] in expected, f"{sid}: gallery hero belongs to this scheme")
         self.details[sid]["renderHashes"] = {}
@@ -409,7 +421,7 @@ class Audit:
                 import subprocess
                 commit=retained.get('commit')
                 allowed_commits={'c2e5a5f399709185b2e843c64e622a0373927602','647d219fdc52e0bc71810f6a8e2daa97135be0cc'}
-                compact_family=sid=='family' and manifest.get('garageRevision',{}).get('version') in ('3.4.3','3.5.1','3.5.2')
+                compact_family=sid=='family' and manifest.get('garageRevision',{}).get('version') in ('3.4.3','3.5.1','3.5.2','3.5.3')
                 if compact_family:allowed_commits.add('ac2b91d366b8aeb0f53744b03b1ca48f95e95fdc')
                 merged_family=sid=='family' and manifest.get('familyLaundryRevision',{}).get('version')=='3.5.0'
                 if merged_family:allowed_commits.add('9e9a10f8a6cca9a212b656e83940fd783094d6b9')
@@ -419,6 +431,7 @@ class Audit:
                 if not valid_origin:continue
                 affected={'overall','living','dining','bay-living'}
                 if compact_family:affected.update(('entry-storage','sideboard','storage-library'))
+                if sid=='family' and manifest.get('familyDiningRevision',{}).get('version')=='3.5.3':affected.add('dining-closed')
                 if merged_family:affected.update(('kitchen','balcony','laundry-detail','living-wall'))
                 self.check(name not in affected,f'{sid}/{name}: affected living/storage views cannot use old frames')
                 previous=json.loads(subprocess.check_output(['git','show',commit+':'+scheme['manifest']],cwd=ROOT))
@@ -430,6 +443,9 @@ class Audit:
                 if manifest.get('livingBayRevision',{}).get('version')=='3.4.2':
                     self.check(manifest['livingBayRevision'].get('estimatedSillCm')==40 and manifest['livingBayRevision'].get('cushionThicknessCm')==5 and manifest['livingBayRevision'].get('measured') is False,f'{sid}/{name}: low-bay estimate remains explicitly unmeasured')
             else:
+                if dining_revision:
+                    self.check(record.get('diningState') == ('closed' if name == 'dining-closed' else 'expanded'),
+                               f'family/{name}: final render explicitly records the correct physical dining endpoint')
                 self.check(record.get("baseBlendSha256") == manifest.get("baseBlendSha256") == self.base_blend_hash,
                            f"{sid}/{name}: frame belongs to actual final baseline Blender scene")
                 self.check(record.get("sourceSha256") == manifest.get("sourceSha256") == self.source_hash,

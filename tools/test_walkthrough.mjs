@@ -140,6 +140,12 @@ const gltf=JSON.parse(glb.subarray(20,20+glb.readUInt32LE(12)).toString());
 const parents=new Map();gltf.nodes.forEach((n,i)=>(n.children||[]).forEach(c=>parents.set(c,i)));
 const semantics=i=>{const out={};for(let p=i;p!==undefined;p=parents.get(p))for(const [k,v]of Object.entries(gltf.nodes[p].extras||{}))if(out[k]===undefined)out[k]=v;return out};
 const doorNodes=gltf.nodes.map((n,i)=>({n,meta:semantics(i)})).filter(({n,meta})=>n.mesh!==undefined&&meta.kind==='door');
+const diningNodes=gltf.nodes.map((n,i)=>({n,meta:semantics(i)})).filter(({n,meta})=>n.mesh!==undefined&&meta.diningVisibility);
+if(data.familyDiningRevision){
+  assert.ok(diningNodes.some(({meta})=>meta.diningVisibility==='expanded'),'Actual expanded dining meshes have native state metadata');
+  assert.ok(diningNodes.some(({meta})=>meta.diningVisibility==='closed'),'Actual closed dining meshes have native state metadata');
+  for(const state of ['expanded','closed'])assert.equal(new Set(diningNodes.filter(({meta})=>meta.diningVisibility===state&&meta.furnitureName?.includes('餐椅')).map(({meta})=>meta.furnitureName)).size,4,'Four actual full chairs in '+state+' model state');
+}
 // Protect the one model-authored obstacle not represented by plan furniture.
 assert.ok((await read('tools/build_blender.py')).includes('lamp(6.48,8.98)'),'Source-only lamp location must stay in sync');
 const lamp=data.modelAddons?.livingFloorLampCm||{x:648,y:898};
@@ -158,12 +164,33 @@ const shades=gltf.nodes.flatMap((n,i)=>{
 const shade=shades.find(b=>Math.abs(b.getCenter(new THREE.Vector3()).x-lamp.x/100)<.01&&Math.abs(b.getCenter(new THREE.Vector3()).z-lamp.y/100)<.01);
 assert.ok(shade,'Actual GLB floor lampshade found');assert.ok(shade.min.x>=lamp.x/100-.22-1e-5&&shade.max.x<=lamp.x/100+.22+1e-5&&shade.min.z>=lamp.y/100-.22-1e-5&&shade.max.z<=lamp.y/100+.22+1e-5,'Supplementary collider encloses actual lampshade');
 assert.equal(new Set(doorNodes.map(d=>d.meta.openingId)).size,8,'Actual GLB has eight door assemblies');
-for(const {n,meta}of doorNodes){const m=new THREE.Mesh(new THREE.BoxGeometry(.1,.1,.1),new THREE.MeshStandardMaterial());m.name=n.name;m.userData=meta;model.add(m)}
+for(const {n,meta}of [...doorNodes,...diningNodes]){const m=new THREE.Mesh(new THREE.BoxGeometry(.1,.1,.1),new THREE.MeshStandardMaterial());m.name=n.name;m.userData=meta;model.add(m)}
 const context=vm.createContext({...walk,THREE,URL,URLSearchParams,console,document:ui.doc,window:ui.win,matchMedia:()=>({matches:false}),setTimeout:()=>0,clearTimeout:()=>{},requestAnimationFrame:()=>++calls.frames,cancelAnimationFrame:()=>{},performance:{now:()=>0},sessionStorage:{setItem:()=>calls.storage++},test:{data,manifest,catalog,camera,controls,scene,model,canvas:ui.canvas,calls,suite,scheme:activeScheme}});
 vm.runInContext(source.replace(/^import .*\r?\n/gm,'').replace(/\binit\(\);\s*$/,''),context);
-vm.runInContext(`data=test.data;manifest=test.manifest;scheme=test.scheme;rooms=manifest.rooms;three=THREE;camera=test.camera;controls=test.controls;scene=test.scene;model=optimizeStaticModel(test.model,THREE,()=>{throw Error('Door should not be merged')});renderer={domElement:test.canvas,setSize:()=>{},render:()=>test.calls.renders++};state.ready=true;setupWalk();`,context);
-const api=vm.runInContext('({startWalk,stopWalk,focusRoom,switchView,resizeScene,tick,state,walkthrough,walkWorld,walkDoorParts,walkSlidingParts,walkThresholds,setWalls,bindControls,model})',context);
+vm.runInContext(`data=test.data;manifest=test.manifest;scheme=test.scheme;rooms=manifest.rooms;three=THREE;camera=test.camera;controls=test.controls;scene=test.scene;model=optimizeStaticModel(test.model,THREE,()=>{throw Error('Interactive door/dining state mesh must not be statically merged')});renderer={domElement:test.canvas,setSize:()=>{},render:()=>test.calls.renders++};state.ready=true;setupWalk();`,context);
+const api=vm.runInContext('({startWalk,stopWalk,focusRoom,switchView,resizeScene,tick,state,walkthrough,walkWorld,walkDoorParts,walkSlidingParts,walkThresholds,setWalls,bindControls,model,activeDiningData,applyDiningVisibility})',context);
 assert.equal(ui.node('#start-walk').disabled,false);assert.equal(api.walkthrough.listeners.length,37,'Four direction pads and canvas input wired');
+if(data.familyDiningRevision){
+  assert.equal(api.model.children.filter(p=>p.userData.diningVisibility).length,diningNodes.length,'Every native state mesh survives optimization individually');
+  for(const closed of [false,true]){
+    api.state.diningClosed=closed;api.applyDiningVisibility();
+    const actual=api.activeDiningData(),state=closed?'closed':'expanded',dining=actual.furniture.filter(f=>f.diningFitoutId===data.pulloutDining.id);
+    assert.equal(dining.filter(f=>f.name.includes('餐椅')).length,4,'Actual viewer variant keeps four full '+state+' chairs');
+    assert.equal(dining.filter(f=>f.name.includes('餐桌')).length,closed?0:1,'Closed table is stored, not a hidden walking obstruction');
+    for(const mesh of api.model.children.filter(p=>p.userData.diningVisibility))assert.equal(mesh.visible,mesh.userData.diningVisibility===state,'Native state visibility '+mesh.name);
+    const variant=buildWalkWorld(actual),map=new Map();
+    for(let i=0;i<=169;i++)for(let j=0;j<=281;j++){const x=i*step,z=j*step;if(variant.canStand(x,z,WALK_RADIUS))map.set(key(i,j),{i,j,x,z});}
+    const seed=map.get(key(92,260));assert.ok(seed,'Current '+state+' entrance seed');
+    const pending=[seed],visited=new Set([key(seed.i,seed.j)]),roomIds=new Set();
+    for(let head=0;head<pending.length;head++){
+      const p=pending[head];roomIds.add(variant.roomAt(p.x,p.z));
+      for(const [di,dj]of [[1,0],[-1,0],[0,1],[0,-1]]){const id=key(p.i+di,p.j+dj),next=map.get(id);if(!next||visited.has(id))continue;const moved=advanceWalk(variant,p,next.x-p.x,next.z-p.z,WALK_RADIUS);if(Math.hypot(moved.x-next.x,moved.z-next.z)>1e-7)continue;visited.add(id);pending.push(next);}
+    }
+    assert.deepEqual([...roomIds].filter(Boolean).sort(),variant.rooms.map(r=>r.id).sort(),'Real 50 cm viewer body reaches all 8 rooms in '+state+' dining state');
+    console.log(`PASS dining ${state}: ${visited.size} connected 50 cm-body points, 8 rooms and 4 full actual chairs.`);
+  }
+  api.state.diningClosed=false;api.applyDiningVisibility();
+}
 assert.ok(!api.walkDoorParts.some(p=>p.userData.openingId==='door_kitchen'),'Kitchen leaves must never disappear');
 assert.equal(api.walkSlidingParts.length,hasLaundry?38:suite?20:18,'Kitchen leaves plus real study leaf and flush pull in R4B');
 assert.deepEqual([...new Set(api.walkSlidingParts.filter(p=>p.userData.openingId==='door_kitchen').map(p=>p.userData.slidingPanelIndex))].sort(),[0,1,2]);

@@ -1430,6 +1430,8 @@ def washer(f):
 def furnish(data):
     global CURRENT_ROOM
     for f in data["furniture"]:
+        if f.get("diningFitoutId"):
+            continue  # Family helper owns retractable table/chairs; dining_anchor still reads source.
         if f.get("storageFitoutId"):
             if not any(item["id"]==f["storageFitoutId"] for item in data.get("storageFitouts",[])):
                 raise ValueError(f"Storage wrapper {f['name']} has no matching detailed fitout")

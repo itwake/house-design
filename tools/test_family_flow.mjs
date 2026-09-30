@@ -10,6 +10,11 @@ import {buildWalkWorld,findWalkStart,advanceWalk} from '../walkthrough.js';
 const root=new URL('../',import.meta.url),cwd=fileURLToPath(root);
 const read=async path=>JSON.parse(await readFile(new URL(path,root),'utf8'));
 const d=await read('models/schemes/family/design-data.json'),g=d.garage,revision=d.familyFlowRevision;
+if(d.familyDiningRevision){
+  // Current dining revision owns its explicit two furniture states. Do not
+  // exit: callers importing this file still have inherited asset tests to run.
+  await import('./test_family_dining.mjs');
+}else{
 const baseline='ab45810',base=JSON.parse(execFileSync('git',['show',baseline+':models/schemes/family/design-data.json'],{cwd,encoding:'utf8'}));
 const near=(a,b,label)=>assert.ok(Math.abs(a-b)<1e-7,label||`${a} != ${b}`);
 const rect=f=>[f.x,f.y,f.w,f.d],fixture=name=>d.furniture.find(f=>f.name===name);
@@ -121,3 +126,4 @@ if(process.argv.includes('--glb')){
   console.log(`PASS family flow GLB: ${g.parts.length} exact garage solids, two actual raised/lower vehicles, exact sofa/rug bounds, ${rigidCount} fully checked rigid components, ${oldProtected.size} protected world-triangle meshes.`);
 }
 console.log(`PASS family flow 3.5.2: external two-leaf parking, non-overlapping L-corner, ${width} cm sofa +${shift} cm east, lamp off hall, ${takeoutPoses} extraction poses and ${seen.size} swept-connected walk points / 8 rooms. Hardware sweep/lifting still require actual-site checks.`);
+}

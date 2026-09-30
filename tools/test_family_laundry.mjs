@@ -10,9 +10,10 @@ import {buildWalkWorld,findWalkStart,advanceWalk} from '../walkthrough.js';
 const root=new URL('../',import.meta.url),cwd=fileURLToPath(root);
 const read=async p=>JSON.parse(await readFile(new URL(p,root),'utf8'));
 const d=await read('models/schemes/family/design-data.json'),reference=await read('models/schemes/laundry/design-data.json');
-const entryChanged=Boolean(d.familyEntryRevision),flowChanged=Boolean(d.familyFlowRevision),baseline=flowChanged?'ab45810':entryChanged?'0466fda':'9e9a10f';
+const entryChanged=Boolean(d.familyEntryRevision),flowChanged=Boolean(d.familyFlowRevision),diningChanged=Boolean(d.familyDiningRevision),baseline=diningChanged?'a2b623c':flowChanged?'ab45810':entryChanged?'0466fda':'9e9a10f';
 const shift=d.familyFlowRevision?.sofaShiftCm,sofaShiftX=flowChanged?Number(typeof shift==='object'?shift.x:shift):0,sofaWidth=flowChanged?d.familyFlowRevision.sofaWidthCm:220;
-if(flowChanged){assert.equal(d.familyFlowRevision.baselineCommit,baseline);assert.ok(Number.isFinite(sofaShiftX)&&Number.isFinite(sofaWidth),'Current sofa width and horizontal move are explicit source fields');}
+if(diningChanged){assert.equal(d.familyDiningRevision.version,'3.5.3');assert.ok(d.familyDiningRevision.baselineCommit.startsWith(baseline));}
+else if(flowChanged){assert.equal(d.familyFlowRevision.baselineCommit,baseline);assert.ok(Number.isFinite(sofaShiftX)&&Number.isFinite(sofaWidth),'Current sofa width and horizontal move are explicit source fields');}
 const base=JSON.parse(execFileSync('git',['show',baseline+':models/schemes/family/design-data.json'],{cwd,encoding:'utf8'}));
 const l=d.laundry,near=(a,b,message)=>assert.ok(Math.abs(a-b)<1e-7,message||`${a} != ${b}`);
 assert.ok(l,'Family scheme includes the laundry fitout, not just its text');
@@ -38,8 +39,8 @@ assert.ok(!d.furniture.some(f=>removed.has(f.name)),'No duplicated old stacked l
 assert.equal(d.furniture.filter(f=>f.laundryFitoutId===l.id).length,4,'Two machines, counter and bookcase');
 assert.equal(d.furniture.filter(f=>f.name.includes('餐椅')).length,4,'Four dining chairs remain');
 const fixture=name=>d.furniture.find(f=>f.name===name),geometry=f=>[f.x,f.y,f.w,f.d];
-assert.deepEqual(geometry(fixture('三人沙发')),[355+sofaShiftX,809,sofaWidth,88]);
-assert.deepEqual(geometry(fixture('茶几')),[405+sofaShiftX,707,120,62]);
+assert.deepEqual(geometry(fixture('三人沙发')),diningChanged?[385,809,200,88]:[355+sofaShiftX,809,sofaWidth,88]);
+assert.deepEqual(geometry(fixture('茶几')),diningChanged?[435,707,120,62]:[405+sofaShiftX,707,120,62]);
 assert.deepEqual(geometry(fixture('电视薄柜')),[395,633,220,34]);
 assert.deepEqual(d.modelAddons.livingFloorLampCm,flowChanged?{x:248,y:825}:{x:335,y:735});
 const overlap=(a,b)=>Math.min(a.x+a.w,b.x+b.w)>Math.max(a.x,b.x)+.001&&Math.min(a.y+a.d,b.y+b.d)>Math.max(a.y,b.y)+.001;
@@ -49,10 +50,16 @@ for(const name of moved){
 }
 const lamp={x:d.modelAddons.livingFloorLampCm.x-22,y:d.modelAddons.livingFloorLampCm.y-22,w:44,d:44};
 for(const f of d.furniture)assert.ok(!overlap(lamp,f),'Lamp intersects '+f.name);
-near(l.bookcase.x-(fixture('三人沙发').x+fixture('三人沙发').w),70-sofaShiftX-(sofaWidth-220),'Sofa/bookcase aisle follows actual sofa size and move');
+near(l.bookcase.x-(fixture('三人沙发').x+fixture('三人沙发').w),diningChanged?60:70-sofaShiftX-(sofaWidth-220),'Sofa/bookcase aisle follows actual sofa size and move');
 near(fixture('三人沙发').y-(fixture('茶几').y+fixture('茶几').d),40,'Sofa/coffee-table aisle');
 near(fixture('茶几').y-(fixture('电视薄柜').y+fixture('电视薄柜').d),40,'TV/coffee-table aisle');
-near(fixture('餐椅北1').y-(fixture('三人沙发').y+fixture('三人沙发').d),flowChanged?95.5:entryChanged?155.5:60.5,'Sofa back / dining chair gap');
+if(diningChanged){
+  const northChair=d.furniture.find(f=>f.name.includes('餐椅')&&f.face==='south');assert.ok(northChair,'Dining layout keeps the north-facing seating envelope');
+  const rearCabinet=d.furniture.find(f=>f.x===385&&f.y===899&&f.w===200&&f.d===25);assert.ok(rearCabinet,'Real 25 cm sofa-back cabinet');
+  near(rearCabinet.y-(fixture('三人沙发').y+fixture('三人沙发').d),2,'Cabinet clears the sofa back');
+  near(rearCabinet.x-(northChair.x+northChair.w),71.25,'Offset north chair keeps a real lateral path around sofa-back storage');
+  assert.ok(!overlap(rearCabinet,northChair),'North chair and back cabinet do not overlap');
+}else near(fixture('餐椅北1').y-(fixture('三人沙发').y+fixture('三人沙发').d),flowChanged?95.5:entryChanged?155.5:60.5,'Sofa back / dining chair gap');
 near(l.counter.y-966,69,'Laundry operation band');
 const balconyDoor=d.doors.find(v=>v.id==='balcony_door');
 near(balconyDoor.x1-balconyDoor.sliding.frameDepthCm/2,l.bookcase.x,'Aligned door-frame and bookcase fronts');
@@ -164,7 +171,7 @@ if(process.argv.includes('--glb')){
       if(n.mesh===undefined)continue;
       const meta={};for(let p=i;p!==undefined;p=parents.get(p))for(const [k,v]of Object.entries(g.nodes[p].extras||{}))if(meta[k]===undefined)meta[k]=v;
       const preservedRoom=['room_a','room_b','room_c','bath_1','bath_2','kitchen'].includes(meta.roomId);
-      const unchangedStorage=meta.storageFitoutId&&(!entryChanged||meta.storageFitoutId!=='dining_sideboard_wall');
+      const unchangedStorage=meta.storageFitoutId&&(!entryChanged||meta.storageFitoutId!=='dining_sideboard_wall')&&(!diningChanged||meta.storageFitoutId!=='sofa_back_storage');
       const unchangedGarage=!entryChanged&&meta.garageId,unchangedDining=!entryChanged&&/餐桌|餐椅/.test(meta.furnitureName||'');
       if(!preservedRoom&&!unchangedGarage&&!unchangedStorage&&!unchangedDining&&meta.fitoutId!=='bay_living_family')continue;
       const triangles=[];

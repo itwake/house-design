@@ -75,6 +75,11 @@ export function buildWalkWorld(data){
     // and support boxes are not solid geometry and must not fill empty space.
     if(['desktop','chair'].includes(p.role))rect(p.id,p.x/100,p.y/100,p.w/100,p.d/100,'bay-furniture');
   }
+  // A deeper local drawer module protrudes 4 cm beyond the old 40 cm aggregate
+  // sideboard. Keep that exact source envelope in both dining end states.
+  for(const fitout of data.storageFitouts||[])for(const p of fitout.parts||[]){
+    if(p.role==='pullout_table_cabinet')rect(p.id,p.x/100,p.y/100,p.w/100,p.d/100,'pullout-cabinet');
+  }
   // The compact garage doors fold into the hall, outside its closed footprint.
   // Use the same physical leaf rectangles as the plan/GLB, not an invisible wall.
   if(data.garage?.doorFoldDirection==='outward')for(const p of data.garage.parts.filter(p=>p.role==='folded-door')){
