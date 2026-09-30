@@ -10,7 +10,9 @@ import {buildWalkWorld,findWalkStart,advanceWalk} from '../walkthrough.js';
 const root=new URL('../',import.meta.url),cwd=fileURLToPath(root);
 const read=async p=>JSON.parse(await readFile(new URL(p,root),'utf8'));
 const d=await read('models/schemes/family/design-data.json'),reference=await read('models/schemes/laundry/design-data.json');
-const entryChanged=Boolean(d.familyEntryRevision),baseline=entryChanged?'0466fda':'9e9a10f';
+const entryChanged=Boolean(d.familyEntryRevision),flowChanged=Boolean(d.familyFlowRevision),baseline=flowChanged?'ab45810':entryChanged?'0466fda':'9e9a10f';
+const shift=d.familyFlowRevision?.sofaShiftCm,sofaShiftX=flowChanged?Number(typeof shift==='object'?shift.x:shift):0,sofaWidth=flowChanged?d.familyFlowRevision.sofaWidthCm:220;
+if(flowChanged){assert.equal(d.familyFlowRevision.baselineCommit,baseline);assert.ok(Number.isFinite(sofaShiftX)&&Number.isFinite(sofaWidth),'Current sofa width and horizontal move are explicit source fields');}
 const base=JSON.parse(execFileSync('git',['show',baseline+':models/schemes/family/design-data.json'],{cwd,encoding:'utf8'}));
 const l=d.laundry,near=(a,b,message)=>assert.ok(Math.abs(a-b)<1e-7,message||`${a} != ${b}`);
 assert.ok(l,'Family scheme includes the laundry fitout, not just its text');
@@ -36,21 +38,21 @@ assert.ok(!d.furniture.some(f=>removed.has(f.name)),'No duplicated old stacked l
 assert.equal(d.furniture.filter(f=>f.laundryFitoutId===l.id).length,4,'Two machines, counter and bookcase');
 assert.equal(d.furniture.filter(f=>f.name.includes('餐椅')).length,4,'Four dining chairs remain');
 const fixture=name=>d.furniture.find(f=>f.name===name),geometry=f=>[f.x,f.y,f.w,f.d];
-assert.deepEqual(geometry(fixture('三人沙发')),[355,809,220,88]);
-assert.deepEqual(geometry(fixture('茶几')),[405,707,120,62]);
+assert.deepEqual(geometry(fixture('三人沙发')),[355+sofaShiftX,809,sofaWidth,88]);
+assert.deepEqual(geometry(fixture('茶几')),[405+sofaShiftX,707,120,62]);
 assert.deepEqual(geometry(fixture('电视薄柜')),[395,633,220,34]);
-assert.deepEqual(d.modelAddons.livingFloorLampCm,{x:335,y:735});
+assert.deepEqual(d.modelAddons.livingFloorLampCm,flowChanged?{x:248,y:825}:{x:335,y:735});
 const overlap=(a,b)=>Math.min(a.x+a.w,b.x+b.w)>Math.max(a.x,b.x)+.001&&Math.min(a.y+a.d,b.y+b.d)>Math.max(a.y,b.y)+.001;
 for(const name of moved){
   const f=fixture(name);
   for(const other of d.furniture.filter(v=>v!==f))assert.ok(!overlap(f,other),name+' overlaps '+other.name);
 }
-const lamp={x:313,y:713,w:44,d:44};
+const lamp={x:d.modelAddons.livingFloorLampCm.x-22,y:d.modelAddons.livingFloorLampCm.y-22,w:44,d:44};
 for(const f of d.furniture)assert.ok(!overlap(lamp,f),'Lamp intersects '+f.name);
-near(l.bookcase.x-(fixture('三人沙发').x+fixture('三人沙发').w),70,'Sofa/bookcase aisle');
+near(l.bookcase.x-(fixture('三人沙发').x+fixture('三人沙发').w),70-sofaShiftX-(sofaWidth-220),'Sofa/bookcase aisle follows actual sofa size and move');
 near(fixture('三人沙发').y-(fixture('茶几').y+fixture('茶几').d),40,'Sofa/coffee-table aisle');
 near(fixture('茶几').y-(fixture('电视薄柜').y+fixture('电视薄柜').d),40,'TV/coffee-table aisle');
-near(fixture('餐椅北1').y-(fixture('三人沙发').y+fixture('三人沙发').d),entryChanged?155.5:60.5,'Sofa back / dining chair gap');
+near(fixture('餐椅北1').y-(fixture('三人沙发').y+fixture('三人沙发').d),flowChanged?95.5:entryChanged?155.5:60.5,'Sofa back / dining chair gap');
 near(l.counter.y-966,69,'Laundry operation band');
 const balconyDoor=d.doors.find(v=>v.id==='balcony_door');
 near(balconyDoor.x1-balconyDoor.sliding.frameDepthCm/2,l.bookcase.x,'Aligned door-frame and bookcase fronts');
@@ -62,9 +64,15 @@ near(walked.x,7.35,'Actual movement crosses the north balcony entrance');
 assert.equal(world.roomAt(walked.x,walked.z),'balcony');
 assert.ok(world.obstacles.find(o=>o.id==='balcony_door-parked-leaves').z>10.4,'Slider stack stays south of the entry band');
 const floorLamp=world.obstacles.find(o=>o.id==='living-floor-lamp');
-near(floorLamp.x,3.13);near(floorLamp.z,7.13);
-assert.equal(world.obstacles.filter(o=>o.id.startsWith('garage-folded-leaf-')).length,entryChanged?0:4,'Garage door collision leaves reflect current source');
-if(entryChanged)assert.ok(world.obstacles.find(o=>o.id==='garage-hinged-leaf'),'New storage hinge has an actual walk collider');
+near(floorLamp.x,lamp.x/100);near(floorLamp.z,lamp.y/100);
+if(flowChanged){
+  const leaves=d.garage.parts.filter(p=>p.role==='folded-door');assert.equal(leaves.length,2,'Current east opening has two physical folded leaves');
+  for(const leaf of leaves){const collision=world.obstacles.find(o=>o.id==='garage-'+leaf.id);assert.ok(collision,'Physical folded-leaf collider '+leaf.id);assert.deepEqual([collision.x,collision.z,collision.w,collision.d],[leaf.x/100,leaf.y/100,leaf.w/100,leaf.d/100]);}
+  assert.ok(!world.obstacles.find(o=>o.id==='garage-hinged-leaf'),'Superseded single hinged leaf is absent');
+}else{
+  assert.equal(world.obstacles.filter(o=>o.id.startsWith('garage-folded-leaf-')).length,entryChanged?0:4,'Garage door collision leaves reflect current source');
+  if(entryChanged)assert.ok(world.obstacles.find(o=>o.id==='garage-hinged-leaf'),'New storage hinge has an actual walk collider');
+}
 // Preserve the real compact-garage take-out check against the merged living
 // furniture, rather than assuming the previous successful route still fits.
 const polygon=(x,y,w,h,angle=0)=>{

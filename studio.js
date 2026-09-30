@@ -1,10 +1,10 @@
-import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.5.1';
-import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.5.1';
+import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.5.2';
+import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.5.2';
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
-const UI_REVISION = '3.5.1';
+const UI_REVISION = '3.5.2';
 document.documentElement.dataset.uiRevision = UI_REVISION;
-let ASSET_REVISION = '3.5.1';
+let ASSET_REVISION = '3.5.2';
 const revisedAsset = path => {const url=new URL(path,document.baseURI);url.searchParams.set('v',ASSET_REVISION);return url.href};
 const icons = {
   cube:'<path d="m8 2 6 3.5v5L8 14l-6-3.5v-5L8 2Z M2 5.5 8 9l6-3.5 M8 9v5 M5 3.8l6 3.5"/>',
@@ -199,8 +199,13 @@ function renderStorageFitouts(){
     const entryIndex=fitouts.findIndex(f=>f.type==='entry');
     if(entryIndex>=0)fitouts[entryIndex]={...fitouts[entryIndex],title:'玄关 · 左侧取车，右侧存鞋',summary:'本图展示入户左侧新取车区。右手边浅鞋柜保持原位，鞋柜的分层尺寸见下方立面，完整位置可在平面与3D查看；鞋、车辆与餐具分区。'};
     const g=data.garage;references.push(...g.references.map((r,i)=>({...r,id:'garage-ref-'+i,platform:'已核实公开原文',avoid:'不照搬案例户型、车辆或柜体尺寸。'})));
-    const east=g.face==='east',metricMm=value=>Number.isFinite(value)?`${value*10}mm`:'待实测';
-    const garageCard=east?{
+    const east=g.face==='east',flow=east&&g.doorOperation?.type==='bifold'&&data.familyFlowRevision,metricMm=value=>Number.isFinite(value)?`${value*10}mm`:'待实测';
+    const sofa=data.furniture.find(f=>f.name==='三人沙发'),bookcase=data.laundry?.bookcase;
+    const garageCard=flow?{
+      summary:`${data.layout?.intent||'东面双折门完全外翻后向北叠停；西墙与库体北面餐柜组成L形，餐桌四椅向北调整。'} 入户库仍与右鞋柜前后齐平；折叠婴儿车落地，儿童车由成人抬放至1230mm（123cm）独立平台，非两车同层并排。盲角封闭不计容量；卧卫、书房及生活阳台实体不变。`,
+      dimensions:[`外包 ${g.w*10}×${g.d*10}mm，约${g.metrics.footprintM2.toFixed(3)}㎡；两车仍分层收纳`,`东向名义开口${metricMm(g.opening.clearWidthCm)}，内部架腿间净约570mm；550mm推车每侧仅约10mm余量，须实车核验`,`两扇各${metricMm(g.doorOperation.panelWidthCm)}双折门，完全外翻180°后在北侧洞口外叠停；停车示意至右鞋柜${metricMm(g.metrics.entryAisleDoorOpenCm)}，不等于开启全程净宽`,`L形餐柜：西墙下柜4210mm＋北返柜名义1500×400mm；北面可用下柜1095mm、上柜1215mm，封闭盲角不计容量`,`餐桌四椅相对前版北移600mm；椅子拉出300mm后，南侧至返柜${metricMm(g.metrics.southChairPulledGapCm)}，北侧至沙发655mm，仅紧凑使用`,`沙发宽${metricMm(sofa?.w)}、家具组东移${metricMm(data.familyFlowRevision.sofaShiftCm)}；书架前约${metricMm(sofa&&bookcase?bookcase.x-sofa.x-sofa.w:undefined)}，落地灯移至低飘窗南端靠墙角落`,...g.items.map(f=>`${f.label}示意包络 ${f.w*10}×${f.d*10}×${f.hCm*10}mm；底面离地${metricMm(f.zCm||0)}（非实物测量）`)],
+      operation:'取车先关闭入户门、收好餐椅；双折门完全外翻并在北侧停车后，再向东逐辆抽取。车辆移至门扫范围外后，先关闭储物柜门再开启入户门。180°偏置铰链、板厚与完整折叠过程须厂家深化；抬放、降车、人体握持及转向未认证，须实车排演，取车时不可同时穿行。'
+    }:east?{
       summary:'入户左侧1500×650mm储物库与右侧鞋柜前后齐平，东侧开口朝玄关。折叠婴儿车落地，儿童车需由成人抬放至1230mm（123cm）独立平台；两车是分层收纳，不是同层并排。西墙恢复4610mm连续餐边柜，餐桌和四椅向南950mm、向东150mm移位。承重、防坠、实车取放及通行均须现场深化，不作为可步入储物间使用。',
       dimensions:[`外包 ${g.w*10}×${g.d*10}mm，约${g.metrics.footprintM2.toFixed(3)}㎡，较前版减约${g.metrics.reductionPercent}%`,`东向名义开口${metricMm(g.opening.clearWidthCm)}；柜门关闭时至右鞋柜${metricMm(g.metrics.entryAisleClosedCm)}，柜门90°打开后端部至鞋柜${metricMm(g.metrics.entryAisleDoorOpenCm)}（约72cm）`,...g.items.map(f=>`${f.label}示意包络 ${f.w*10}×${f.d*10}×${f.hCm*10}mm；底面离地${metricMm(f.zCm||0)}（非实物测量）`)],
       operation:'取车先关闭入户门、收好餐椅；向东逐辆抽取，车辆移至门扫范围外后，先关闭储物柜门再开启入户门。抬放、降车、人体握持和实际转向未认证，须用实车排演；取车时不可同时穿行。'
@@ -422,7 +427,7 @@ function planLaundry(){
   const c=l.counter,b=l.bookcase,s=l.basin;
   const rect=(p,attrs)=>`<rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.d}" ${attrs}/>`;
   const parts=l.parts.filter(p=>p.roomId==='living'&&p.role==='book-panel').map(p=>rect(p,`data-laundry-part="${p.id}" fill="#ddd8cc" stroke="#aa9c85" stroke-width=".5"`)).join('');
-  return `<g data-laundry-plan="${l.id}" pointer-events="none"><title>A两台机器靠厨房共墙；台面与浅盆在上，机器虚线为台面下投影。B柜正面与C门框齐平。</title>${rect(b,'fill="#eee9df" stroke="#aa9c85" stroke-width="1"')}${parts}<text x="${b.x+20}" y="${b.y+85}" transform="rotate(90 ${b.x+20} ${b.y+85})" font-size="12" fill="#766952">B · 300深书架</text>${rect(c,'data-laundry-counter fill="#ded9cd" stroke="#a79b87" stroke-width="1.3"')}${l.machines.map(m=>`${rect(m,`data-laundry-machine="${m.id}" fill="none" stroke="#928876" stroke-dasharray="4 3" stroke-width="1"`)}<text x="${m.x+m.w/2}" y="${m.y+28}" text-anchor="middle" font-size="11" fill="#726c61">${m.id.includes('washer')?'洗衣机':'烘干机'}</text>`).join('')}${rect(s,'data-laundry-basin fill="#fcfaf6" fill-opacity=".8" stroke="#a3aca6" stroke-width="1.2"')}<text x="${s.x+s.w/2}" y="${s.y+s.d/2}" text-anchor="middle" font-size="10" fill="#777569">上方浅盆</text><text x="${c.x+c.w/2}" y="${c.y+c.d-6}" text-anchor="middle" font-size="11" fill="#746b5b">A · 台高980 / 独立承重</text><path data-laundry-alignment d="M645 630V1115" fill="none" stroke="#698575" stroke-width="1" stroke-dasharray="5 4"/><text x="636" y="1017" text-anchor="end" font-size="11" fill="#698575">C · 门框齐柜面</text><text x="${c.x+c.w/2}" y="1030" text-anchor="middle" font-size="9" fill="#9b6855">前方操作带690</text><text x="610" y="934" text-anchor="middle" font-size="10" fill="#9b6855">净距700</text></g>`;
+  return `<g data-laundry-plan="${l.id}" pointer-events="none"><title>A两台机器靠厨房共墙；台面与浅盆在上，机器虚线为台面下投影。B柜正面与C门框齐平。</title>${rect(b,'fill="#eee9df" stroke="#aa9c85" stroke-width="1"')}${parts}<text x="${b.x+20}" y="${b.y+85}" transform="rotate(90 ${b.x+20} ${b.y+85})" font-size="12" fill="#766952">B · 300深书架</text>${rect(c,'data-laundry-counter fill="#ded9cd" stroke="#a79b87" stroke-width="1.3"')}${l.machines.map(m=>`${rect(m,`data-laundry-machine="${m.id}" fill="none" stroke="#928876" stroke-dasharray="4 3" stroke-width="1"`)}<text x="${m.x+m.w/2}" y="${m.y+28}" text-anchor="middle" font-size="11" fill="#726c61">${m.id.includes('washer')?'洗衣机':'烘干机'}</text>`).join('')}${rect(s,'data-laundry-basin fill="#fcfaf6" fill-opacity=".8" stroke="#a3aca6" stroke-width="1.2"')}<text x="${s.x+s.w/2}" y="${s.y+s.d/2}" text-anchor="middle" font-size="10" fill="#777569">上方浅盆</text><text x="${c.x+c.w/2}" y="${c.y+c.d-6}" text-anchor="middle" font-size="11" fill="#746b5b">A · 台高980 / 独立承重</text><path data-laundry-alignment d="M645 630V1115" fill="none" stroke="#698575" stroke-width="1" stroke-dasharray="5 4"/><text x="636" y="1017" text-anchor="end" font-size="11" fill="#698575">C · 门框齐柜面</text><text x="${c.x+c.w/2}" y="1030" text-anchor="middle" font-size="9" fill="#9b6855">前方操作带690</text><text x="610" y="934" text-anchor="middle" font-size="10" fill="#9b6855">净距${Math.round(l.metrics.sofaBookcaseGapCm*10)}</text></g>`;
 }
 
 function planGarage(){
@@ -459,6 +464,8 @@ function makePlan(){
   if(data.layout?.entryZone){const z=data.layout.entryZone;labels.push(`<g data-suite-entry="private"><rect x="${z.x}" y="${z.y}" width="${z.w}" height="${z.d}" fill="none" stroke="#a98c63" stroke-dasharray="4 5" stroke-width="1.5"/><text x="${z.x+z.w/2}" y="${z.y+30}" text-anchor="middle" font-size="13" fill="#806b50">套内玄关</text><text x="${z.x+z.w/2}" y="${z.y+49}" text-anchor="middle" font-size="10" fill="#806b50">${z.w*10} × ${z.d*10}</text></g>`)}
   const storageIds=new Set((data.storageFitouts||[]).map(f=>f.id));
   const furniture=(data.furniture||[]).filter(f=>!storageIds.has(f.storageFitoutId)).map(planFurniture).join('');
+  const rug=data.modelAddons?.livingRugCm,lamp=data.modelAddons?.livingFloorLampCm;
+  const livingSoft=data.familyFlowRevision&&rug&&lamp?`<g data-living-flow pointer-events="none"><rect data-living-rug x="${rug.x}" y="${rug.y}" width="${rug.w}" height="${rug.d}" rx="4" fill="#f5f1ea" stroke="#cdc6b9" stroke-dasharray="4 3" stroke-width="1"/><circle data-living-lamp cx="${lamp.x}" cy="${lamp.y}" r="22" fill="#e7e0d1" stroke="#a99b84" stroke-width="1.2"/><title>地毯随沙发东移并收回墙线内；圆形为落地灯440mm灯罩投影，电线贴墙固定。尺寸为暂估。</title></g>`:'';
   const wallFitouts=(data.wallFitouts||[]).map(f=>`<g data-wall-fitout="${escapeHTML(f.id)}" pointer-events="none"><title>${escapeHTML(f.description)} 上方投影，非落地柜。</title><rect x="${f.x}" y="${f.y}" width="${f.w}" height="${f.d}" fill="#f5f2ed" fill-opacity=".4" stroke="#8b928b" stroke-width="1.4" stroke-dasharray="5 4"/><text x="${f.x+f.w/2}" y="${f.y+f.d/2+4}" text-anchor="middle" font-size="11" fill="#747970">上方浅书架 · 虚线投影</text></g>`).join('');
   const fitouts=(data.bayFitouts||[]).flatMap(fitout=>[...(fitout.parts||[])].sort((a,b)=>(a.zCm||0)-(b.zCm||0)).map(part=>planFitoutPart(fitout,part))).join('');
   const storage=(data.storageFitouts||[]).flatMap(fitout=>[...(fitout.parts||[])].sort((a,b)=>(a.zCm||0)-(b.zCm||0)).map(part=>planStoragePart(fitout,part))).join('');
@@ -478,7 +485,7 @@ function makePlan(){
   const bayFrames=bays.map(b=>`<g data-bay-frame-layer="${escapeHTML(b.window.id)}"><polygon data-bay-front-frame data-frame-finish="${escapeHTML(bayFrameFinish)}" points="${b.frame.map(p=>p.join(',')).join(' ')}" fill="${bayFrameColor}"/><line data-bay-glass x1="${b.frontA[0]}" y1="${b.frontA[1]}" x2="${b.frontB[0]}" y2="${b.frontB[1]}" stroke="#8fa6a8" stroke-width="4"/></g>`).join('');
   const topDimensionY=planMinY-52,leftDimensionX=planMinX-55;
   const dimensions=`<g stroke="#b4a58e" stroke-width="1.5" fill="none"><path d="M0 ${topDimensionY}H687 M0 ${topDimensionY-14}v28 M687 ${topDimensionY-14}v28 M${leftDimensionX} 0v1401 M${leftDimensionX-14} 0h28 M${leftDimensionX-14} 1401h28 M200 1455h641 M200 1441v28 M841 1441v28"/></g><g fill="#9c8d73" font-size="19" text-anchor="middle"><text x="343" y="${topDimensionY-17}">6,870</text><text x="520" y="1484">6,410</text><text x="${leftDimensionX-20}" y="700" transform="rotate(-90 ${leftDimensionX-20} 700)">14,010</text><text x="793" y="${topDimensionY-2}" font-size="23">N ↑</text></g>`;
-  $('#floor-plan').innerHTML=`<svg viewBox="${planMinX-115} ${planMinY-110} ${maxX-planMinX+160} ${maxY-planMinY+215}" role="img" aria-label="由同源尺寸数据绘制的三房两卫平面图，含飘窗与玄关餐边收纳条件方案；窗台投影不计入房间面积">${polygons}${furniture}${storage}${planGarage()}${planLaundry()}${walls}${opening((data.windows||[]).filter(w=>w.windowType!=='bay'),'#8fa6a8')}${bayWindows}${opening(data.doors,'#c2a071')}${fitouts}${bayFrames}${wallFitouts}${labels.join('')}${dimensions}</svg>`;
+  $('#floor-plan').innerHTML=`<svg viewBox="${planMinX-115} ${planMinY-110} ${maxX-planMinX+160} ${maxY-planMinY+215}" role="img" aria-label="由同源尺寸数据绘制的三房两卫平面图，含飘窗与玄关餐边收纳条件方案；窗台投影不计入房间面积">${polygons}${livingSoft}${furniture}${storage}${planGarage()}${planLaundry()}${walls}${opening((data.windows||[]).filter(w=>w.windowType!=='bay'),'#8fa6a8')}${bayWindows}${opening(data.doors,'#c2a071')}${fitouts}${bayFrames}${wallFitouts}${labels.join('')}${dimensions}</svg>`;
   $$('#floor-plan [data-plan-room]').forEach(p=>{p.addEventListener('click',()=>selectRoom(p.dataset.planRoom));p.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectRoom(p.dataset.planRoom)}})});
 }
 

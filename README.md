@@ -4,9 +4,9 @@
 
 **在线查看：[itwake.github.io/house-design](https://itwake.github.io/house-design/)**
 
-最新 **V3.5.1 / 入户储物齐鞋柜、餐柜归位**：[进入方案2](https://itwake.github.io/house-design/studio.html?scheme=family&v=3.5.1#dining)。储物库暂估1500×650mm、东开口朝入户玄关；婴儿车落地、儿童车抬放至1230mm平台，承重与实车操作待深化。恢复4610mm连续餐边柜，四人餐桌、四椅和吊灯向门口移950mm、向东移150mm；南椅拉出后约525mm仍紧凑。保留V3.5.0洗烘、浅盆、外移阳台门、整墙书架及所有卧卫几何。
+最新 **V3.5.2 / 双折库门、L形餐柜与客厅动线**：[进入方案2](https://itwake.github.io/house-design/studio.html?scheme=family&v=3.5.2#dining)。保留1500×650mm分层车库，东面双折门向北完全外翻叠停；靠餐桌的北面新增1500×400mm餐边返柜，与4210mm西墙柜组成L形，封闭盲角不计可用容量。餐桌、四椅及吊灯比V3.5.1北移600mm；南、北椅拉出300mm后分别约725、655mm，仍属紧凑通道。沙发保留2200mm、与茶几东移100mm，书架前留600mm；地毯收回墙线内，落地灯移到低飘窗南端墙角。完整五金开合、车辆抬放、承重及现场尺寸待深化。
 
-本轮以已发布`0466fda`为不可变基线，仅替换入户柜/餐柜、平移餐桌椅及依附灯具；`tools/test_family_entry.mjs --glb`核对分层车体、实体门板、连续柜体、保留构件世界坐标及全屋漫游连通。11张受影响公共区域重新渲染，8张未改私密房间明确保留来源，不冒充新照明渲染。
+本轮以已发布`ab45810`为不可变基线，只改库门、L形餐柜及客餐厅软装位置；`tools/test_family_flow.mjs --glb`逐顶点核对真实移动构件、实际库门/车体/柜体、地毯与灯具，并验证全屋碰撞漫游连通。全部卧卫及家政实体保持不变。11张受影响公共区域重新渲染，8张未改私密房间保留原始来源；这些均是模型推演，不是施工验收或动态五金认证。
 
 **V3.4.3 / 方案3面厅紧凑800库**：[进入方案3](https://itwake.github.io/house-design/studio.html?scheme=family&v=3.4.3#dining)。储物库改为1500×1200mm、约1.80㎡，较原2.445㎡减少约26%；北侧开口朝厅内和餐桌，儿童车与折叠婴儿车纵向并排，上部350mm浅架。900mm短餐边柜向北移500mm，餐桌与四椅不再移动。取车须收好南餐椅，仍需实车排演；尺寸不是实测。方案1、2、4不改。详见[布局、条件与验证](docs/compact-family-storage-v343.md)。
 
@@ -24,7 +24,7 @@
 
 上一版V3.2.2保留R4B门位、走廊、套内玄关与书房推拉门；两卧北段隔墙东移回原位。次卧床头及南墙衣柜贴西墙，床尾2240×440mm浅台补齐门口退台；主卧2240×600mm衣柜满凹位；书房北墙沙发、南墙2720×550mm通长桌。次卧床尾约470mm仍窄。详见[家具尺寸与验证](docs/suite-fitted-v322.md)。下方V3.2.0及[R4B](docs/suite-layout-v321.md)为历史记录。
 
-![现行方案2全屋Blender渲染：客厅低飘窗软垫](assets/schemes/suite/overall.jpg)
+![现行方案2全屋Blender渲染：双折入户库与客厅动线](assets/schemes/family/overall.jpg)
 
 ## 装修知识库（2026-09-17）
 
@@ -143,7 +143,7 @@ python tools/validate_studio.py --assets
 python tools/validate_design_schemes.py
 ```
 
-`test_single_scheme.mjs`离线执行实际路由与查看器初始化代码，核对旧链接、错误状态、房间定位、下载路径和说明卡状态，并对比受保护的历史资产与未改动的现有源几何。它不测试WebGL或浏览器视觉。发布后运行 `node tools/verify_published.mjs`，通过HTTP逐一对比27个有效Pages资源的SHA；不读取用户浏览器或其他标签页。
+`test_single_scheme.mjs`离线执行实际路由与查看器初始化代码，核对旧链接、错误状态、房间定位、下载路径和说明卡状态，并对比受保护的历史资产与未改动的现有源几何。它不测试WebGL或浏览器视觉。发布后运行 `node tools/verify_published.mjs`，通过HTTP逐一对比全部有效设计资源的SHA；不读取用户浏览器或其他标签页。
 
 `test_kitchen_door.mjs`核对三轨推拉门的实际GLB顶点、开合位移、净开口和叠停避障，并验证1359个无关网格未改变。
 

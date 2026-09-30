@@ -1260,7 +1260,9 @@ def sofa(f):
     for px,mat in ((x+.40,"Terracotta"),(x+w-.4,"Sage")):
         ob=box("Textile sofa scatter cushion",px,y+d-.32,.47,.35,.16,.34,mat,.065)
         ob.rotation_euler.x=-.16
-    block("Subtle flatwoven living rug",x-.12,y-1.85,.007,w+.24,1.92,.013,mat="WhiteLinen",bevel=.018)
+    rug=f.get('rugCm')
+    if rug:block("Subtle flatwoven living rug",rug['x']/100,rug['y']/100,.007,rug['w']/100,rug['d']/100,.013,mat="WhiteLinen",bevel=.018)
+    else:block("Subtle flatwoven living rug",x-.12,y-1.85,.007,w+.24,1.92,.013,mat="WhiteLinen",bevel=.018)
 
 
 def coffee(f):

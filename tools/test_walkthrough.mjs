@@ -15,8 +15,14 @@ const activeScheme=catalog.schemes.find(s=>s.id===schemeId)||{id:schemeId,model:
 const source=await read('studio.js'),html=await read('studio.html');
 const world=buildWalkWorld(data),near=(a,b,message)=>assert.ok(Math.abs(a-b)<1e-7,message||`${a} != ${b}`);
 if(family){
-  assert.equal(world.obstacles.filter(o=>o.id.startsWith('garage-folded-leaf-')).length,data.familyEntryRevision?0:4,'Garage collision matches the actual door type');
-  if(data.familyEntryRevision)assert.ok(world.obstacles.find(o=>o.id==='garage-hinged-leaf'),'One east garage hinge remains physical in walking mode');
+  if(data.familyFlowRevision){
+    const leaves=data.garage.parts.filter(p=>p.role==='folded-door');assert.equal(leaves.length,2,'Flow layout uses two physical east folded leaves');
+    for(const leaf of leaves){const obstacle=world.obstacles.find(o=>o.id==='garage-'+leaf.id);assert.ok(obstacle,'Walking mode keeps folded leaf '+leaf.id);assert.deepEqual([obstacle.x,obstacle.z,obstacle.w,obstacle.d],[leaf.x/100,leaf.y/100,leaf.w/100,leaf.d/100]);}
+    assert.ok(!world.obstacles.find(o=>o.id==='garage-hinged-leaf'),'No superseded single hinged garage collider');
+  }else{
+    assert.equal(world.obstacles.filter(o=>o.id.startsWith('garage-folded-leaf-')).length,data.familyEntryRevision?0:4,'Garage collision matches the actual door type');
+    if(data.familyEntryRevision)assert.ok(world.obstacles.find(o=>o.id==='garage-hinged-leaf'),'One east garage hinge remains physical in walking mode');
+  }
 }
 assert.equal(WALK_EYE_HEIGHT,1.6);assert.equal(WALK_RADIUS,.25);
 assert.equal(world.doors.length,7);

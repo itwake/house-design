@@ -31,7 +31,22 @@ assert.ok(svg.includes('data-sofa-face="south"'),'Study sofa faces south, with b
 if(variant==='family'){
   assert.equal((svg.match(/data-family-garage=/g)||[]).length,1);
   assert.equal((svg.match(/data-garage-item=/g)||[]).length,2);
-  if(data.familyEntryRevision){
+  if(data.familyFlowRevision){
+    const visible=data.garage.parts.filter(p=>p.role==='panel'||p.role==='folded-door');
+    assert.equal((svg.match(/data-garage-part=/g)||[]).length,visible.length);
+    assert.ok(svg.includes('1500×650')&&svg.includes('抬放'));
+    assert.ok(svg.includes('data-opening-face="east"')&&svg.includes('data-garage-exit="east"'));
+    assert.ok(!svg.includes('data-garage-part="hinged-leaf"'));
+    for(const p of data.garage.parts.filter(p=>p.role==='folded-door'))assert.ok(svg.includes(`data-garage-part="${p.id}"`),'Real externally parked folded door '+p.id);
+    for(const item of data.garage.items){const tag=svg.match(new RegExp(`<g data-garage-item="${item.id}"[^>]+>`))?.[0];assert.ok(tag?.includes(`data-z-cm="${item.zCm||0}"`),'Floor and raised vehicles '+item.id);}
+    const fitout=data.storageFitouts.find(f=>f.id==='dining_sideboard_wall');
+    for(const p of fitout.parts.filter(p=>p.role==='sideboard_base'))assert.ok(svg.includes(`data-storage-part-id="${p.id}"`),'Both actual L-sideboard arms '+p.id);
+    assert.ok(svg.includes('data-storage-part-id="family_return_base"'),'Actual north return is visible, not its aggregate bounding box');
+    const rug=svg.match(/<rect data-living-rug[^>]+>/)?.[0],lamp=svg.match(/<circle data-living-lamp[^>]+>/)?.[0];
+    assert.ok(rug&&lamp,'Actual cropped rug and relocated lamp projections');
+    for(const [attribute,value]of [['x',data.modelAddons.livingRugCm.x],['y',638],['width',data.modelAddons.livingRugCm.w],['height',178]])assert.ok(rug.includes(`${attribute}="${value}"`),'Exact rug projection '+attribute);
+    assert.ok(lamp.includes('cx="248"')&&lamp.includes('cy="825"')&&lamp.includes('r="22"'),'Actual 440 mm lamp shade envelope');
+  }else if(data.familyEntryRevision){
     const visible=data.garage.parts.filter(p=>p.role==='panel'||p.id==='hinged-leaf');
     assert.equal((svg.match(/data-garage-part=/g)||[]).length,visible.length);
     assert.ok(svg.includes('1500×650')&&svg.includes('抬放'));

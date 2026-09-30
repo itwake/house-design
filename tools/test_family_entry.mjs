@@ -10,6 +10,10 @@ import {buildWalkWorld,findWalkStart,advanceWalk} from '../walkthrough.js';
 const root=new URL('../',import.meta.url),cwd=fileURLToPath(root);
 const read=async path=>JSON.parse(await readFile(new URL(path,root),'utf8'));
 const d=await read('models/schemes/family/design-data.json'),g=d.garage;
+if(d.familyFlowRevision){
+  // Keep importers alive: test_family_storage continues its inherited asset QA.
+  await import('./test_family_flow.mjs');
+}else{
 const baseline='0466fda',base=JSON.parse(execFileSync('git',['show',baseline+':models/schemes/family/design-data.json'],{cwd,encoding:'utf8'}));
 const near=(actual,expected,message)=>assert.ok(Math.abs(actual-expected)<1e-7,message||`${actual} != ${expected}`);
 const geometry=f=>[f.x,f.y,f.w,f.d],fixture=name=>d.furniture.find(f=>f.name===name);
@@ -160,3 +164,4 @@ if(process.argv.includes('--glb')){
   console.log(`PASS family entry GLB: ${g.parts.length} exact garage solids, raised bicycle/lower stroller and ${oldProtected.size} unchanged world-space meshes.`);
 }
 console.log(`PASS family entry 3.5.1: aligned 1500×650 storage, east hinged opening, two-level vehicles, 4610 sideboard, relocated dining, ${seen.size} connected walk points / 8 rooms, ${takeoutPoses} rigid extraction poses. Human lifting/hardware/entry-door swing require real-site checks.`);
+}

@@ -24,8 +24,14 @@ b.VIEWS['balcony']=((7.44,9.86,1.28),(7.44,10.78,.68),16)
 b.VIEWS['laundry-detail']=((8.03,9.90,1.45),(7.28,10.70,.90),17)
 b.VIEWS['living-wall']=((3.23,10.95,1.62),(6.57,8.85,1.28),18)
 original_lamp=b.lamp
+FAMILY_LAMP_CM={'x':335,'y':735}
+
+def configure_flow_views(data):
+    if data.get('familyFlowRevision'):
+        # Keep regeneration and incremental rendering on the same reviewed cameras.
+        b.VIEWS.update({'living':((4.82,10.13,1.60),(4.75,7.40,1.10),20),'living-wall':((4.85,10.10,1.62),(6.45,8.75,1.25),18),'dining':((4.96,12.55,1.68),(3.10,11.15,1.08),18),'sideboard':((4.70,11.90,1.60),(2.95,12.70,1.20),18)})
 def lamp(x,y,*args,**kwargs):
-    if abs(x-6.48)<.0001 and abs(y-8.98)<.0001:x,y=3.35,7.35
+    if abs(x-6.48)<.0001 and abs(y-8.98)<.0001:x,y=FAMILY_LAMP_CM['x']/100,FAMILY_LAMP_CM['y']/100
     return original_lamp(x,y,*args,**kwargs)
 b.lamp=lamp
 
@@ -83,6 +89,9 @@ def garage(data):
             obj['garageBaseCm']=f.get('zCm',0)
 
 def furnish(data):
+    global FAMILY_LAMP_CM
+    configure_flow_views(data)
+    FAMILY_LAMP_CM=data.get('modelAddons',{}).get('livingFloorLampCm',{'x':335,'y':735})
     original_furnish({**data,'furniture':[f for f in data['furniture'] if not f.get('garageFitoutId') and not f.get('laundryFitoutId')]})
     garage(data)
     if data.get('laundry'):laundry.add_laundry(data)
@@ -100,6 +109,7 @@ def manifest(data,openings,src):
     result=paths(result);result['schemeId']='family';result['garage']=data['garage']
     if data.get('garageRevision'):result['garageRevision']=data['garageRevision']
     if data.get('familyEntryRevision'):result['familyEntryRevision']=data['familyEntryRevision']
+    if data.get('familyFlowRevision'):result['familyFlowRevision']=data['familyFlowRevision']
     if data.get('laundry'):
         result['laundry']=data['laundry'];result['familyLaundryRevision']=data['familyLaundryRevision']
         for name,title in [('laundry-detail','并排洗烘与上方浅盆'),('living-wall','亲子客厅 · 整墙书架与阳台门')]:
@@ -115,7 +125,7 @@ def render(args):
     path=b.MODEL_DIR/'scene-manifest.json';result=json.loads(path.read_text(encoding='utf-8'))
     pos,target,lens=b.VIEWS['storage-library']
     result['layoutDetails']=[v for v in result.get('layoutDetails',[]) if v['id']!='storage-library']+[{
-        'id':'storage-library','title':'齐鞋柜800库 · 婴儿车落地、儿童车抬放示意' if result.get('familyEntryRevision') else '面厅紧凑800库 · 北侧折叠门打开示意','roomId':'living',
+        'id':'storage-library','title':'双折入户库 · 北侧外翻停车与双车分层' if result.get('familyFlowRevision') else '齐鞋柜800库 · 婴儿车落地、儿童车抬放示意' if result.get('familyEntryRevision') else '面厅紧凑800库 · 北侧折叠门打开示意','roomId':'living',
         'render':'assets/schemes/family/storage-library.jpg',
         'interiorCamera':{'position':b.three(pos),'target':b.three(target),'horizontalFov':round(math.degrees(2*math.atan(36/(2*lens))),2)}}]
     path.write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')

@@ -4,7 +4,7 @@ import {execFileSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 const root=new URL('../',import.meta.url),cwd=fileURLToPath(root),read=async p=>JSON.parse(await readFile(new URL(p,root),'utf8'));
 const d=await read('models/schemes/family/design-data.json'),base=await read('models/schemes/suite/design-data.json'),g=d.garage;
-const entryChanged=Boolean(d.familyEntryRevision);
+const entryChanged=Boolean(d.familyEntryRevision),flowChanged=Boolean(d.familyFlowRevision);
 const mergedLaundry=Boolean(d.familyLaundryRevision);
 if(mergedLaundry){
  assert.equal(d.familyLaundryRevision.version,'3.5.0');
@@ -20,7 +20,7 @@ if(mergedLaundry)for(const name of ['洗烘塔','阳台家政柜','三人沙发'
 for(const f of base.furniture){
  if(changed.has(f.id)||changed.has(f.name))continue;
  const now=d.furniture.find(p=>(p.id||p.name)===(f.id||f.name));
- if(/餐桌|餐椅/.test(f.name)){assert.deepEqual(now,{...f,x:f.x+(entryChanged?-10:-25),y:f.y+(entryChanged?0:-95)});}
+ if(/餐桌|餐椅/.test(f.name)){assert.deepEqual(now,{...f,x:f.x+(entryChanged?-10:-25),y:f.y+(flowChanged?-60:entryChanged?0:-95)});}
  else assert.deepEqual(now,f,'Unchanged furniture '+f.name);
 }
 assert.equal(d.furniture.filter(f=>f.name.includes('餐椅')).length,4);
@@ -89,7 +89,7 @@ for(const item of g.items){
 }
 // Every other scheme, historical asset and family texture remains byte-identical.
 const activeRefresh=/^(?:models\/schemes\/family\/(?:design-data\.json|scene-manifest\.json|huiyayuan-wood\.(?:blend|glb))|assets\/schemes\/family\/[^/]+\.jpg)$/;
-const baseline=entryChanged?'0466fda':'ac2b91d366b8aeb0f53744b03b1ca48f95e95fdc',tree=execFileSync('git',['ls-tree','-r',baseline,'models','assets'],{cwd,encoding:'utf8'}).trim().split('\n').map(line=>{const [meta,path]=line.split('\t');return {path,sha:meta.split(' ')[2]}}).filter(p=>p.path!=='models/design-schemes.json'&&!activeRefresh.test(p.path));
+const baseline=flowChanged?'ab45810':entryChanged?'0466fda':'ac2b91d366b8aeb0f53744b03b1ca48f95e95fdc',tree=execFileSync('git',['ls-tree','-r',baseline,'models','assets'],{cwd,encoding:'utf8'}).trim().split('\n').map(line=>{const [meta,path]=line.split('\t');return {path,sha:meta.split(' ')[2]}}).filter(p=>p.path!=='models/design-schemes.json'&&!activeRefresh.test(p.path));
 const hashes=execFileSync('git',['hash-object','--stdin-paths'],{cwd,encoding:'utf8',input:tree.map(p=>p.path).join('\n')+'\n'}).trim().split('\n');
 tree.forEach((p,i)=>assert.equal(hashes[i],p.sha,'Preserve existing asset '+p.path));
 console.log(`PASS family storage: inherited shell/rooms/furniture protected, four dining chairs, two vehicle envelopes, ${entryChanged?'current two-level entrance regression':poses+' sampled extraction/rotation poses'}, ${tree.length} old assets byte-identical. Vehicle test excludes user body and unspecified real hardware.`);

@@ -23,6 +23,10 @@ try{
     for(const scheme of targetSchemes){
       const expectedManifest=JSON.parse(await readFile(`models/schemes/${scheme}/scene-manifest.json`,'utf8'));
       const design=JSON.parse(await readFile(`models/schemes/${scheme}/design-data.json`,'utf8')),hasLaundry=Boolean(design.laundry);
+      if(design.familyFlowRevision){
+        assert.ok(expectedManifest.renderedViews,'Run final flow browser QA after render provenance has been assembled');
+        for(const view of ['kitchen','balcony','study'])assert.ok(expectedManifest.renderedViews[view],'Explicit provenance for '+view);
+      }
       await page.goto(base+'studio.html?scheme='+scheme+'&v='+catalog.version);
       await page.waitForFunction(()=>document.querySelector('#model-loading')?.hidden&&document.querySelectorAll('#floor-plan [data-plan-room]').length===8);
       assert.equal(await page.locator('html').getAttribute('data-scheme'),scheme);
@@ -57,7 +61,20 @@ try{
         assert.equal(await page.locator('[data-family-garage]').getAttribute('data-opening-face'),face);
         assert.equal(await page.locator(`[data-garage-exit="${face}"]`).count(),1);
         assert.equal(await page.locator(`[data-garage-item][data-rotation="${entryChanged?0:90}"]`).count(),2);
-        if(entryChanged){assert.equal(await page.locator('[data-garage-item="child_bike"]').getAttribute('data-z-cm'),'123');assert.equal(await page.locator('[data-garage-item="folded_stroller"]').getAttribute('data-z-cm'),'0');assert.equal(await page.locator('[data-garage-part="hinged-leaf"]').count(),1);}
+        if(entryChanged){
+          assert.equal(await page.locator('[data-garage-item="child_bike"]').getAttribute('data-z-cm'),'123');assert.equal(await page.locator('[data-garage-item="folded_stroller"]').getAttribute('data-z-cm'),'0');
+          if(design.familyFlowRevision){
+            const leaves=design.garage.parts.filter(p=>p.role==='folded-door');assert.equal(leaves.length,2);
+            assert.equal(await page.locator('[data-garage-part="hinged-leaf"]').count(),0,'No obsolete single hinged leaf in plan');
+            for(const leaf of leaves){
+              const actual=page.locator(`[data-garage-part="${leaf.id}"]`);assert.equal(await actual.count(),1,'Actual folded leaf '+leaf.id);
+              for(const [attribute,value]of [['x',leaf.x],['y',leaf.y],['width',leaf.w],['height',leaf.d]])assert.equal(Number(await actual.getAttribute(attribute)),value,'Folded leaf scale '+attribute);
+            }
+            assert.equal(design.garage.doorFoldDirection,'outward');assert.equal(design.garage.doorStackSide,'north');
+            const eastPosts=design.garage.parts.filter(p=>p.role==='rack-post'&&p.x===Math.max(...design.garage.parts.filter(p=>p.role==='rack-post').map(p=>p.x))).sort((a,b)=>a.y-b.y);
+            assert.equal(eastPosts.length,2);assert.equal(eastPosts[1].y-(eastPosts[0].y+eastPosts[0].d),57,'Real 55 cm stroller clears 57 cm rack-post gap');
+          }else assert.equal(await page.locator('[data-garage-part="hinged-leaf"]').count(),1);
+        }
       }
       if(await page.locator('#room-card').evaluate(e=>e.hidden))await page.locator('#toggle-room-card').click();
       assert.ok(await page.locator('#room-card').isVisible(),'Show card');
@@ -81,7 +98,7 @@ try{
           await page.locator(`#room-nav [data-room="${room}"]`).click();
           await page.waitForFunction(expected=>{const img=document.querySelector('#active-render');return img.complete&&img.naturalWidth>0&&new URL(img.src).pathname.endsWith('/'+expected+'.jpg')},view);
           assert.ok((await page.locator('#card-description').textContent()).includes(room==='room_c'?'书架':hasLaundry&&room==='balcony'?'浅盆':'大窗'),'Revised room description');
-          assert.equal((await page.locator('#render-provenance').textContent()).includes('沿用历史模型图'),!!expectedManifest.renderedViews[view]?.retainedFrom,'Correct current/reference caption for '+view);
+          assert.equal((await page.locator('#render-provenance').textContent()).includes('沿用历史模型图'),!!expectedManifest.renderedViews?.[view]?.retainedFrom,'Correct current/reference caption for '+view);
           if(name==='desktop'||room==='room_c')await page.screenshot({path:`tmp/v343-${name}-${scheme}-${room}-render-ui.png`});
         }
       }
@@ -109,7 +126,21 @@ try{
           const text=await garage.textContent();
           assert.equal(await garage.getAttribute('data-storage-opening-face'),'east');
           assert.ok(/0\.(?:975|98)㎡/.test(text)&&text.includes('抬放')&&text.includes('东侧'));
-          for(const expected of ['1230mm','610mm','720mm','4610mm','先关闭储物柜门'])assert.ok(text.includes(expected),'Current garage card contains '+expected);
+          const currentDimensions=design.familyFlowRevision?['1230mm','610mm','4210mm','1275mm','180°']:['1230mm','610mm','720mm','4610mm','先关闭储物柜门'];
+          for(const expected of currentDimensions)assert.ok(text.includes(expected),'Current garage card contains '+expected);
+          if(design.familyFlowRevision){
+            assert.ok(/双折|两叶|双叶/.test(text)&&/外翻|外折/.test(text),'Current garage card explains two physically folded leaves');
+            assert.ok(/57cm|570mm/.test(text)&&/55cm|550mm/.test(text),'Card discloses the tight stroller/rack clearance');
+            const sideboard=page.locator('#storage-fitout-cards [data-storage-card="dining_sideboard_wall"]'),cabinetText=await sideboard.textContent();
+            assert.ok(cabinetText.includes('4210mm')&&cabinetText.includes('1095mm')&&cabinetText.includes('1215mm')&&cabinetText.includes('盲'),'North-facing usable cabinet and blind corner are stated separately');
+            assert.ok(!/NaN|undefined/.test(cabinetText),'North/west corner card has real dimensions');
+            for(const part of design.storageFitouts.find(f=>f.id==='dining_sideboard_wall').parts.filter(p=>p.face==='north')){
+              const drawn=sideboard.locator(`[data-elevation-part-id="${part.id}"]`);assert.equal(await drawn.count(),1,'North-return source part is drawn '+part.id);
+              assert.equal(await drawn.getAttribute('data-elevation-face'),'north');assert.equal(Number(await drawn.getAttribute('data-source-x')),part.x);assert.equal(Number(await drawn.getAttribute('data-source-y')),part.y);assert.equal(Number(await drawn.getAttribute('data-depth-cm')),part.d);
+            }
+            assert.ok(await sideboard.locator('[data-elevation-blind-area]').count()>0,'Blind corner is visibly marked, not fake usable storage');
+            for(const obsolete of ['720mm','4610mm','90°打开后端部'])assert.ok(!text.includes(obsolete),'No superseded single-leaf dimensions '+obsolete);
+          }
           for(const obsolete of ['NaN','undefined','北侧开口','四叶','900mm短','900短柜','餐桌及四椅不变'])assert.ok(!text.includes(obsolete),'No stale garage copy '+obsolete);
         }
         else assert.ok((await garage.textContent()).includes('1.80㎡')&&(await garage.textContent()).includes('北侧开口朝餐桌'));
