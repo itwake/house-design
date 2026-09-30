@@ -29,7 +29,7 @@ ROOT = Path(__file__).resolve().parents[1]
 VIEWS = ("overall", "living", "dining", "master", "bedroom-b", "study",
          "kitchen", "master-bath", "guest-bath", "balcony", "bay-master",
          "bay-tea", "bay-living", "entry-storage", "sideboard")
-ACTIVE_IDS = ("wood", "suite", "family", "laundry")
+ACTIVE_IDS = ("wood", "family", "laundry")
 ARCHIVED_IDS = ("terracotta", "moss", "cobalt")
 ALLOWED_SHADES = {"Organic linen pendant", "Organic linen pendant.001"}
 # Ten micrometres is far below both survey precision and furniture tolerance.

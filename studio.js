@@ -1,10 +1,10 @@
-import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.4.3';
-import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.4.3';
+import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.4.4';
+import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.4.4';
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
-const UI_REVISION = '3.4.3';
+const UI_REVISION = '3.4.4';
 document.documentElement.dataset.uiRevision = UI_REVISION;
-let ASSET_REVISION = '3.4.3';
+let ASSET_REVISION = '3.4.4';
 const revisedAsset = path => {const url=new URL(path,document.baseURI);url.searchParams.set('v',ASSET_REVISION);return url.href};
 const icons = {
   cube:'<path d="m8 2 6 3.5v5L8 14l-6-3.5v-5L8 2Z M2 5.5 8 9l6-3.5 M8 9v5 M5 3.8l6 3.5"/>',
@@ -789,7 +789,7 @@ async function init(){
     const url=new URL(location.href);url.searchParams.set('scheme',scheme.id);url.searchParams.set('v',UI_REVISION);history.replaceState(null,'',url);
     Object.keys(scheme.roomOverrides||{}).forEach(id=>{if(descriptions[id])descriptions[id]={...descriptions[id],...schemeTextOverride(scheme.roomOverrides,id)}});
     configureScheme();
-  }catch(error){console.error('Scheme catalogue load failed',error);$('#loading-status').textContent='方案目录暂未载入';$('#model-loading').hidden=true;$('#scheme-load-error strong').textContent=schemeCatalog?'未找到这个设计方案':'设计资料暂未载入';$('#scheme-load-error').hidden=false;return}
+  }catch(error){console.error('Scheme catalogue load failed',error);$('#loading-status').textContent='方案目录暂未载入';$('#model-loading').hidden=true;$('#scheme-load-error strong').textContent=schemeCatalog?(new URLSearchParams(location.search).get('scheme')==='suite'?'暖白套间已移除，请返回方案选择':'未找到这个设计方案'):'设计资料暂未载入';$('#scheme-load-error').hidden=false;return}
   const results=await Promise.allSettled([getDesignData(),getJSON(scheme.manifest)]);
   data=results[0].status==='fulfilled'?results[0].value:null;manifest=results[1].status==='fulfilled'?results[1].value:{};
   if(!data){$('#loading-status').textContent='尺寸数据暂未载入';makeNavigation();showFallback('页面的尺寸数据暂未能载入，请稍后刷新。');return}

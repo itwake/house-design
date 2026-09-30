@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 const {chromium}=createRequire(import.meta.url)('playwright');
 const browser=await chromium.launch({headless:true,channel:'chrome'});
 const base='http://127.0.0.1:4173/',results=[],errors=[];
-const targetSchemes=process.argv.includes('--family-only')?['family']:['wood','suite','family','laundry'];
+const targetSchemes=process.argv.includes('--family-only')?['family']:['wood','family','laundry'];
 await mkdir('tmp',{recursive:true});
 try{
   for(const [name,width,height] of [['desktop',1440,1000],['mobile',390,844],['narrow',320,640]]){
@@ -15,7 +15,7 @@ try{
     page.setDefaultTimeout(60000);
     page.on('pageerror',e=>errors.push(name+': '+e.message));
     await page.goto(base);
-    assert.equal(await page.locator('[data-scheme-card]').count(),4);
+    assert.equal(await page.locator('[data-scheme-card]').count(),3);
     assert.equal(new URL(page.url()).pathname,'/','Chooser must not auto-redirect');
     assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Chooser overflow');
     if(name!=='narrow')await page.screenshot({path:'tmp/v343-'+name+'-chooser.png',fullPage:true});
@@ -40,7 +40,7 @@ try{
       assert.equal(await page.locator('[data-study-bookwall] .bay-references a').count(),isSuite?3:0,'Live source reference links');
       assert.equal(await page.locator('[data-suite-entry="private"]').count(),isSuite?1:0);
       const geometry=(await page.locator('#floor-plan').innerHTML());
-      if(isSuite){assert.ok(geometry.includes('（含入口）'));assert.equal(await page.locator('[data-hinged-door]').count(),4);assert.equal(await page.locator('[data-surface-slider="door_c"]').count(),1);assert.ok(geometry.includes('730 × 1530'));}
+      if(isSuite){assert.ok(geometry.includes('（含入口）'));assert.equal(await page.locator('[data-hinged-door]').count(),3);assert.equal(await page.locator('[data-surface-slider="door_c"]').count(),1);assert.ok(geometry.includes('730 × 1530'));}
       if(isSuite){
         for(const id of ['study_north_sofa','study_full_desk','bed_b_niche_console'])assert.equal(await page.locator(`#floor-plan [data-furniture-id="${id}"]`).count(),1,'Approved fitted component '+id);
         assert.equal(await page.locator('#floor-plan [data-sofa-face]').getAttribute('data-sofa-face'),'south');
@@ -127,7 +127,7 @@ try{
       await page.screenshot({path:`tmp/v343-${name}-${scheme}-low-bay-card.png`});
       await page.locator('#bay-dialog .dialog-close').click();
       await page.locator('.scheme-switch-button').click();
-      assert.equal(await page.locator('[data-scheme-card]').count(),4);
+      assert.equal(await page.locator('[data-scheme-card]').count(),3);
       results.push(name+'/'+scheme+': model/plan/render, header, card, walk, chooser'+(isSuite?', foyer detail':''));
       console.log('PASS '+results.at(-1));
     }

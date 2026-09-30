@@ -1,4 +1,4 @@
-// Regression name retained for compatibility; now verifies all four real layouts.
+// Regression name retained for compatibility; now verifies all three real layouts.
 // Offline tests of the real routing / viewer initialization code. No browser,
 // network or duplicate geometry renderer. WebGL and DOM layout are not tested.
 import assert from 'node:assert/strict';
@@ -18,7 +18,7 @@ const classes=new Set([...html.matchAll(/\bclass="([^"]+)"/g)].flatMap(m=>m[1].s
 const roomIds=['overall','living','dining','room_a','room_b','room_c','kitchen','bath_1','bath_2','balcony'];
 const retired=['terracotta','moss','cobalt'];
 const preference='house-design:room-card-visible';
-assert.deepEqual(catalog.schemes.map(s=>s.id),['wood','suite','family','laundry']);
+assert.deepEqual(catalog.schemes.map(s=>s.id),['wood','family','laundry']);
 assert.deepEqual(catalog.archivedPalettes.map(s=>s.id),retired);
 assert.equal(catalog.schemes[0].assetRevision,'3.4.2');
 assert.ok(catalog.futureSchemePolicy.includes('布局')&&catalog.futureSchemePolicy.includes('不作为新方案'));
@@ -27,7 +27,7 @@ for(const text of [entry,html,viewer]){
 }
 assert.ok(!html.includes('href="schemes.css'));
 assert.ok(entry.includes('data-layout-gallery'));
-assert.ok(['wood','suite','family','laundry'].every(id=>entry.includes(`data-scheme-card="${id}"`)));
+assert.ok(['wood','family','laundry'].every(id=>entry.includes(`data-scheme-card="${id}"`)));
 assert.notEqual(catalog.schemes[0].geometrySource,catalog.schemes[1].geometrySource);
 assert.notEqual(catalog.schemes[0].model,catalog.schemes[1].model);
 assert.ok(entry.includes('studio.html?scheme=wood&amp;v='+catalog.version));
@@ -87,7 +87,7 @@ for(const name of ['', 'index.html'])for(const hash of ['',...roomIds.map(id=>'#
   assert.equal(env.store.get(preference),'false');
 }
 let initialized=0;
-for(const style of ['', 'wood','suite','family','laundry',...retired])for(const room of roomIds){
+for(const style of ['', 'wood','family','laundry',...retired])for(const room of roomIds){
   const active=catalog.schemes.find(s=>s.id===style)||catalog.schemes[0];
   const env=environment(base+'studio.html?source=bookmark&v=old'+(style?'&scheme='+style:'')+'#'+room);
   vm.runInContext(viewer.replace(/^import .*\r?\n/gm,'').replace(/\binit\(\);\s*$/,''),env.context);
@@ -115,7 +115,7 @@ for(const style of ['', 'wood','suite','family','laundry',...retired])for(const 
   }
   initialized++;
 }
-for(const options of [{href:base+'studio.html?scheme=invalid#living'},{href:base+'studio.html',status:503},{href:base+'studio.html',catalogResponse:{...catalog,schemes:[...catalog.schemes,...catalog.archivedPalettes]}}]){
+for(const options of [{href:base+'studio.html?scheme=suite#living'},{href:base+'studio.html?scheme=invalid#living'},{href:base+'studio.html',status:503},{href:base+'studio.html',catalogResponse:{...catalog,schemes:[...catalog.schemes,...catalog.archivedPalettes]}}]){
   const env=environment(options.href,options);
   vm.runInContext(viewer.replace(/^import .*\r?\n/gm,'').replace(/\binit\(\);\s*$/,''),env.context);
   await vm.runInContext('init()',env.context);
@@ -151,4 +151,4 @@ const protectedTree=execFileSync('git',['ls-tree','-r',beforeSuite,'models','ass
 const protectedHashes=execFileSync('git',['hash-object','--stdin-paths'],{cwd,encoding:'utf8',input:protectedTree.map(x=>x.path).join('\n')+'\n'}).trim().split('\n');
 protectedTree.forEach((entry,i)=>assert.equal(protectedHashes[i],entry.sha,'Original layout asset unchanged: '+entry.path));
 console.log(`PASS: ${protectedTree.length} source/model/texture/render assets exactly preserved from ${beforeSuite}.`);
-console.log(`PASS: four-layout entry routes (including non-redirecting chooser), ${initialized} real viewer initializations, retired/unknown IDs, catalog failure, preserved room/hash/preferences/downloads, and ${paths.length} unchanged historical/texture assets and unchanged unrelated active source geometry. Offline tests do not test WebGL or browser layout.`);
+console.log(`PASS: three-layout entry routes (including non-redirecting chooser), ${initialized} real viewer initializations, retired/unknown IDs, catalog failure, preserved room/hash/preferences/downloads, and ${paths.length} unchanged historical/texture assets and unchanged unrelated active source geometry. Offline tests do not test WebGL or browser layout.`);
