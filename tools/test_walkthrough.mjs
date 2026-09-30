@@ -14,7 +14,10 @@ const catalog=JSON.parse(await read('models/design-schemes.json'));
 const activeScheme=catalog.schemes.find(s=>s.id===schemeId)||{id:schemeId,model:prefix+'huiyayuan-wood.glb'},hasLaundry=Boolean(data.laundry);
 const source=await read('studio.js'),html=await read('studio.html');
 const world=buildWalkWorld(data),near=(a,b,message)=>assert.ok(Math.abs(a-b)<1e-7,message||`${a} != ${b}`);
-if(family){assert.equal(world.obstacles.filter(o=>o.id.startsWith('garage-folded-leaf-')).length,4,'Four external folded-door collision leaves');}
+if(family){
+  assert.equal(world.obstacles.filter(o=>o.id.startsWith('garage-folded-leaf-')).length,data.familyEntryRevision?0:4,'Garage collision matches the actual door type');
+  if(data.familyEntryRevision)assert.ok(world.obstacles.find(o=>o.id==='garage-hinged-leaf'),'One east garage hinge remains physical in walking mode');
+}
 assert.equal(WALK_EYE_HEIGHT,1.6);assert.equal(WALK_RADIUS,.25);
 assert.equal(world.doors.length,7);
 assert.equal(world.rooms.length,8);
@@ -37,7 +40,7 @@ for(const f of data.bayFitouts)for(const p of f.parts)if(['desktop','chair'].inc
 // Four-neighbour grid links are checked with the actual swept movement too.
 const step=.05,grid=new Map(),key=(i,j)=>i+','+j;
 for(let i=0;i<=169;i++)for(let j=0;j<=281;j++){const x=i*step,z=j*step;if(world.canStand(x,z))grid.set(key(i,j),{i,j,x,z})}
-const entry=grid.get(key(86,260));assert.ok(entry);
+const entry=grid.get(key(family&&data.familyEntryRevision?92:86,260));assert.ok(entry,'Entry corridor seed avoids the current opened storage leaf');
 const queue=[entry],seen=new Set([key(entry.i,entry.j)]),reached=new Set();
 for(let head=0;head<queue.length;head++){
   const p=queue[head];reached.add(world.roomAt(p.x,p.z));

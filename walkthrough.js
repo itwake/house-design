@@ -80,6 +80,9 @@ export function buildWalkWorld(data){
   if(data.garage?.doorFoldDirection==='outward')for(const p of data.garage.parts.filter(p=>p.role==='folded-door')){
     rect('garage-'+p.id,p.x/100,p.y/100,p.w/100,p.d/100,'door-leaf');
   }
+  if(data.garage?.doorState==='hinged-open')for(const p of data.garage.parts.filter(p=>p.role==='hinged-door')){
+    rect('garage-'+p.id,p.x/100,p.y/100,p.w/100,p.d/100,'door-leaf');
+  }
   // This floor lamp is authored directly in build_blender.py, not in the
   // plan furniture list. Its 440 mm shade is the widest standing obstruction.
   // Keep the source coordinate/GLB bound regression in test_walkthrough.mjs.

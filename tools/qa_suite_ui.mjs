@@ -53,9 +53,11 @@ try{
       assert.ok((await page.locator('#download-glb').getAttribute('href')).includes('models/schemes/'+scheme+'/'));
       assert.equal(await page.locator('#floor-plan [data-garage-item]').count(),isFamily?2:0);
       if(isFamily){
-        assert.equal(await page.locator('[data-family-garage]').getAttribute('data-opening-face'),'north');
-        assert.equal(await page.locator('[data-garage-exit="north"]').count(),1);
-        assert.equal(await page.locator('[data-garage-item][data-rotation="90"]').count(),2);
+        const entryChanged=Boolean(design.familyEntryRevision),face=entryChanged?'east':'north';
+        assert.equal(await page.locator('[data-family-garage]').getAttribute('data-opening-face'),face);
+        assert.equal(await page.locator(`[data-garage-exit="${face}"]`).count(),1);
+        assert.equal(await page.locator(`[data-garage-item][data-rotation="${entryChanged?0:90}"]`).count(),2);
+        if(entryChanged){assert.equal(await page.locator('[data-garage-item="child_bike"]').getAttribute('data-z-cm'),'123');assert.equal(await page.locator('[data-garage-item="folded_stroller"]').getAttribute('data-z-cm'),'0');assert.equal(await page.locator('[data-garage-part="hinged-leaf"]').count(),1);}
       }
       if(await page.locator('#room-card').evaluate(e=>e.hidden))await page.locator('#toggle-room-card').click();
       assert.ok(await page.locator('#room-card').isVisible(),'Show card');
@@ -102,8 +104,15 @@ try{
         await page.locator('#project-storage-link').click();
         const garage=page.locator('#storage-fitout-cards [data-storage-card="family_garage"]');
         assert.equal(await garage.count(),1);
-        assert.ok((await garage.textContent()).includes('入户门关闭'));
-        assert.ok((await garage.textContent()).includes('1.80㎡')&&(await garage.textContent()).includes('北侧开口朝餐桌'));
+        assert.ok(/入户门关闭|关闭入户门/.test(await garage.textContent()));
+        if(design.familyEntryRevision){
+          const text=await garage.textContent();
+          assert.equal(await garage.getAttribute('data-storage-opening-face'),'east');
+          assert.ok(/0\.(?:975|98)㎡/.test(text)&&text.includes('抬放')&&text.includes('东侧'));
+          for(const expected of ['1230mm','610mm','720mm','4610mm','先关闭储物柜门'])assert.ok(text.includes(expected),'Current garage card contains '+expected);
+          for(const obsolete of ['NaN','undefined','北侧开口','四叶','900mm短','900短柜','餐桌及四椅不变'])assert.ok(!text.includes(obsolete),'No stale garage copy '+obsolete);
+        }
+        else assert.ok((await garage.textContent()).includes('1.80㎡')&&(await garage.textContent()).includes('北侧开口朝餐桌'));
         assert.equal(await garage.locator('.bay-references a').count(),2);
         await garage.locator('[data-storage-render]').click();
         await page.waitForFunction(()=>document.querySelector('#large-render').complete&&document.querySelector('#large-render').naturalWidth>0);

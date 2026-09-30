@@ -31,9 +31,20 @@ assert.ok(svg.includes('data-sofa-face="south"'),'Study sofa faces south, with b
 if(variant==='family'){
   assert.equal((svg.match(/data-family-garage=/g)||[]).length,1);
   assert.equal((svg.match(/data-garage-item=/g)||[]).length,2);
-  assert.equal((svg.match(/data-garage-part=/g)||[]).length,7);
-  assert.ok(svg.includes('1500×1200')&&svg.includes('取车时暂占前场'));
-  assert.ok(svg.includes('data-opening-face="north"')&&svg.includes('data-garage-exit="north"'));
+  if(data.familyEntryRevision){
+    const visible=data.garage.parts.filter(p=>p.role==='panel'||p.id==='hinged-leaf');
+    assert.equal((svg.match(/data-garage-part=/g)||[]).length,visible.length);
+    assert.ok(svg.includes('1500×650')&&svg.includes('抬放'));
+    assert.ok(svg.includes('data-opening-face="east"')&&svg.includes('data-garage-exit="east"'));
+    assert.ok(svg.includes('data-garage-part="hinged-leaf"'));
+    for(const item of data.garage.items){const tag=svg.match(new RegExp(`<g data-garage-item="${item.id}"[^>]+>`))?.[0];assert.ok(tag?.includes(`data-z-cm="${item.zCm||0}"`),'Plan distinguishes floor and upper vehicle '+item.id);}
+    const bases=data.storageFitouts.find(f=>f.id==='dining_sideboard_wall').parts.filter(p=>p.role==='sideboard_base');
+    for(const p of bases)assert.ok(svg.includes(`data-storage-part-id="${p.id}"`),'Plan contains actual full-length sideboard module '+p.id);
+  }else{
+    assert.equal((svg.match(/data-garage-part=/g)||[]).length,7);
+    assert.ok(svg.includes('1500×1200')&&svg.includes('取车时暂占前场'));
+    assert.ok(svg.includes('data-opening-face="north"')&&svg.includes('data-garage-exit="north"'));
+  }
 }
 if(data.laundry){
   assert.equal((svg.match(/data-laundry-machine=/g)||[]).length,2);

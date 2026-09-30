@@ -10,13 +10,17 @@ import {buildWalkWorld,findWalkStart,advanceWalk} from '../walkthrough.js';
 const root=new URL('../',import.meta.url),cwd=fileURLToPath(root);
 const read=async p=>JSON.parse(await readFile(new URL(p,root),'utf8'));
 const d=await read('models/schemes/family/design-data.json'),reference=await read('models/schemes/laundry/design-data.json');
-const base=JSON.parse(execFileSync('git',['show','9e9a10f:models/schemes/family/design-data.json'],{cwd,encoding:'utf8'}));
+const entryChanged=Boolean(d.familyEntryRevision),baseline=entryChanged?'0466fda':'9e9a10f';
+const base=JSON.parse(execFileSync('git',['show',baseline+':models/schemes/family/design-data.json'],{cwd,encoding:'utf8'}));
 const l=d.laundry,near=(a,b,message)=>assert.ok(Math.abs(a-b)<1e-7,message||`${a} != ${b}`);
 assert.ok(l,'Family scheme includes the laundry fitout, not just its text');
 const garageGeometry=garage=>Object.fromEntries(Object.entries(garage).filter(([key])=>key!=='conditions'));
-assert.deepEqual(garageGeometry(d.garage),garageGeometry(base.garage),'Compact garage geometry, vehicles, doors and metrics remain unchanged');
-assert.deepEqual(d.garage.conditions,base.garage.conditions.map(t=>t.replace('厨房、阳台、卧卫','厨房、卧卫')),'Only remove the obsolete balcony-preservation claim');
-for(const key of ['storageFitouts','envelope','windows','bayFitouts','wallFitouts','appearance'])assert.deepEqual(d[key],base[key],'Preserved family '+key);
+if(!entryChanged){
+  assert.deepEqual(garageGeometry(d.garage),garageGeometry(base.garage),'Compact garage geometry, vehicles, doors and metrics remain unchanged');
+  assert.deepEqual(d.garage.conditions,base.garage.conditions.map(t=>t.replace('厨房、阳台、卧卫','厨房、卧卫')),'Only remove the obsolete balcony-preservation claim');
+  assert.deepEqual(d.storageFitouts,base.storageFitouts,'Preserved family storage');
+}
+for(const key of ['envelope','windows','bayFitouts','wallFitouts','appearance'])assert.deepEqual(d[key],base[key],'Preserved family '+key);
 for(const room of d.rooms)assert.deepEqual(room,(['living','balcony'].includes(room.id)?reference:base).rooms.find(r=>r.id===room.id),'Room polygon '+room.id);
 assert.deepEqual(d.walls,reference.walls,'Only the reference balcony partition and short return move');
 assert.deepEqual(d.wallSpecs,reference.wallSpecs,'Moved partition retains its conditional structural status');
@@ -25,6 +29,7 @@ for(const key of ['alignment','counter','basin','machines','bookcase','parts'])a
 const removed=new Set(['洗烘塔','阳台家政柜']),moved=new Set(['三人沙发','茶几','电视薄柜']);
 for(const f of base.furniture){
   if(removed.has(f.name)||moved.has(f.name))continue;
+  if(entryChanged&&(['family_garage','family_sideboard'].includes(f.id)||/餐桌|餐椅/.test(f.name)))continue;
   assert.deepEqual(d.furniture.find(v=>(v.id||v.name)===(f.id||f.name)),f,'Preserved furniture '+f.name);
 }
 assert.ok(!d.furniture.some(f=>removed.has(f.name)),'No duplicated old stacked laundry fixtures');
@@ -45,7 +50,7 @@ for(const f of d.furniture)assert.ok(!overlap(lamp,f),'Lamp intersects '+f.name)
 near(l.bookcase.x-(fixture('三人沙发').x+fixture('三人沙发').w),70,'Sofa/bookcase aisle');
 near(fixture('三人沙发').y-(fixture('茶几').y+fixture('茶几').d),40,'Sofa/coffee-table aisle');
 near(fixture('茶几').y-(fixture('电视薄柜').y+fixture('电视薄柜').d),40,'TV/coffee-table aisle');
-near(fixture('餐椅北1').y-(fixture('三人沙发').y+fixture('三人沙发').d),60.5,'Sofa back / dining chair gap');
+near(fixture('餐椅北1').y-(fixture('三人沙发').y+fixture('三人沙发').d),entryChanged?155.5:60.5,'Sofa back / dining chair gap');
 near(l.counter.y-966,69,'Laundry operation band');
 const balconyDoor=d.doors.find(v=>v.id==='balcony_door');
 near(balconyDoor.x1-balconyDoor.sliding.frameDepthCm/2,l.bookcase.x,'Aligned door-frame and bookcase fronts');
@@ -58,7 +63,8 @@ assert.equal(world.roomAt(walked.x,walked.z),'balcony');
 assert.ok(world.obstacles.find(o=>o.id==='balcony_door-parked-leaves').z>10.4,'Slider stack stays south of the entry band');
 const floorLamp=world.obstacles.find(o=>o.id==='living-floor-lamp');
 near(floorLamp.x,3.13);near(floorLamp.z,7.13);
-assert.equal(world.obstacles.filter(o=>o.id.startsWith('garage-folded-leaf-')).length,4,'Garage door collision leaves remain');
+assert.equal(world.obstacles.filter(o=>o.id.startsWith('garage-folded-leaf-')).length,entryChanged?0:4,'Garage door collision leaves reflect current source');
+if(entryChanged)assert.ok(world.obstacles.find(o=>o.id==='garage-hinged-leaf'),'New storage hinge has an actual walk collider');
 // Preserve the real compact-garage take-out check against the merged living
 // furniture, rather than assuming the previous successful route still fits.
 const polygon=(x,y,w,h,angle=0)=>{
@@ -76,7 +82,7 @@ const fixed=d.furniture.filter(f=>!f.garageFitoutId).map(f=>({id:f.name,shape:po
 for(const p of d.garage.parts.filter(p=>p.zCm<105))fixed.push({id:p.id,shape:polygon(p.x+p.w/2,p.y+p.d/2,p.w,p.d)});
 fixed.push({id:'west wall',shape:polygon(206,1200,12,450)},{id:'kitchen wall',shape:polygon(536,1260,12,290)},{id:'south wall left',shape:polygon(296,1395,188,12)},{id:'south wall right',shape:polygon(663,1395,346,12)});
 let vehiclePoses=0;
-for(const item of d.garage.items){
+for(const item of entryChanged?[]:d.garage.items){
   const other=d.garage.items.find(o=>o!==item),parkedOther={id:'other parked vehicle',shape:polygon(other.x+other.w/2,other.y+other.d/2,other.w,other.d)};
   const check=(x,y,angle=0)=>{
     const shape=polygon(x,y,item.w,item.d,angle);
@@ -150,7 +156,9 @@ if(process.argv.includes('--glb')){
       if(n.mesh===undefined)continue;
       const meta={};for(let p=i;p!==undefined;p=parents.get(p))for(const [k,v]of Object.entries(g.nodes[p].extras||{}))if(meta[k]===undefined)meta[k]=v;
       const preservedRoom=['room_a','room_b','room_c','bath_1','bath_2','kitchen'].includes(meta.roomId);
-      if(!preservedRoom&&!meta.garageId&&!meta.storageFitoutId&&!/餐桌|餐椅/.test(meta.furnitureName||'')&&meta.fitoutId!=='bay_living_family')continue;
+      const unchangedStorage=meta.storageFitoutId&&(!entryChanged||meta.storageFitoutId!=='dining_sideboard_wall');
+      const unchangedGarage=!entryChanged&&meta.garageId,unchangedDining=!entryChanged&&/餐桌|餐椅/.test(meta.furnitureName||'');
+      if(!preservedRoom&&!unchangedGarage&&!unchangedStorage&&!unchangedDining&&meta.fitoutId!=='bay_living_family')continue;
       const triangles=[];
       for(const primitive of g.meshes[n.mesh].primitives){
         assert.equal(primitive.mode??4,4,'Protected mesh uses triangles');
@@ -176,10 +184,10 @@ if(process.argv.includes('--glb')){
     }
     return result;
   }
-  const originalBytes=execFileSync('git',['show','9e9a10f:'+scheme.model],{cwd,maxBuffer:200*1024*1024}),original=protectedGeometry(originalBytes),current=protectedGeometry(raw);
+  const originalBytes=execFileSync('git',['show',baseline+':'+scheme.model],{cwd,maxBuffer:200*1024*1024}),original=protectedGeometry(originalBytes),current=protectedGeometry(raw);
   assert.ok(original.size>300,'A substantial actual protected mesh set, not just source assertions');
   assert.deepEqual([...current.keys()].sort(),[...original.keys()].sort(),'Protected mesh set is unchanged');
   for(const [name,mesh]of original)assert.deepEqual(current.get(name),mesh,'Protected world-space triangles '+name);
   console.log(`PASS merged family GLB: ${l.parts.length} exact laundry/bookwall solids, two floor machines, aligned south-parking slider and ${original.size} protected baseline meshes with identical world-space triangles.`);
 }
-console.log(`PASS family merge: compact garage, four-chair dining and private rooms preserved; imported laundry/wall, collision-free living furniture/lamp, walkable balcony entrance and ${vehiclePoses} sampled vehicle take-out poses. Vehicle check excludes human handling and real hardware.`);
+console.log(`PASS family merge: private rooms and imported laundry/wall preserved, collision-free living furniture/lamp, walkable balcony entrance; ${entryChanged?'current entrance is independently checked by test_family_entry.mjs':vehiclePoses+' sampled north take-out poses'}. Human handling and real hardware require on-site checks.`);

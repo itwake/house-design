@@ -13,10 +13,10 @@ b=s.b
 b.MODEL_DIR=ROOT/'models/schemes/family'
 b.RENDER_DIR=ROOT/'assets/schemes/family'
 b.TEX_DIR=b.MODEL_DIR/'textures'
-b.VIEWS['dining']=((5.00,11.92,1.68),(3.10,10.65,1.05),19)
-b.VIEWS['entry-storage']=((4.66,12.04,1.60),(3.17,13.18,1.22),17)
-b.VIEWS['sideboard']=((4.56,12.20,1.60),(2.37,11.44,1.30),22)
-b.VIEWS['storage-library']=((3.80,11.48,1.55),(2.87,13.55,1.25),18)
+b.VIEWS['dining']=((4.95,12.84,1.68),(3.10,11.35,1.05),18)
+b.VIEWS['entry-storage']=((4.70,12.90,1.60),(3.20,13.60,1.25),17)
+b.VIEWS['sideboard']=((4.70,12.30,1.60),(2.40,10.90,1.30),19)
+b.VIEWS['storage-library']=((4.55,13.70,1.65),(2.75,13.55,1.35),18)
 laundry_spec=importlib.util.spec_from_file_location('family_laundry_builder',ROOT/'tools/build_laundry_layout.py')
 laundry=importlib.util.module_from_spec(laundry_spec);laundry_spec.loader.exec_module(laundry);laundry.b=b
 b.VIEWS['living']=((3.25,10.68,1.60),(6.50,8.20,1.25),20)
@@ -73,13 +73,14 @@ def garage(data):
         native={**f,'x':0,'y':0,'w':f.get('modelWidthCm',f['w']),'d':f.get('modelDepthCm',f['d'])}
         (child_bike if f['kind']=='child-bike' else stroller)(native)
         bpy.context.view_layer.update()
-        transform=(Matrix.Translation(((f['x']+f['w']/2)/100,-(f['y']+f['d']/2)/100,0))
+        transform=(Matrix.Translation(((f['x']+f['w']/2)/100,-(f['y']+f['d']/2)/100,f.get('zCm',0)/100))
                    @ Matrix.Rotation(-math.radians(f.get('rotationDeg',0)),4,'Z')
                    @ Matrix.Translation((-native['w']/200,native['d']/200,0)))
         for obj in set(bpy.context.scene.objects)-before:
             obj.matrix_world=transform @ obj.matrix_world
             obj['garageItemId']=f['id'];obj['garageId']=g['id']
             obj['garageRotationDeg']=f.get('rotationDeg',0)
+            obj['garageBaseCm']=f.get('zCm',0)
 
 def furnish(data):
     original_furnish({**data,'furniture':[f for f in data['furniture'] if not f.get('garageFitoutId') and not f.get('laundryFitoutId')]})
@@ -98,6 +99,7 @@ def manifest(data,openings,src):
         return v
     result=paths(result);result['schemeId']='family';result['garage']=data['garage']
     if data.get('garageRevision'):result['garageRevision']=data['garageRevision']
+    if data.get('familyEntryRevision'):result['familyEntryRevision']=data['familyEntryRevision']
     if data.get('laundry'):
         result['laundry']=data['laundry'];result['familyLaundryRevision']=data['familyLaundryRevision']
         for name,title in [('laundry-detail','并排洗烘与上方浅盆'),('living-wall','亲子客厅 · 整墙书架与阳台门')]:
@@ -113,16 +115,22 @@ def render(args):
     path=b.MODEL_DIR/'scene-manifest.json';result=json.loads(path.read_text(encoding='utf-8'))
     pos,target,lens=b.VIEWS['storage-library']
     result['layoutDetails']=[v for v in result.get('layoutDetails',[]) if v['id']!='storage-library']+[{
-        'id':'storage-library','title':'面厅紧凑800库 · 北侧折叠门打开示意','roomId':'living',
+        'id':'storage-library','title':'齐鞋柜800库 · 婴儿车落地、儿童车抬放示意' if result.get('familyEntryRevision') else '面厅紧凑800库 · 北侧折叠门打开示意','roomId':'living',
         'render':'assets/schemes/family/storage-library.jpg',
         'interiorCamera':{'position':b.three(pos),'target':b.three(target),'horizontalFov':round(math.degrees(2*math.atan(36/(2*lens))),2)}}]
     path.write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
     original_render(args)
 b.render=render
 original_lighting=b.lighting
+def entry_lighting():
+    # Presentation lighting only, not an electrical/illuminance design.
+    b.area('Family garage lower-level fill',(3.54,13.55,1.10),(2.70,13.55,.55),20,.16,(1,.96,.90))
+    b.area('Family garage upper-level fill',(3.54,13.55,2.04),(2.70,13.55,1.60),20,.12,(1,.96,.90))
+
 def lighting(data):
     original_lighting(data)
-    b.area('Family garage soft fill',(2.87,13.26,2.30),(2.87,13.65,.60),20,.65,(1,.96,.90))
+    if data.get('familyEntryRevision'):entry_lighting()
+    else:b.area('Family garage soft fill',(2.87,13.26,2.30),(2.87,13.65,.60),20,.65,(1,.96,.90))
 b.lighting=lighting
 
 if __name__=='__main__':b.main()

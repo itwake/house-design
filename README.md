@@ -4,7 +4,9 @@
 
 **在线查看：[itwake.github.io/house-design](https://itwake.github.io/house-design/)**
 
-最新 **V3.5.0 / 亲子储物合并家政整墙**：[进入方案2](https://itwake.github.io/house-design/studio.html?scheme=family&v=3.5.0)。保留面厅800库与原餐桌，合并并排洗烘、浅盆、外移阳台门和客厅整墙书架；沙发/茶几向北移以避开餐椅，沙发后约605mm仍紧凑。
+最新 **V3.5.1 / 入户储物齐鞋柜、餐柜归位**：[进入方案2](https://itwake.github.io/house-design/studio.html?scheme=family&v=3.5.1#dining)。储物库暂估1500×650mm、东开口朝入户玄关；婴儿车落地、儿童车抬放至1230mm平台，承重与实车操作待深化。恢复4610mm连续餐边柜，四人餐桌、四椅和吊灯向门口移950mm、向东移150mm；南椅拉出后约525mm仍紧凑。保留V3.5.0洗烘、浅盆、外移阳台门、整墙书架及所有卧卫几何。
+
+本轮以已发布`0466fda`为不可变基线，仅替换入户柜/餐柜、平移餐桌椅及依附灯具；`tools/test_family_entry.mjs --glb`核对分层车体、实体门板、连续柜体、保留构件世界坐标及全屋漫游连通。11张受影响公共区域重新渲染，8张未改私密房间明确保留来源，不冒充新照明渲染。
 
 **V3.4.3 / 方案3面厅紧凑800库**：[进入方案3](https://itwake.github.io/house-design/studio.html?scheme=family&v=3.4.3#dining)。储物库改为1500×1200mm、约1.80㎡，较原2.445㎡减少约26%；北侧开口朝厅内和餐桌，儿童车与折叠婴儿车纵向并排，上部350mm浅架。900mm短餐边柜向北移500mm，餐桌与四椅不再移动。取车须收好南餐椅，仍需实车排演；尺寸不是实测。方案1、2、4不改。详见[布局、条件与验证](docs/compact-family-storage-v343.md)。
 

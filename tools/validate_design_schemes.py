@@ -409,7 +409,7 @@ class Audit:
                 import subprocess
                 commit=retained.get('commit')
                 allowed_commits={'c2e5a5f399709185b2e843c64e622a0373927602','647d219fdc52e0bc71810f6a8e2daa97135be0cc'}
-                compact_family=sid=='family' and manifest.get('garageRevision',{}).get('version')=='3.4.3'
+                compact_family=sid=='family' and manifest.get('garageRevision',{}).get('version') in ('3.4.3','3.5.1')
                 if compact_family:allowed_commits.add('ac2b91d366b8aeb0f53744b03b1ca48f95e95fdc')
                 merged_family=sid=='family' and manifest.get('familyLaundryRevision',{}).get('version')=='3.5.0'
                 if merged_family:allowed_commits.add('9e9a10f8a6cca9a212b656e83940fd783094d6b9')
