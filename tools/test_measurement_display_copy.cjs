@@ -1,0 +1,34 @@
+// Read-only, DOM-free regression test for release-copy normalization.
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const vm=require('node:vm');
+const studio=fs.readFileSync(path.join(__dirname,'../studio.js'),'utf8');
+const start=studio.indexOf('function measurementDisplayCopy(');
+const end=studio.indexOf('function designNotes()',start);
+assert(start>=0&&end>start);
+const context=vm.createContext({data:null,descriptions:{}});
+vm.runInContext(studio.slice(start,end),context);
+const oldBalcony='客厅↔阳台开门为拟改造方案，现有模型西侧玻璃门不代表原结构。原门封墙改窗的具体边界待确认是否为厨房↔阳台；未确认前不新增该窗。';
+const oldLaundry='所有尺寸为现有模型中的条件推演，不是量房成果或施工图。';
+let checks=0;
+function check(condition){assert(condition);checks++}
+check(context.measurementDisplayCopy(oldBalcony)===oldBalcony);
+check(context.measurementDisplayCopy(oldLaundry)===oldLaundry);
+context.data={measurementRevision:{version:'3.6.0'}};
+const balcony=context.measurementDisplayCopy(oldBalcony);
+const laundry=context.measurementDisplayCopy(oldLaundry);
+check(balcony.includes('厨房大窗已纳入设计'));
+check(balcony.includes('不能据模型施工'));
+check(!balcony.includes('未确认前不新增该窗'));
+check(laundry.startsWith('家政设备与柜体尺寸'));
+check(laundry.includes('已采用的局部窗尺寸与待核墙线另见复尺明细'));
+check(context.measurementDisplayCopy('普通施工条件')==='普通施工条件');
+check(context.measurementDisplayCopy(balcony)===balcony);
+const note={roomId:'balcony',text:oldBalcony,status:'待确认'};
+const before=JSON.stringify(note);
+check(context.sourceNotes(note)[0].text===balcony);
+check(JSON.stringify(note)===before);
+check(context.sourceNotes([oldLaundry], 'balcony')[0].text===laundry);
+check(context.sourceNotes({roomId:'balcony',title:'现状提示',text:oldBalcony})[0].text==='现状提示：'+balcony);
+console.log(`PASS: ${checks} display-copy checks; source objects unchanged`);

@@ -12,13 +12,21 @@ const read=async path=>JSON.parse(await readFile(new URL(path,root),'utf8'));
 const d=await read('models/schemes/family/design-data.json'),rev=d.familyDiningRevision,p=d.pulloutDining;
 const baseline='a2b623c9813c0d2a664abf31ab575fc6c0fd2b0d';
 const base=JSON.parse(execFileSync('git',['show',baseline+':models/schemes/family/design-data.json'],{cwd,encoding:'utf8'}));
+const measurement=d.measurementRevision?.stage==='partial-confirmed';
+// This separate guard checks every allowed survey delta against the immutable
+// pre-survey source. It preserves all furniture/doors/room footprints and the
+// explicit unresolved chains rather than weakening the dining regression.
+if(measurement)await import('./test_measurement_revision.mjs');
 const near=(a,b,label)=>assert.ok(Math.abs(a-b)<1e-7,label||`${a} != ${b}`);
 const rect=f=>[f.x,f.y,f.w,f.d],fixture=name=>d.furniture.find(f=>f.name===name);
 const overlap=(a,b)=>Math.min(a.x+a.w,b.x+b.w)>Math.max(a.x,b.x)+1e-6&&Math.min(a.y+a.d,b.y+b.d)>Math.max(a.y,b.y)+1e-6;
 const overlap3=(a,b)=>overlap(a,b)&&Math.min((a.zCm||0)+a.hCm,(b.zCm||0)+b.hCm)>Math.max(a.zCm||0,b.zCm||0)+1e-6;
 assert.equal(rev.version,'3.5.3');assert.equal(rev.baselineCommit,baseline);assert.equal(rev.measured,false);
 assert.equal(p.version,'3.5.3');assert.equal(p.id,'family_pullout_dining');assert.equal(p.initialState,'expanded');near(WALK_RADIUS,.25);
-for(const key of ['unit','envelope','rooms','walls','wallSpecs','doors','windows','bayFitouts','wallFitouts','appearance','garageRevision','familyEntryRevision','familyFlowRevision'])assert.deepEqual(d[key],base[key],'Preserved calibrated geometry '+key);
+for(const key of ['unit','envelope','rooms','walls','wallSpecs','doors','windows','bayFitouts','wallFitouts','appearance','garageRevision','familyEntryRevision','familyFlowRevision']){
+  if(measurement&&['rooms','wallSpecs','windows','bayFitouts'].includes(key))continue; // Exact 2026-10-04 scope checked above, not arbitrary exemptions.
+  assert.deepEqual(d[key],base[key],'Preserved calibrated geometry '+key);
+}
 const garagePhysical=g=>Object.fromEntries(Object.entries(g).filter(([k])=>k!=='metrics'));
 assert.deepEqual(garagePhysical(d.garage),garagePhysical(base.garage),'Every physical garage component/item/operation is unchanged');
 assert.deepEqual(Object.fromEntries(Object.entries(d.garage.metrics).filter(([k])=>k!=='southChairPulledGapCm')),Object.fromEntries(Object.entries(base.garage.metrics).filter(([k])=>k!=='southChairPulledGapCm')),'Other garage metrics unchanged');near(d.garage.metrics.southChairPulledGapCm,84.75);
@@ -74,7 +82,7 @@ for(const [label,source]of datasets){
   counts[label]=connected(world,label);
 }
 let extraction=0;for(const item of d.garage.items)for(let x=item.x;x<=362;x++){const moved={...item,x};for(const q of d.garage.parts)assert.ok(!overlap3(moved,q),'Unchanged vehicle exit '+item.id+'/'+q.id);for(const f of d.furniture.filter(f=>!f.garageFitoutId))assert.ok(!overlap(moved,f),'Vehicle exit vs '+f.name);extraction++;}
-const catalog=await read('models/design-schemes.json'),scheme=catalog.schemes.find(s=>s.id==='family');assert.equal(scheme.assetRevision,'3.5.3');assert.ok(scheme.renderViews.includes('dining-closed'));assert.equal(scheme.renderViews.length,20);
+const catalog=await read('models/design-schemes.json'),scheme=catalog.schemes.find(s=>s.id==='family');assert.equal(scheme.assetRevision,measurement?'3.6.0':'3.5.3');assert.ok(scheme.renderViews.includes('dining-closed'));assert.equal(scheme.renderViews.length,20);
 if(process.argv.includes('--glb')){
   function decode(bytes){
     const length=bytes.readUInt32LE(12),g=JSON.parse(bytes.subarray(20,20+length)),bin=bytes.subarray(28+length),parents=new Map(),matrices=new Map();g.nodes.forEach((n,i)=>(n.children||[]).forEach(c=>parents.set(c,i)));
@@ -86,9 +94,69 @@ if(process.argv.includes('--glb')){
   const model=decode(await readFile(new URL(scheme.model,root))),previous=decode(execFileSync('git',['show',baseline+':'+scheme.model],{cwd,maxBuffer:200*1024*1024}));
   const bounds=items=>items.reduce((b,item)=>b.union(item.bounds),new THREE.Box3()),exact=(a,b,label,tol=.00004)=>assert.ok(a.every((v,i)=>Math.abs(v-b[i])<tol),label+' '+JSON.stringify({actual:a,expected:b}));
   const diningLight=name=>/^(Dining pendant ceiling rose|Pendant thin suspension|Organic linen pendant|Pendant opal diffuser)(?:[ ._]|$)/.test(name);
-  const allowed=m=>['dining_sideboard_wall','sofa_back_storage'].includes(m.meta.storageFitoutId)||m.meta.diningFitoutId===p.id||/餐桌|餐椅/.test(m.meta.furnitureName||'')||['三人沙发','茶几'].includes(m.meta.furnitureName)||diningLight(m.name);
+  const surveyWindowIds=new Set(['window_living_west','window_b','window_a','window_bath_1_east']);
+  const surveyWallIndices=new Set([0,3,7,12,13,14,19,20,21]);
+  const masterCeilingLight=m=>m.meta.roomId==='room_a'&&/^(Flush ceiling light|Opal ceiling diffuser)(?:[ ._]|$)/.test(m.name);
+  const balconyCeilingLight=m=>m.meta.roomId==='balcony'&&/^(Flush ceiling light|Opal ceiling diffuser)(?:[ ._]|$)/.test(m.name);
+  const surveyed=m=>measurement&&(surveyWindowIds.has(m.meta.openingId)||surveyWallIndices.has(m.meta.wallIndex)||(/^Skirting (\d+)/.test(m.name)&&[...surveyWallIndices,8,24].includes(Number(m.name.match(/^Skirting (\d+)/)[1])))||(m.meta.kind==='ceiling'&&m.meta.roomId==='room_a')||masterCeilingLight(m)||balconyCeilingLight(m));
+  if(measurement){
+    // Every exempt wall/window is audited from evaluated world-space vertices,
+    // including openings, lintels, segmented tops and skirtings. Fail closed if
+    // Blender cannot run; metadata-only source checks cannot substitute for it.
+    const blender=process.env.BLENDER_PATH||fileURLToPath(new URL('../.house-design-tools/blender-4.5.9-windows-x64/blender.exe',root));
+    const result=execFileSync(blender,['--background',fileURLToPath(new URL(scheme.model.replace(/\.glb$/,'.blend'),root)),'--python-exit-code','1','--python',fileURLToPath(new URL('tools/audit_measurement_native.py',root)),'--','family'],{cwd,encoding:'utf8',maxBuffer:20*1024*1024});
+    assert.ok(result.includes('"passed": true')&&result.includes('"scheme": "family"'),'Independent measured native audit passed');
+  }
+  const allowed=m=>['dining_sideboard_wall','sofa_back_storage'].includes(m.meta.storageFitoutId)||m.meta.diningFitoutId===p.id||/餐桌|餐椅/.test(m.meta.furnitureName||'')||['三人沙发','茶几'].includes(m.meta.furnitureName)||diningLight(m.name)||surveyed(m);
   const protectedOld=new Map(previous.filter(m=>!allowed(m)).map(m=>[m.name,m.geometry])),protectedNew=new Map(model.filter(m=>!allowed(m)).map(m=>[m.name,m.geometry]));
-  assert.ok(protectedOld.size>1400,'Actual unrelated geometry coverage, including all garage doors/vehicles/lamp');assert.deepEqual([...protectedNew.keys()].sort(),[...protectedOld.keys()].sort(),'Only explicit dining/living groups can change');for(const [name,hash]of protectedOld)assert.equal(protectedNew.get(name),hash,'Unchanged actual world triangles '+name);
+  assert.ok(protectedOld.size>(measurement?1250:1400),'Actual unrelated geometry coverage, including all garage doors/vehicles/lamp');
+  if(measurement){
+    // Rebuilding previously patched meshes renumbers Blender's .001 suffixes.
+    // Compare the complete multiset of real world-triangle hashes instead of
+    // labels: duplicate solids, deleted components and moved geometry all fail.
+    const currentProtected=model.filter(m=>!allowed(m)),oldProtected=previous.filter(m=>!allowed(m));
+    const unmatched=currentProtected.slice(),missing=[];
+    for(const old of oldProtected){const at=unmatched.findIndex(m=>m.geometry===old.geometry);if(at>=0)unmatched.splice(at,1);else missing.push(old);}
+    // Only these five reviewed solids cross a 10-micrometre hash rounding
+    // boundary during Blender's full export. Keep every triangle and vertex;
+    // allow index renumbering, never a bounding-box-only equivalence.
+    const floatExportNames=new Set(['Dried branch','Lamp base','Lamp upright','Pleated linen lampshade','Warm lamp bulb']);
+    const baseName=name=>name.replace(/\.\d+$/,'');
+    const worldTriangles=m=>{let offset=0;const triangles=m.topology.flatMap(indices=>{const size=Math.max(...indices)+1,result=[];for(let i=0;i<indices.length;i+=3)result.push(indices.slice(i,i+3).map(index=>m.vertices[offset+index]));offset+=size;return result;});assert.equal(offset,m.vertices.length,'All exported vertices are accounted for '+m.name);return triangles;};
+    const sameWorldTriangles=(a,b)=>{
+      if(a.vertices.length!==b.vertices.length||a.topology.length!==b.topology.length)return false;
+      const current=worldTriangles(a),old=worldTriangles(b);if(current.length!==old.length)return false;
+      const nearPoint=(p,q)=>p.every((value,axis)=>Math.abs(value-q[axis])<.00004);
+      const permutations=[[0,1,2],[0,2,1],[1,0,2],[1,2,0],[2,0,1],[2,1,0]];
+      for(const triangle of old){const i=current.findIndex(candidate=>permutations.some(order=>triangle.every((point,k)=>nearPoint(point,candidate[order[k]]))));if(i<0)return false;current.splice(i,1);}
+      return current.length===0;
+    };
+    const realChanges=[],floatAudit=[];let floatingPointReexports=0;
+    for(const old of missing){
+      const at=floatExportNames.has(baseName(old.name))?unmatched.findIndex(m=>baseName(m.name)===baseName(old.name)&&sameWorldTriangles(m,old)):-1;
+      if(at>=0){const current=unmatched.splice(at,1)[0];floatAudit.push({mesh:old.name,beforeBoundsM:old.bounds,afterBoundsM:current.bounds,triangleCount:worldTriangles(old).length,toleranceM:.00004});floatingPointReexports++;}else realChanges.push(old);
+    }
+    assert.equal(realChanges.length,0,'Protected world-triangle changes '+JSON.stringify({old:realChanges.map(m=>({name:m.name,bounds:m.bounds,meta:m.meta})),current:unmatched.map(m=>({name:m.name,bounds:m.bounds,meta:m.meta}))}));
+    assert.equal(unmatched.length,0,'No new protected solids');
+    assert.equal(floatingPointReexports,5,'Only the five individually reviewed microscopic reexports');
+    console.log('Microscopic full-export audit '+JSON.stringify(floatAudit));
+    console.log(`Preserved ${oldProtected.length} protected physical meshes; ${floatingPointReexports} use world-triangle-exact 0.04 mm float-export tolerance.`);
+  }else{
+    assert.deepEqual([...protectedNew.keys()].sort(),[...protectedOld.keys()].sort(),'Only explicit dining/living groups can change');for(const [name,hash]of protectedOld)assert.equal(protectedNew.get(name),hash,'Unchanged actual world triangles '+name);
+  }
+  if(measurement){for(const old of previous.filter(masterCeilingLight)){const current=model.find(m=>m.name===old.name);assert.ok(current);assert.deepEqual(current.topology,old.topology);assert.equal(current.vertices.length,old.vertices.length);old.vertices.forEach((v,i)=>exact(current.vertices[i],[v[0],v[1]+.09,v[2]],'Only master ceiling light raises 90 mm '+old.name+'/'+i));}}
+  if(measurement){
+    const audit=[];
+    for(const old of previous.filter(m=>/^Skirting 08(?:\.|$)/.test(m.name)||balconyCeilingLight(m))){
+      const current=model.find(m=>m.name===old.name),shift=balconyCeilingLight(old)?-.14375:-.2875;assert.ok(current);assert.deepEqual(current.topology,old.topology);assert.equal(current.vertices.length,old.vertices.length);
+      old.vertices.forEach((v,i)=>exact(current.vertices[i],[v[0]+shift,v[1],v[2]],'Exact regeneration alignment repair '+old.name+'/'+i));
+      const before=old.bounds.getCenter(new THREE.Vector3()),after=current.bounds.getCenter(new THREE.Vector3());
+      if(balconyCeilingLight(old)){const points=d.rooms.find(room=>room.id==='balcony').points;exact([after.x],[(Math.min(...points.map(p=>p[0]))+Math.max(...points.map(p=>p[0])))/200],'Balcony ceiling light tracks current room polygon');}
+      else assert.ok(Math.abs(after.x-6.5225)<.00004,'Former stranded skirting now follows the actually built balcony wall');
+      audit.push({mesh:old.name,beforeCenterM:before.toArray(),afterCenterM:after.toArray(),exactShiftXM:shift});
+    }
+    assert.equal(audit.length,3,'Only the explicitly reviewed 1 skirting + 2 balcony light solids realign');console.log('Explicit regeneration alignment audit '+JSON.stringify(audit));
+  }
   const coffeeOld=previous.filter(m=>m.meta.furnitureName==='茶几');let rigid=0;for(const old of coffeeOld){const current=model.find(m=>m.name===old.name);assert.ok(current);assert.deepEqual(current.topology,old.topology);assert.equal(current.vertices.length,old.vertices.length);old.vertices.forEach((v,i)=>exact(current.vertices[i],[v[0]+.20,v[1],v[2]],'Every coffee vertex '+old.name+'/'+i));rigid++;}
   const sofaMeshes=model.filter(m=>m.meta.furnitureName==='三人沙发'),rug=sofaMeshes.filter(m=>/Subtle flatwoven living rug/.test(m.name));assert.equal(rug.length,1);const rbox=bounds(rug),sbox=bounds(sofaMeshes.filter(m=>!rug.includes(m)));exact([rbox.min.x,rbox.min.z,rbox.max.x,rbox.max.z],[3.73,6.38,5.97,8.16],'Actual exact cropped rug');exact([sbox.min.x,sbox.min.z,sbox.max.x,sbox.max.z],[3.85,8.09,5.85,8.97],'Actual 200 cm sofa footprint');
   for(const f of [side,backFit])for(const q of f.parts.filter(q=>q.role!=='dining_accessories')){const meshes=model.filter(m=>m.meta.storageFitoutId===f.id&&m.meta.storagePartId===q.id);assert.ok(meshes.length,'Actual detailed cabinet '+q.id);const box=bounds(meshes);assert.ok(box.min.x>=q.x/100-.025&&box.max.x<=(q.x+q.w)/100+.025&&box.min.z>=q.y/100-.025&&box.max.z<=(q.y+q.d)/100+.025&&box.min.y>=q.zCm/100-.025&&box.max.y<=(q.zCm+q.hCm)/100+.025,'Cabinet inside exact source xyz envelope '+q.id);}

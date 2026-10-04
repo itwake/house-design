@@ -4,7 +4,9 @@
 
 **在线查看：[itwake.github.io/house-design](https://itwake.github.io/house-design/)**
 
-最新 **V3.5.3 / 抽拉餐桌与沙发背柜**：[进入方案2](https://itwake.github.io/house-design/studio.html?scheme=family&v=3.5.3#dining)。沙发暂改2000mm、较V3.5.2再东移200mm，书架前仍留600mm。背后设2000×250×650mm朝南移门浅柜。西餐柜局部外深440mm，参考 [Lunch +39原厂图](https://www.salice.com/ww/en/products/trasformabili/living/lunch-39)预留1200mm抽桌模块，桌面1155×705mm、高750mm，东侧两席、两端各一席，属于紧凑四席。网站可切换展开/收起；收桌前需挪椅，收起时四把完整椅子沿西柜单排停放，不假设全部隐藏。桌开合仅为两端状态示意，净安装包络、五金、板件、锚固及实际承载仍须原厂深化。入户折门、两车分层、卧卫、厨房及家政整墙实体保留。
+**当前 V3.6.0 / 局部复尺应用**：[进入方案2](https://itwake.github.io/house-design/studio.html?scheme=family&v=3.6.0#living)。三个方案更新了可独立采用的窗宽、窗高、台高与主卧分区净高，三种视图均提供「复尺明细」。全屋墙线尚未闭合，外轮廓、面积、厨房及阳台柜体净空仍为旧设计参考，不能视为全屋测绘完成。详见 [采用范围与待核记录](docs/measurement-revision-20261004.md)。以下为版本历史。
+
+**V3.5.3 / 抽拉餐桌与沙发背柜**：[进入方案2](https://itwake.github.io/house-design/studio.html?scheme=family&v=3.5.3#dining)。沙发暂改2000mm、较V3.5.2再东移200mm，书架前仍留600mm。背后设2000×250×650mm朝南移门浅柜。西餐柜局部外深440mm，参考 [Lunch +39原厂图](https://www.salice.com/ww/en/products/trasformabili/living/lunch-39)预留1200mm抽桌模块，桌面1155×705mm、高750mm，东侧两席、两端各一席，属于紧凑四席。网站可切换展开/收起；收桌前需挪椅，收起时四把完整椅子沿西柜单排停放，不假设全部隐藏。桌开合仅为两端状态示意，净安装包络、五金、板件、锚固及实际承载仍须原厂深化。入户折门、两车分层、卧卫、厨房及家政整墙实体保留。
 
 本轮以已发布`a2b623c`（V3.5.2）为不可变基线，调整客厅软装、沙发背柜及西餐柜抽拉餐桌；`tools/test_family_dining.mjs --glb`核对实际网格、桌椅两种状态、柜内安装空间及搁板与门扇间隙，并验证展开、四椅拉出和收起三种状态下的全屋漫游连通。全部卧卫、入户两车分层与双折门、厨房及家政实体保持不变。12张公共区域效果图重新渲染（含收桌状态），8张未改私密房间保留原始来源；这些均是模型推演，不是施工验收或动态五金认证。
 

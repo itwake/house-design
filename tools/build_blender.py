@@ -252,6 +252,69 @@ def clip_polygon(poly, axis, edge, greater):
     return result
 
 
+def room_height(data, room):
+    """Explicit room clear height; legacy data retains the global fallback."""
+    cm = float(room.get("heightCm", data.get("wallHeightCm", HEIGHT*100)))
+    if not math.isfinite(cm) or cm <= 0:
+        raise ValueError(f"Invalid room height for {room.get('id')}: {cm}")
+    return cm/100
+
+
+def matched_wall_spec(data, coords):
+    """Resolve specs by verified endpoints, never by an unchecked list index."""
+    def same(candidate):
+        if not isinstance(candidate, (list, tuple)) or len(candidate) != 4:
+            return False
+        reversed_coords = [coords[2], coords[3], coords[0], coords[1]]
+        return any(all(math.isclose(float(a), float(b), rel_tol=0, abs_tol=1e-7)
+                       for a, b in zip(candidate, target))
+                   for target in (coords, reversed_coords))
+    specs = [spec for spec in data.get("wallSpecs", []) if same(spec.get("coords"))]
+    if len(specs) > 1:
+        signatures = {(float(spec.get("heightCm", data.get("wallHeightCm", HEIGHT*100))),
+                       json.dumps(spec.get("heightSegments", []), sort_keys=True)) for spec in specs}
+        if len(signatures) > 1:
+            raise ValueError(f"Conflicting height specs for wall {coords}")
+    return specs[0] if specs else {}
+
+
+def wall_height(data, coords):
+    """Base wall height outside explicit measured height segments."""
+    spec = matched_wall_spec(data, coords)
+    fallback = float(data.get("wallHeightCm", HEIGHT*100))
+    cm = float(spec.get("heightCm", fallback))
+    if not math.isfinite(cm) or cm <= 0:
+        raise ValueError(f"Invalid wall height for {coords}: {cm}")
+    return cm/100
+
+
+def wall_height_profile(data, coords):
+    """(start,end,height) in metres; source segment endpoints are global cm."""
+    spec = matched_wall_spec(data, coords)
+    axis = 0 if math.isclose(coords[1], coords[3], rel_tol=0, abs_tol=1e-7) else 1
+    start, end = sorted((float(coords[axis]), float(coords[axis+2])))
+    base = wall_height(data, coords)
+    segments = []
+    for item in spec.get("heightSegments", []):
+        lo, hi, height = (float(item[k]) for k in ("fromCm", "toCm", "heightCm"))
+        if not all(math.isfinite(v) for v in (lo, hi, height)) or hi <= lo or height <= 0:
+            raise ValueError(f"Invalid height segment for wall {coords}: {item}")
+        if lo < start-1e-7 or hi > end+1e-7:
+            raise ValueError(f"Height segment lies outside its matched wall {coords}: {item}")
+        segments.append((lo, hi, height/100))
+    segments.sort()
+    for before, after in zip(segments, segments[1:]):
+        if before[1] > after[0]+1e-7:
+            raise ValueError(f"Overlapping height segments for wall {coords}")
+    cuts = sorted({start, end, *(v for segment in segments for v in segment[:2])})
+    profile = []
+    for lo, hi in zip(cuts, cuts[1:]):
+        mid = (lo+hi)/2
+        height = next((h for a,b,h in segments if a <= mid <= b), base)
+        profile.append((lo/100, hi/100, height))
+    return profile
+
+
 def floors(data):
     for room in data["rooms"]:
         rid, pts = room["id"], room["points"]
@@ -273,7 +336,7 @@ def floors(data):
                 y += dy
             row += 1
             x += dx
-        ceiling = polygon_mesh("Ceiling / " + rid, pts, HEIGHT, "Wall", "ceiling", rid)
+        ceiling = polygon_mesh("Ceiling / " + rid, pts, room_height(data, room), "Wall", "ceiling", rid)
         ceiling.hide_render = True
         ceiling.hide_set(True)
         # Ceiling faces must point down for interiors.
@@ -312,7 +375,10 @@ def load_openings(data):
 def geometry_bounds(data, openings):
     """Three-space bounds include projecting bay shells, not room floor area."""
     plan_points = [[x/100,y/100] for x,y in data["envelope"]]
-    highest = float(data.get("wallHeightCm",270))/100
+    highest = max([float(data.get("wallHeightCm",270))/100]
+                  + [room_height(data, room) for room in data.get("rooms", [])]
+                  + [height for raw in data.get("walls", [])
+                     for _,_,height in wall_height_profile(data, raw.get("coords", raw) if isinstance(raw, dict) else raw)])
     thickness = float(data.get("wallThicknessCm",12))/100
     for op in openings:
         if op.get("windowType")!="bay":continue
@@ -404,6 +470,7 @@ def wall_and_openings(data, openings):
     global CURRENT_ROOM
     for idx, raw in enumerate(data["walls"]):
         coords = raw.get("coords", raw) if isinstance(raw, dict) else raw
+        height_profile = wall_height_profile(data, coords)
         ax, ay, bx, by = [v/100 for v in coords]
         horizontal = abs(by-ay) < .001
         start, end = sorted((ax, bx) if horizontal else (ay, by))
@@ -429,14 +496,22 @@ def wall_and_openings(data, openings):
             if z <= .005:
                 # Skirting runs only on actual solid wall portions.
                 box(f"Skirting {idx:02}", cx, cy, .005, w + (.018 if not horizontal else 0), d + (.018 if horizontal else 0), .07, "Cream", .002, "wall", rid)
-        cursor = start
-        for lo, hi, op in sorted(ops, key=lambda p:p[0]):
-            seg(cursor, lo, 0, HEIGHT, "pier")
-            seg(lo, hi, 0, op["sill"], "sill")
-            top = op["sill"]+op["height"]
-            seg(lo, hi, top, HEIGHT-top, "lintel")
-            cursor = hi
-        seg(cursor, end, 0, HEIGHT, "pier")
+        # A shared wall can border rooms of different measured heights. Split
+        # at BOTH opening ends and height boundaries, retaining the wallIndex.
+        cuts = sorted({start, end, *(value for lo,hi,_ in height_profile for value in (lo,hi)),
+                       *(value for lo,hi,_ in ops for value in (lo,hi))})
+        for lo, hi in zip(cuts, cuts[1:]):
+            mid = (lo+hi)/2
+            local_height = next(height for a,b,height in height_profile if a-1e-7 <= mid <= b+1e-7)
+            aperture = next((op for a,b,op in ops if a <= mid <= b), None)
+            if aperture is None:
+                seg(lo, hi, 0, local_height, "pier")
+                continue
+            seg(lo, hi, 0, aperture["sill"], "sill")
+            top = aperture["sill"]+aperture["height"]
+            if top > local_height+.0001:
+                raise ValueError(f"Opening {aperture['id']} exceeds wall {idx} height: {top} > {local_height}")
+            seg(lo, hi, top, local_height-top, "lintel")
     for op in openings:
         opening_details(op, data)
 
@@ -1578,11 +1653,12 @@ def lighting(data):
         if room["id"]=="living":
             x,y=4.4,8.8
         energy=70 if room["tone"]=="wet" else 125
-        area("Interior ceiling bounce / "+room["id"],(x,y,2.59),(x,y,.1),energy,1.4,(1,.86,.68))
+        height_offset=room_height(data, room)-2.7
+        area("Interior ceiling bounce / "+room["id"],(x,y,2.59+height_offset),(x,y,.1),energy,1.4,(1,.86,.68))
         global CURRENT_ROOM
         CURRENT_ROOM=room["id"]
-        cylinder("Flush ceiling light",x,y,2.63,.15,.033,"Cream")
-        cylinder("Opal ceiling diffuser",x,y,2.625,.13,.008,"Lamp")
+        cylinder("Flush ceiling light",x,y,2.63+height_offset,.15,.033,"Cream")
+        cylinder("Opal ceiling diffuser",x,y,2.625+height_offset,.13,.008,"Lamp")
     dcx,dcy,dw,dd=dining_anchor(data)
     area("Dining ambient",(dcx,dcy-dd/14,2.60),(dcx,dcy-dd/14,0),100,1.5,(1,.87,.70))
 
@@ -1625,6 +1701,10 @@ def manifest(data, openings, src):
     for view,rid,_name in mapping:
         if rid in fitouts_by_room and view!="dining":
             desc[view]+=" "+fitouts_by_room[rid].get("summary","")
+    if data.get('measurementRevision'):
+        for view,rid,_name in mapping:
+            if view != 'dining' and rid in data['measurementRevision'].get('roomDescriptions', {}):
+                desc[view] = data['measurementRevision']['roomDescriptions'][rid]
     storage=data.get("storageFitouts",[])
     if storage:
         desc["dining"]="1.20 米四人餐桌与四椅沿用共享数据位置，双吊灯与餐桌对应。"+" ".join(item.get("summary","") for item in storage)
@@ -1638,6 +1718,9 @@ def manifest(data, openings, src):
         if view=="dining":cx,cy=3.7,12.2
         if view=="living":cx,cy=4.5,8.8
         rooms.append({"id":"dining" if view=="dining" else rid,"name":name,"area":round(polygon_area(pts),2),"points":[[x/100,y/100] for x,y in pts],"camera":{"position":[cx+3.0,5.2,cy+4],"target":[cx,.65,cy]},"interiorCamera":{"position":three(pos),"target":three(target),"horizontalFov":round(math.degrees(2*math.atan(36/(2*lens))),2),"fov":round(math.degrees(2*math.atan(24/(2*lens))),2)},"render":f"assets/blender-renders/{view}.jpg","description":desc[view],"features":["同一 Blender 场景生成模型和渲染","原木 · 奶油白 · 亚麻","门窗尺寸现场复尺"]})
+        if data.get("measurementRevision"):
+            rooms[-1]["heightCm"] = round(room_height(data, room)*100, 4)
+            rooms[-1]["measurementNote"] = "本轮仅应用已确认局部复尺；房间轮廓与面积仍为旧模型参考，具体已应用与待核项目见复尺明细。"
         if rid in fitouts_by_room and view!="dining":
             fitout=fitouts_by_room[rid]
             rooms[-1]["fitoutId"]=fitout["id"]
@@ -1649,6 +1732,9 @@ def manifest(data, openings, src):
             rooms[-1]["conditions"]=[condition for item in storage for condition in item.get("conditions",[])]
     result={"version":"3.0 Blender 原木实景模型","model":"models/huiyayuan-wood.glb","blend":"models/huiyayuan-wood.blend","units":"m","source":str(src.relative_to(ROOT)).replace("\\","/"),"sourceSha256":hashlib.sha256(src.read_bytes().replace(b"\r\n", b"\n")).hexdigest(),"bounds":{"min":[0,-.012,0],"max":[8.41,2.7,14.01]},"overviewCamera":{"position":three(VIEWS["overall"][0]),"target":three(VIEWS["overall"][1])},"overallRender":"assets/blender-renders/overall.jpg","rooms":rooms,"openings":openings,"design":{"style":"现代原木","palette":["#eee9df","#bb956b","#d4c9b5","#758364","#b98165"]},"notes":["真实网格由厘米平面数据转换为米；渲染与交互使用同一 Blender 场景。","整体与房间鸟瞰采用可拆墙展示；室内机位使用完整墙体与实际开口。","C 级门窗、层高与统一墙厚仍为待现场复尺的建模假设。"]}
     result["bounds"]=geometry_bounds(data,openings)
+    if data.get("measurementRevision"):
+        result["measurementRevision"] = data["measurementRevision"]
+        result["notes"].append("本轮仅应用明确的局部复尺值；未闭合的外轮廓、墙位及房间面积仍保留旧模型参考，不是完整实测施工图。")
     detail_views={"office_vanity":"bay-master","bare_ledge":"bay-master","tea_seat":"bay-tea","family_desk":"bay-living","clear_ledge":"bay-living","low_lounge":"bay-living"}
     result["bayDetails"]=[]
     for fitout in data.get("bayFitouts",[]):
@@ -1663,7 +1749,7 @@ def manifest(data, openings, src):
     if storage:
         result["notes"].append("入户右侧浅鞋柜与左侧7字杯盘柜独立分腔；仅餐柜北两模块设闭合浅抽屉，250 mm 伸出限位、进出通道及桌椅退让均属条件校核，其余下柜为满高移门。封闭转角不计可用容量。柜体锚固、灯带/插座、门套把手限位、电箱与实际净深必须现场深化。")
     if any(op.get("windowType")=="bay" for op in openings):
-        result["notes"].append(BAY_NOTE)
+        result["notes"].append(data['measurementRevision']['summary'] if data.get('measurementRevision') else BAY_NOTE)
     if data.get('livingBayRevision'):
         result['livingBayRevision']=data['livingBayRevision']
         result['notes']=[note.replace('客厅双人桌保留。','客厅窗前桌椅已移除，原台高待复尺。') for note in result['notes']]

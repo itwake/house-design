@@ -16,10 +16,14 @@ from __future__ import annotations
 
 import argparse
 import ast
+import copy
 import hashlib
 import json
 import math
+import re
+import shutil
 import struct
+import subprocess
 import sys
 from pathlib import Path
 from urllib.parse import urlparse
@@ -62,6 +66,109 @@ def relative_file(value):
 
 def load_json(path):
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+WINDOW_COPY_FIELDS = {('window_b', 'name'), ('window_b', 'designScenario'),
+                      ('window_living_west', 'designScenario')}
+WINDOW_COPY_OLD_FRAME_VIEWS = set(VIEWS) - {'sideboard'}
+
+
+def metadata_only_source_alias(data, manifest, actual_source_hash, blend_hash, glb_hash):
+    """Return one proved old source hash, never a general source-hash bypass.
+
+    The refresh tool stores a single common before/after mesh signature only
+    after comparing the two actual states. This verifier checks that signature's
+    schema and the unchanged native files; it does not pretend to decode .blend.
+    The source proof itself is independently replayed byte-for-byte using the
+    migration writer's exact JavaScript serialization.
+    """
+    proof = manifest.get('metadataOnlySourceRefresh')
+    if proof is None:
+        return None
+    def require(condition, message):
+        if not condition:
+            raise ValueError('metadata-only source refresh: ' + message)
+    def is_sha(value):
+        return isinstance(value, str) and re.fullmatch(r'[0-9a-f]{64}', value) is not None
+    require(isinstance(proof, dict), 'proof must be an object')
+    require(data.get('measurementRevision', {}).get('version') == '3.6.0' and
+            proof.get('date') == data.get('measurementRevision', {}).get('date') == '2026-10-04',
+            'this exception applies only to the reviewed partial-measurement revision')
+    old_hash = proof.get('oldSourceSha256')
+    require(is_sha(old_hash) and old_hash != actual_source_hash, 'old source SHA must be distinct and well-formed')
+    require(proof.get('currentSourceSha256') == manifest.get('sourceSha256') == actual_source_hash,
+            'current source SHA must equal the actual source bytes')
+    require(proof.get('nativeBlendSha256') == blend_hash and is_sha(blend_hash),
+            'native Blender hash must match the actual unchanged file')
+    require(proof.get('nativeGlbSha256') == glb_hash and is_sha(glb_hash),
+            'native GLB hash must match the actual unchanged file')
+    common = proof.get('meshStateBeforeAndAfter')
+    require(isinstance(common, dict) and set(common) == {'sha256', 'meshObjects', 'meshDatablocks'},
+            'common before/after mesh-state schema is invalid')
+    require(is_sha(common.get('sha256')) and type(common.get('meshObjects')) is int and
+            type(common.get('meshDatablocks')) is int and
+            0 < common['meshDatablocks'] <= common['meshObjects'],
+            'common before/after mesh signature and positive counts are required')
+    preserved = proof.get('previousRenderRecordsPreserved')
+    scheme_id = manifest.get('schemeId')
+    require(scheme_id in ACTIVE_IDS and type(preserved) is int and preserved == (14 if scheme_id == 'wood' else 0),
+            'only the 14 reviewed wood frames may retain their original text-source SHA')
+    changes = proof.get('changes')
+    require(isinstance(changes, list) and len(changes) == len(WINDOW_COPY_FIELDS),
+            'exactly the three reviewed window copy changes are permitted')
+    windows = data.get('windows')
+    require(isinstance(windows, list) and all(isinstance(w, dict) and isinstance(w.get('id'), str) for w in windows),
+            'current window collection is malformed')
+    require(len({w['id'] for w in windows}) == len(windows), 'current window IDs must be unique')
+    restored = copy.deepcopy(data)
+    by_id = {w['id']: w for w in restored['windows']}
+    seen = set()
+    expected_keys = {'window', 'field', 'beforePresent', 'before', 'afterPresent', 'after'}
+    for change in changes:
+        require(isinstance(change, dict) and set(change) == expected_keys, 'copy change schema is invalid')
+        require(isinstance(change['window'], str) and isinstance(change['field'], str), 'copy field identity must be text')
+        key = (change['window'], change['field'])
+        require(key in WINDOW_COPY_FIELDS and key not in seen, 'unreviewed or duplicate copy field')
+        seen.add(key)
+        require(change['window'] in by_id, 'copy change references an absent window')
+        require(type(change['beforePresent']) is bool and type(change['afterPresent']) is bool,
+                'field-presence flags must be explicit booleans')
+        for prefix in ('before', 'after'):
+            require(isinstance(change[prefix], str) if change[prefix+'Present'] else change[prefix] is None,
+                    'present copy must be text; absent copy must carry null')
+        window = by_id[change['window']]
+        field = change['field']
+        require((field in window) == change['afterPresent'] and
+                (not change['afterPresent'] or window[field] == change['after']),
+                'after value or presence does not match actual current data')
+        require((change['beforePresent'], change['before']) != (change['afterPresent'], change['after']),
+                'copy entry is not a real change')
+        if change['beforePresent']:
+            window[field] = change['before']
+        else:
+            window.pop(field, None)
+    require(seen == WINDOW_COPY_FIELDS, 'reviewed copy fields are missing')
+    node = shutil.which('node')
+    require(bool(node), 'Node is required to reproduce the source writer exactly')
+    try:
+        result = subprocess.run([node, '-e',
+                                 "const fs=require('fs');process.stdout.write(JSON.stringify(JSON.parse(fs.readFileSync(0,'utf8')),null,2)+'\\n');"],
+                                input=json.dumps(restored, ensure_ascii=False).encode('utf-8'),
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, timeout=30)
+    except (OSError, subprocess.SubprocessError) as exc:
+        raise ValueError('metadata-only source refresh: source reconstruction failed') from exc
+    require(sha(result.stdout.replace(b'\r\n', b'\n')) == old_hash,
+            'whitelisted reverse changes do not reproduce the old source SHA')
+    return old_hash
+
+
+def frame_source_matches(record, manifest, source_hash, blend_hash, proved_old_source=None):
+    if record.get('baseBlendSha256') != blend_hash or manifest.get('baseBlendSha256') != blend_hash:
+        return False
+    if manifest.get('sourceSha256') != source_hash:
+        return False
+    return record.get('sourceSha256') == source_hash or (
+        proved_old_source is not None and record.get('sourceSha256') == proved_old_source)
 
 
 def multiply(a, b):
@@ -306,6 +413,7 @@ class Audit:
         self.errors = []
         self.waiting = []
         self.details = {}
+        self.proved_metadata_source = None
 
     def check(self, condition, success, failure=None):
         if condition:
@@ -385,9 +493,18 @@ class Audit:
             records = manifest.get('renderedViews', {})
             self.check(len(views) == len(records) == 20 and 'dining-closed' in views,
                        'family: all 20 endpoint/private views have final provenance')
-            self.check(sum(not record.get('retainedFrom') for record in records.values()) == 12 and
-                       sum(bool(record.get('retainedFrom')) for record in records.values()) == 8,
-                       'family: exactly 12 current public frames and 8 honest retained private frames')
+            if manifest.get('measurementRevision'):
+                self.check(all(not record.get('retainedFrom') for record in records.values()),
+                           'family: measured window/height revision uses 20 fresh frames, no retained old-height references')
+            else:
+                self.check(sum(not record.get('retainedFrom') for record in records.values()) == 12 and
+                           sum(bool(record.get('retainedFrom')) for record in records.values()) == 8,
+                           'family: exactly 12 current public frames and 8 honest retained private frames')
+        if manifest.get('measurementRevision'):
+            self.check(len(manifest.get('renderedViews', {})) == len(views) and
+                       all(not r.get('retainedFrom') for r in manifest.get('renderedViews', {}).values()),
+                       f'{sid}: all partial-measurement renders are freshly generated from the current scene')
+        if dining_revision:
             expanded, closed = records.get('dining', {}), records.get('dining-closed', {})
             self.check(bool(expanded) and bool(closed) and expanded.get('cameraState') == closed.get('cameraState') and
                        expanded.get('imageSha256') != closed.get('imageSha256'),
@@ -418,6 +535,9 @@ class Audit:
             self.check(record.get("imageSha256") == image_hash, f"{sid}/{name}: actual JPEG hash matches final frame record")
             retained = record.get('retainedFrom')
             if retained:
+                if manifest.get('measurementRevision'):
+                    self.check(False, f'{sid}/{name}: partial-measurement revision rejects all retained historical geometry frames')
+                    continue
                 import subprocess
                 commit=retained.get('commit')
                 allowed_commits={'c2e5a5f399709185b2e843c64e622a0373927602','647d219fdc52e0bc71810f6a8e2daa97135be0cc'}
@@ -448,7 +568,9 @@ class Audit:
                                f'family/{name}: final render explicitly records the correct physical dining endpoint')
                 self.check(record.get("baseBlendSha256") == manifest.get("baseBlendSha256") == self.base_blend_hash,
                            f"{sid}/{name}: frame belongs to actual final baseline Blender scene")
-                self.check(record.get("sourceSha256") == manifest.get("sourceSha256") == self.source_hash,
+                old_copy_source = self.proved_metadata_source if sid == 'wood' and name in WINDOW_COPY_OLD_FRAME_VIEWS else None
+                self.check(frame_source_matches(record, manifest, self.source_hash, self.base_blend_hash,
+                                                old_copy_source),
                            f"{sid}/{name}: frame belongs to current source geometry")
             if sid in ACTIVE_IDS:
                 frame = {"engine": "CYCLES", "width": spec["width"], "height": spec["height"],
@@ -603,6 +725,18 @@ class Audit:
             self.details[sid]["blendSha256"] = sha(relative_file(scheme["blend"]).read_bytes())
             self.details[sid]["embeddedTextureCount"] = len(glbs[sid].image_hashes)
             self.details[sid]["textureSetHash"] = json_hash(sorted(set(glbs[sid].image_hashes)))
+            self.proved_metadata_source = None
+            try:
+                self.proved_metadata_source = metadata_only_source_alias(
+                    load_json(layout_source), manifest, current_source_hash,
+                    self.details[sid]['blendSha256'], self.details[sid]['modelSha256'])
+                if self.proved_metadata_source:
+                    self.check(manifest['metadataOnlySourceRefresh'].get('previousRenderRecordsPreserved') == (14 if sid == 'wood' else 0),
+                               f'{sid}: source-copy exception is limited to the 14 reviewed wood frames and no other scheme')
+                    self.check(True, f'{sid}: three reversible copy-only changes reproduce old source SHA with unchanged native assets')
+                    self.details[sid]['validatedMetadataOnlySourceSha256'] = self.proved_metadata_source
+            except ValueError as exc:
+                self.check(False, f'{sid}: {exc}')
             self.renders(scheme, manifest)
         if self.archived:
             self.check(len(appearance_hashes) == 3 and len(set(appearance_hashes)) == 3, "Three archived appearance definitions have distinct hashes")
