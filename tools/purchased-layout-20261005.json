@@ -1,0 +1,61 @@
+{
+  "unit": "cm",
+  "coordinateConvention": "Plan top-left x/y, positive x east, positive y south; sofa faces north. Dimensions are current-model conditional design, not surveyed clearances.",
+  "chairCountAssumption": 4,
+  "products": {
+    "sofa": {"articleNumber":"S39635114","productName":"IKEA VIMLE 三人沙发 · 克奈贝克浅米色","w":241,"d":98,"heightCm":83,"armWidthCm":15,"seatWidthCm":211,"seatDepthCm":55,"seatHeightCm":48},
+    "table": {"articleNumber":"80365717","productName":"IKEA LISABO 桌子 · 白蜡木贴面","w":140,"d":78,"heightCm":74,"fixed":true},
+    "chair": {"articleNumber":"80457236","productName":"IKEA LISABO 椅子 · 白蜡木","w":46,"d":51,"heightCm":80,"seatHeightCm":45}
+  },
+  "schemes": {
+    "family": {
+      "furniture": [
+        {"name":"三人沙发","productKey":"sofa","x":344,"y":809,"w":241,"d":98,"heightCm":83,"face":"north"},
+        {"name":"四人餐桌","productKey":"table","x":320,"y":1040,"w":140,"d":78,"heightCm":74,"face":"north"},
+        {"name":"餐椅北1","productKey":"chair","x":332,"y":976.5,"w":46,"d":51,"heightCm":80,"face":"south"},
+        {"name":"餐椅北2","productKey":"chair","x":402,"y":976.5,"w":46,"d":51,"heightCm":80,"face":"south"},
+        {"name":"餐椅南1","productKey":"chair","x":332,"y":1130.5,"w":46,"d":51,"heightCm":80,"face":"north"},
+        {"name":"餐椅南2","productKey":"chair","x":402,"y":1130.5,"w":46,"d":51,"heightCm":80,"face":"north"}
+      ],
+      "relatedFurniture": [{"id":"family_sofa_back_storage","x":385,"y":909,"w":200,"d":25,"heightCm":65,"face":"south","partsTranslationCm":{"x":0,"y":10}}],
+      "clearancesCm": {"sofaToEastBookcase":60,"westSideboardToSofa":91.5,"coffeeToSofa":40,"sofaToBackStorage":2,"westSideboardToTable":67.5,"local44cmCabinetToTableMinimum":63.5,"tableEastToKitchenWallMinimum":70,"southChairEastToKitchenWall":82,"southChairPulledToNorthReturn":68.5,"northChairPulledToBackStorage":12.5},
+      "notes": ["固定横放桌，南北各两把椅；原抽拉桌与收起状态移除。","背柜只向南移10cm，保留200cm宽和东侧对齐；茶几与地毯原位。","北椅拉出30cm后与背柜仅12.5cm，不是椅后通道；从两端侧向入座，主要绕行走餐桌两端。","沙发西侧至普通餐柜91.5cm，东侧书架前60cm；桌西侧普通柜段67.5cm、局部44cm深柜段仅63.5cm，属于紧凑单人通道，不是舒适或无障碍认证。","取车时餐椅回到默认位、入户门先关闭，车辆移到门扇扫区外后才开门。"]
+    },
+    "wood": {
+      "furniture": [
+        {"name":"三人沙发","productKey":"sofa","x":414,"y":901,"w":241,"d":98,"heightCm":83,"face":"north"},
+        {"name":"四人餐桌","productKey":"table","x":320,"y":1106,"w":140,"d":78,"heightCm":74,"face":"north"},
+        {"name":"餐椅北1","productKey":"chair","x":332,"y":1042.5,"w":46,"d":51,"heightCm":80,"face":"south"},
+        {"name":"餐椅北2","productKey":"chair","x":402,"y":1042.5,"w":46,"d":51,"heightCm":80,"face":"south"},
+        {"name":"餐椅南1","productKey":"chair","x":332,"y":1196.5,"w":46,"d":51,"heightCm":80,"face":"north"},
+        {"name":"餐椅南2","productKey":"chair","x":402,"y":1196.5,"w":46,"d":51,"heightCm":80,"face":"north"}
+      ],
+      "clearancesCm": {"sofaEastToWall":20,"westSideboardToSofa":161.5,"coffeeToSofa":50,"westSideboardToTable":67.5,"tableEastToKitchenWall":70,"southChairEastToKitchenWall":82,"southChairPulledToSouthReturn":71.5,"northChairPulledToSofa":13.5},
+      "notes": ["沙发保留东缘655与南缘999cm；扩大21cm向西、增深10cm向北。","餐桌保留原中心390/1145cm；北椅拉出后的椅后窄带不作通道，走桌两端。"]
+    },
+    "laundry": {
+      "furniture": [
+        {"name":"三人沙发","productKey":"sofa","x":344,"y":901,"w":241,"d":98,"heightCm":83,"face":"north"},
+        {"name":"四人餐桌","productKey":"table","x":320,"y":1106,"w":140,"d":78,"heightCm":74,"face":"north"},
+        {"name":"餐椅北1","productKey":"chair","x":332,"y":1042.5,"w":46,"d":51,"heightCm":80,"face":"south"},
+        {"name":"餐椅北2","productKey":"chair","x":402,"y":1042.5,"w":46,"d":51,"heightCm":80,"face":"south"},
+        {"name":"餐椅南1","productKey":"chair","x":332,"y":1196.5,"w":46,"d":51,"heightCm":80,"face":"north"},
+        {"name":"餐椅南2","productKey":"chair","x":402,"y":1196.5,"w":46,"d":51,"heightCm":80,"face":"north"}
+      ],
+      "clearancesCm": {"sofaToEastBookcase":60,"westSideboardToSofa":91.5,"coffeeToSofa":50,"westSideboardToTable":67.5,"tableEastToKitchenWall":70,"southChairEastToKitchenWall":82,"southChairPulledToSouthReturn":71.5,"northChairPulledToSofa":13.5},
+      "notes": ["新沙发保持南缘999cm，向北增深10cm；东缘585cm，书架前仍留60cm紧凑取物带。","餐桌保留原中心390/1145cm；茶几、地毯和家政柜无须移动。"]
+    }
+  },
+  "checks": {
+    "chairPullbackCm":30,
+    "chairTableGapCm":12.5,
+    "chairPlacementModel":"Full official chair footprint with no under-table overlap assumed; each north/south chair translates away from the table by up to 30cm.",
+    "walkthroughSource":"walkthrough.js buildWalkWorld; existing walls, door leaves, cabinets and lamp collision footprints retained",
+    "gridCm":2.5,
+    "virtualBodyDiametersCm":[50,60],
+    "startCm":[430,1345],
+    "targets":"north corridor, kitchen and east living approach",
+    "result":"Both default seating and all-four-chairs-pulled states connect in all three candidates; exact measured clearance/certification is not implied.",
+    "vehicleRouteCondition":"Chair default positions; existing measured-placeholder vehicle sizes, one at a time. Existing extraction direction and lifting requirement retained; full human-handling and actual hardware sweep not certified."
+  }
+}

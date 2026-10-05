@@ -131,7 +131,7 @@ def configure_views(b,data):
     global SHELF_PART_IDS
     SHELF_PART_IDS={p['id'] for f in data.get('storageFitouts',[])
                     if f['id'] in ('dining_sideboard_wall','sofa_back_storage')
-                    for p in f['parts'] if p['role']=='sideboard_base'} if data.get('familyDiningRevision') else set()
+                    for p in f['parts'] if p['role']=='sideboard_base'} if data.get('familyDiningRevision') or data.get('purchasedFurnitureRevision') else set()
     if not data.get('familyDiningRevision'):return
     # A common real camera makes the two endpoint photos directly comparable.
     table=data['pulloutDining']['table']

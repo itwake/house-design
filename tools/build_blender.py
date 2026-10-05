@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.util
 import json
 import math
 import random
@@ -1515,7 +1516,12 @@ def furnish(data):
         CURRENT_ROOM=f.get("roomId") or room_at(x+w/2,y+d/2,data["rooms"])
         n=f["name"]
         before=set(bpy.context.scene.objects)
-        if "床" in n and "柜" not in n:
+        if f.get("purchasedProductId"):
+            spec=importlib.util.spec_from_file_location("purchased_furniture",ROOT/"tools/purchased_furniture.py")
+            purchased=importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(purchased)
+            purchased.build(f,globals())
+        elif "床" in n and "柜" not in n:
             bed(f,"日床" in n)
         elif "沙发" in n:
             sofa(f)
@@ -1563,6 +1569,8 @@ def furnish(data):
         else:
             block(n,x,y,0,w,d,.70,mat="Oak")
         for obj in set(bpy.context.scene.objects)-before:
+            if obj.get("purchasedFurnitureRug"):
+                continue
             obj["furnitureId"]=str(f.get("id") or f.get("furnitureId") or n)
             obj["furnitureName"]=n
             if "face" in f:obj["furnitureFace"]=f["face"]
@@ -1754,6 +1762,14 @@ def manifest(data, openings, src):
         result['livingBayRevision']=data['livingBayRevision']
         result['notes']=[note.replace('客厅双人桌保留。','客厅窗前桌椅已移除，原台高待复尺。') for note in result['notes']]
         result['notes'].append(next(f for f in data['bayFitouts'] if f['roomId']=='living')['summary'])
+    if data.get("purchasedFurnitureRevision"):
+        revision=data["purchasedFurnitureRevision"]
+        result["purchasedFurnitureRevision"]=revision
+        for room in result["rooms"]:
+            if room["id"] in revision.get("roomDescriptions",{}):
+                room["description"]=revision["roomDescriptions"][room["id"]]
+        if revision.get("summary"):
+            result["notes"].append(revision["summary"])
     (MODEL_DIR/"scene-manifest.json").write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding="utf-8")
 
 

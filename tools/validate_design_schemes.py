@@ -488,6 +488,12 @@ class Audit:
         prefix = scheme.get('renderDirectory') or ("assets/blender-renders" if sid == "wood" else f"assets/schemes/{sid}")
         views = scheme.get("renderViews", VIEWS)
         expected = {f"{prefix}/{name}.jpg" for name in views}
+        if manifest.get('purchasedFurnitureRevision'):
+            self.check(len(views) == {'wood': 15, 'family': 19, 'laundry': 18}[sid] and
+                       set(manifest.get('renderedViews', {})) == set(views) and 'dining-closed' not in views,
+                       f'{sid}: exact final purchased-furniture render inventory; fixed table has no closed state')
+            self.check(not manifest.get('metadataOnlySourceRefresh'),
+                       f'{sid}: furniture replacement requires a true native rebuild and fresh images')
         dining_revision = sid == 'family' and manifest.get('familyDiningRevision', {}).get('version') == '3.5.3'
         if dining_revision:
             records = manifest.get('renderedViews', {})
@@ -632,9 +638,78 @@ class Audit:
             self.check(abs(fov-camera.get("horizontalFov", -100)) < .006 and state.get("type") == "PERSP",
                        f"{name}: real camera lens/sensor matches perspective field of view")
 
+    def purchased_furniture(self, scheme, source, manifest, meshes, catalog, product_source):
+        """Audit actual GLB vertex envelopes, not generator bounds metadata."""
+        sid = scheme['id']
+        revision = source.get('purchasedFurnitureRevision', {})
+        self.check(bool(revision) and revision.get('version') == scheme.get('purchasedFurnitureRevision') ==
+                   product_source.get('version') == catalog.get('version'),
+                   f'{sid}: catalog, source and purchased product evidence revisions agree')
+        self.check(manifest.get('purchasedFurnitureRevision') == revision and
+                   revision.get('date') == product_source.get('verifiedAt'),
+                   f'{sid}: native manifest contains the complete current purchased furniture revision')
+        self.check(revision.get('products') == product_source.get('products'),
+                   f'{sid}: exact purchased product facts agree with the published evidence file')
+        self.check(source.get('measurementRevision', {}).get('version') == '3.6.1' and
+                   manifest.get('measurementRevision') == source.get('measurementRevision'),
+                   f'{sid}: independent R2 survey evidence is fully preserved')
+        products = {p['id']: p for p in product_source.get('products', [])}
+        dimensions = {'ikea-vimle-39635114': (2410, 980, 830),
+                      'ikea-lisabo-80365717': (1400, 780, 740),
+                      'ikea-lisabo-80457236': (460, 510, 800)}
+        self.check(set(products) == set(dimensions), f'{sid}: only the three purchased IKEA SKUs are registered')
+        for pid, size in dimensions.items():
+            self.check(tuple(products.get(pid, {}).get('dimensionsMm', {}).get(axis) for axis in ('width', 'depth', 'height')) == size,
+                       f'{sid}/{pid}: published product envelope is unchanged')
+        furniture = [f for f in source.get('furniture', []) if f.get('purchasedProductId')]
+        counts = {pid: sum(f['purchasedProductId'] == pid for f in furniture) for pid in dimensions}
+        self.check(len(furniture) == 6 and counts == dict(zip(dimensions, (1, 1, 4))),
+                   f'{sid}: one purchased sofa, one table and four assumed chairs in the actual layout')
+        identities = {str(f.get('id') or f.get('furnitureId') or f['name']) for f in furniture}
+        actual_purchased = [item for item in meshes.values() if item['extras'].get('purchasedProductId')]
+        self.check({item['extras'].get('furnitureId') for item in actual_purchased} == identities and
+                   {item['extras'].get('purchasedProductId') for item in actual_purchased} == set(dimensions),
+                   f'{sid}: actual GLB product and furniture identity inventories match the six source instances')
+        for f in furniture:
+            pid = f['purchasedProductId']
+            identity = str(f.get('id') or f.get('furnitureId') or f['name'])
+            members = [item for item in meshes.values() if item['extras'].get('furnitureId') == identity]
+            if not self.check(bool(members) and all(item['extras'].get('purchasedProductId') == pid for item in members),
+                              f'{sid}/{identity}: all actual furniture parts use the purchased model, with no generic leftovers'):
+                continue
+            if pid not in dimensions:
+                self.check(False, f'{sid}/{identity}: unrecognized purchased product')
+                continue
+            width, depth, height = dimensions[pid]
+            footprint = (width, depth)
+            if pid == 'ikea-lisabo-80365717':
+                footprint = tuple(sorted(footprint)) if f['w'] < f['d'] else tuple(sorted(footprint, reverse=True))
+            elif f.get('face') in ('east', 'west'):
+                footprint = tuple(reversed(footprint))
+            self.check((f['w']*10, f['d']*10) == footprint and f.get('heightCm', 0)*10 == height,
+                       f'{sid}/{identity}: oriented source envelope uses exact official dimensions')
+            actual_low = [min(item['bounds'][0][axis] for item in members) for axis in range(3)]
+            actual_high = [max(item['bounds'][1][axis] for item in members) for axis in range(3)]
+            expected_low = [f['x']/100, 0, f['y']/100]
+            expected_high = [(f['x']+f['w'])/100, height/1000, (f['y']+f['d'])/100]
+            self.check(all(abs(a-b) <= BOUNDS_TOLERANCE_M for a, b in zip(actual_low+actual_high, expected_low+expected_high)),
+                       f'{sid}/{identity}: actual decoded GLB world vertices match source placement and published envelope',
+                       f'{sid}/{identity}: actual GLB bounds {actual_low, actual_high} differ from {expected_low, expected_high}')
+            self.check(all(item['extras'].get('purchasedGeometryStatus') == 'published-envelope-image-based-approximation-not-official-CAD'
+                           and item['extras'].get('purchasedGeometryApproximation') for item in members),
+                       f'{sid}/{identity}: all product meshes retain explicit non-official approximation provenance')
+        for room in manifest.get('rooms', []):
+            if room['id'] in revision.get('roomDescriptions', {}):
+                self.check(room['description'] == revision['roomDescriptions'][room['id']],
+                           f'{sid}/{room["id"]}: manifest describes current purchased furniture')
+        if sid == 'family':
+            self.check(all(key not in source and key not in manifest for key in ('pulloutDining', 'familyDiningRevision')),
+                       'family: obsolete pullout furniture and state revision are absent')
+
     def run(self):
         self.self_test()
         data = load_json(ROOT / "models/design-schemes.json")
+        product_source = load_json(relative_file(data['purchasedFurnitureSource']))
         schemes = data.get("schemes", [])
         self.check(tuple(item.get("id") for item in schemes) == ACTIVE_IDS, "Wood, suite and family are the only active real layouts")
         archive = data.get("archivedPalettes", [])
@@ -725,6 +800,8 @@ class Audit:
             self.details[sid]["blendSha256"] = sha(relative_file(scheme["blend"]).read_bytes())
             self.details[sid]["embeddedTextureCount"] = len(glbs[sid].image_hashes)
             self.details[sid]["textureSetHash"] = json_hash(sorted(set(glbs[sid].image_hashes)))
+            if sid in ACTIVE_IDS:
+                self.purchased_furniture(scheme, load_json(layout_source), manifest, meshes[sid], data, product_source)
             self.proved_metadata_source = None
             try:
                 self.proved_metadata_source = metadata_only_source_alias(

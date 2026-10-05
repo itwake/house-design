@@ -59,6 +59,24 @@ def union(objects):
 
 meshes = [obj for obj in bpy.context.scene.objects if obj.type == "MESH"]
 windows = {opening["id"]: opening for opening in source["windows"]}
+if source["measurementRevision"].get("version") == "3.6.1":
+    # The R2 source adds a confirmed master width but no new absolute room
+    # datum. Keep the 10 mm residual visible, rather than spreading it into
+    # the measured opening. The main bath's 1400 mm measured height cannot
+    # be combined with its retained 1500 mm provisional sill under 2700 mm.
+    revision = source["measurementRevision"]
+    ensure(revision["source"] == "models/measurements-20261004-r2.json", "R2 native audit uses the supplementary source")
+    master = windows["window_a"]
+    for field, expected in (("x1", 411), ("x2", 587), ("widthMm", 1760), ("sillCm", 41), ("heightCm", 166)):
+        close(master[field], expected, f"R2 master opening {field}")
+    bath = windows["window_bath_1_east"]
+    close(bath["sillCm"], 150, "R2 bathroom sill remains a labeled 1500 mm placeholder")
+    close(bath["heightCm"], 80, "R2 bathroom 800 mm visual placeholder is not misrepresented as 1400 mm measured height")
+    local = next((plan for plan in revision.get("localExistingPlans", []) if plan.get("id") == "suite-bath-existing"), None)
+    ensure(local is not None, "R2 existing-bath reference is present separately from proposed room geometry")
+    ensure(local["pointsMm"] == [[0, 0], [2400, 0], [2400, 1530], [1010, 1530], [1010, 1320], [0, 1320]], "R2 reference retains exact stepped survey geometry")
+    ensure(not any(room["id"] == local["id"] for room in source["rooms"]), "R2 existing reference does not overwrite or add a renovation room")
+    ensure(not any(obj.get("roomId") == local["id"] for obj in meshes), "R2 existing reference is not injected into the native model")
 for key, opening in windows.items():
     physical = [obj for obj in meshes if obj.get("openingId") == key]
     ensure(bool(physical), f"{key}: mesh group exists")

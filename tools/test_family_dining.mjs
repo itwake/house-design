@@ -10,13 +10,23 @@ import {buildWalkWorld,findWalkStart,advanceWalk,WALK_RADIUS} from '../walkthrou
 const root=new URL('../',import.meta.url),cwd=fileURLToPath(root);
 const read=async path=>JSON.parse(await readFile(new URL(path,root),'utf8'));
 const d=await read('models/schemes/family/design-data.json'),rev=d.familyDiningRevision,p=d.pulloutDining;
+// Purchased fixed furniture supersedes, rather than simulates, the earlier
+// retractable mechanism. Preserve the legacy regression for old sources.
+if(d.purchasedFurnitureRevision){
+  await import('./test_purchased_furniture.mjs');
+  await import('./test_measurement_supplement.mjs');
+  process.exit(0);
+}
 const baseline='a2b623c9813c0d2a664abf31ab575fc6c0fd2b0d';
 const base=JSON.parse(execFileSync('git',['show',baseline+':models/schemes/family/design-data.json'],{cwd,encoding:'utf8'}));
 const measurement=d.measurementRevision?.stage==='partial-confirmed';
 // This separate guard checks every allowed survey delta against the immutable
 // pre-survey source. It preserves all furniture/doors/room footprints and the
 // explicit unresolved chains rather than weakening the dining regression.
-if(measurement)await import('./test_measurement_revision.mjs');
+if(measurement){
+  assert.ok(['3.6.0','3.6.1'].includes(d.measurementRevision.version),'Explicitly reviewed survey revision');
+  await import(d.measurementRevision.version==='3.6.1'?'./test_measurement_supplement.mjs':'./test_measurement_revision.mjs');
+}
 const near=(a,b,label)=>assert.ok(Math.abs(a-b)<1e-7,label||`${a} != ${b}`);
 const rect=f=>[f.x,f.y,f.w,f.d],fixture=name=>d.furniture.find(f=>f.name===name);
 const overlap=(a,b)=>Math.min(a.x+a.w,b.x+b.w)>Math.max(a.x,b.x)+1e-6&&Math.min(a.y+a.d,b.y+b.d)>Math.max(a.y,b.y)+1e-6;
@@ -82,7 +92,7 @@ for(const [label,source]of datasets){
   counts[label]=connected(world,label);
 }
 let extraction=0;for(const item of d.garage.items)for(let x=item.x;x<=362;x++){const moved={...item,x};for(const q of d.garage.parts)assert.ok(!overlap3(moved,q),'Unchanged vehicle exit '+item.id+'/'+q.id);for(const f of d.furniture.filter(f=>!f.garageFitoutId))assert.ok(!overlap(moved,f),'Vehicle exit vs '+f.name);extraction++;}
-const catalog=await read('models/design-schemes.json'),scheme=catalog.schemes.find(s=>s.id==='family');assert.equal(scheme.assetRevision,measurement?'3.6.0':'3.5.3');assert.ok(scheme.renderViews.includes('dining-closed'));assert.equal(scheme.renderViews.length,20);
+const catalog=await read('models/design-schemes.json'),scheme=catalog.schemes.find(s=>s.id==='family');assert.equal(scheme.assetRevision,measurement?d.measurementRevision.version:'3.5.3');assert.ok(scheme.renderViews.includes('dining-closed'));assert.equal(scheme.renderViews.length,20);
 if(process.argv.includes('--glb')){
   function decode(bytes){
     const length=bytes.readUInt32LE(12),g=JSON.parse(bytes.subarray(20,20+length)),bin=bytes.subarray(28+length),parents=new Map(),matrices=new Map();g.nodes.forEach((n,i)=>(n.children||[]).forEach(c=>parents.set(c,i)));

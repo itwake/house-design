@@ -27,6 +27,9 @@ for sid in ('wood', 'family', 'laundry'):
     for room in manifest['rooms']:
         if room['id'] in data['measurementRevision']['roomDescriptions']:
             room['description'] = descriptions[room['id']]
+        purchased_copy = data.get('purchasedFurnitureRevision', {}).get('roomDescriptions', {})
+        if room['id'] in purchased_copy:
+            room['description'] = purchased_copy[room['id']]
     manifest['notes'] = [measurement_note_copy(n) for n in manifest['notes'] if not ('430 mm' in n and '900 mm' in n)]
     summary = data['measurementRevision']['summary']
     if summary not in manifest['notes']:

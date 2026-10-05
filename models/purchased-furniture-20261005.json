@@ -1,0 +1,57 @@
+{
+  "version": "3.7.0",
+  "verifiedAt": "2026-10-05",
+  "quantityAssumption": "沙发1、餐桌1；餐椅数量按原四席暂设4把，购买数量未单独提供。",
+  "products": [
+    {
+      "id": "ikea-vimle-39635114",
+      "name": "VIMLE 维姆勒 三人沙发 · 科耐贝克浅米色",
+      "articleNumber": "396.351.14",
+      "url": "https://www.ikea.cn/cn/zh/p/vimle-wei-mu-le-san-ren-sha-fa-ke-nai-bei-ke-qian-mi-se-s39635114/",
+      "verificationUrl": "https://www.ikea.com/sg/en/p/vimle-3-seat-sofa-knaebaeck-light-beige-s39635114/",
+      "dimensionsMm": {
+        "width": 2410,
+        "depth": 980,
+        "height": 830
+      },
+      "seatMm": {
+        "width": 2110,
+        "depth": 550,
+        "height": 480
+      },
+      "armWidthMm": 150,
+      "modelType": "parametric-approximation"
+    },
+    {
+      "id": "ikea-lisabo-80365717",
+      "name": "LISABO 利萨伯 固定四人餐桌 · 白蜡木贴面",
+      "articleNumber": "803.657.17",
+      "url": "https://www.ikea.cn/cn/zh/p/lisabo-li-sa-bo-zhuo-zi-bai-zha-mu-tie-mian-80365717/",
+      "dimensionsMm": {
+        "width": 1400,
+        "depth": 780,
+        "height": 740
+      },
+      "extendable": false,
+      "modelType": "parametric-approximation"
+    },
+    {
+      "id": "ikea-lisabo-80457236",
+      "name": "LISABO 利萨伯 餐椅 · 白蜡木",
+      "articleNumber": "804.572.36",
+      "url": "https://www.ikea.cn/cn/zh/p/lisabo-li-sa-bo-yi-zi-bai-zha-mu-80457236/",
+      "dimensionsMm": {
+        "width": 460,
+        "depth": 510,
+        "height": 800
+      },
+      "seatMm": {
+        "width": 440,
+        "depth": 390,
+        "height": 450
+      },
+      "modelType": "parametric-approximation"
+    }
+  ],
+  "modelNotice": "家具为按官方外包尺寸及产品照片重建的参数模型，缝线、弧度和腿型为近似，并非宜家官方CAD；不替代现场搬运、门洞和净距核验。"
+}
