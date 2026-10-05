@@ -27,7 +27,8 @@ const shiftedNames=new Map([['三人沙发',[-20,-45]],['茶几',[-20,-45]],['�
 async function unchangedOtherSchemes(){
   const family=JSON.parse(await readFile(new URL('models/schemes/family/design-data.json',root),'utf8'));
   const familyR3=family.familyR3Revision?.version==='3.10.0';
-  if(familyR3)await (await import('./test_family_r3.mjs')).ensureFamilyR3({glb:process.argv.includes('--glb')});
+  if(family.familyPublicP2Revision?.version==='3.11.0')await (await import('./test_family_public_p2.mjs')).ensureFamilyPublicP2({glb:process.argv.includes('--glb')});
+  else if(familyR3)await (await import('./test_family_r3.mjs')).ensureFamilyR3({glb:process.argv.includes('--glb')});
   const paths=familyR3?['models/schemes/laundry','assets/schemes/laundry']:['models/schemes/family','models/schemes/laundry','assets/schemes/family','assets/schemes/laundry'];
   const lines=execFileSync('git',['ls-tree','-r',woodBaseline,...paths],{cwd,encoding:'utf8'}).trim().split('\n');
   const files=lines.map(l=>{const [meta,path]=l.split('\t');return {sha:meta.split(' ')[2],path};});

@@ -74,6 +74,12 @@ let kitchenActive=false;
 for(const [id,basePlacement] of Object.entries(layouts)){
   const d=await read(`models/schemes/${id}/design-data.json`),f=name=>{const a=d.furniture.filter(f=>f.name===name);assert.equal(a.length,1,`${id}: one ${name}`);return a[0];};
   const woodRevision=id==='wood'&&d.woodRevision?.version==='3.9.0';
+  if(id==='family'&&d.familyPublicP2Revision?.version==='3.11.0'){
+    await (await import('./test_family_public_p2.mjs')).ensureFamilyPublicP2({glb:process.argv.includes('--glb')});
+    kitchenActive ||= Boolean(d.kitchenFitout);
+    reports.push({scheme:id,revision:'3.11.0',guard:'independent exact P2 source/native/rigid bought furniture proof'});
+    continue;
+  }
   if(id==='family'&&d.familyR3Revision?.version==='3.10.0')await (await import('./test_family_r3.mjs')).ensureFamilyR3({glb:process.argv.includes('--glb')});
   const p=woodRevision?{...basePlacement,sx:394,sy:856}:basePlacement;
   kitchenActive ||= Boolean(d.kitchenFitout);

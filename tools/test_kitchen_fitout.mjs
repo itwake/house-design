@@ -26,9 +26,15 @@ const oldKitchenNames = new Set(['厨房南侧地柜', '厨房北侧地柜', '�
 const outsideKitchen = furniture => furniture.filter(f => !oldKitchenNames.has(f.name) && !f.kitchenFitoutId && !f.id?.startsWith('kitchen_'));
 const familyR3Source=await read('models/schemes/family/design-data.json');
 const familyR3Active=familyR3Source.familyR3Revision?.version==='3.10.0';
-if(familyR3Active)await (await import('./test_family_r3.mjs')).ensureFamilyR3({glb:process.argv.includes('--glb')});
+const familyPublicP2Active=familyR3Source.familyPublicP2Revision?.version==='3.11.0';
+if(familyPublicP2Active)await (await import('./test_family_public_p2.mjs')).ensureFamilyPublicP2({glb:process.argv.includes('--glb')});
+else if(familyR3Active)await (await import('./test_family_r3.mjs')).ensureFamilyR3({glb:process.argv.includes('--glb')});
 
 function checkPreserved(data, previous, scheme) {
+  // P2 independently protects every kitchen/source/actual triangle against
+  // published R3 and enumerates exact new public furniture. The actual kitchen
+  // layout and mesh checks below still run for all three schemes.
+  if(scheme==='family'&&familyPublicP2Active)return;
   const woodRevision=scheme==='wood'&&data.woodRevision?.version==='3.9.0';
   const familyR3=scheme==='family'&&familyR3Active;
   const laterFamilyGroups=new Set(['rooms','walls','wallSpecs','doors','wallFitouts']);

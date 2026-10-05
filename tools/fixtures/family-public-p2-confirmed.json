@@ -1,0 +1,1322 @@
+{
+  "baselineCommit": "d81f065",
+  "sourceSha256": "5a8ddb2209cd0e053994eba20d7824726c07fbad5641c4a32c95d616f7894b2a",
+  "furniture": [
+    {
+      "name": "次卧1350床",
+      "id": "bed_b",
+      "x": 12,
+      "y": 55,
+      "w": 210,
+      "d": 145,
+      "headDirection": "west",
+      "frameWidthCm": 145,
+      "frameLengthCm": 210,
+      "mattressWidthCm": 135,
+      "mattressLengthCm": 200,
+      "a": 0,
+      "tone": "fabric",
+      "notes": "床头贴西墙，床架长2100mm；R3床尾至浅台715mm。踢脚线、软包及把手收口待复尺。"
+    },
+    {
+      "name": "次卧衣柜",
+      "x": 12,
+      "y": 262,
+      "w": 180,
+      "d": 60,
+      "a": 0,
+      "tone": "wood",
+      "face": "north",
+      "doorStyle": "sliding",
+      "notes": "南墙180×60cm移门柜，西端贴西墙；床侧至柜前62cm。"
+    },
+    {
+      "name": "主卧1500床",
+      "id": "bed_a",
+      "x": 465,
+      "y": 82,
+      "w": 210,
+      "d": 160,
+      "headDirection": "east",
+      "frameWidthCm": 160,
+      "frameLengthCm": 210,
+      "mattressWidthCm": 150,
+      "mattressLengthCm": 200,
+      "a": 0,
+      "tone": "fabric"
+    },
+    {
+      "name": "主卧衣柜",
+      "x": 349.5,
+      "y": 12,
+      "w": 60,
+      "d": 224,
+      "a": 0,
+      "tone": "wood",
+      "face": "east",
+      "doorStyle": "sliding",
+      "notes": "西侧2240×600mm衣柜随R3等分隔墙东移，北端贴墙；床尾至柜面555mm，仍偏紧。"
+    },
+    {
+      "name": "书房通长桌",
+      "x": 12,
+      "y": 565,
+      "w": 222,
+      "d": 55,
+      "a": 0,
+      "tone": "wood",
+      "face": "north",
+      "notes": "R3南墙2220×550mm通长桌，保持端板、钢架和中间支承；承载和收口待深化。",
+      "id": "study_full_desk"
+    },
+    {
+      "name": "书房办公椅",
+      "x": 99,
+      "y": 510,
+      "w": 48,
+      "d": 50,
+      "a": 0,
+      "tone": "fabric",
+      "face": "south",
+      "notes": "东墙西移后的紧凑配椅；保留书桌，避免椅背占据门口。"
+    },
+    {
+      "name": "三人沙发",
+      "x": 387,
+      "y": 859,
+      "w": 241,
+      "d": 98,
+      "a": 0,
+      "tone": "fabric",
+      "face": "north",
+      "rugCm": {
+        "x": 395.5,
+        "y": 674,
+        "w": 224,
+        "d": 178
+      },
+      "productKey": "sofa",
+      "heightCm": 83,
+      "purchasedProductId": "ikea-vimle-39635114",
+      "displayName": "VIMLE 维姆勒 三人沙发 · 科耐贝克浅米色"
+    },
+    {
+      "name": "电视薄柜",
+      "x": 395,
+      "y": 633,
+      "w": 220,
+      "d": 34,
+      "a": 0,
+      "tone": "wood"
+    },
+    {
+      "name": "茶几",
+      "x": 447.5,
+      "y": 732,
+      "w": 120,
+      "d": 62,
+      "a": 0,
+      "tone": "wood"
+    },
+    {
+      "name": "玄关柜",
+      "id": "entry_storage",
+      "storageFitoutId": "entry_shoe_station",
+      "x": 495,
+      "y": 1320,
+      "w": 34,
+      "d": 65,
+      "heightCm": 250,
+      "a": 0,
+      "tone": "wood",
+      "face": "west",
+      "doorStyle": "sliding",
+      "notes": "进门右侧靠厨房实墙，650mm沿墙长、340mm外深。浅柜净深及鞋长须复核；柜体不占1000mm入户门洞，门把手/门套/实际开启须量房后确定，不设固定换鞋凳。"
+    },
+    {
+      "name": "主卫600浴室柜",
+      "id": "vanity_main",
+      "x": 453,
+      "y": 337,
+      "w": 60,
+      "d": 36,
+      "a": 0,
+      "tone": "sanitary",
+      "face": "south",
+      "notes": "R3随主卫西墙西移200mm，盆柜600×360mm；门开着时在盆前，洗手须先关门。"
+    },
+    {
+      "name": "主卫壁挂马桶",
+      "x": 539,
+      "y": 337,
+      "w": 36,
+      "d": 58,
+      "a": 0,
+      "tone": "sanitary",
+      "face": "south",
+      "notes": "R4B占位东移60mm，排水立管及是否能移待核验。"
+    },
+    {
+      "name": "主卫淋浴区",
+      "x": 581,
+      "y": 340,
+      "w": 90,
+      "d": 141,
+      "a": 0,
+      "tone": "wet",
+      "notes": "R3北墙保留原位，900×1410mm淋浴占位；管线、屏风和出入口另深化。"
+    },
+    {
+      "name": "客卫600浴室柜",
+      "id": "vanity_guest",
+      "x": 450,
+      "y": 501,
+      "w": 60,
+      "d": 38,
+      "a": 0,
+      "tone": "sanitary",
+      "face": "south",
+      "notes": "北墙600×380mm占位，避免与入口门板相碰。"
+    },
+    {
+      "name": "客卫壁挂马桶",
+      "x": 528,
+      "y": 502,
+      "w": 36,
+      "d": 58,
+      "a": 0,
+      "tone": "sanitary",
+      "face": "south"
+    },
+    {
+      "name": "客卫淋浴区",
+      "x": 582,
+      "y": 504,
+      "w": 88,
+      "d": 111,
+      "a": 0,
+      "tone": "wet"
+    },
+    {
+      "id": "bed_b_niche_console",
+      "name": "次卧补齐退台的连续浅台",
+      "x": 293.5,
+      "y": 12,
+      "w": 44,
+      "d": 224,
+      "tone": "wood",
+      "face": "west",
+      "notes": "R3东墙2240×440mm连续浅台，床尾715mm，不配椅；南端距全开门叶140mm，不是舒适办公位。"
+    },
+    {
+      "id": "study_north_sofa",
+      "name": "书房北墙沙发",
+      "x": 22,
+      "y": 334,
+      "w": 190,
+      "d": 85,
+      "a": 0,
+      "tone": "fabric",
+      "face": "south",
+      "notes": "1900×850mm沙发占位，背靠北墙；不是选定产品或展开沙发床，门扇扫掠已避让。"
+    },
+    {
+      "id": "family_sideboard",
+      "name": "西墙餐边柜 · 从800库起连续接长",
+      "x": 212.5,
+      "y": 859,
+      "w": 44,
+      "d": 426,
+      "heightCm": 250,
+      "face": "east",
+      "tone": "cabinet",
+      "a": 0,
+      "storageFitoutId": "dining_sideboard_wall",
+      "notes": "西墙y859..1285连续餐柜；南端接800库北面，北向库门不再设置返柜。柜深440mm会收窄北向取车空间。"
+    },
+    {
+      "id": "family_garage",
+      "name": "北向开口 · 加深800库",
+      "x": 212,
+      "y": 1285,
+      "w": 150,
+      "d": 100,
+      "heightCm": 250,
+      "face": "north",
+      "tone": "cabinet",
+      "a": 0,
+      "garageFitoutId": "family_garage",
+      "notes": "本稿暂估外包1500×1000mm，不是实测。 两车仍分层：婴儿车落地，儿童车1230mm平台抬放；车尺寸、架体承重、防倾倒、防坠与抬放人体工学待专业深化。 北面双组四扇向内折，前365mm净空区不放层板、架腿或物品。车辆和层板前缘余量很紧，安装缝/把手/导轨须厂家实核。 餐柜南端接到库门后，柜面至库东内侧1035mm；再扣折门叠停示意后仅约980mm，小于儿童车1100mm横向包络，不能直接横抽。移开南椅后需斜转抬取，须用真实车体、层板和折门五金排演；本稿不证明取放可行。"
+    },
+    {
+      "id": "laundry_washer",
+      "name": "A · 洗衣机",
+      "x": 668,
+      "y": 1040,
+      "w": 60,
+      "d": 65,
+      "heightCm": 85,
+      "face": "north",
+      "tone": "metal",
+      "a": 0,
+      "laundryFitoutId": "laundry_wall"
+    },
+    {
+      "id": "laundry_dryer",
+      "name": "A · 烘干机",
+      "x": 735,
+      "y": 1040,
+      "w": 60,
+      "d": 65,
+      "heightCm": 85,
+      "face": "north",
+      "tone": "metal",
+      "a": 0,
+      "laundryFitoutId": "laundry_wall"
+    },
+    {
+      "id": "laundry_counter",
+      "x": 661,
+      "y": 1035,
+      "w": 168,
+      "d": 80,
+      "zCm": 95,
+      "hCm": 3,
+      "topCm": 98,
+      "name": "A · 洗烘上方浅盆台面",
+      "heightCm": 98,
+      "face": "north",
+      "tone": "cabinet",
+      "a": 0,
+      "laundryFitoutId": "laundry_wall"
+    },
+    {
+      "name": "四人餐桌",
+      "x": 256.5,
+      "y": 1030,
+      "w": 78,
+      "d": 140,
+      "heightCm": 74,
+      "face": "east",
+      "tone": "wood",
+      "a": 0,
+      "productKey": "table",
+      "purchasedProductId": "ikea-lisabo-80365717",
+      "displayName": "LISABO 利萨伯 固定四人餐桌 · 白蜡木贴面"
+    },
+    {
+      "name": "餐椅北",
+      "productKey": "chair",
+      "x": 272.5,
+      "y": 966.5,
+      "w": 46,
+      "d": 51,
+      "heightCm": 80,
+      "face": "south",
+      "a": 0,
+      "tone": "wood",
+      "purchasedProductId": "ikea-lisabo-80457236",
+      "displayName": "LISABO 利萨伯 餐椅 · 白蜡木"
+    },
+    {
+      "name": "餐椅东1",
+      "productKey": "chair",
+      "x": 347,
+      "y": 1047,
+      "w": 51,
+      "d": 46,
+      "heightCm": 80,
+      "face": "west",
+      "a": 0,
+      "tone": "wood",
+      "purchasedProductId": "ikea-lisabo-80457236",
+      "displayName": "LISABO 利萨伯 餐椅 · 白蜡木"
+    },
+    {
+      "name": "餐椅东2",
+      "productKey": "chair",
+      "x": 347,
+      "y": 1117,
+      "w": 51,
+      "d": 46,
+      "heightCm": 80,
+      "face": "west",
+      "a": 0,
+      "tone": "wood",
+      "purchasedProductId": "ikea-lisabo-80457236",
+      "displayName": "LISABO 利萨伯 餐椅 · 白蜡木"
+    },
+    {
+      "name": "餐椅南",
+      "productKey": "chair",
+      "x": 272.5,
+      "y": 1182.5,
+      "w": 46,
+      "d": 51,
+      "heightCm": 80,
+      "face": "north",
+      "a": 0,
+      "tone": "wood",
+      "purchasedProductId": "ikea-lisabo-80457236",
+      "displayName": "LISABO 利萨伯 餐椅 · 白蜡木"
+    },
+    {
+      "id": "family_sofa_back_storage",
+      "name": "沙发背后浅储物柜",
+      "x": 407.5,
+      "y": 959,
+      "w": 200,
+      "d": 25,
+      "heightCm": 65,
+      "face": "south",
+      "tone": "cabinet",
+      "a": 0,
+      "storageFitoutId": "sofa_back_storage"
+    },
+    {
+      "id": "kitchen_shaft_footprint",
+      "name": "西南烟道不可用",
+      "x": 542,
+      "y": 1329,
+      "w": 60,
+      "d": 60,
+      "heightCm": 270,
+      "tone": "wall",
+      "roomId": "kitchen",
+      "a": 0,
+      "kitchenFitoutId": "kitchen-20261005"
+    },
+    {
+      "id": "kitchen_north_footprint",
+      "name": "厨房北侧台面占地",
+      "x": 622,
+      "y": 1127,
+      "w": 207,
+      "d": 65,
+      "heightCm": 89,
+      "tone": "cabinet",
+      "roomId": "kitchen",
+      "a": 0,
+      "kitchenFitoutId": "kitchen-20261005"
+    },
+    {
+      "id": "kitchen_east_footprint",
+      "name": "厨房东侧双槽柜",
+      "x": 764,
+      "y": 1192,
+      "w": 65,
+      "d": 132,
+      "heightCm": 89,
+      "tone": "cabinet",
+      "roomId": "kitchen",
+      "a": 0,
+      "kitchenFitoutId": "kitchen-20261005"
+    },
+    {
+      "id": "kitchen_south_footprint",
+      "name": "厨房南侧炉灶柜",
+      "x": 602,
+      "y": 1324,
+      "w": 227,
+      "d": 65,
+      "heightCm": 89,
+      "tone": "cabinet",
+      "roomId": "kitchen",
+      "a": 0,
+      "kitchenFitoutId": "kitchen-20261005"
+    },
+    {
+      "id": "kitchen_fridge_footprint",
+      "name": "厨房冰箱",
+      "x": 550,
+      "y": 1132,
+      "w": 65,
+      "d": 60,
+      "heightCm": 190,
+      "tone": "metal",
+      "roomId": "kitchen",
+      "a": 0,
+      "kitchenFitoutId": "kitchen-20261005"
+    }
+  ],
+  "storageFitouts": [
+    {
+      "id": "entry_shoe_station",
+      "roomId": "living",
+      "type": "entry",
+      "title": "玄关 · 进门右手的浅鞋柜",
+      "furnitureIds": [
+        "entry_storage"
+      ],
+      "segments": [
+        {
+          "id": "east-entry",
+          "title": "入户右侧 · 厨房墙浅鞋柜",
+          "face": "west"
+        }
+      ],
+      "summary": "从南侧大门进来，右手东侧是面向过道的浅鞋柜。奶白门板、浅木钥匙中空和底部常鞋位参考业主图2，位置按本户方向重新安排；取消旧西侧鞋柜与固定换鞋凳。",
+      "dimensions": [
+        "沿墙650×外深340，高2500mm；柜面朝西",
+        "底部200mm常鞋位，中部1000–1500mm置物格",
+        "上柜外深280mm；鞋柜北端距新厨房门洞南端仅50mm，门套须复核",
+        "柜面距暂定右开90°门片约40mm，取鞋前需收门"
+      ],
+      "conditions": [
+        "650mm是本模型能留出门把手端部余量的紧凑方案，不照抄参考图鞋柜长度；门套、把手、电箱、对讲及闭门器实测后再定柜。",
+        "340mm外深要扣门轨与背板；不保证平放所有尺码，应按鞋长调整层板/斜放，图示不承诺鞋双数。",
+        "入户右合页90°时门片会挡住柜前，必须先收门再使用；超过90°向柜侧打开还可能碰撞，不能凭图认为门吸限位已完成。",
+        "模型示意门把手端部留空不代表真实五金扫动已通过；需要现场全开/关门、取鞋和多人进出试摆。",
+        "不设固定换鞋凳或镜面屏风，以免挤占门口；鞋柜与左边杯盘柜独立，灯带与插座仅预留。"
+      ],
+      "references": [
+        "entry-qiwu-50",
+        "entry-owner-61",
+        "entry-corten",
+        "entry-baili"
+      ],
+      "parts": [
+        {
+          "id": "e_shoe_lower",
+          "role": "shoe_lower",
+          "segmentId": "east-entry",
+          "x": 495,
+          "y": 1320,
+          "w": 34,
+          "d": 65,
+          "zCm": 0,
+          "hCm": 100,
+          "face": "west",
+          "openBaseCm": 20,
+          "doorStyle": "sliding",
+          "doorPanels": 2
+        },
+        {
+          "id": "e_key_niche",
+          "role": "key_niche",
+          "segmentId": "east-entry",
+          "x": 495,
+          "y": 1320,
+          "w": 34,
+          "d": 65,
+          "zCm": 100,
+          "hCm": 50,
+          "face": "west"
+        },
+        {
+          "id": "e_shoe_upper",
+          "role": "upper_cabinet",
+          "segmentId": "east-entry",
+          "x": 501,
+          "y": 1320,
+          "w": 28,
+          "d": 65,
+          "zCm": 150,
+          "hCm": 100,
+          "face": "west",
+          "doorPanels": 2
+        },
+        {
+          "id": "e_key_accessories",
+          "role": "entry_accessories",
+          "segmentId": "east-entry",
+          "x": 500,
+          "y": 1323,
+          "w": 24,
+          "d": 60,
+          "zCm": 100,
+          "hCm": 30,
+          "face": "west",
+          "preset": "compact"
+        }
+      ]
+    },
+    {
+      "id": "dining_sideboard_wall",
+      "roomId": "living",
+      "type": "sideboard",
+      "title": "西墙4260mm餐边柜 · 南端接800库",
+      "furnitureIds": [
+        "family_sideboard"
+      ],
+      "segments": [
+        {
+          "id": "west-continuous",
+          "title": "西墙4260mm长柜 / 外深440mm",
+          "face": "east"
+        }
+      ],
+      "summary": "从800库北缘沿西墙向北连续做餐边柜，长4260mm，下柜深440mm、上柜深280mm。北向库门不做返柜。",
+      "dimensions": [
+        "LISABO固定桌1400×780×740mm",
+        "下柜台面850mm，上柜深280mm",
+        "四把餐椅460×510×800mm"
+      ],
+      "conditions": [
+        "桌面高740mm，餐柜台面850mm，存在110mm高差，非同高一体桌。",
+        "餐桌贴柜的1400mm区段会限制柜门取物，常用杯盘放到桌外柜段；抽屉与五金另深化。",
+        "南端接长660mm后不再有原P1取车前场。北向取车须另行验证；不能沿用P1的横向抽出路径。"
+      ],
+      "references": [],
+      "parts": [
+        {
+          "segmentId": "west-continuous",
+          "x": 212.5,
+          "y": 859,
+          "d": 131,
+          "face": "east",
+          "id": "family_sideboard_0_base",
+          "role": "sideboard_base",
+          "w": 44,
+          "zCm": 0,
+          "hCm": 85,
+          "doorStyle": "sliding",
+          "doorPanels": 2,
+          "drawerPanels": 0
+        },
+        {
+          "segmentId": "west-continuous",
+          "x": 212.5,
+          "y": 859,
+          "d": 131,
+          "face": "east",
+          "id": "family_sideboard_0_niche",
+          "role": "sideboard_niche",
+          "w": 44,
+          "zCm": 85,
+          "hCm": 65,
+          "omitEndPanel": true
+        },
+        {
+          "segmentId": "west-continuous",
+          "x": 212.5,
+          "y": 859,
+          "d": 131,
+          "face": "east",
+          "id": "family_sideboard_0_upper",
+          "role": "upper_cabinet",
+          "w": 28,
+          "zCm": 150,
+          "hCm": 100,
+          "doorPanels": 2
+        },
+        {
+          "segmentId": "west-continuous",
+          "x": 212.5,
+          "y": 990,
+          "d": 120,
+          "face": "east",
+          "id": "family_sideboard_1_base",
+          "role": "sideboard_base",
+          "w": 44,
+          "zCm": 0,
+          "hCm": 85,
+          "doorStyle": "sliding",
+          "doorPanels": 2,
+          "drawerPanels": 0
+        },
+        {
+          "segmentId": "west-continuous",
+          "x": 212.5,
+          "y": 990,
+          "d": 120,
+          "face": "east",
+          "id": "family_sideboard_1_niche",
+          "role": "sideboard_niche",
+          "w": 44,
+          "zCm": 85,
+          "hCm": 65,
+          "omitEndPanel": true
+        },
+        {
+          "segmentId": "west-continuous",
+          "x": 212.5,
+          "y": 990,
+          "d": 120,
+          "face": "east",
+          "id": "family_sideboard_1_upper",
+          "role": "upper_cabinet",
+          "w": 28,
+          "zCm": 150,
+          "hCm": 100,
+          "doorPanels": 2
+        },
+        {
+          "segmentId": "west-continuous",
+          "x": 212.5,
+          "y": 1110,
+          "d": 109,
+          "face": "east",
+          "id": "family_sideboard_2_base",
+          "role": "sideboard_base",
+          "w": 44,
+          "zCm": 0,
+          "hCm": 85,
+          "doorStyle": "sliding",
+          "doorPanels": 2,
+          "drawerPanels": 0
+        },
+        {
+          "segmentId": "west-continuous",
+          "x": 212.5,
+          "y": 1110,
+          "d": 109,
+          "face": "east",
+          "id": "family_sideboard_2_niche",
+          "role": "sideboard_niche",
+          "w": 44,
+          "zCm": 85,
+          "hCm": 65,
+          "omitEndPanel": true
+        },
+        {
+          "segmentId": "west-continuous",
+          "x": 212.5,
+          "y": 1110,
+          "d": 109,
+          "face": "east",
+          "id": "family_sideboard_2_upper",
+          "role": "upper_cabinet",
+          "w": 28,
+          "zCm": 150,
+          "hCm": 100,
+          "doorPanels": 2
+        },
+        {
+          "segmentId": "west-continuous",
+          "x": 212.5,
+          "y": 1219,
+          "d": 66,
+          "face": "east",
+          "id": "family_sideboard_3_base",
+          "role": "sideboard_base",
+          "w": 44,
+          "zCm": 0,
+          "hCm": 85,
+          "doorStyle": "sliding",
+          "doorPanels": 2,
+          "drawerPanels": 0
+        },
+        {
+          "segmentId": "west-continuous",
+          "x": 212.5,
+          "y": 1219,
+          "d": 66,
+          "face": "east",
+          "id": "family_sideboard_3_niche",
+          "role": "sideboard_niche",
+          "w": 44,
+          "zCm": 85,
+          "hCm": 65,
+          "omitEndPanel": true
+        },
+        {
+          "segmentId": "west-continuous",
+          "x": 212.5,
+          "y": 1219,
+          "d": 66,
+          "face": "east",
+          "id": "family_sideboard_3_upper",
+          "role": "upper_cabinet",
+          "w": 28,
+          "zCm": 150,
+          "hCm": 100,
+          "doorPanels": 2
+        }
+      ]
+    },
+    {
+      "id": "sofa_back_storage",
+      "type": "sideboard",
+      "roomId": "living",
+      "title": "沙发背后 · 浅储物低柜",
+      "summary": "2000×250×650mm浅柜，朝餐厅移门，距沙发20mm；不增加外伸抽屉，留出西侧绕行带。",
+      "dimensions": [
+        "外包2000×250×650mm",
+        "内部进深约210mm；移门朝南，柜体固定待深化"
+      ],
+      "conditions": [
+        "背柜2000×250×650mm，朝餐区移门；与沙发留20mm，固定与防倾倒待厂家深化。",
+        "餐桌改为北1东2南1四席；取车需先移开南椅。"
+      ],
+      "references": [
+        {
+          "id": "ikea-besta-shallow",
+          "title": "BESTÅ · 20cm浅储物框架",
+          "url": "https://www.ikea.cn/cn/zh/p/besta-bei-da-kuang-jia-fang-bai-se-xiang-mu-wen-00247412/",
+          "platform": "IKEA · 成品尺寸与安全说明",
+          "author": "IKEA",
+          "kind": "浅柜功能参考",
+          "borrow": "借鉴浅储物、轻体量，本案定制背柜外深250mm。",
+          "avoid": "不把成品直接当独立沙发背靠或攀爬家具；防倾倒固定须单独设计。"
+        }
+      ],
+      "parts": [
+        {
+          "id": "family_sofa_back_base",
+          "role": "sideboard_base",
+          "x": 407.5,
+          "y": 959,
+          "w": 200,
+          "d": 25,
+          "zCm": 0,
+          "hCm": 65,
+          "face": "south",
+          "doorStyle": "sliding",
+          "doorPanels": 3,
+          "drawerPanels": 0
+        }
+      ]
+    }
+  ],
+  "garage": {
+    "id": "family_garage",
+    "title": "北向开口 · 加深800库",
+    "x": 212,
+    "y": 1285,
+    "w": 150,
+    "d": 100,
+    "heightCm": 250,
+    "face": "north",
+    "opening": {
+      "x1": 214,
+      "y1": 1287,
+      "x2": 360,
+      "y2": 1287,
+      "clearWidthCm": 135,
+      "heightCm": 242
+    },
+    "inner": {
+      "x": 214,
+      "y": 1287,
+      "w": 146,
+      "d": 96
+    },
+    "doorState": "folded-open",
+    "items": [
+      {
+        "id": "folded_stroller",
+        "label": "落地折叠婴儿车",
+        "kind": "folded-stroller",
+        "x": 250,
+        "y": 1326,
+        "w": 75,
+        "d": 55,
+        "zCm": 0,
+        "hCm": 105,
+        "rotationDeg": 0,
+        "modelWidthCm": 75,
+        "modelDepthCm": 55
+      },
+      {
+        "id": "child_bike",
+        "label": "上层儿童车 · 抬放",
+        "kind": "child-bike",
+        "x": 232,
+        "y": 1331,
+        "w": 110,
+        "d": 50,
+        "zCm": 123,
+        "hCm": 75,
+        "rotationDeg": 0,
+        "modelWidthCm": 110,
+        "modelDepthCm": 50
+      }
+    ],
+    "shelves": [
+      {
+        "x": 216,
+        "y": 1326,
+        "w": 142,
+        "d": 55.5,
+        "zCm": 120,
+        "hCm": 3
+      },
+      {
+        "x": 216,
+        "y": 1326,
+        "w": 142,
+        "d": 55.5,
+        "zCm": 210,
+        "hCm": 2
+      },
+      {
+        "x": 216,
+        "y": 1326,
+        "w": 142,
+        "d": 55.5,
+        "zCm": 242,
+        "hCm": 2
+      }
+    ],
+    "parts": [
+      {
+        "id": "west",
+        "role": "panel",
+        "x": 212,
+        "y": 1285,
+        "w": 2,
+        "d": 100,
+        "zCm": 0,
+        "hCm": 248
+      },
+      {
+        "id": "east",
+        "role": "panel",
+        "x": 360,
+        "y": 1285,
+        "w": 2,
+        "d": 100,
+        "zCm": 0,
+        "hCm": 248
+      },
+      {
+        "id": "south",
+        "role": "panel",
+        "x": 214,
+        "y": 1383,
+        "w": 146,
+        "d": 2,
+        "zCm": 0,
+        "hCm": 248
+      },
+      {
+        "id": "roof",
+        "role": "roof",
+        "x": 212,
+        "y": 1285,
+        "w": 150,
+        "d": 100,
+        "zCm": 248,
+        "hCm": 2
+      },
+      {
+        "id": "fold-0",
+        "role": "folded-door",
+        "x": 214,
+        "y": 1287,
+        "w": 2.5,
+        "d": 36.5,
+        "zCm": 0.8,
+        "hCm": 241.2
+      },
+      {
+        "id": "fold-1",
+        "role": "folded-door",
+        "x": 217,
+        "y": 1287,
+        "w": 2.5,
+        "d": 36.5,
+        "zCm": 0.8,
+        "hCm": 241.2
+      },
+      {
+        "id": "fold-2",
+        "role": "folded-door",
+        "x": 354.5,
+        "y": 1287,
+        "w": 2.5,
+        "d": 36.5,
+        "zCm": 0.8,
+        "hCm": 241.2
+      },
+      {
+        "id": "fold-3",
+        "role": "folded-door",
+        "x": 357.5,
+        "y": 1287,
+        "w": 2.5,
+        "d": 36.5,
+        "zCm": 0.8,
+        "hCm": 241.2
+      },
+      {
+        "x": 216,
+        "y": 1326,
+        "w": 142,
+        "d": 55.5,
+        "zCm": 120,
+        "hCm": 3,
+        "id": "shelf-0",
+        "role": "shelf"
+      },
+      {
+        "x": 216,
+        "y": 1326,
+        "w": 142,
+        "d": 55.5,
+        "zCm": 210,
+        "hCm": 2,
+        "id": "shelf-1",
+        "role": "shelf"
+      },
+      {
+        "x": 216,
+        "y": 1326,
+        "w": 142,
+        "d": 55.5,
+        "zCm": 242,
+        "hCm": 2,
+        "id": "shelf-2",
+        "role": "shelf"
+      }
+    ],
+    "conditions": [
+      "本稿暂估外包1500×1000mm，不是实测。",
+      "两车仍分层：婴儿车落地，儿童车1230mm平台抬放；车尺寸、架体承重、防倾倒、防坠与抬放人体工学待专业深化。",
+      "北面双组四扇向内折，前365mm净空区不放层板、架腿或物品。车辆和层板前缘余量很紧，安装缝/把手/导轨须厂家实核。",
+      "餐柜南端接到库门后，柜面至库东内侧1035mm；再扣折门叠停示意后仅约980mm，小于儿童车1100mm横向包络，不能直接横抽。移开南椅后需斜转抬取，须用真实车体、层板和折门五金排演；本稿不证明取放可行。"
+    ],
+    "references": [
+      {
+        "title": "宜家 · 回乡疗愈记：入户800库",
+        "url": "https://www.ikea.cn/cn/zh/ideas/ikea-plus-you/hui-xiang-liao-yu-ji-fan-xiang-qing-nian-zhe-ci-hui-jia-jue-ding-bu-zou-le-pub24117e59",
+        "borrow": "独立围合、柜门遮蔽与灵活杂物收纳，不照搬尺寸。"
+      },
+      {
+        "title": "整好空间 · 婴儿车也能收纳的玄关",
+        "url": "https://www.homeorganizer.com.tw/the-gateway-to-parenting-families",
+        "borrow": "按具体推车尺寸与取放动作规划，不把示例尺寸当通用保证。"
+      }
+    ],
+    "metrics": {
+      "footprintM2": 1.5,
+      "depthIncreaseMm": 350,
+      "northClearApproxMm": 1350,
+      "westCabinetForecourtMm": 0,
+      "childBikeLiftPlatformMm": 1230,
+      "cabinetToStoreInnerEastMm": 1035,
+      "cabinetToParkedDoorMm": 980
+    },
+    "doorOperation": {
+      "type": "bifold",
+      "panelCount": 4,
+      "panelWidthCm": 36.5,
+      "hingesCm": [
+        [
+          214,
+          1287
+        ],
+        [
+          360,
+          1287
+        ]
+      ],
+      "parkAngleDeg": 90,
+      "condition": "双组四扇向柜内折；前365mm内折区全部留空。名义内宽1460，双侧约55厚叠门后示意净开1350，五金与门套待深化。"
+    },
+    "doorStackSide": "both",
+    "doorFoldDirection": "inward",
+    "rackReserve": {
+      "frontPostYMinCm": 1326,
+      "postsModeled": false,
+      "note": "后架前腿及所有支承不得进入北侧365mm名义内折区；当前未设计实体架腿，安装余量、承重和五金需另行深化。"
+    },
+    "movementValidation": {
+      "status": "pending",
+      "straightHorizontalPullOut": false,
+      "reason": "980mm frontage between continuous cabinet and parked folding door versus 1100mm child-bike envelope. A zero-tolerance ideal rectangle route is not a practical clearance validation.",
+      "southChairMustMove": true,
+      "assumedBikeSizeMm": [
+        1100,
+        500
+      ],
+      "previousP1PathInvalidated": true
+    }
+  },
+  "laundry": {
+    "id": "laundry_wall",
+    "title": "家政阳台 · 洗烘并排与客厅整墙",
+    "alignment": {
+      "bookcaseFrontX": null,
+      "doorFrameFrontX": 645,
+      "oldDoorCenterX": 681,
+      "newDoorCenterX": 652.25,
+      "outsetCm": 28.75,
+      "alignmentCancelled": true,
+      "note": "取消B书架；原阳台门不移动，不再以柜门齐平描述。"
+    },
+    "counter": {
+      "id": "laundry_counter",
+      "x": 661,
+      "y": 1035,
+      "w": 168,
+      "d": 80,
+      "zCm": 95,
+      "hCm": 3,
+      "topCm": 98
+    },
+    "basin": {
+      "id": "laundry_basin",
+      "x": 673,
+      "y": 1038,
+      "w": 52,
+      "d": 74,
+      "bottomCm": 88,
+      "rimCm": 98,
+      "drain": {
+        "x": 717,
+        "y": 1110
+      },
+      "tap": {
+        "x": 681,
+        "y": 1104
+      },
+      "concept": true
+    },
+    "machines": [
+      {
+        "id": "laundry_washer",
+        "name": "A · 洗衣机",
+        "x": 668,
+        "y": 1040,
+        "w": 60,
+        "d": 65,
+        "heightCm": 85,
+        "face": "north"
+      },
+      {
+        "id": "laundry_dryer",
+        "name": "A · 烘干机",
+        "x": 735,
+        "y": 1040,
+        "w": 60,
+        "d": 65,
+        "heightCm": 85,
+        "face": "north"
+      }
+    ],
+    "parts": [
+      {
+        "id": "laundry_left_gable",
+        "role": "support",
+        "x": 661,
+        "y": 1035,
+        "zCm": 0,
+        "w": 2,
+        "d": 80,
+        "hCm": 95,
+        "material": "Cream",
+        "roomId": "balcony"
+      },
+      {
+        "id": "laundry_middle_gable",
+        "role": "support",
+        "x": 731,
+        "y": 1035,
+        "zCm": 0,
+        "w": 2,
+        "d": 80,
+        "hCm": 95,
+        "material": "Cream",
+        "roomId": "balcony"
+      },
+      {
+        "id": "laundry_right_gable",
+        "role": "support",
+        "x": 827,
+        "y": 1035,
+        "zCm": 0,
+        "w": 2,
+        "d": 80,
+        "hCm": 95,
+        "material": "Cream",
+        "roomId": "balcony"
+      },
+      {
+        "id": "laundry_rear_rail",
+        "role": "support",
+        "x": 663,
+        "y": 1113,
+        "zCm": 85,
+        "w": 164,
+        "d": 2,
+        "hCm": 10,
+        "material": "Cream",
+        "roomId": "balcony"
+      },
+      {
+        "id": "counter_left",
+        "role": "counter",
+        "x": 661,
+        "y": 1035,
+        "zCm": 95,
+        "w": 12,
+        "d": 80,
+        "hCm": 3,
+        "material": "Stone",
+        "roomId": "balcony"
+      },
+      {
+        "id": "counter_right",
+        "role": "counter",
+        "x": 725,
+        "y": 1035,
+        "zCm": 95,
+        "w": 104,
+        "d": 80,
+        "hCm": 3,
+        "material": "Stone",
+        "roomId": "balcony"
+      },
+      {
+        "id": "counter_front",
+        "role": "counter",
+        "x": 673,
+        "y": 1035,
+        "zCm": 95,
+        "w": 52,
+        "d": 3,
+        "hCm": 3,
+        "material": "Stone",
+        "roomId": "balcony"
+      },
+      {
+        "id": "counter_back",
+        "role": "counter",
+        "x": 673,
+        "y": 1112,
+        "zCm": 95,
+        "w": 52,
+        "d": 3,
+        "hCm": 3,
+        "material": "Stone",
+        "roomId": "balcony"
+      },
+      {
+        "id": "service_side",
+        "role": "service",
+        "x": 800,
+        "y": 1035,
+        "zCm": 0,
+        "w": 2,
+        "d": 80,
+        "hCm": 95,
+        "material": "Cream",
+        "roomId": "balcony"
+      },
+      {
+        "id": "service_door",
+        "role": "service",
+        "x": 802,
+        "y": 1035,
+        "zCm": 8,
+        "w": 25,
+        "d": 2,
+        "hCm": 86,
+        "material": "Cream",
+        "roomId": "balcony"
+      }
+    ],
+    "metrics": {
+      "operationAisleCm": 69,
+      "rearServiceCm": 10,
+      "basinMachineVerticalGapCm": 3,
+      "sofaEastWallGapCm": 47
+    },
+    "dimensions": [
+      "两机各按600×650×850mm外包占位，含前门；型号及安装间隙待选型。",
+      "A台面1680×800mm，完成面980mm；专用浅盆外深100mm，盆底880mm。",
+      "B书架3180mm长、300mm深、2400mm高；C门框外沿向客厅移287.5mm，与书架正面齐平。",
+      "阳台操作690mm；书架前600mm；餐桌侧靠西柜，不以沙发后直线间距代表通行。",
+      "C洞口1500mm、向南三轨叠停，名义净开约900mm；台面限制使实际北侧入内段约690mm。"
+    ],
+    "conditions": [
+      "所有尺寸为现有模型中的条件推演，不是量房成果或施工图。",
+      "上方是真台盆，但必须是专用浅盆/后置排水定制，不能直接用普通深台下盆；980mm盆沿偏高，不是儿童独立洗手位。",
+      "机器顶面与盆底仅30mm，需厂家确认震动、检修和散热；台盆与台面由独立支架承重，不能压在机器上。",
+      "厨房内窗保持1200×1300mm、台高1000mm；980mm台面仅低20mm，收口、窗框和龙头必须复尺。龙头偏左布置，避开窗洞。",
+      "阳台前后仅1490mm，两机开门时过道紧张，一次操作一台，从侧面取衣；未选定机门铰链和实际开门包络。",
+      "外移的是室内隔断，不是外立面扩建；原窗下墙、梁柱、门垛可拆性和湿区防水须专业核查。",
+      "已购LISABO固定餐桌1400×780×740mm，四把LISABO木餐椅外包460×510×800mm，南北两侧各两席。取消旧抽拉桌及收桌演示，不假设桌椅可折叠或藏进柜里。 已购VIMLE浅米色三人沙发2410×980×830mm，三座垫、三靠垫，坐高480mm。以官方外包尺寸替换旧通用沙发，不为适配走道缩小家具。"
+    ],
+    "references": [
+      {
+        "title": "PAA · Claro Grande 洗衣机上方专用台盆",
+        "url": "https://paabaths.com/catalog/washbasins/claro-grande/",
+        "borrow": "借鉴浅盆与后置排水；官网600×750×100mm、机深上限600mm仅对应该产品。本案800mm深定制台面不是照搬其适配认证。"
+      },
+      {
+        "title": "Bosch · WGB24600HK 官方规格",
+        "url": "https://www.bosch-home.com.hk/zh/product/washers-and-dryers/washing-machines/front-loader/WGB24600HK",
+        "borrow": "官方标注845×598×590mm，用于认识设备量级；本案以更大的含门650mm占位，不作为已选机型。"
+      },
+      {
+        "title": "100室内设计 · 阳台洗衣间改造",
+        "url": "https://www.100.com.tw/article/2536",
+        "borrow": "参考集中洗烘、台面和家政收纳的组织方式，不照搬案例尺度。"
+      }
+    ]
+  },
+  "modelAddons": {
+    "livingFloorLampCm": {
+      "x": 248,
+      "y": 825
+    },
+    "livingRugCm": {
+      "x": 395.5,
+      "y": 674,
+      "w": 224,
+      "d": 178
+    },
+    "livingWallArt": {
+      "wall": "east",
+      "type": "two-framed-pictures",
+      "frameDepthCm": 3,
+      "centerHeightCm": 150,
+      "items": [
+        {
+          "x": 672,
+          "y": 725,
+          "w": 3,
+          "d": 60,
+          "zCm": 110,
+          "hCm": 80
+        },
+        {
+          "x": 672,
+          "y": 810,
+          "w": 3,
+          "d": 60,
+          "zCm": 110,
+          "hCm": 80
+        }
+      ],
+      "note": "两幅600×800薄框挂画仅为设计示意；不设落地架、柜体，不改墙或阳台门。"
+    }
+  },
+  "confirmation": {
+    "revision": "P2",
+    "date": "2026-10-05",
+    "basedOn": "P1 review / published family R3 V3.10.0",
+    "status": "平面待确认；未改网站或3D",
+    "unit": "cm",
+    "sourceSha256": "5a8ddb2209cd0e053994eba20d7824726c07fbad5641c4a32c95d616f7894b2a",
+    "assumptions": [
+      "餐柜从800库起连续向北，长4260mm，下柜深440mm。",
+      "地毯原尺寸2240×1780mm，置于电视柜前沿与沙发前沿中间；茶几同步居中。",
+      "东墙取消书架，暂画两幅600×800薄框挂画；不增落地物件。",
+      "800库保持1500×1000mm暂定外包、北开四扇内折，前365mm折门区留空。"
+    ],
+    "clearancesMm": {
+      "sofaWestMainRoute": 1305,
+      "sofaEastWallGap": 470,
+      "tableEastSeatedToKitchenFrame": 1307.5,
+      "garageToSouthChair": 515,
+      "garageForecourt": 0,
+      "rugToTvFront": 70,
+      "rugToSofaFront": 70,
+      "garageFrontageBesideCabinet": 1035,
+      "garageFrontageWithParkedDoor": 980
+    },
+    "warnings": [
+      "餐柜接长后儿童车不能按P1直接横抽；斜转或抬放动作待实车验证，不视为可施工。",
+      "800库仍为上下分层储物，儿童车平台1230mm；台架、承重、防倾倒、防坠未深化。",
+      "取车须先移开南椅，北向折门区不得占用。",
+      "沙发东侧470mm不是主要通道；主要通行仍走西侧1305mm。",
+      "阳台门维持原位；取消书架后不再与柜面齐平。",
+      "餐桌高740mm、餐柜高850mm；贴柜处取物受限。",
+      "保留原复尺待核项；新增柜体与画框为设计估算。"
+    ]
+  }
+}

@@ -41,6 +41,9 @@ KITCHEN_RETAINED_REASON = 'kitchen-only-refresh; historical reference, not a cur
 FAMILY_R3_COMMIT = 'e210bd72e3feb11bafd02f3e8619399bdc7a99f8'
 FAMILY_R3_FRESH_VIEWS = {'overall', 'master', 'bedroom-b', 'study', 'master-bath', 'guest-bath', 'bay-master', 'bay-tea', 'suite-entry'}
 FAMILY_R3_RETAINED_REASON = 'R3仅调整私密区墙门家具；此为未改公共空间的已发布历史参考，非新帧，不代表重算全屋光照或新墙后的远景。'
+FAMILY_P2_COMMIT = 'd81f065ef4287ee24592df6c372a8fe2d7a64c3b'
+FAMILY_P2_FRESH_VIEWS = {'overall', 'living', 'dining', 'bay-living', 'entry-storage', 'sideboard', 'storage-library', 'living-wall'}
+FAMILY_P2_RETAINED_REASON = 'P2仅改变公区家具与收纳；此为未改私密区、厨房或阳台的已发布历史参考，非新帧，不代表重算全屋光照。'
 ALLOWED_SHADES = {"Organic linen pendant", "Organic linen pendant.001"}
 # Ten micrometres is far below both survey precision and furniture tolerance.
 GEOMETRY_GRID_M = 0.00001
@@ -423,9 +426,33 @@ class Audit:
         self.kitchen_source_guard_passed = None
         self.wood_source_guard_passed = None
         self.family_r3_source_guard_passed = None
+        self.family_p2_source_guard_passed = None
+
+    def family_p2_proof(self, scheme, manifest):
+        """Exact P2 public revision, real GLB and private/other-scheme protection."""
+        if scheme['id'] != 'family' or manifest.get('familyPublicP2Revision', {}).get('version') != '3.11.0':
+            return False
+        source = load_json(relative_file(scheme['geometrySource']))
+        valid = self.check(source.get('version') == '3.11.0' and source.get('familyPublicP2Revision') == manifest['familyPublicP2Revision'],
+                           'family: exact P2 source/native revision identity')
+        if self.family_p2_source_guard_passed is None:
+            try:
+                node = shutil.which('node')
+                if not node:
+                    raise OSError('Node runtime unavailable')
+                result = subprocess.run([node, str(ROOT / 'tools/test_family_public_p2.mjs'), '--glb'], cwd=ROOT,
+                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, timeout=180, encoding='utf-8')
+                self.family_p2_source_guard_passed = json.loads(result.stdout).get('passed') is True
+                self.check(self.family_p2_source_guard_passed, 'family: independent P2 exact source/world vertices/rigid purchased furniture/walk/protected geometry proof')
+            except (OSError, subprocess.SubprocessError, ValueError) as exc:
+                self.family_p2_source_guard_passed = False
+                self.check(False, f'family: independent P2 proof failed: {type(exc).__name__}')
+        return valid and self.family_p2_source_guard_passed
 
     def family_r3_proof(self, scheme, manifest):
         """Exact confirmed R3 source and real mesh proof, not a family bypass."""
+        if manifest.get('familyPublicP2Revision'):
+            return self.family_p2_proof(scheme, manifest)
         if scheme['id'] != 'family' or manifest.get('familyR3Revision', {}).get('version') != '3.10.0':
             return False
         source = load_json(relative_file(scheme['geometrySource']))
@@ -579,15 +606,19 @@ class Audit:
         expected = {f"{prefix}/{name}.jpg" for name in views}
         kitchen_refresh = self.kitchen_refresh_proof(scheme, manifest)
         family_r3 = self.family_r3_proof(scheme, manifest)
+        family_p2 = bool(manifest.get('familyPublicP2Revision'))
+        family_commit = FAMILY_P2_COMMIT if family_p2 else FAMILY_R3_COMMIT
+        family_fresh_views = FAMILY_P2_FRESH_VIEWS if family_p2 else FAMILY_R3_FRESH_VIEWS
+        family_retained_reason = FAMILY_P2_RETAINED_REASON if family_p2 else FAMILY_R3_RETAINED_REASON
         family_previous = None
         if family_r3:
-            family_previous = json.loads(subprocess.check_output(['git', 'show', FAMILY_R3_COMMIT + ':' + scheme['manifest']], cwd=ROOT))
+            family_previous = json.loads(subprocess.check_output(['git', 'show', family_commit + ':' + scheme['manifest']], cwd=ROOT))
             records = manifest.get('renderedViews', {})
             self.check(set(views) == set(family_previous.get('renderedViews', {})) and len(views) == 20,
                        'family: R3 retains exactly the reviewed 20-view inventory')
-            self.check({name for name, record in records.items() if 'retainedFrom' not in record} == FAMILY_R3_FRESH_VIEWS and
-                       {name for name, record in records.items() if 'retainedFrom' in record} == set(views) - FAMILY_R3_FRESH_VIEWS,
-                       'family: exactly nine affected/private views fresh and eleven public references explicitly retained')
+            self.check({name for name, record in records.items() if 'retainedFrom' not in record} == family_fresh_views and
+                       {name for name, record in records.items() if 'retainedFrom' in record} == set(views) - family_fresh_views,
+                       f'family: exactly {len(family_fresh_views)} affected views fresh and {20-len(family_fresh_views)} references explicitly retained')
         kitchen_previous = None
         if kitchen_refresh:
             kitchen_previous = json.loads(subprocess.check_output(
@@ -653,16 +684,16 @@ class Audit:
             self.check(record.get("imageSha256") == image_hash, f"{sid}/{name}: actual JPEG hash matches final frame record")
             retained = record.get('retainedFrom')
             camera_manifest = manifest
-            if family_r3 and name not in FAMILY_R3_FRESH_VIEWS:
+            if family_r3 and name not in family_fresh_views:
                 old_record = family_previous.get('renderedViews', {}).get(name)
-                expected_origin = {'commit': FAMILY_R3_COMMIT, 'manifest': scheme['manifest'], 'view': name, 'reason': FAMILY_R3_RETAINED_REASON}
+                expected_origin = {'commit': family_commit, 'manifest': scheme['manifest'], 'view': name, 'reason': family_retained_reason}
                 if old_record and old_record.get('retainedFrom'):
                     expected_origin['previous'] = old_record['retainedFrom']
                 self.check(retained == expected_origin, f'family/{name}: exact published public-reference provenance including the prior chain')
                 self.check(old_record is not None and
                            {k: v for k, v in record.items() if k != 'retainedFrom'} == {k: v for k, v in (old_record or {}).items() if k != 'retainedFrom'},
                            f'family/{name}: original image/model/source/camera record is not relabeled as new')
-                prior_image = subprocess.check_output(['git', 'show', FAMILY_R3_COMMIT + ':' + f'{prefix}/{name}.jpg'], cwd=ROOT)
+                prior_image = subprocess.check_output(['git', 'show', family_commit + ':' + f'{prefix}/{name}.jpg'], cwd=ROOT)
                 self.check(raw == prior_image, f'family/{name}: retained reference bytes exactly match the reviewed release')
                 camera_manifest = family_previous
             elif kitchen_refresh and name not in KITCHEN_FRESH_VIEWS:
@@ -708,8 +739,8 @@ class Audit:
                     self.check(manifest['livingBayRevision'].get('estimatedSillCm')==40 and manifest['livingBayRevision'].get('cushionThicknessCm')==5 and manifest['livingBayRevision'].get('measured') is False,f'{sid}/{name}: low-bay estimate remains explicitly unmeasured')
             else:
                 if family_r3:
-                    self.check(name in FAMILY_R3_FRESH_VIEWS and 'retainedFrom' not in record,
-                               f'family/{name}: affected R3 private/overview view must be genuinely fresh')
+                    self.check(name in family_fresh_views and 'retainedFrom' not in record,
+                               f'family/{name}: affected reviewed view must be genuinely fresh')
                 if kitchen_refresh:
                     self.check(name in KITCHEN_FRESH_VIEWS and 'retainedFrom' not in record,
                                f'{sid}/{name}: required kitchen/current overview view cannot be retained')
@@ -745,6 +776,47 @@ class Audit:
         Coordinate conversion is Blender(x,-planY,height) -> GLB(x,height,planY).
         This validates actual camera values, not merely a well-formed hash.
         """
+        override = record.get('cameraOverride')
+        override_camera = None
+        if override:
+            # Only the explicitly reviewed entry camera may differ from the
+            # saved .blend. Keep both camera states auditable: first verify
+            # the saved camera against the normal native manifest, then the
+            # actual rendered matrix against the exact reproducible override.
+            allowed = (manifest.get('familyPublicP2Revision', {}).get('version') == '3.11.0' and
+                       name == 'entry-storage' and override.get('scope') == 'camera-only' and
+                       override.get('script') == 'tools/refresh_family_public_p2.py')
+            if not self.check(allowed, f'{name}: only reviewed family P2 entry-storage camera override allowed'):
+                return
+            expected_position, expected_target, expected_lens = (4.0, 12.8, 1.62), (5.08, 13.54, 1.23), 19
+            self.check(tuple(override.get('positionMetersPlan', [])) == expected_position and
+                       tuple(override.get('targetMetersPlan', [])) == expected_target and
+                       override.get('lensMm') == expected_lens and bool(override.get('reason')),
+                       f'{name}: exact reviewed camera-only override parameters and reason')
+            tree = ast.parse((ROOT / override['script']).read_text(encoding='utf-8'))
+            presets = next((ast.literal_eval(node.value) for node in tree.body if isinstance(node, ast.Assign)
+                            and any(isinstance(target, ast.Name) and target.id == 'RENDER_CAMERA_OVERRIDES' for target in node.targets)), {})
+            self.check(presets.get(name) == (expected_position, expected_target, expected_lens),
+                       f'{name}: committed script reproduces exact render-camera parameters')
+            saved_presets = next((ast.literal_eval(node.args[0]) for node in ast.walk(tree) if isinstance(node, ast.Call)
+                                  and isinstance(node.func, ast.Attribute) and node.func.attr == 'update'
+                                  and isinstance(node.func.value, ast.Attribute) and node.func.value.attr == 'VIEWS'
+                                  and node.args and isinstance(node.args[0], ast.Dict)), {})
+            saved_position, saved_target, saved_lens = (4.74, 12.69, 1.59), (3.60, 13.55, 1.25), 17
+            self.check(saved_presets.get(name) == (saved_position, saved_target, saved_lens),
+                       f'{name}: original saved native camera is reproducible from the build script')
+            saved_manifest = json.loads(json.dumps(manifest))
+            saved_view = next(item for item in saved_manifest['storageDetails'] if Path(item.get('render', '')).stem == name)
+            saved_view['interiorCamera'] = {'position': [saved_position[0], saved_position[2], saved_position[1]],
+                                           'target': [saved_target[0], saved_target[2], saved_target[1]],
+                                           'horizontalFov': math.degrees(2*math.atan(36/(2*saved_lens)))}
+            self.camera_record(name, {'cameraState': override.get('savedCameraState', {}),
+                                      'cameraHash': override.get('savedCameraHash')}, saved_manifest)
+            override_camera = {'position': [expected_position[0], expected_position[2], expected_position[1]],
+                               'target': [expected_target[0], expected_target[2], expected_target[1]],
+                               'horizontalFov': math.degrees(2*math.atan(36/(2*expected_lens)))}
+            self.check(record.get('cameraState', {}).get('lens') == expected_lens,
+                       f'{name}: actual render lens matches camera-only override')
         state = record.get("cameraState", {})
         if not self.check(bool(state) and record.get("cameraHash") == json_hash(state),
                           f"{name}: camera state is present with a valid reproducible hash"):
@@ -767,6 +839,11 @@ class Audit:
                 tree = ast.parse((ROOT / "tools/build_suite_layout.py").read_text(encoding="utf-8"))
                 preset = next(ast.literal_eval(n.value) for n in tree.body if isinstance(n, ast.Assign) and any(isinstance(t, ast.Subscript) and isinstance(t.slice, ast.Constant) and t.slice.value == name for t in n.targets))
                 camera = {**camera, "horizontalFov": math.degrees(2*math.atan(36/(2*preset[2])))}
+        if override_camera:
+            self.check(camera.get('position') == override_camera['position'] and camera.get('target') == override_camera['target']
+                       and abs(camera.get('horizontalFov', -100)-override_camera['horizontalFov']) < .006,
+                       f'{name}: public manifest declares the actual presentation camera')
+            camera = override_camera
         target = camera.get("target", [])
         expected = camera.get("position", [])
         self.check(len(expected) == 3 and max(abs(a-b) for a,b in zip(position,expected)) < .0001,
@@ -789,7 +866,7 @@ class Audit:
         self.check(bool(revision) and revision.get('version') == scheme.get('purchasedFurnitureRevision') ==
                    product_source.get('version') and
                    (product_source.get('version') == catalog.get('version') or
-                    (product_source.get('version') == '3.7.0' and catalog.get('version') in ('3.8.0', '3.9.0', '3.10.0') and
+                    (product_source.get('version') == '3.7.0' and catalog.get('version') in ('3.8.0', '3.9.0', '3.10.0', '3.11.0') and
                      (self.kitchen_refresh_proof(scheme, manifest) or self.wood_revision_proof(scheme, manifest) or self.family_r3_proof(scheme, manifest)))),
                    f'{sid}: purchased evidence revisions agree; only independently guarded layout releases advance separately')
         self.check(manifest.get('purchasedFurnitureRevision') == revision and
@@ -849,6 +926,7 @@ class Audit:
             if room['id'] in revision.get('roomDescriptions', {}):
                 expected_description = source.get('woodRevision', {}).get('roomDescriptions', {}).get(room['id'], {}).get('description') if sid == 'wood' else None
                 expected_description = source.get('familyR3Revision', {}).get('roomDescriptions', {}).get(room['id'], {}).get('description') or expected_description
+                expected_description = source.get('familyPublicP2Revision', {}).get('roomDescriptions', {}).get(room['id'], {}).get('description') or expected_description
                 expected_description = expected_description or revision['roomDescriptions'][room['id']]
                 self.check(room['description'] == expected_description,
                            f'{sid}/{room["id"]}: manifest describes current purchased furniture')

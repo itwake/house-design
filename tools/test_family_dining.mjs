@@ -12,7 +12,11 @@ const read=async path=>JSON.parse(await readFile(new URL(path,root),'utf8'));
 const d=await read('models/schemes/family/design-data.json'),rev=d.familyDiningRevision,p=d.pulloutDining;
 // Purchased fixed furniture supersedes, rather than simulates, the earlier
 // retractable mechanism. Preserve the legacy regression for old sources.
-if(d.familyR3Revision?.version==='3.10.0'){
+if(d.familyPublicP2Revision?.version==='3.11.0'){
+  await (await import('./test_family_public_p2.mjs')).ensureFamilyPublicP2({glb:process.argv.includes('--glb')});
+  await import('./test_purchased_furniture.mjs');
+  await import('./test_measurement_supplement.mjs');
+}else if(d.familyR3Revision?.version==='3.10.0'){
   await (await import('./test_family_r3.mjs')).ensureFamilyR3({glb:process.argv.includes('--glb')});
   await import('./test_purchased_furniture.mjs');
   await import('./test_measurement_supplement.mjs');

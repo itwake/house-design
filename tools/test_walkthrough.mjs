@@ -11,14 +11,22 @@ const laundry=process.argv.includes('--laundry'),family=process.argv.includes('-
 const data=JSON.parse(await read(prefix+'design-data.json'));
 const woodRevision=schemeId==='wood'&&data.woodRevision?.version==='3.9.0';
 const familyR3=schemeId==='family'&&data.familyR3Revision?.version==='3.10.0';
-if(familyR3)await (await import('./test_family_r3.mjs')).ensureFamilyR3();
+const familyPublicP2=schemeId==='family'&&data.familyPublicP2Revision?.version==='3.11.0';
+if(familyPublicP2)await (await import('./test_family_public_p2.mjs')).ensureFamilyPublicP2();
+else if(familyR3)await (await import('./test_family_r3.mjs')).ensureFamilyR3();
 const manifest=JSON.parse(await read(prefix+'scene-manifest.json'));
 const catalog=JSON.parse(await read('models/design-schemes.json'));
 const activeScheme=catalog.schemes.find(s=>s.id===schemeId)||{id:schemeId,model:prefix+'huiyayuan-wood.glb'},hasLaundry=Boolean(data.laundry);
 const source=await read('studio.js'),html=await read('studio.html');
 const world=buildWalkWorld(data),near=(a,b,message)=>assert.ok(Math.abs(a-b)<1e-7,message||`${a} != ${b}`);
 if(family){
-  if(data.familyFlowRevision){
+  if(familyPublicP2){
+    const leaves=data.garage.parts.filter(p=>p.role==='folded-door');assert.equal(leaves.length,4,'P2 north four-leaf internal folding');
+    // The tiny store is not walk-in: its aggregate remains a solid collision
+    // body. Inward leaves are inside that envelope, not extra hall obstacles.
+    assert.ok(world.obstacles.some(o=>o.id==='family_garage'));
+    assert.ok(!world.obstacles.some(o=>o.id.startsWith('garage-')),'No old outward fold blocks the hall');
+  }else if(data.familyFlowRevision){
     const leaves=data.garage.parts.filter(p=>p.role==='folded-door');assert.equal(leaves.length,2,'Flow layout uses two physical east folded leaves');
     for(const leaf of leaves){const obstacle=world.obstacles.find(o=>o.id==='garage-'+leaf.id);assert.ok(obstacle,'Walking mode keeps folded leaf '+leaf.id);assert.deepEqual([obstacle.x,obstacle.z,obstacle.w,obstacle.d],[leaf.x/100,leaf.y/100,leaf.w/100,leaf.d/100]);}
     assert.ok(!world.obstacles.find(o=>o.id==='garage-hinged-leaf'),'No superseded single hinged garage collider');

@@ -97,9 +97,18 @@ const reports=[];
 let purchasedActive=false,kitchenActive=false,woodActive=false;
 const familyR3Source=await json('models/schemes/family/design-data.json');
 const familyR3Active=familyR3Source.familyR3Revision?.version==='3.10.0';
-if(familyR3Active)await (await import('./test_family_r3.mjs')).ensureFamilyR3({glb:process.argv.includes('--glb')});
+const familyPublicP2Active=familyR3Source.familyPublicP2Revision?.version==='3.11.0';
+if(familyPublicP2Active)await (await import('./test_family_public_p2.mjs')).ensureFamilyPublicP2({glb:process.argv.includes('--glb')});
+else if(familyR3Active)await (await import('./test_family_r3.mjs')).ensureFamilyR3({glb:process.argv.includes('--glb')});
 for (const id of ['wood','family','laundry']) {
   const path=`models/schemes/${id}/design-data.json`, data=await json(path), old=previous(path), rev=data.measurementRevision;
+  if(id==='family'&&familyPublicP2Active){
+    // The explicit P2 proof checks exact immutable measurementRevision,
+    // windows, room/private geometry, and all protected world triangles
+    // against the released R3 source. Never reapply obsolete public placement.
+    purchasedActive ||= Boolean(data.purchasedFurnitureRevision);kitchenActive ||= Boolean(data.kitchenFitout);
+    reports.push({scheme:id,revision:'3.11.0',evidence:'Exact P2 guard preserves published R3 survey and private geometry'});continue;
+  }
   const woodRevision=id==='wood'&&data.woodRevision?.version==='3.9.0';
   const familyR3=id==='family'&&familyR3Active;
   woodActive ||= woodRevision;
