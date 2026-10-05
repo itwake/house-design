@@ -4,6 +4,10 @@ import {execFileSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 const root=new URL('../',import.meta.url),cwd=fileURLToPath(root),read=async p=>JSON.parse(await readFile(new URL(p,root),'utf8'));
 const d=await read('models/schemes/family/design-data.json'),base=await read('models/schemes/suite/design-data.json'),g=d.garage;
+if(d.familyR3Revision?.version==='3.10.0'){
+  await (await import('./test_family_r3.mjs')).ensureFamilyR3({glb:process.argv.includes('--glb')});
+  await import('./test_purchased_furniture.mjs');
+}else{
 const entryChanged=Boolean(d.familyEntryRevision),flowChanged=Boolean(d.familyFlowRevision),diningChanged=Boolean(d.familyDiningRevision);
 const mergedLaundry=Boolean(d.familyLaundryRevision);
 if(mergedLaundry){
@@ -95,3 +99,4 @@ const baseline=diningChanged?'a2b623c':flowChanged?'ab45810':entryChanged?'0466f
 const hashes=execFileSync('git',['hash-object','--stdin-paths'],{cwd,encoding:'utf8',input:tree.map(p=>p.path).join('\n')+'\n'}).trim().split('\n');
 tree.forEach((p,i)=>assert.equal(hashes[i],p.sha,'Preserve existing asset '+p.path));
 console.log(`PASS family storage: inherited shell/rooms/furniture protected, four dining chairs, two vehicle envelopes, ${entryChanged?'current two-level entrance regression':poses+' sampled extraction/rotation poses'}, ${tree.length} old assets byte-identical. Vehicle test excludes user body and unspecified real hardware.`);
+}

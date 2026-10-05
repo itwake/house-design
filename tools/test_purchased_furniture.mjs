@@ -28,7 +28,10 @@ function connected(data,id,amount,diameterCm){
       seen[m]=1;queue.push(m);
     }
   }
-  for(const [label,x,z] of [['north-corridor',id==='wood'?3.65:3.35,6.4],['kitchen',6.8,12.6],['east-living',6.1,10.4]])
+  const r3=id==='family'&&data.familyR3Revision?.version==='3.10.0';
+  // R3 moves the actual private corridor west; test its center, not the old
+  // x335cm point now beside a bathroom wall. Both 50/60cm sweeps still run.
+  for(const [label,x,z] of [['north-corridor',r3?2.9:id==='wood'?3.65:3.35,r3?6:6.4],['kitchen',6.8,12.6],['east-living',6.1,10.4]])
     assert.ok(seen[index(x,z)],`${id}/${amount}/${diameterCm} cm body: swept route to ${label}`);
   if(id==='family')assert.ok(world.obstacles.some(o=>o.id==='family_sideboard_1_base'&&Math.abs(o.w-.44)<1e-8),'Actual 44 cm ordinary cabinet remains in collision world');
   return queue.length;
@@ -71,6 +74,7 @@ let kitchenActive=false;
 for(const [id,basePlacement] of Object.entries(layouts)){
   const d=await read(`models/schemes/${id}/design-data.json`),f=name=>{const a=d.furniture.filter(f=>f.name===name);assert.equal(a.length,1,`${id}: one ${name}`);return a[0];};
   const woodRevision=id==='wood'&&d.woodRevision?.version==='3.9.0';
+  if(id==='family'&&d.familyR3Revision?.version==='3.10.0')await (await import('./test_family_r3.mjs')).ensureFamilyR3({glb:process.argv.includes('--glb')});
   const p=woodRevision?{...basePlacement,sx:394,sy:856}:basePlacement;
   kitchenActive ||= Boolean(d.kitchenFitout);
   assert.equal(d.purchasedFurnitureRevision.version,'3.7.0');assert.equal(d.measurementRevision.version,'3.6.1');

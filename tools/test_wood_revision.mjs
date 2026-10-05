@@ -25,10 +25,13 @@ const changedOldNames=new Set(['主卧1500床','次卧1350床','次卧衣柜','�
 const shiftedNames=new Map([['三人沙发',[-20,-45]],['茶几',[-20,-45]],['电视薄柜',[-20,0]]]);
 
 async function unchangedOtherSchemes(){
-  const paths=['models/schemes/family','models/schemes/laundry','assets/schemes/family','assets/schemes/laundry'];
+  const family=JSON.parse(await readFile(new URL('models/schemes/family/design-data.json',root),'utf8'));
+  const familyR3=family.familyR3Revision?.version==='3.10.0';
+  if(familyR3)await (await import('./test_family_r3.mjs')).ensureFamilyR3({glb:process.argv.includes('--glb')});
+  const paths=familyR3?['models/schemes/laundry','assets/schemes/laundry']:['models/schemes/family','models/schemes/laundry','assets/schemes/family','assets/schemes/laundry'];
   const lines=execFileSync('git',['ls-tree','-r',woodBaseline,...paths],{cwd,encoding:'utf8'}).trim().split('\n');
   const files=lines.map(l=>{const [meta,path]=l.split('\t');return {sha:meta.split(' ')[2],path};});
-  assert.ok(files.length>=47,'Both other schemes have broad independent byte coverage');
+  assert.ok(files.length>=(familyR3?23:47),'Unchanged other schemes retain broad byte coverage; revised family requires exact R3 proof');
   const hashes=execFileSync('git',['hash-object','--stdin-paths'],{cwd,encoding:'utf8',input:files.map(f=>f.path).join('\n')+'\n'}).trim().split('\n');
   files.forEach((f,i)=>assert.equal(hashes[i],f.sha,`Unrequested scheme remains byte-identical: ${f.path}`));
   return files.length;

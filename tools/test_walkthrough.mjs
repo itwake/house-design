@@ -10,6 +10,8 @@ const root=new URL('../',import.meta.url),read=p=>readFile(new URL(p,root),'utf8
 const laundry=process.argv.includes('--laundry'),family=process.argv.includes('--family'),suite=laundry||family||process.argv.includes('--suite'),schemeId=laundry?'laundry':family?'family':suite?'suite':'wood',prefix=`models/schemes/${schemeId}/`;
 const data=JSON.parse(await read(prefix+'design-data.json'));
 const woodRevision=schemeId==='wood'&&data.woodRevision?.version==='3.9.0';
+const familyR3=schemeId==='family'&&data.familyR3Revision?.version==='3.10.0';
+if(familyR3)await (await import('./test_family_r3.mjs')).ensureFamilyR3();
 const manifest=JSON.parse(await read(prefix+'scene-manifest.json'));
 const catalog=JSON.parse(await read('models/design-schemes.json'));
 const activeScheme=catalog.schemes.find(s=>s.id===schemeId)||{id:schemeId,model:prefix+'huiyayuan-wood.glb'},hasLaundry=Boolean(data.laundry);
@@ -43,7 +45,7 @@ for(const [x,z,r]of [[NaN,2,.25],[2,Infinity,.25],[2,2,-1],[-1,2,.25],[10,5,.25]
 for(const opening of [...data.windows,data.doors.find(d=>d.id==='entry_door')]){
   assert.equal(world.canStand((opening.x1+opening.x2)/200,(opening.y1+opening.y2)/200,0),false,'No passage '+opening.id);
 }
-assert.equal(world.canStand(2.7,6.26,0),false,'Continuous study south wall');
+assert.equal(world.canStand(familyR3?2.2:2.7,6.26,0),false,'Continuous current study south wall');
 assert.equal(world.canStand(7.4,11.21,0),false,'No invented kitchen-balcony connection');
 for(const obstacle of world.obstacles)assert.equal(world.canStand(obstacle.x+obstacle.w/2,obstacle.z+obstacle.d/2,0),false,'Solid '+obstacle.id);
 for(const f of data.bayFitouts)for(const p of f.parts)if(['desktop','chair'].includes(p.role))assert.ok(world.obstacles.some(o=>o.id===p.id),'Bay collision '+p.id);
@@ -219,10 +221,10 @@ if(data.familyDiningRevision){
   api.state.diningClosed=false;api.applyDiningVisibility();
 }
 assert.ok(!api.walkDoorParts.some(p=>p.userData.openingId==='door_kitchen'),'Kitchen leaves must never disappear');
-assert.equal(api.walkSlidingParts.length,woodRevision?36:hasLaundry?38:suite?20:18,'Kitchen and balcony slider parts, plus study slider only in suite-derived layouts');
+assert.equal(api.walkSlidingParts.length,woodRevision||familyR3?36:hasLaundry?38:suite?20:18,'Kitchen and balcony slider parts; R3 removes the study slider');
 assert.deepEqual([...new Set(api.walkSlidingParts.filter(p=>p.userData.openingId==='door_kitchen').map(p=>p.userData.slidingPanelIndex))].sort(),[0,1,2]);
 const openHinges=api.model.children.filter(p=>p.userData.doorRole==='hinged-open-panel');
-assert.equal(openHinges.length,suite?8:0);
+assert.equal(openHinges.length,familyR3?10:suite?8:0,'R3 has five independently audited open hinged leaves with recessed pulls');
 assert.ok(openHinges.every(p=>!api.walkDoorParts.includes(p)),'Open hinged leaves never disappear');
 const closedPositions=api.walkSlidingParts.map(p=>p.position.clone());
 assert.equal(world.canStand(5.36,11.90),false,'North parked stack blocks walking');

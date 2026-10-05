@@ -24,21 +24,27 @@ const validRect = (value, label) => {
 };
 const oldKitchenNames = new Set(['厨房南侧地柜', '厨房北侧地柜', '冰箱高柜', '蒸烤高柜']);
 const outsideKitchen = furniture => furniture.filter(f => !oldKitchenNames.has(f.name) && !f.kitchenFitoutId && !f.id?.startsWith('kitchen_'));
+const familyR3Source=await read('models/schemes/family/design-data.json');
+const familyR3Active=familyR3Source.familyR3Revision?.version==='3.10.0';
+if(familyR3Active)await (await import('./test_family_r3.mjs')).ensureFamilyR3({glb:process.argv.includes('--glb')});
 
 function checkPreserved(data, previous, scheme) {
   const woodRevision=scheme==='wood'&&data.woodRevision?.version==='3.9.0';
+  const familyR3=scheme==='family'&&familyR3Active;
+  const laterFamilyGroups=new Set(['rooms','walls','wallSpecs','doors','wallFitouts']);
   // V3.9 replaces specific scheme-one furnishing/floor groups. Their complete
   // independent source/native guard runs below; kitchen and architecture stay
   // under this original guard, rather than exempting the whole scheme.
   const laterWoodGroups=new Set(['rooms','walls','wallSpecs','doors','bayFitouts','wallFitouts','laundry','appearance','measurementRevision']);
   for (const key of ['unit', 'envelope', 'rooms', 'walls', 'wallSpecs', 'doors', 'windows', 'bayFitouts', 'wallFitouts', 'storageFitouts', 'laundry', 'garage', 'modelAddons', 'appearance', 'purchasedFurnitureRevision', 'measurementRevision']) {
     if(woodRevision&&laterWoodGroups.has(key))continue;
+    if(familyR3&&laterFamilyGroups.has(key))continue; // Exact R3 source/native proof above, not a room-wide exemption.
     if(woodRevision&&key==='modelAddons'){
       assert.deepEqual(data.modelAddons,{...(previous.modelAddons??{}),livingFloorLampCm:{x:648,y:810}},'wood: only exact reviewed floor-lamp translation');continue;
     }
     assert.deepEqual(data[key], previous[key], `${scheme}: ${key} unchanged from ${baseline}`);
   }
-  if(!woodRevision)assert.deepEqual(outsideKitchen(data.furniture), outsideKitchen(previous.furniture), `${scheme}: every non-kitchen furniture record unchanged`);
+  if(!woodRevision&&!familyR3)assert.deepEqual(outsideKitchen(data.furniture), outsideKitchen(previous.furniture), `${scheme}: every non-kitchen furniture record unchanged`);
   const purchased = source => source.furniture.filter(f => f.purchasedProductId);
   assert.equal(purchased(data).length, 6, `${scheme}: purchased sofa, table and all four chairs remain`);
   const expectedPurchased=structuredClone(purchased(previous));

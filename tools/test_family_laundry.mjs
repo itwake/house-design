@@ -10,6 +10,12 @@ import {buildWalkWorld,findWalkStart,advanceWalk} from '../walkthrough.js';
 const root=new URL('../',import.meta.url),cwd=fileURLToPath(root);
 const read=async p=>JSON.parse(await readFile(new URL(p,root),'utf8'));
 const d=await read('models/schemes/family/design-data.json'),reference=await read('models/schemes/laundry/design-data.json');
+if(d.familyR3Revision?.version==='3.10.0'){
+  // R3 independently proves the complete public/laundry source and world
+  // triangles unchanged from the published baseline, plus every changed wall.
+  await (await import('./test_family_r3.mjs')).ensureFamilyR3({glb:process.argv.includes('--glb')});
+  await import('./test_purchased_furniture.mjs');
+}else{
 const entryChanged=Boolean(d.familyEntryRevision),flowChanged=Boolean(d.familyFlowRevision),diningChanged=Boolean(d.familyDiningRevision),baseline=diningChanged?'a2b623c':flowChanged?'ab45810':entryChanged?'0466fda':'9e9a10f';
 const shift=d.familyFlowRevision?.sofaShiftCm,sofaShiftX=flowChanged?Number(typeof shift==='object'?shift.x:shift):0,sofaWidth=flowChanged?d.familyFlowRevision.sofaWidthCm:220;
 if(diningChanged){assert.equal(d.familyDiningRevision.version,'3.5.3');assert.ok(d.familyDiningRevision.baselineCommit.startsWith(baseline));}
@@ -206,3 +212,4 @@ if(process.argv.includes('--glb')){
   console.log(`PASS merged family GLB: ${l.parts.length} exact laundry/bookwall solids, two floor machines, aligned south-parking slider and ${original.size} protected baseline meshes with identical world-space triangles.`);
 }
 console.log(`PASS family merge: private rooms and imported laundry/wall preserved, collision-free living furniture/lamp, walkable balcony entrance; ${entryChanged?'current entrance is independently checked by test_family_entry.mjs':vehiclePoses+' sampled north take-out poses'}. Human handling and real hardware require on-site checks.`);
+}

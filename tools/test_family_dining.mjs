@@ -12,11 +12,16 @@ const read=async path=>JSON.parse(await readFile(new URL(path,root),'utf8'));
 const d=await read('models/schemes/family/design-data.json'),rev=d.familyDiningRevision,p=d.pulloutDining;
 // Purchased fixed furniture supersedes, rather than simulates, the earlier
 // retractable mechanism. Preserve the legacy regression for old sources.
-if(d.purchasedFurnitureRevision){
+if(d.familyR3Revision?.version==='3.10.0'){
+  await (await import('./test_family_r3.mjs')).ensureFamilyR3({glb:process.argv.includes('--glb')});
+  await import('./test_purchased_furniture.mjs');
+  await import('./test_measurement_supplement.mjs');
+}else if(d.purchasedFurnitureRevision){
   await import('./test_purchased_furniture.mjs');
   await import('./test_measurement_supplement.mjs');
   process.exit(0);
 }
+if(d.familyR3Revision?.version!=='3.10.0'){
 const baseline='a2b623c9813c0d2a664abf31ab575fc6c0fd2b0d';
 const base=JSON.parse(execFileSync('git',['show',baseline+':models/schemes/family/design-data.json'],{cwd,encoding:'utf8'}));
 const measurement=d.measurementRevision?.stage==='partial-confirmed';
@@ -192,3 +197,4 @@ if(process.argv.includes('--glb')){
   console.log(`PASS family dining native GLB: ${protectedOld.size} unchanged world-triangle meshes, ${rigid} vertex-exact translated coffee components, real oriented 4+4 chairs, folded/expanded tables and ${cupboardClearances+2} actual shelf/front clearances.`);
 }
 console.log(`PASS family dining 3.5.3: exact 200 cm sofa/back storage/local 44 cm cabinet, no vanishing chairs, ${extraction} vehicle exit poses, 50 cm body swept-connected 8-room counts ${JSON.stringify(counts)}.`);
+}

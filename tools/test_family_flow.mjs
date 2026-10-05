@@ -10,7 +10,10 @@ import {buildWalkWorld,findWalkStart,advanceWalk} from '../walkthrough.js';
 const root=new URL('../',import.meta.url),cwd=fileURLToPath(root);
 const read=async path=>JSON.parse(await readFile(new URL(path,root),'utf8'));
 const d=await read('models/schemes/family/design-data.json'),g=d.garage,revision=d.familyFlowRevision;
-if(d.familyDiningRevision){
+if(d.familyR3Revision?.version==='3.10.0'){
+  await (await import('./test_family_r3.mjs')).ensureFamilyR3({glb:process.argv.includes('--glb')});
+  await import('./test_purchased_furniture.mjs');
+}else if(d.familyDiningRevision){
   // Current dining revision owns its explicit two furniture states. Do not
   // exit: callers importing this file still have inherited asset tests to run.
   await import('./test_family_dining.mjs');

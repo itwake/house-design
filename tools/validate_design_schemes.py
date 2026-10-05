@@ -38,6 +38,9 @@ ARCHIVED_IDS = ("terracotta", "moss", "cobalt")
 KITCHEN_RETAINED_COMMIT = '92162a8cbc713f5ce72fa6632f37364328778253'
 KITCHEN_FRESH_VIEWS = {'overall', 'kitchen', 'kitchen-north'}
 KITCHEN_RETAINED_REASON = 'kitchen-only-refresh; historical reference, not a current kitchen render'
+FAMILY_R3_COMMIT = 'e210bd72e3feb11bafd02f3e8619399bdc7a99f8'
+FAMILY_R3_FRESH_VIEWS = {'overall', 'master', 'bedroom-b', 'study', 'master-bath', 'guest-bath', 'bay-master', 'bay-tea', 'suite-entry'}
+FAMILY_R3_RETAINED_REASON = 'R3仅调整私密区墙门家具；此为未改公共空间的已发布历史参考，非新帧，不代表重算全屋光照或新墙后的远景。'
 ALLOWED_SHADES = {"Organic linen pendant", "Organic linen pendant.001"}
 # Ten micrometres is far below both survey precision and furniture tolerance.
 GEOMETRY_GRID_M = 0.00001
@@ -419,6 +422,28 @@ class Audit:
         self.proved_metadata_source = None
         self.kitchen_source_guard_passed = None
         self.wood_source_guard_passed = None
+        self.family_r3_source_guard_passed = None
+
+    def family_r3_proof(self, scheme, manifest):
+        """Exact confirmed R3 source and real mesh proof, not a family bypass."""
+        if scheme['id'] != 'family' or manifest.get('familyR3Revision', {}).get('version') != '3.10.0':
+            return False
+        source = load_json(relative_file(scheme['geometrySource']))
+        valid = self.check(source.get('version') == '3.10.0' and source.get('familyR3Revision') == manifest['familyR3Revision'],
+                           'family: exact current R3 source/native revision identity')
+        if self.family_r3_source_guard_passed is None:
+            try:
+                node = shutil.which('node')
+                if not node:
+                    raise OSError('Node runtime unavailable')
+                result = subprocess.run([node, str(ROOT / 'tools/test_family_r3.mjs'), '--glb'], cwd=ROOT,
+                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, timeout=180, encoding='utf-8')
+                self.family_r3_source_guard_passed = json.loads(result.stdout).get('passed') is True
+                self.check(self.family_r3_source_guard_passed, 'family: independent R3 source/actual wall-door-furniture meshes/public preservation proof passed')
+            except (OSError, subprocess.SubprocessError, ValueError) as exc:
+                self.family_r3_source_guard_passed = False
+                self.check(False, f'family: independent R3 proof failed: {type(exc).__name__}')
+        return valid and self.family_r3_source_guard_passed
 
     def wood_revision_proof(self, scheme, manifest):
         """No blanket scheme exemption: require the exact independent V3.9 guard."""
@@ -452,6 +477,9 @@ class Audit:
         source = load_json(relative_file(scheme['geometrySource']))
         if scheme['id'] == 'wood' and source.get('woodRevision', {}).get('version') == '3.9.0':
             self.wood_revision_proof(scheme, manifest)
+            return False
+        if scheme['id'] == 'family' and source.get('familyR3Revision', {}).get('version') == '3.10.0':
+            self.family_r3_proof(scheme, manifest)
             return False
         valid = self.check(scheme['id'] in ACTIVE_IDS and
                            fit.get('id') == 'kitchen-20261005' and
@@ -550,6 +578,16 @@ class Audit:
         views = scheme.get("renderViews", VIEWS)
         expected = {f"{prefix}/{name}.jpg" for name in views}
         kitchen_refresh = self.kitchen_refresh_proof(scheme, manifest)
+        family_r3 = self.family_r3_proof(scheme, manifest)
+        family_previous = None
+        if family_r3:
+            family_previous = json.loads(subprocess.check_output(['git', 'show', FAMILY_R3_COMMIT + ':' + scheme['manifest']], cwd=ROOT))
+            records = manifest.get('renderedViews', {})
+            self.check(set(views) == set(family_previous.get('renderedViews', {})) and len(views) == 20,
+                       'family: R3 retains exactly the reviewed 20-view inventory')
+            self.check({name for name, record in records.items() if 'retainedFrom' not in record} == FAMILY_R3_FRESH_VIEWS and
+                       {name for name, record in records.items() if 'retainedFrom' in record} == set(views) - FAMILY_R3_FRESH_VIEWS,
+                       'family: exactly nine affected/private views fresh and eleven public references explicitly retained')
         kitchen_previous = None
         if kitchen_refresh:
             kitchen_previous = json.loads(subprocess.check_output(
@@ -580,7 +618,7 @@ class Audit:
                 self.check(sum(not record.get('retainedFrom') for record in records.values()) == 12 and
                            sum(bool(record.get('retainedFrom')) for record in records.values()) == 8,
                            'family: exactly 12 current public frames and 8 honest retained private frames')
-        if manifest.get('measurementRevision') and not kitchen_refresh:
+        if manifest.get('measurementRevision') and not kitchen_refresh and not family_r3:
             self.check(len(manifest.get('renderedViews', {})) == len(views) and
                        all(not r.get('retainedFrom') for r in manifest.get('renderedViews', {}).values()),
                        f'{sid}: all partial-measurement renders are freshly generated from the current scene')
@@ -615,7 +653,19 @@ class Audit:
             self.check(record.get("imageSha256") == image_hash, f"{sid}/{name}: actual JPEG hash matches final frame record")
             retained = record.get('retainedFrom')
             camera_manifest = manifest
-            if kitchen_refresh and name not in KITCHEN_FRESH_VIEWS:
+            if family_r3 and name not in FAMILY_R3_FRESH_VIEWS:
+                old_record = family_previous.get('renderedViews', {}).get(name)
+                expected_origin = {'commit': FAMILY_R3_COMMIT, 'manifest': scheme['manifest'], 'view': name, 'reason': FAMILY_R3_RETAINED_REASON}
+                if old_record and old_record.get('retainedFrom'):
+                    expected_origin['previous'] = old_record['retainedFrom']
+                self.check(retained == expected_origin, f'family/{name}: exact published public-reference provenance including the prior chain')
+                self.check(old_record is not None and
+                           {k: v for k, v in record.items() if k != 'retainedFrom'} == {k: v for k, v in (old_record or {}).items() if k != 'retainedFrom'},
+                           f'family/{name}: original image/model/source/camera record is not relabeled as new')
+                prior_image = subprocess.check_output(['git', 'show', FAMILY_R3_COMMIT + ':' + f'{prefix}/{name}.jpg'], cwd=ROOT)
+                self.check(raw == prior_image, f'family/{name}: retained reference bytes exactly match the reviewed release')
+                camera_manifest = family_previous
+            elif kitchen_refresh and name not in KITCHEN_FRESH_VIEWS:
                 expected_origin = {'commit': KITCHEN_RETAINED_COMMIT, 'manifest': scheme['manifest'],
                                    'view': name, 'reason': KITCHEN_RETAINED_REASON}
                 self.check(retained == expected_origin,
@@ -657,6 +707,9 @@ class Audit:
                 if manifest.get('livingBayRevision',{}).get('version')=='3.4.2':
                     self.check(manifest['livingBayRevision'].get('estimatedSillCm')==40 and manifest['livingBayRevision'].get('cushionThicknessCm')==5 and manifest['livingBayRevision'].get('measured') is False,f'{sid}/{name}: low-bay estimate remains explicitly unmeasured')
             else:
+                if family_r3:
+                    self.check(name in FAMILY_R3_FRESH_VIEWS and 'retainedFrom' not in record,
+                               f'family/{name}: affected R3 private/overview view must be genuinely fresh')
                 if kitchen_refresh:
                     self.check(name in KITCHEN_FRESH_VIEWS and 'retainedFrom' not in record,
                                f'{sid}/{name}: required kitchen/current overview view cannot be retained')
@@ -736,8 +789,8 @@ class Audit:
         self.check(bool(revision) and revision.get('version') == scheme.get('purchasedFurnitureRevision') ==
                    product_source.get('version') and
                    (product_source.get('version') == catalog.get('version') or
-                    (product_source.get('version') == '3.7.0' and catalog.get('version') in ('3.8.0', '3.9.0') and
-                     (self.kitchen_refresh_proof(scheme, manifest) or self.wood_revision_proof(scheme, manifest)))),
+                    (product_source.get('version') == '3.7.0' and catalog.get('version') in ('3.8.0', '3.9.0', '3.10.0') and
+                     (self.kitchen_refresh_proof(scheme, manifest) or self.wood_revision_proof(scheme, manifest) or self.family_r3_proof(scheme, manifest)))),
                    f'{sid}: purchased evidence revisions agree; only independently guarded layout releases advance separately')
         self.check(manifest.get('purchasedFurnitureRevision') == revision and
                    revision.get('date') == product_source.get('verifiedAt'),
@@ -795,6 +848,7 @@ class Audit:
         for room in manifest.get('rooms', []):
             if room['id'] in revision.get('roomDescriptions', {}):
                 expected_description = source.get('woodRevision', {}).get('roomDescriptions', {}).get(room['id'], {}).get('description') if sid == 'wood' else None
+                expected_description = source.get('familyR3Revision', {}).get('roomDescriptions', {}).get(room['id'], {}).get('description') or expected_description
                 expected_description = expected_description or revision['roomDescriptions'][room['id']]
                 self.check(room['description'] == expected_description,
                            f'{sid}/{room["id"]}: manifest describes current purchased furniture')
