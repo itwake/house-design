@@ -1,10 +1,10 @@
-import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.8.0';
-import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.8.0';
+import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.9.0';
+import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.9.0';
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
-const UI_REVISION = '3.8.0';
+const UI_REVISION = '3.9.0';
 document.documentElement.dataset.uiRevision = UI_REVISION;
-let ASSET_REVISION = '3.8.0';
+let ASSET_REVISION = '3.9.0';
 const revisedAsset = path => {const url=new URL(path,document.baseURI);url.searchParams.set('v',ASSET_REVISION);return url.href};
 const icons = {
   cube:'<path d="m8 2 6 3.5v5L8 14l-6-3.5v-5L8 2Z M2 5.5 8 9l6-3.5 M8 9v5 M5 3.8l6 3.5"/>',
@@ -125,7 +125,7 @@ function sourceNotes(value,roomId=null){
   }
   return [];
 }
-function designNotes(){const seen=new Set();return [...sourceNotes(data?.renovationNotes),...sourceNotes(data?.geometryNotes),...sourceNotes(data?.purchasedFurnitureRevision?.layoutNotes)].filter(note=>{const key=note.roomId+'|'+note.text;if(seen.has(key))return false;seen.add(key);return true})}
+function designNotes(){const seen=new Set();return [...sourceNotes(data?.renovationNotes),...sourceNotes(data?.geometryNotes),...sourceNotes(data?.woodRevision?[]:data?.purchasedFurnitureRevision?.layoutNotes)].filter(note=>{const key=note.roomId+'|'+note.text;if(seen.has(key))return false;seen.add(key);return true})}
 function measurementRoomDescription(id){
   const revised=data?.measurementRevision?.roomDescriptions?.[id];if(!revised)return '';
   const layout=sourceNotes(data.renovationNotes).filter(note=>note.roomId===id).map(note=>note.text).join(' ');
@@ -249,7 +249,7 @@ function configureScheme(){
   $('.sidebar-bottom>p').textContent=scheme.tagline||'把每一天，安放在光与木色之间。';
   $('.material-dots').innerHTML=(scheme.colors||[]).map(c=>`<i title="${escapeHTML(c.name)}" style="--swatch:${/^#[\da-f]{3,8}$/i.test(c.hex)?c.hex:'#ddd'}"></i>`).join('');
   $('.material-dots').setAttribute('aria-label',(scheme.colors||[]).map(c=>c.name).join('、'));
-  if(scheme.id!=='wood'){document.documentElement.style.setProperty('--plan-hover',scheme.planPalette?.floor||'#eee7d8');document.documentElement.style.setProperty('--plan-selected',scheme.planPalette?.cabinet||'#ddd6c9')}
+  if(scheme.planPalette){document.documentElement.style.setProperty('--plan-hover',scheme.planPalette?.floor||'#eee7d8');document.documentElement.style.setProperty('--plan-selected',scheme.planPalette?.cabinet||'#ddd6c9')}
   $('#download-blend').href=revisedAsset(scheme.blend);$('#download-glb').href=revisedAsset(scheme.model);
   $('#download-blend span').textContent=scheme.name+' · 材质、家具与渲染相机';$('#download-glb span').textContent=scheme.name+' · glTF 通用模型';
   $('#model-fallback img').src=renderPath('overall');$('#model-fallback img').alt=scheme.name+' · 全屋同源渲染';
@@ -263,7 +263,7 @@ function configureScheme(){
 }
 
 function paintSchemePlan(root){
-  if(!scheme||scheme.id==='wood'||!root)return;
+  if(!scheme||!root)return;
   const palette=scheme.planPalette||{},groups={wood:['#d2b791','#c7a578','#d7c5a6','#9c7854','#d4c5ac','#d9c5a4','#e8dcc6','#ddc39c','#e6dcc8','#e6dac1'],cabinet:['#d4c9b4','#f8f4e9','#f9f6ed','#fcfaf3'],fabric:['#f8f3e8','#f4eee2','#fffdf7','#aab59c','#c5b89e','#b9bca7','#b6b498'],metal:['#babbb0','#96948d'],wall:['#8c887b'],wet:['#d5dedb','#e5e8e2','#e4e0d6','#e6e9df'],floor:['#eee5d5','#eee8da','#ece3d5']};
   const mapping={};for(const [key,values]of Object.entries(groups)){const color=palette[key];if(typeof color==='string'&&/^#[\da-f]{3,8}$/i.test(color))values.forEach(value=>mapping[value]=color)}
   root.querySelectorAll('[fill],[stroke]').forEach(node=>{for(const key of ['fill','stroke']){const replacement=mapping[node.getAttribute(key)?.toLowerCase()];if(replacement)node.setAttribute(key,replacement)}});
@@ -412,6 +412,8 @@ function bathroomDescription(id){
   return id==='bath_1'?`${width} mm宽、${depth} mm深浴室柜依${back}墙布置，镜面靠${back}；马桶和淋浴按阶梯边界安排。`:`${width} mm宽、${depth} mm深浅盆柜设在西北扩出位置，镜面靠${back}，保留紧凑马桶与东侧淋浴；选型及安装余量待复尺。`;
 }
 function bedroomSpecification(id){
+  const revised=data?.woodRevision?.roomDescriptions?.[id];
+  if(revised)return {description:revised.description,features:revised.features};
   const bedId=id==='room_a'?'bed_a':id==='room_b'?'bed_b':null;
   const bed=bedId&&data?.furniture?.find(item=>item.id===bedId);if(!bed)return null;
   const head={east:'东',west:'西',north:'北',south:'南'}[bed.headDirection];if(!head)return null;
@@ -444,7 +446,7 @@ function selectRoom(id,{updateHash=true,animate=true}={}){
   const accessNote=id==='bath_1'?(data.layout?.id==='suite'?'主卫西门通主卧小玄关，不直接向公共走廊开门。':'主卫北门通主卧，按套内卫生间使用；门宽与侧面构造待复尺。'):id==='bath_2'?'客卫从公共走廊进入；门宽与侧面构造待复尺。':'';
   const bedroom=bedroomSpecification(id),fitout=bayFitoutFor(id);
   const styleNote=scheme.id!=='wood'&&['room_a','room_b','bath_1','bath_2','dining'].includes(id)?scheme.roomOverrides?.[id]?.description:'';
-  const measuredDescription=(id==='kitchen'?data.kitchenFitout?.summary:'')||purchasedRoomDescription(id)||measurementRoomDescription(id);
+  const measuredDescription=data.woodRevision?.roomDescriptions?.[id]?.description||(id==='kitchen'?data.kitchenFitout?.summary:'')||purchasedRoomDescription(id)||measurementRoomDescription(id);
   $('#card-description').textContent=measuredDescription?measuredDescription+' 外轮廓、面积和未确认位置仍为旧模型参考。':[styleNote,(id==='dining'?diningSpecification():'') || bedroom?.description || bathroomDescription(id) || (fitout?content.description:'') || r?.description || content.description,accessNote,...designNotes().filter(note=>note.roomId===id).map(note=>note.text)].filter(Boolean).join(' ');
   $('#view-bay-fitout').hidden=!(fitout||id==='overall');
   $('#view-bay-fitout').innerHTML=`${id==='overall'?'三处飘窗功能设计':'飘窗方案 · 尺寸 / 参考'} <span>↗</span>`;
@@ -453,7 +455,7 @@ function selectRoom(id,{updateHash=true,animate=true}={}){
   $('#view-suite-entry').hidden=!(data.layout?.id==='suite'&&['overall','room_a','bath_1'].includes(id));
   $('#project-suite-entry').hidden=data.layout?.id!=='suite';
   $('#bath-access-note').textContent=data.layout?.id==='suite'?'新增布局：主卫西门通套内小玄关，北侧旧门封闭；客卫仍从公共走廊进入。两卫共墙拉直，具体墙位、门宽与防水排水需复核。':'主卫北门通主卧，客卫从公共走廊进入；两卫阶梯边界及门侧构造仍需现场复尺。';
-  const features=(id==='kitchen'&&data.kitchenFitout?['独立柜下洗碗机','东墙双槽','窗边明装热水器']:null) || data.purchasedFurnitureRevision?.roomDescriptions?.[id]?.features || scheme.roomOverrides?.[id]?.features || bedroom?.features || ((scheme.id!=='wood'||fitout||id==='dining'||id==='bath_1'||id==='bath_2')?content.features:(r?.features || content.features));
+  const features=data.woodRevision?.roomDescriptions?.[id]?.features||(id==='kitchen'&&data.kitchenFitout?['独立柜下洗碗机','东墙双槽','窗边明装热水器']:null) || data.purchasedFurnitureRevision?.roomDescriptions?.[id]?.features || scheme.roomOverrides?.[id]?.features || bedroom?.features || ((scheme.id!=='wood'||fitout||id==='dining'||id==='bath_1'||id==='bath_2')?content.features:(r?.features || content.features));
   $('#room-tags').innerHTML=features.slice(0,3).map(t=>scheme.id==='wood'?t:({'现代原木':scheme.name,'暖色石材':'浅色卫浴','亚麻触感':'织物软包'})[t]||t).map(t=>`<span>${escapeHTML(t)}</span>`).join('');
   $('#room-preview').src=renderPath(id);$('#room-preview').alt=`${content.name} Blender 渲染预览`;
   $('#enter-room').innerHTML=`${id==='overall'?'探索客厅':'走进'+content.name} <span>↗</span>`;
@@ -512,6 +514,19 @@ function planFurniture(f){
   const direction=f.headDirection,isBed=['east','west','north','south'].includes(direction);
   const frame=`<rect data-furniture-frame x="${f.x}" y="${f.y}" width="${f.w}" height="${f.d}" rx="${f.tone==='fabric'?6:2}" fill="${({wood:'#d2b791',cabinet:'#d4c9b4',fabric:'#f8f3e8',sanitary:'#faf9f3',wet:'#d5dedb',metal:'#babbb0'})[f.tone]||'#e3d9c5'}" stroke="#b4a68e" stroke-width="1.5"${!isBed&&f.a?` transform="rotate(${f.a} ${f.x+f.w/2} ${f.y+f.d/2})"`:''}/>`;
   if(!isBed){
+    if(f.screenAnchor==='south'){
+      const end=f.y+f.d-2,start=end-f.screenLengthCm,x=f.x+1.5;
+      return `<g data-wood-shower-screen="south" pointer-events="none"><title>原淋浴区尺寸不变；600mm玻璃屏靠南，北侧790mm入口，防水构造待深化</title>${frame}<line x1="${x}" y1="${start}" x2="${x}" y2="${end}" stroke="#8aabad" stroke-width="3"/><circle cx="${x}" cy="${end}" r="1.2" fill="#8aabad"/><path d="M${x-13} ${f.y+36}h24m-6-4 6 4-6 4" fill="none" stroke="#6a867c" stroke-width="1.5"/></g>`;
+    }
+    if(data.woodRevision&&f.name.includes('马桶')){
+      const north=f.face==='north',cy=f.y+f.d*(north?.45:.55);
+      return `<g data-wood-wc="${escapeHTML(f.id||f.name)}" data-wc-face="${f.face}" pointer-events="none"><title>${escapeHTML(f.name)} · 面向${north?'北':'南'} · 排污安装待核</title><rect x="${f.x-5.5}" y="${north?f.y+f.d-11:f.y-.5}" width="${f.w+11}" height="11.5" fill="#dedbd1" stroke="#a9aca1"/><ellipse cx="${f.x+f.w/2}" cy="${cy}" rx="${f.w*.48}" ry="${f.d*.42}" fill="#fffdf7" stroke="#a6afa6"/><ellipse cx="${f.x+f.w/2}" cy="${cy}" rx="${f.w*.29}" ry="${f.d*.27}" fill="#dbe2dc"/></g>`;
+    }
+    if(data.woodRevision&&(f.woodRole||f.id==='master_full_wardrobe'||f.id==='secondary_east_wardrobe')&&f.id!=='study_north_sofa'){
+      const side=f.face||'north',edge=f.woodRole==='chair'?({north:'south',south:'north',east:'west',west:'east'})[side]:side,a={north:[f.x,f.y,f.x+f.w,f.y],south:[f.x,f.y+f.d,f.x+f.w,f.y+f.d],east:[f.x+f.w,f.y,f.x+f.w,f.y+f.d],west:[f.x,f.y,f.x,f.y+f.d]}[edge];
+      const caption=f.id==='secondary_east_wardrobe'?`<text x="${f.x+f.w/2}" y="${f.y+f.d/2}" transform="rotate(90 ${f.x+f.w/2} ${f.y+f.d/2})" text-anchor="middle" font-size="10" fill="#756c5e">300深浅衣柜 · 叠衣</text>`:'';
+      return `<g data-wood-furniture="${escapeHTML(f.id||f.name)}" data-furniture-face="${side}" pointer-events="none"><title>${escapeHTML(f.name)} · ${f.w*10}×${f.d*10}mm · ${escapeHTML(f.notes||'条件家具占位')}</title>${frame}<line x1="${a[0]}" y1="${a[1]}" x2="${a[2]}" y2="${a[3]}" stroke="#a69577" stroke-width="${f.woodRole==='chair'?3:1.5}"/>${caption}</g>`;
+    }
     if(f.diningFitoutId){
       const table=/餐桌/.test(f.name),back=f.face==='west'?`x1="${f.x+f.w-2}" y1="${f.y+3}" x2="${f.x+f.w-2}" y2="${f.y+f.d-3}"`:f.face==='east'?`x1="${f.x+2}" y1="${f.y+3}" x2="${f.x+2}" y2="${f.y+f.d-3}"`:f.face==='south'?`x1="${f.x+3}" y1="${f.y+2}" x2="${f.x+f.w-3}" y2="${f.y+2}"`:`x1="${f.x+3}" y1="${f.y+f.d-2}" x2="${f.x+f.w-3}" y2="${f.y+f.d-2}"`;
       return `<g data-dining-furniture="${escapeHTML(f.name)}" data-dining-face="${f.face}" pointer-events="none"><title>${escapeHTML(f.name)} · ${f.w*10}×${f.d*10}mm${table?' · 桌高750mm，折板抽轨为条件设计':' · 挪椅后收桌'}</title>${frame}${table?`<line data-dining-fold-seam x1="${f.x+f.w/2}" y1="${f.y}" x2="${f.x+f.w/2}" y2="${f.y+f.d}" stroke="#b4a68e" stroke-width="1"/><text x="${f.x+f.w/2}" y="${f.y+f.d/2}" transform="rotate(90 ${f.x+f.w/2} ${f.y+f.d/2})" text-anchor="middle" font-size="9" fill="#766a55">1155×705 抽桌</text>`:`<line data-dining-chair-back ${back} stroke="#9f947e" stroke-width="4"/>`}</g>`;
@@ -615,7 +630,8 @@ function planSlidingDoor(door){
 function renderLaundryFitout(){
   if(!data.laundry)return;
   const l={...data.laundry,conditions:(data.laundry.conditions||[]).map(measurementDisplayCopy)};
-  const dialog=document.createElement('dialog');dialog.id='laundry-dialog';dialog.className='bay-dialog';dialog.setAttribute('aria-label','方案4家政整墙设计');
+  if(l.mode==='parallel-only')return renderParallelLaundryFitout(l);
+  const dialog=document.createElement('dialog');dialog.id='laundry-dialog';dialog.className='bay-dialog';dialog.setAttribute('aria-label','家政整墙设计');
   dialog.innerHTML=`<button class="dialog-close icon-button" aria-label="关闭家政设计">${icon('close')}</button><header class="bay-dialog-heading"><p class="eyebrow">LAUNDRY WALL / SHARED FITOUT</p><h2>A洗烘 · B书架 · C推拉门</h2><p>本方案机器靠厨房共墙落地并排；书架正面与外移门框拉齐。玻璃门扇因三轨而内退。</p><span class="bay-conditional-badge">专用浅盆条件方案 · 尚未选定设备</span></header><div class="bay-fitout-grid">${[['laundry-detail','A · 洗烘并排，浅盆在上'],['living-wall','B + C · 书架与门框齐平']].map(([id,title])=>`<article class="bay-fitout-card"><button class="bay-fitout-image" data-laundry-render="${id}" aria-label="放大${title}"><img src="${schemeRender(scheme,id)}" alt="${title} · 同源3D渲染" loading="lazy"/><span class="bay-image-label">${escapeHTML(renderProvenance(id))} ${icon('expand')}</span></button><div class="bay-fitout-copy"><h3>${title}</h3><ul class="bay-fitout-dimensions">${l.dimensions.filter((_,i)=>id==='laundry-detail'?[0,1,3].includes(i):[2,3,4].includes(i)).map(t=>`<li>${escapeHTML(t)}</li>`).join('')}</ul></div></article>`).join('')}</div><footer class="bay-dialog-notes"><h3>先核对条件，再定制</h3><ul>${l.conditions.map(t=>`<li>${escapeHTML(t)}</li>`).join('')}</ul><h3>参考原文 · 不照搬适配结论</h3><div class="bay-references">${l.references.map(r=>`<article><a href="${escapeHTML(referenceURL(r.url))}" target="_blank" rel="noopener noreferrer">${escapeHTML(r.title)} ↗</a><p>${escapeHTML(r.borrow)}</p></article>`).join('')}</div></footer>`;
   document.body.append(dialog);dialog.querySelector('.dialog-close').onclick=()=>dialog.close();
   dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close()});
@@ -624,10 +640,21 @@ function renderLaundryFitout(){
   dialog.querySelectorAll('[data-laundry-render]').forEach(button=>button.onclick=()=>{$('#large-render').src=schemeRender(scheme,button.dataset.laundryRender);$('#large-render').alt=button.getAttribute('aria-label');$('#large-render-caption').textContent=scheme.name+' · '+renderProvenance(button.dataset.laundryRender);$('#image-dialog').showModal()});
 }
 
+function renderParallelLaundryFitout(l){
+  const dialog=document.createElement('dialog');dialog.id='laundry-dialog';dialog.className='bay-dialog';dialog.setAttribute('aria-label','方案一并排洗烘设计');
+  dialog.innerHTML=`<button class="dialog-close icon-button" aria-label="关闭家政设计">${icon('close')}</button><header class="bay-dialog-heading"><p class="eyebrow">PARALLEL LAUNDRY / SCHEME 01</p><h2>洗烘并排，浅盆在上</h2><p>${escapeHTML(data.woodRevision.roomDescriptions.balcony.description)}</p><span class="bay-conditional-badge">业主提供机身尺寸 · 安装净空与排水待核</span></header><article class="bay-fitout-card"><button class="bay-fitout-image" data-laundry-render="laundry-detail" aria-label="放大并排洗烘浅盆设计"><img src="${schemeRender(scheme,'laundry-detail')}" alt="方案一并排洗烘与独立承重浅盆" loading="lazy"/><span class="bay-image-label">${escapeHTML(renderProvenance('laundry-detail'))} ${icon('expand')}</span></button><div class="bay-fitout-copy"><h3>按机身尺寸核对</h3><ul class="bay-fitout-dimensions">${l.dimensions.map(v=>`<li>${escapeHTML(v)}</li>`).join('')}</ul></div></article><footer class="bay-dialog-notes"><h3>安装前必须核实</h3><ul>${l.conditions.map(v=>`<li>${escapeHTML(v)}</li>`).join('')}</ul></footer>`;
+  document.body.append(dialog);dialog.querySelector('.dialog-close').onclick=()=>dialog.close();
+  dialog.addEventListener('click',e=>{if(e.target!==dialog)return;const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close()});
+  const show=()=>{if($('#project-dialog').open)$('#project-dialog').close();if(state.walking)stopWalk();dialog.showModal()};
+  for(const [parent,id,cls]of [['.sidebar-bottom','open-laundry','quiet-link'],['#project-dialog','project-laundry','project-bay-link'],['.room-card-copy','view-laundry-fitout','secondary-link']]){const button=document.createElement('button');button.id=id;button.className=cls;button.textContent='并排洗烘 · 尺寸与安装条件 ↗';button.onclick=show;$(parent).append(button)}
+  dialog.querySelector('[data-laundry-render]').onclick=()=>{$('#large-render').src=schemeRender(scheme,'laundry-detail');$('#large-render').alt='方案一并排洗烘与上方浅盆';$('#large-render-caption').textContent=renderProvenance('laundry-detail');$('#image-dialog').showModal()};
+}
+
 function planLaundry(){
   const l=data.laundry;if(!l)return '';
   const c=l.counter,b=l.bookcase,s=l.basin;
   const rect=(p,attrs)=>`<rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.d}" ${attrs}/>`;
+  if(l.mode==='parallel-only')return `<g data-laundry-plan="${l.id}" pointer-events="none"><title>并排洗烘及独立承重浅盆，机器虚线为下方投影；台面和安装条件待核。</title>${rect(l.partition.adjustmentBand,'data-wood-width-pending fill="#e8c9ba" fill-opacity=".5" stroke="#b28470" stroke-dasharray="3 3"')}<text x="820" y="982" transform="rotate(90 820 982)" font-size="8" fill="#9b6855">180闭合差 · 不计可用</text>${rect(c,'data-laundry-counter fill="#ded9cd" stroke="#a79b87" stroke-width="1.3"')}${l.machines.map(m=>rect(m,`data-laundry-machine="${m.id}" fill="none" stroke="#928876" stroke-dasharray="4 3" stroke-width="1"`)+`<text x="${m.x+m.w/2}" y="${m.y+30}" text-anchor="middle" font-size="10" fill="#726c61">${m.id.includes('washer')?'洗衣机':'烘干机'}</text>`).join('')}${rect(s,'data-laundry-basin fill="#fcfaf6" fill-opacity=".8" stroke="#a3aca6" stroke-width="1.2"')}<text x="${s.x+s.w/2}" y="${s.y+s.d/2}" text-anchor="middle" font-size="10" fill="#777569">上方浅盆</text><text x="${c.x+c.w/2}" y="${c.y+c.d-6}" text-anchor="middle" font-size="9" fill="#746b5b">台高${c.topCm*10} · 独立承重</text><text x="${c.x+c.w/2}" y="${c.y-7}" text-anchor="middle" font-size="9" fill="#9b6855">模型操作带${l.metrics.operationAisleCm*10}</text></g>`;
   const parts=l.parts.filter(p=>p.roomId==='living'&&p.role==='book-panel').map(p=>rect(p,`data-laundry-part="${p.id}" fill="#ddd8cc" stroke="#aa9c85" stroke-width=".5"`)).join('');
   return `<g data-laundry-plan="${l.id}" pointer-events="none"><title>A两台机器靠厨房共墙；台面与浅盆在上，机器虚线为台面下投影。B柜正面与C门框齐平。</title>${rect(b,'fill="#eee9df" stroke="#aa9c85" stroke-width="1"')}${parts}<text x="${b.x+20}" y="${b.y+85}" transform="rotate(90 ${b.x+20} ${b.y+85})" font-size="12" fill="#766952">B · 300深书架</text>${rect(c,'data-laundry-counter fill="#ded9cd" stroke="#a79b87" stroke-width="1.3"')}${l.machines.map(m=>`${rect(m,`data-laundry-machine="${m.id}" fill="none" stroke="#928876" stroke-dasharray="4 3" stroke-width="1"`)}<text x="${m.x+m.w/2}" y="${m.y+28}" text-anchor="middle" font-size="11" fill="#726c61">${m.id.includes('washer')?'洗衣机':'烘干机'}</text>`).join('')}${rect(s,'data-laundry-basin fill="#fcfaf6" fill-opacity=".8" stroke="#a3aca6" stroke-width="1.2"')}<text x="${s.x+s.w/2}" y="${s.y+s.d/2}" text-anchor="middle" font-size="10" fill="#777569">上方浅盆</text><text x="${c.x+c.w/2}" y="${c.y+c.d-6}" text-anchor="middle" font-size="11" fill="#746b5b">A · 台高980 / 独立承重</text><path data-laundry-alignment d="M645 630V1115" fill="none" stroke="#698575" stroke-width="1" stroke-dasharray="5 4"/><text x="636" y="1017" text-anchor="end" font-size="11" fill="#698575">C · 门框齐柜面</text><text x="${c.x+c.w/2}" y="1030" text-anchor="middle" font-size="9" fill="#9b6855">前方操作带690</text><text x="610" y="934" text-anchor="middle" font-size="10" fill="#9b6855">净距${Math.round(l.metrics.sofaBookcaseGapCm*10)}</text></g>`;
 }
@@ -854,7 +881,7 @@ function exportPlan(openInTab=false){
   const context=document.createElement('canvas').getContext('2d');
   if(context)context.font='15px "Microsoft YaHei", "PingFang SC", sans-serif';
   const measure=text=>context?context.measureText(text).width:Array.from(text).length*15;
-  const footnotes=wrapPlanFootnotes([data.measurementRevision?'部分复尺应用；外轮廓、尺寸链及房间面积仍为旧模型参考，未完成全屋实测闭合。':'模型示意，未经完整实测；公共区面积含客厅、餐厅及过道。',...windowModelNotes(data),...windowEvidenceExportNotes(data),...kitchenExportNotes(data),'飘窗投影不计房间面积；窗台高度不代表允许拆改。施工与防坠须专业复核。'],width-56,measure),extraHeight=180+footnotes.length*30;
+  const footnotes=wrapPlanFootnotes([data.measurementRevision?'部分复尺应用；外轮廓、尺寸链及房间面积仍为旧模型参考，未完成全屋实测闭合。':'模型示意，未经完整实测；公共区面积含客厅、餐厅及过道。',...windowModelNotes(data),...windowEvidenceExportNotes(data),...kitchenExportNotes(data),...(data.woodRevision?.conditions||[]),'飘窗投影不计房间面积；窗台高度不代表允许拆改。施工与防坠须专业复核。'],width-56,measure),extraHeight=180+footnotes.length*30;
   svg.setAttribute('xmlns',namespace);svg.setAttribute('viewBox',`${x} ${y-110} ${width} ${height+extraHeight}`);svg.setAttribute('width','1200');svg.setAttribute('height',String(Math.ceil(1200*(height+extraHeight)/width)));
   svg.removeAttribute('role');svg.removeAttribute('aria-label');
   svg.querySelectorAll('[tabindex],[role]').forEach(node=>{node.removeAttribute('tabindex');node.removeAttribute('role')});
@@ -971,7 +998,7 @@ function startWalk(){
   switchView('model');
   const fittedKitchen=state.room==='kitchen'&&Boolean(data?.kitchenFitout);
   const narrowKitchen=fittedKitchen&&matchMedia('(max-width: 860px)').matches;
-  const seed=fittedKitchen?[6.55,12.25]:WALK_STARTS[state.room]||WALK_STARTS.overall;
+  const seed=fittedKitchen?[6.55,12.25]:data?.woodRevision?.version==='3.9.0'&&state.room==='bath_1'?[5.2,3.7]:WALK_STARTS[state.room]||WALK_STARTS.overall;
   const start=findWalkStart(walkWorld,state.room,{x:seed[0],z:seed[1]});
   if(!start){toast('这个空间暂时没有合适的站立位置，请从全屋入口进入');return}
   walkRestore={cutWalls:state.cutWalls,doors:walkDoorParts.map(part=>[part,part.visible]),sliding:walkSlidingParts.map(part=>[part,part.position.clone()])};
@@ -1184,6 +1211,7 @@ async function init(){
   data={...data,bayFitouts:(data.bayFitouts||[]).map(f=>({...f,...schemeTextOverride(scheme.bayOverrides,f.id)})),storageFitouts:(data.storageFitouts||[]).map(f=>({...f,...schemeTextOverride(scheme.storageOverrides,f.id)}))};
   const revisedRoomIds=new Set([...Object.keys(data.measurementRevision?.roomDescriptions||{}),...Object.keys(data.purchasedFurnitureRevision?.roomDescriptions||{})]);
   const measuredDescriptions=Object.fromEntries([...revisedRoomIds].map(id=>{const measured=data.measurementRevision?.roomDescriptions?.[id],purchased=data.purchasedFurnitureRevision?.roomDescriptions?.[id],title=purchased?({living:'浅米色沙发，日常围坐',dining:'白蜡木桌边，一日三餐'})[id]:null;return [id,{...(typeof measured==='object'?schemeTextOverride({[id]:measured},id):{}),...(title?{title}:{}),...(typeof purchased==='object'?schemeTextOverride({[id]:purchased},id):{}),description:purchasedRoomDescription(id)||measurementRoomDescription(id)}]}));
+  Object.assign(measuredDescriptions,data.woodRevision?.roomDescriptions||{});
   for(const [id,override]of Object.entries(measuredDescriptions))if(descriptions[id])descriptions[id]={...descriptions[id],...override};
   const rawRooms=data.rooms.map(room=>({...room,points:room.points.map(p=>p.map(n=>n/100)),area:areaOf(room.points)/10000}));
   rooms=order.filter(id=>id!=='overall').map(id=>{

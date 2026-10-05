@@ -22,7 +22,7 @@ const revision=source.match(/const UI_REVISION = '([^']+)'/)[1];
 const surveyRevision='3.6.1';
 const catalog=JSON.parse(fs.readFileSync(path.join(root,'models/design-schemes.json'),'utf8'));
 const purchasedSource=JSON.parse(fs.readFileSync(path.join(root,catalog.purchasedFurnitureSource),'utf8'));
-const expectedViewCounts={wood:16,family:20,laundry:19};
+const expectedViewCounts={wood:catalog.version==='3.9.0'?17:16,family:20,laundry:19};
 const kitchenRetainedCommit='92162a8cbc713f5ce72fa6632f37364328778253';
 const kitchenFreshViews=new Set(['overall','kitchen','kitchen-north']);
 const kitchenRetainedReason='kitchen-only-refresh; historical reference, not a current kitchen render';
@@ -113,7 +113,14 @@ function auditFinalSources(){
   for(const scheme of catalog.schemes){
     const sourceBytes=fs.readFileSync(path.join(root,scheme.geometrySource)),data=JSON.parse(sourceBytes),manifest=JSON.parse(fs.readFileSync(path.join(root,scheme.manifest),'utf8'));
     const sourceHash=sha256(sourceBytes),modelBytes=fs.readFileSync(path.join(root,scheme.model)),modelHash=sha256(modelBytes);
-    const kitchenRefresh=data.kitchenFitout?.version==='3.8.0';
+    const woodRevision=scheme.id==='wood'&&data.woodRevision?.version==='3.9.0';
+    const kitchenRefresh=data.kitchenFitout?.version==='3.8.0'&&!woodRevision;
+    if(woodRevision){
+      assert.equal(data.version,'3.9.0','Only scheme one has the new layout revision');
+      assert.deepEqual(manifest.woodRevision,data.woodRevision,'Complete native/source scheme-one revision');
+      const guard=JSON.parse(execFileSync(process.execPath,[path.join(root,'tools/test_wood_revision.mjs')],{cwd:root,encoding:'utf8',timeout:60000,maxBuffer:20*1024*1024}));
+      assert.equal(guard.passed,true,'Scheme-one all-new images require independent source/scope guard');
+    }
     let previousManifest;
     if(kitchenRefresh){
       assert.equal(data.version,'3.8.0',`${scheme.id}: kitchen reuse is limited to this release`);
@@ -182,7 +189,7 @@ function auditFinalSources(){
     audited.set(scheme.id,{scheme,data,manifest,sourceHash,modelHash,views:expected});
     console.log(`PASS ${scheme.id}: final source/manifest/Blend/GLB + ${kitchenRefresh?`3 exact current-source images and ${expected.length-3} unchanged historical references`:`${expected.length} exact current-source images`} (all-scheme disk audit)`);
   }
-  assert.equal([...audited.values()].reduce((total,item)=>total+item.views.length,0),55,'all 55 declared frames audited, including 9 fresh kitchen/overview views for the kitchen release');
+  assert.equal([...audited.values()].reduce((total,item)=>total+item.views.length,0),Object.values(expectedViewCounts).reduce((a,b)=>a+b,0),'Every declared active-scheme frame audited with its real fresh or historical provenance');
   return audited;
 }
 

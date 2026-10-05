@@ -26,13 +26,27 @@ const oldKitchenNames = new Set(['厨房南侧地柜', '厨房北侧地柜', '�
 const outsideKitchen = furniture => furniture.filter(f => !oldKitchenNames.has(f.name) && !f.kitchenFitoutId && !f.id?.startsWith('kitchen_'));
 
 function checkPreserved(data, previous, scheme) {
+  const woodRevision=scheme==='wood'&&data.woodRevision?.version==='3.9.0';
+  // V3.9 replaces specific scheme-one furnishing/floor groups. Their complete
+  // independent source/native guard runs below; kitchen and architecture stay
+  // under this original guard, rather than exempting the whole scheme.
+  const laterWoodGroups=new Set(['rooms','walls','wallSpecs','doors','bayFitouts','wallFitouts','laundry','appearance','measurementRevision']);
   for (const key of ['unit', 'envelope', 'rooms', 'walls', 'wallSpecs', 'doors', 'windows', 'bayFitouts', 'wallFitouts', 'storageFitouts', 'laundry', 'garage', 'modelAddons', 'appearance', 'purchasedFurnitureRevision', 'measurementRevision']) {
+    if(woodRevision&&laterWoodGroups.has(key))continue;
+    if(woodRevision&&key==='modelAddons'){
+      assert.deepEqual(data.modelAddons,{...(previous.modelAddons??{}),livingFloorLampCm:{x:648,y:810}},'wood: only exact reviewed floor-lamp translation');continue;
+    }
     assert.deepEqual(data[key], previous[key], `${scheme}: ${key} unchanged from ${baseline}`);
   }
-  assert.deepEqual(outsideKitchen(data.furniture), outsideKitchen(previous.furniture), `${scheme}: every non-kitchen furniture record unchanged`);
+  if(!woodRevision)assert.deepEqual(outsideKitchen(data.furniture), outsideKitchen(previous.furniture), `${scheme}: every non-kitchen furniture record unchanged`);
   const purchased = source => source.furniture.filter(f => f.purchasedProductId);
   assert.equal(purchased(data).length, 6, `${scheme}: purchased sofa, table and all four chairs remain`);
-  assert.deepEqual(purchased(data), purchased(previous), `${scheme}: exact purchased product positions, sizes and metadata unchanged`);
+  const expectedPurchased=structuredClone(purchased(previous));
+  if(woodRevision){
+    const sofa=expectedPurchased.find(f=>f.name==='三人沙发');
+    sofa.x-=20;sofa.y-=45;sofa.rugCm.x-=20;sofa.rugCm.y-=45;
+  }
+  assert.deepEqual(purchased(data), expectedPurchased, `${scheme}: exact purchased products; only reviewed wood sofa/rug translation allowed`);
   for (const item of data.furniture.filter(f => f.id?.startsWith('kitchen_') || f.kitchenFitoutId)) {
     assert.equal(item.kitchenFitoutId, data.kitchenFitout.id, `${scheme}/${item.id}: kitchen aggregate refers to the shared fitout`);
   }
@@ -267,4 +281,5 @@ for (const scheme of schemes) {
   if (catalog) result.glb = await checkGlb(data, checked, scheme, catalog);
   reports.push(result);
 }
+if((await read('models/schemes/wood/design-data.json')).woodRevision?.version==='3.9.0')await import('./test_wood_revision.mjs');
 console.log(JSON.stringify({passed:true, scope:'conditional kitchen geometry; product installation and door operation remain subject to real models and survey', reports}, null, 2));

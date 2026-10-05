@@ -68,8 +68,10 @@ function decode(bytes){
 
 const catalog=await read('models/design-schemes.json'),reports=[];
 let kitchenActive=false;
-for(const [id,p] of Object.entries(layouts)){
+for(const [id,basePlacement] of Object.entries(layouts)){
   const d=await read(`models/schemes/${id}/design-data.json`),f=name=>{const a=d.furniture.filter(f=>f.name===name);assert.equal(a.length,1,`${id}: one ${name}`);return a[0];};
+  const woodRevision=id==='wood'&&d.woodRevision?.version==='3.9.0';
+  const p=woodRevision?{...basePlacement,sx:394,sy:856}:basePlacement;
   kitchenActive ||= Boolean(d.kitchenFitout);
   assert.equal(d.purchasedFurnitureRevision.version,'3.7.0');assert.equal(d.measurementRevision.version,'3.6.1');
   assert.equal(d.furniture.filter(f=>f.purchasedProductId).length,6,'Exactly one sofa, one table and four chairs replaced');

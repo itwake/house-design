@@ -5,6 +5,7 @@ No geometry, visibility, file, or scene property is changed or saved by this aud
 """
 import json
 import math
+import subprocess
 import sys
 from pathlib import Path
 
@@ -116,12 +117,26 @@ for room in source["rooms"]:
 
 balcony = next(room for room in source["rooms"] if room["id"] == "balcony")
 balcony_center = [(min(p[axis] for p in balcony["points"]) + max(p[axis] for p in balcony["points"])) / 200 for axis in (0, 1)]
+light_basis = "centered on the actually modeled balcony rather than the old pre-extension polygon"
+if scheme == 'wood' and source.get('woodRevision', {}).get('version') == '3.9.0':
+    # Only the inner partition moves in this revision. The original physical
+    # ceiling fixture is deliberately retained; do not require relocating it
+    # to the new polygon centroid. The independent V3.9 world-triangle guard
+    # also proves both complete light meshes identical to this exact baseline.
+    prior = json.loads(subprocess.check_output([
+        'git', 'show', 'a2b4adfd4c92c9424b28df55c61609cb1049deec:models/schemes/wood/design-data.json'
+    ], cwd=ROOT))
+    old_balcony = next(room for room in prior['rooms'] if room['id'] == 'balcony')
+    ensure(old_balcony['points'] == [[687, 966], [829, 966], [829, 1115], [687, 1115]],
+           'V3.9 original light datum is the exact reviewed V3.8 balcony')
+    balcony_center = [(min(p[axis] for p in old_balcony['points']) + max(p[axis] for p in old_balcony['points'])) / 200 for axis in (0, 1)]
+    light_basis = "retains exact V3.8 ceiling-light position while only the inner partition moves"
 balcony_lights = [obj for obj in meshes if obj.get("roomId") == "balcony" and obj.name.split(".")[0] in ("Flush ceiling light", "Opal ceiling diffuser")]
 ensure(len(balcony_lights) == 2, "Both real balcony ceiling light solids exist")
 for obj in balcony_lights:
     box = bounds(obj)
     for axis in (0, 1):
-        close((box[axis] + box[axis + 3]) / 2, balcony_center[axis], f"{obj.name}: centered on the actually modeled balcony rather than the old pre-extension polygon")
+        close((box[axis] + box[axis + 3]) / 2, balcony_center[axis], f"{obj.name}: {light_basis}")
 
 # Independently reconstruct expected wall solids from source intervals. This
 # checks every jamb/under-window/lintel volume, including newly split heights.
@@ -164,9 +179,13 @@ for index, raw in enumerate(source["walls"]):
             if bottom <= .005:
                 skirting_half = (thickness + .018) / 2
                 expected_skirtings.append((low, fixed - skirting_half, .005, high, fixed + skirting_half, .075) if horizontal else (fixed - skirting_half, low, .005, fixed + skirting_half, high, .075))
-    objects = [obj for obj in meshes if obj.get("wallIndex") == index and obj.get("kind") == "wall"]
+    # Surgical rebuilds may attach wallIndex to the wall's skirting as well.
+    # That is not a third full-height wall solid: its own count and vertex
+    # bounds are still checked independently immediately below.
+    objects = [obj for obj in meshes if obj.get("wallIndex") == index and obj.get("kind") == "wall"
+               and obj.name.split('.')[0] != f'Skirting {index:02}']
     actual_boxes = [bounds(obj) for obj in objects]
-    ensure(len(actual_boxes) == len(expected_boxes), f"Wall {index}: real solid count matches surveyed height and retained opening intervals ({len(actual_boxes)} vs {len(expected_boxes)})")
+    ensure(len(actual_boxes) == len(expected_boxes), f"Wall {index}: real solid count matches surveyed height and retained opening intervals ({len(actual_boxes)} vs {len(expected_boxes)}); actual={[(obj.name, box) for obj, box in zip(objects, actual_boxes)]}; expected={expected_boxes}")
     remaining = list(actual_boxes)
     for expected in expected_boxes:
         matching = next((box for box in remaining if all(abs(a - b) <= TOL for a, b in zip(box, expected))), None)

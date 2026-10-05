@@ -63,10 +63,14 @@ export function buildWalkWorld(data){
   for(const [index,f]of (data.furniture||[]).entries()){
     const [x,z,w,d]=[f.x,f.y,f.w,f.d].map(v=>v/100);
     if(f.tone==='wet'&&f.name.includes('淋浴')){
-      // Same fixed west screen and upright as build_blender.py: the shower
-      // tray is floor, not a solid 90 x 141 cm obstacle.
-      rect('shower-screen-'+index,x+.011,z+.02,.008,Math.min(.60,d-.67),'glass');
-      rect('shower-upright-'+index,x+.006,z+.011,.018,.018,'glass');
+      // Same fixed west screen and upright as the native model. Scheme-one
+      // V3.9 anchors its main screen south so the relocated toilet does not
+      // trap the north entry. Unspecified screens keep the original north
+      // anchor; the tray is walkable floor, never a solid cuboid.
+      const length=Math.min((f.screenLengthCm??60)/100,d-.67),south=f.screenAnchor==='south';
+      const screenZ=south?z+d-.02-length:z+.02,pillarZ=south?z+d-.02:z+.02;
+      rect('shower-screen-'+index,x+.011,screenZ,.008,length,'glass');
+      rect('shower-upright-'+index,x+.006,pillarZ-.009,.018,.018,'glass');
     }else if(f.name.includes('马桶'))rect(f.id||f.name,x-.055,z-.005,w+.11,d+.005,'furniture');
     else rect(f.id||f.name,x,z,w,d,'furniture');
   }

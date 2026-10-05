@@ -94,9 +94,14 @@ if(process.argv.includes('--evidence-only')) {
 
 const catalog = await json('models/design-schemes.json');
 const reports=[];
-let purchasedActive=false,kitchenActive=false;
+let purchasedActive=false,kitchenActive=false,woodActive=false;
 for (const id of ['wood','family','laundry']) {
   const path=`models/schemes/${id}/design-data.json`, data=await json(path), old=previous(path), rev=data.measurementRevision;
+  const woodRevision=id==='wood'&&data.woodRevision?.version==='3.9.0';
+  woodActive ||= woodRevision;
+  // The later scheme-one guard enumerates every changed cabinet, furnishing,
+  // balcony return/door and floor mesh against V3.8. It is mandatory below;
+  // this older survey guard continues to protect all evidence and openings.
   const purchased=data.purchasedFurnitureRevision?.version==='3.7.0';purchasedActive ||= purchased;
   const kitchen=Boolean(data.kitchenFitout);kitchenActive ||= kitchen;
   const kitchenFurniture=f=>kitchen&&(legacyKitchenNames.has(f.name)||(kitchenFurnitureIds.has(f.id)&&f.kitchenFitoutId===kitchenRevision));
@@ -123,11 +128,13 @@ for (const id of ['wood','family','laundry']) {
   }
   same(data.layout.measured,false,`${id}: renovation stays a conditional design`);
   same(data.envelope,old.envelope,`${id}: no global envelope scaling`);
-  same(data.walls,old.walls,`${id}: every wall XY unchanged`);
-  same(wallGeometry(data.wallSpecs),wallGeometry(old.wallSpecs),`${id}: wall thicknesses and segment heights unchanged`);
-  same(roomGeometry(data.rooms),roomGeometry(old.rooms),`${id}: all renovation floor polygons, areas and heights unchanged`);
+  if(!woodRevision){
+    same(data.walls,old.walls,`${id}: every wall XY unchanged`);
+    same(wallGeometry(data.wallSpecs),wallGeometry(old.wallSpecs),`${id}: wall thicknesses and segment heights unchanged`);
+    same(roomGeometry(data.rooms),roomGeometry(old.rooms),`${id}: all renovation floor polygons, areas and heights unchanged`);
+  }
   if(!purchased)same(data.furniture.filter(f=>!kitchenFurniture(f)).map(physical),old.furniture.filter(f=>!kitchenFurniture(f)).map(physical),`${id}: furniture and its operational fields unchanged outside the exact kitchen replacement`);
-  else {
+  else if(!woodRevision) {
     // Six explicitly selected products are checked independently below, not
     // granted a generic furniture exemption. No unrelated furniture may move.
     const protectedFurniture=items=>items.filter(f=>!purchasedNames.has(f.name)&&!kitchenFurniture(f)).map(f=>physical(id==='family'&&f.id==='family_sofa_back_storage'?{...f,y:899}:f));
@@ -137,10 +144,11 @@ for (const id of ['wood','family','laundry']) {
     const currentSofa=data.furniture.find(f=>f.name==='三人沙发'),oldSofa=old.furniture.find(f=>f.name==='三人沙发');
     same(currentSofa.rugCm,oldSofa.rugCm??{x:oldSofa.x-12,y:oldSofa.y-185,w:oldSofa.w+24,d:192},`${id}: existing rug exactly preserved`);
   }
-  same(data.doors.map(physical),old.doors.map(physical),`${id}: proposed doors not replaced by existing-door measurements`);
-  for(const key of ['palette','appearance','wallFitouts','modelAddons','clearances']) same(data[key],old[key],`${id}: ${key} preserved`);
+  const preservedDoors=doors=>doors.filter(d=>!woodRevision||d.id!=='balcony_door').map(physical);
+  same(preservedDoors(data.doors),preservedDoors(old.doors),`${id}: doors unchanged outside exact V3.9 balcony door replacement`);
+  for(const key of ['palette','appearance','wallFitouts','modelAddons','clearances']) if(!woodRevision) same(data[key],old[key],`${id}: ${key} preserved`);
   if(!purchased)for(const key of ['storageFitouts','garage','laundry','pulloutDining'])same(data[key],old[key],`${id}: ${key} preserved`);
-  else {
+  else if(!woodRevision) {
     same(data.pulloutDining,undefined,`${id}: fixed purchased table has no pullout state`);
     same(data.storageFitouts.map(f=>f.id),old.storageFitouts.map(f=>f.id),`${id}: no cabinet fitouts added/removed`);
     for(const fit of data.storageFitouts){
@@ -173,7 +181,8 @@ for (const id of ['wood','family','laundry']) {
       if(data.laundry.metrics.sofaBookcaseGapCm!==old.laundry.metrics.sofaBookcaseGapCm)near(data.laundry.metrics.sofaBookcaseGapCm,60,`${id}: new sofa/bookcase separation`);
     }else same(data.laundry,old.laundry,`${id}: no laundry introduced`);
   }
-  same(data.bayFitouts.map(f=>({id:f.id,openingId:f.openingId,type:f.type,parts:f.parts})),old.bayFitouts.map(f=>({id:f.id,openingId:f.openingId,type:f.type,parts:f.parts})),`${id}: bay furniture and cushions not moved/rescaled`);
+  const preservedBays=items=>items.filter(f=>!woodRevision||f.openingId!=='window_a').map(f=>({id:f.id,openingId:f.openingId,type:f.type,parts:f.parts}));
+  same(preservedBays(data.bayFitouts),preservedBays(old.bayFitouts),`${id}: all bay furniture except explicitly removed V3.9 master desktop preserved`);
   same(data.windows.map(w=>w.id),old.windows.map(w=>w.id),`${id}: no windows added or removed`);
   for(const w of data.windows) {
     const before=old.windows.find(item=>item.id===w.id);
@@ -211,7 +220,8 @@ for (const id of ['wood','family','laundry']) {
   ok(!data.rooms.some(room=>room.id===local.id),`${id}: reference polygon is not added to the proposed 3D floorplan`);
   same(data.rooms.find(room=>room.id==='bath_1').points,old.rooms.find(room=>room.id==='bath_1').points,`${id}: existing survey does not consume the proposed suite foyer`);
   if(id!=='wood') same(data.bayFitouts.find(f=>f.openingId==='window_a').parts,[],`${id}: no master desk reintroduced`);
-  else ok(/高桌|桌面/.test(JSON.stringify(rev.pending)), 'wood: retained desk still requires support/ergonomic redesign');
+  else if(!woodRevision)ok(/高桌|桌面/.test(JSON.stringify(rev.pending)), 'wood: retained desk still requires support/ergonomic redesign');
+  else ok(!data.bayFitouts.find(f=>f.openingId==='window_a')?.parts.length,'wood: V3.9 removes the obsolete high desktop instead of silently retaining it');
   const scheme=catalog.schemes.find(s=>s.id===id);
   ok(scheme&&scheme.active!==false,`${id}: active scheme still available`);
   reports.push({scheme:id,masterWindowMm:1760,existingBathroomReferenceOnly:true});
@@ -270,17 +280,20 @@ if(process.argv.includes('--glb')) {
       return m.meta.kind==='furniture'&&m.meta.kitchenRole==='appliance'&&applianceIds.has(m.meta.kitchenApplianceId);
     };
     const allowed=m=>surveyOrPurchaseAllowed(m)||kitchenAllowed(m);
+    const woodRevision=id==='wood'&&data.woodRevision?.version==='3.9.0';
     const oldProtected=before.filter(m=>!allowed(m)),newProtected=now.filter(m=>!allowed(m));
     ok(before.filter(m=>!surveyOrPurchaseAllowed(m)).length>1250,`${id}: original broad actual-mesh coverage before subtracting the four exact kitchen furniture IDs`);
-    same(newProtected.map(m=>m.geometry).sort(),oldProtected.map(m=>m.geometry).sort(),`${id}: every world triangle outside the exact master-opening/product/individual-cabinet/pendant/kitchen-part scope is unchanged; kitchen walls and windows stay protected`);
+    if(!woodRevision)same(newProtected.map(m=>m.geometry).sort(),oldProtected.map(m=>m.geometry).sort(),`${id}: every world triangle outside the exact master-opening/product/individual-cabinet/pendant/kitchen-part scope is unchanged; kitchen walls and windows stay protected`);
     const blender=process.env.BLENDER_PATH||fileURLToPath(new URL('../.house-design-tools/blender-4.5.9-windows-x64/blender.exe',root));
     const audit=execFileSync(blender,['--background',fileURLToPath(new URL(path.replace(/\.glb$/,'.blend'),root)),'--python-exit-code','1','--python',fileURLToPath(new URL('tools/audit_measurement_native.py',root)),'--',id],{cwd,encoding:'utf8',maxBuffer:30*1024*1024});
     ok(audit.includes('"passed": true')&&audit.includes('"scheme": "'+id+'"'),`${id}: independent native mesh audit checks allowed wall/opening changes`);
-    reports.find(r=>r.scheme===id).unchangedPhysicalMeshes=oldProtected.length;
+    if(!woodRevision)reports.find(r=>r.scheme===id).unchangedPhysicalMeshes=oldProtected.length;
+    else reports.find(r=>r.scheme===id).laterGeometryGuard='test_wood_revision.mjs --glb; exact V3.9 scope against the V3.8 source/model';
   }
 }
 // Run the independent numeric/physical guard whenever the narrow purchased
 // exception is active; --glb also verifies six real product envelopes/pendants.
 if(kitchenActive)await import('./test_kitchen_fitout.mjs');
 if(purchasedActive)await import('./test_purchased_furniture.mjs');
+if(woodActive)await import('./test_wood_revision.mjs');
 console.log(JSON.stringify({passed:true,baseline,measurementSource:sourcePath,checks,schemes:reports},null,2));

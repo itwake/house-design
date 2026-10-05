@@ -418,6 +418,31 @@ class Audit:
         self.details = {}
         self.proved_metadata_source = None
         self.kitchen_source_guard_passed = None
+        self.wood_source_guard_passed = None
+
+    def wood_revision_proof(self, scheme, manifest):
+        """No blanket scheme exemption: require the exact independent V3.9 guard."""
+        if scheme['id'] != 'wood' or manifest.get('woodRevision', {}).get('version') != '3.9.0':
+            return False
+        source = load_json(relative_file(scheme['geometrySource']))
+        valid = self.check(source.get('version') == '3.9.0' and
+                           source.get('woodRevision') == manifest['woodRevision'],
+                           'wood: exact source/native V3.9 revision identity')
+        if self.wood_source_guard_passed is None:
+            node = shutil.which('node')
+            try:
+                if not node:
+                    raise OSError('Node runtime unavailable')
+                result = subprocess.run([node, str(ROOT / 'tools/test_wood_revision.mjs'), '--glb'],
+                                        cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                        check=True, timeout=180, encoding='utf-8')
+                self.wood_source_guard_passed = json.loads(result.stdout).get('passed') is True
+                self.check(self.wood_source_guard_passed,
+                           'wood: independent exact V3.9 source/native scope and untouched-other-schemes guard passed')
+            except (OSError, subprocess.SubprocessError, ValueError) as exc:
+                self.wood_source_guard_passed = False
+                self.check(False, f'wood: independent V3.9 guard failed: {type(exc).__name__}')
+        return valid and self.wood_source_guard_passed
 
     def kitchen_refresh_proof(self, scheme, manifest):
         """Permit one scoped refresh only after the independent source guard."""
@@ -425,6 +450,9 @@ class Audit:
         if fit.get('version') != '3.8.0':
             return False
         source = load_json(relative_file(scheme['geometrySource']))
+        if scheme['id'] == 'wood' and source.get('woodRevision', {}).get('version') == '3.9.0':
+            self.wood_revision_proof(scheme, manifest)
+            return False
         valid = self.check(scheme['id'] in ACTIVE_IDS and
                            fit.get('id') == 'kitchen-20261005' and
                            source.get('version') == '3.8.0' and
@@ -534,7 +562,8 @@ class Audit:
                        {name for name, record in records.items() if 'retainedFrom' in record} == set(views) - KITCHEN_FRESH_VIEWS,
                        f'{sid}: exactly overall/kitchen/kitchen-north are fresh; every other view is explicitly historical')
         if manifest.get('purchasedFurnitureRevision'):
-            self.check(len(views) == {'wood': 15, 'family': 19, 'laundry': 18}[sid] + bool(manifest.get('kitchenFitout')) and
+            extra_wood_view = sid == 'wood' and manifest.get('woodRevision', {}).get('version') == '3.9.0'
+            self.check(len(views) == {'wood': 15, 'family': 19, 'laundry': 18}[sid] + bool(manifest.get('kitchenFitout')) + extra_wood_view and
                        set(manifest.get('renderedViews', {})) == set(views) and 'dining-closed' not in views,
                        f'{sid}: exact final purchased-furniture render inventory; fixed table has no closed state')
             self.check(not manifest.get('metadataOnlySourceRefresh'),
@@ -707,9 +736,9 @@ class Audit:
         self.check(bool(revision) and revision.get('version') == scheme.get('purchasedFurnitureRevision') ==
                    product_source.get('version') and
                    (product_source.get('version') == catalog.get('version') or
-                    (product_source.get('version') == '3.7.0' and catalog.get('version') == '3.8.0' and
-                     self.kitchen_refresh_proof(scheme, manifest))),
-                   f'{sid}: purchased evidence revisions agree; only the proved kitchen release may advance independently')
+                    (product_source.get('version') == '3.7.0' and catalog.get('version') in ('3.8.0', '3.9.0') and
+                     (self.kitchen_refresh_proof(scheme, manifest) or self.wood_revision_proof(scheme, manifest)))),
+                   f'{sid}: purchased evidence revisions agree; only independently guarded layout releases advance separately')
         self.check(manifest.get('purchasedFurnitureRevision') == revision and
                    revision.get('date') == product_source.get('verifiedAt'),
                    f'{sid}: native manifest contains the complete current purchased furniture revision')
@@ -765,7 +794,9 @@ class Audit:
                        f'{sid}/{identity}: all product meshes retain explicit non-official approximation provenance')
         for room in manifest.get('rooms', []):
             if room['id'] in revision.get('roomDescriptions', {}):
-                self.check(room['description'] == revision['roomDescriptions'][room['id']],
+                expected_description = source.get('woodRevision', {}).get('roomDescriptions', {}).get(room['id'], {}).get('description') if sid == 'wood' else None
+                expected_description = expected_description or revision['roomDescriptions'][room['id']]
+                self.check(room['description'] == expected_description,
                            f'{sid}/{room["id"]}: manifest describes current purchased furniture')
         if sid == 'family':
             self.check(all(key not in source and key not in manifest for key in ('pulloutDining', 'familyDiningRevision')),

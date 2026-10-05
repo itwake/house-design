@@ -9,6 +9,7 @@ const {buildWalkWorld,findWalkStart,advanceWalk,movementVector,WalkController,WA
 const root=new URL('../',import.meta.url),read=p=>readFile(new URL(p,root),'utf8');
 const laundry=process.argv.includes('--laundry'),family=process.argv.includes('--family'),suite=laundry||family||process.argv.includes('--suite'),schemeId=laundry?'laundry':family?'family':suite?'suite':'wood',prefix=`models/schemes/${schemeId}/`;
 const data=JSON.parse(await read(prefix+'design-data.json'));
+const woodRevision=schemeId==='wood'&&data.woodRevision?.version==='3.9.0';
 const manifest=JSON.parse(await read(prefix+'scene-manifest.json'));
 const catalog=JSON.parse(await read('models/design-schemes.json'));
 const activeScheme=catalog.schemes.find(s=>s.id===schemeId)||{id:schemeId,model:prefix+'huiyayuan-wood.glb'},hasLaundry=Boolean(data.laundry);
@@ -27,9 +28,13 @@ if(family){
 assert.equal(WALK_EYE_HEIGHT,1.6);assert.equal(WALK_RADIUS,.25);
 assert.equal(world.doors.length,7);
 assert.equal(world.rooms.length,8);
-for(const [id,[x,z]]of Object.entries(WALK_STARTS)){
-  if(!suite){assert.ok(world.canStand(x,z),'Safe entry '+id);assert.deepEqual(findWalkStart(world,id,{x,z}),{x,z});}
-  else {const p=findWalkStart(world,id,{x,z});assert.ok(p&&world.canStand(p.x,p.z),'Revalidated R4B entry '+id);}
+const validatedStarts=new Map();
+for(const [id,original]of Object.entries(WALK_STARTS)){
+  // Match the production revision's device-safe kitchen and front-of-bath
+  // starts, not the old shower-compartment camera seed.
+  const [x,z]=id==='kitchen'&&data.kitchenFitout?[6.55,12.25]:woodRevision&&id==='bath_1'?[5.2,3.7]:original;
+  if(!suite&&!woodRevision){assert.ok(world.canStand(x,z),'Safe entry '+id);assert.deepEqual(findWalkStart(world,id,{x,z}),{x,z});}
+  const p=findWalkStart(world,id,{x,z});assert.ok(p&&world.canStand(p.x,p.z),'Revalidated current-layout entry '+id);validatedStarts.set(id,p);
   const fallback=findWalkStart(world,id,{x:-100,z:-100});
   assert.ok(fallback&&world.canStand(fallback.x,fallback.z),'Safe fallback '+id);
 }
@@ -58,7 +63,29 @@ for(let head=0;head<queue.length;head++){
   }
 }
 assert.deepEqual([...reached].filter(Boolean).sort(),world.rooms.map(r=>r.id).sort(),'All 8 rooms reachable from entrance');
-if(!suite)for(const [id,[x,z]]of Object.entries(WALK_STARTS))assert.ok(seen.has(key(Math.round(x/step),Math.round(z/step))),'Reach seed '+id);
+// A relocated sofa or wardrobe may occupy an old preferred spawn. Require
+// every actual safe spawn to connect to the entrance component by a swept
+// move; merely finding a collision-free but isolated point is insufficient.
+function entranceConnected(p){
+  const i=Math.round(p.x/step),j=Math.round(p.z/step);
+  let joined=false;
+  for(let di=-1;di<=1;di++)for(let dj=-1;dj<=1;dj++){
+    const k=key(i+di,j+dj),q=grid.get(k);if(!q||!seen.has(k))continue;
+    const moved=advanceWalk(world,p,q.x-p.x,q.z-p.z);
+    if(Math.hypot(moved.x-q.x,moved.z-q.z)<1e-7)joined=true;
+  }
+  return joined;
+}
+if(!suite)for(const[id,p]of validatedStarts)assert.ok(entranceConnected(p),'Actual revalidated spawn is entrance-reachable '+id);
+if(woodRevision){
+  const index=data.furniture.findIndex(f=>f.name==='主卫淋浴区'),shower=data.furniture[index];
+  assert.equal(shower.screenAnchor,'south','Necessary north-entry shower screen layout explicit');
+  assert.equal(shower.screenLengthCm,60,'Fixed screen is retained, not removed to fake access');
+  const screen=world.obstacles.find(o=>o.id==='shower-screen-'+index),upright=world.obstacles.find(o=>o.id==='shower-upright-'+index);
+  near(screen.z,4.19,'South screen northern tip');near(screen.z+screen.d,4.79,'South screen stops 2 cm before tray end');
+  near(upright.z+upright.d/2,4.79,'Actual southern upright anchor');
+  assert.ok(world.canStand(6.25,4.35)&&entranceConnected({x:6.25,z:4.35}),'Real 50 cm camera body can enter the shower from the dry area, not merely spawn in an isolated cubicle');
+}
 const noSuiteDoor=buildWalkWorld({...data,doors:data.doors.filter(d=>d.id!=='door_bath_1')});
 assert.equal(noSuiteDoor.canStand(4.695,3.28),false,'Suite door must be explicitly present');
 if(!suite)assert.ok(world.canStand(4.695,3.28),'Suite passage is through master bedroom');
@@ -192,7 +219,7 @@ if(data.familyDiningRevision){
   api.state.diningClosed=false;api.applyDiningVisibility();
 }
 assert.ok(!api.walkDoorParts.some(p=>p.userData.openingId==='door_kitchen'),'Kitchen leaves must never disappear');
-assert.equal(api.walkSlidingParts.length,hasLaundry?38:suite?20:18,'Kitchen leaves plus real study leaf and flush pull in R4B');
+assert.equal(api.walkSlidingParts.length,woodRevision?36:hasLaundry?38:suite?20:18,'Kitchen and balcony slider parts, plus study slider only in suite-derived layouts');
 assert.deepEqual([...new Set(api.walkSlidingParts.filter(p=>p.userData.openingId==='door_kitchen').map(p=>p.userData.slidingPanelIndex))].sort(),[0,1,2]);
 const openHinges=api.model.children.filter(p=>p.userData.doorRole==='hinged-open-panel');
 assert.equal(openHinges.length,suite?8:0);
@@ -200,7 +227,7 @@ assert.ok(openHinges.every(p=>!api.walkDoorParts.includes(p)),'Open hinged leave
 const closedPositions=api.walkSlidingParts.map(p=>p.position.clone());
 assert.equal(world.canStand(5.36,11.90),false,'North parked stack blocks walking');
 assert.ok(world.canStand(5.36,12.55),'Only the remaining south gap is passable');
-assert.equal(api.walkThresholds.children.length,hasLaundry?0:suite?1:6,'R4B custom door assemblies also have persistent floors');
+assert.equal(api.walkThresholds.children.length,woodRevision?5:hasLaundry?0:suite?1:6,'Authored sliding/custom door assemblies already have persistent floors');
 for(const floor of api.walkThresholds.children){
   const door=data.doors.find(d=>d.id===floor.userData.openingId),bounds=new THREE.Box3().setFromObject(floor);
   assert.ok(door&&door.id!=='entry_door');near(floor.position.x,(door.x1+door.x2)/200);near(floor.position.z,(door.y1+door.y2)/200);near(bounds.max.y,0);
@@ -209,6 +236,7 @@ const doorSnapshot=api.walkDoorParts.map(p=>p.visible);if(api.walkDoorParts.leng
 for(const room of Object.keys(WALK_STARTS))for(const cut of [true,false])for(const card of [true,false]){
   api.state.room=room;api.state.roomCardVisible=card;ui.node('#room-card').hidden=!card;api.setWalls(cut);api.startWalk();
   assert.equal(api.state.walking,true);assert.equal(api.state.interior,true);assert.equal(controls.enabled,false);near(camera.position.y,1.6);near(camera.near,.045);
+  if(woodRevision)assert.ok(entranceConnected({x:camera.position.x,z:camera.position.z}),'Production viewer spawn must join entrance route '+room);
   assert.ok(api.walkDoorParts.every(p=>!p.visible));api.walkSlidingParts.forEach((p,i)=>{assert.ok(p.visible);assert.ok(p.position.equals(closedPositions[i].clone().add(new THREE.Vector3(...p.userData.slideOpenOffsetM))))});assert.equal(api.walkThresholds.visible,true);assert.equal(api.state.cutWalls,false);assert.equal(ui.node('#walk-hud').hidden,false);
   assert.ok(openHinges.every(p=>p.visible),'R4B hinged panels stay visible while walking');
   assert.equal(api.state.roomCardVisible,card);assert.equal(ui.node('#room-card').hidden,!card);
