@@ -1,8 +1,11 @@
-import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.12.0';
-import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.12.0';
+import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.13.0';
+import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.13.0';
+import {createDesignEditor} from './design-editor.js?v=3.13.0';
+import {deriveData,furnitureKey,sourceFingerprint} from './design-editor-core.js?v=3.13.0';
+import {annotateEditorScene,createEditorSceneAdapter,editorBatchKey} from './editor-scene.js?v=3.13.0';
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
-const UI_REVISION = '3.12.0';
+const UI_REVISION = '3.13.0';
 document.documentElement.dataset.uiRevision = UI_REVISION;
 let ASSET_REVISION = '3.12.0';
 const revisedAsset = path => {const url=new URL(path,document.baseURI);url.searchParams.set('v',ASSET_REVISION);return url.href};
@@ -46,6 +49,8 @@ const state = {room:'overall',view:'model',cutWalls:true,labels:true,dimensions:
 const ROOM_CARD_STORAGE_KEY = 'house-design:room-card-visible';
 let data, manifest, scheme, schemeCatalog, rooms = [], three, scene, camera, renderer, controls, model, cameraTween, defaultDistance=20, resizeObserver, dimensionLines, activeHorizontalFov=null, pendingFrame=null;
 let metadataOnlyRenderProof=null;
+let designEditor,editorScene,editorBaseline,editorDraft,editorCardRestore=null;
+const hasPersonalDraft=()=>Boolean(Object.keys(editorDraft?.offsets||{}).length||Object.keys(editorDraft?.colors||{}).length);
 const wallMaterials=[], roomLabelNodes=[], dimensionNodes=[];
 let walkthrough=null,walkWorld=null,walkRestore=null,walkThresholds=null;
 const walkDoorParts=[],walkSlidingParts=[];
@@ -72,7 +77,7 @@ const renderProvenance = view => {
   const textOnlyRefresh=metadataOnlyRenderProof&&!record?.retainedFrom&&record?.sourceSha256===metadataOnlyRenderProof.oldSourceSha256&&record?.baseBlendSha256===metadataOnlyRenderProof.nativeBlendSha256&&manifest?.baseBlendSha256===metadataOnlyRenderProof.nativeBlendSha256&&manifest?.sourceSha256===metadataOnlyRenderProof.currentSourceSha256;
   const inherited=record?.retainedFrom||(record?.sourceSha256&&manifest?.sourceSha256&&record.sourceSha256!==manifest.sourceSha256);
   const status=!synchronized?'复尺前参考图 · 本轮模型与渲染待同步':!furnitureSynchronized?'家具替换前参考图 · 已购家具模型与渲染待同步':textOnlyRefresh?'当前复尺模型渲染（仅文字随后修订）':inherited?'沿用历史模型图 · 本轮未重渲':revision&&!record?.sourceSha256?'效果图来源待核 · 不作为复尺结果':'当前模型重渲 · 条件设计，非施工图';
-  return status+(inherited&&data?.balconyOpennessRevision?' · 不代表本轮阳台开口与采光':'')+(revision?' · 仅局部复尺，非全屋实测':'');
+  return status+(inherited&&data?.balconyOpennessRevision?' · 不代表本轮阳台开口与采光':'')+(revision?' · 仅局部复尺，非全屋实测':'')+(hasPersonalDraft()?' · 正式方案图，不含个人试摆/配色':'');
 };
 // Accept old-source render records only when an explicit, reversible text-only
 // change set proves the complete current source was otherwise unchanged.
@@ -271,10 +276,15 @@ function configureScheme(){
 
 function paintSchemePlan(root){
   if(!scheme||!root)return;
-  const palette=scheme.planPalette||{},groups={wood:['#d2b791','#c7a578','#d7c5a6','#9c7854','#d4c5ac','#d9c5a4','#e8dcc6','#ddc39c','#e6dcc8','#e6dac1'],cabinet:['#d4c9b4','#f8f4e9','#f9f6ed','#fcfaf3'],fabric:['#f8f3e8','#f4eee2','#fffdf7','#aab59c','#c5b89e','#b9bca7','#b6b498'],metal:['#babbb0','#96948d'],wall:['#8c887b'],wet:['#d5dedb','#e5e8e2','#e4e0d6','#e6e9df'],floor:['#eee5d5','#eee8da','#ece3d5']};
+  const personal=root.id==='floor-plan'?(editorDraft?.colors||{}):{};
+  const palette={...scheme.planPalette,...personal},groups={wood:['#d2b791','#c7a578','#d7c5a6','#9c7854','#d4c5ac','#d9c5a4','#e8dcc6','#ddc39c','#e6dcc8','#e6dac1'],cabinet:['#d4c9b4','#f8f4e9','#f9f6ed','#fcfaf3'],fabric:['#f8f3e8','#f4eee2','#fffdf7','#aab59c','#c5b89e','#b9bca7','#b6b498'],metal:['#babbb0','#96948d'],wall:['#8c887b'],wet:['#d5dedb','#e5e8e2','#e4e0d6','#e6e9df'],floor:['#eee5d5','#eee8da','#ece3d5']};
+  if(personal.wood)groups.wood.push('#e6d3ad');
+  if(personal.fabric)groups.fabric.push('#e8e0cd','#f2ead9','#f5eddd','#e6ddca');
   const mapping={};for(const [key,values]of Object.entries(groups)){const color=palette[key];if(typeof color==='string'&&/^#[\da-f]{3,8}$/i.test(color))values.forEach(value=>mapping[value]=color)}
   root.querySelectorAll('[fill],[stroke]').forEach(node=>{for(const key of ['fill','stroke']){const replacement=mapping[node.getAttribute(key)?.toLowerCase()];if(replacement)node.setAttribute(key,replacement)}});
   root.querySelectorAll('svg').forEach(svg=>svg.dataset.scheme=scheme.id);
+  if(personal.floor)root.querySelectorAll('[data-plan-room]').forEach(node=>node.setAttribute('fill',personal.floor));
+  if(personal.accent)root.querySelectorAll('[data-living-rug]').forEach(node=>node.setAttribute('fill',personal.accent));
 }
 const bayFitoutFor = roomId => data?.bayFitouts?.find(fitout=>fitout.roomId===roomId);
 const bayRenderPath = fitout => schemeRender(scheme,({room_a:'bay-master',room_b:'bay-tea',living:'bay-living'})[fitout.roomId]);
@@ -508,6 +518,7 @@ function switchView(view){
   $$('.view-panel').forEach(panel=>{const active=panel.id===`${view}-view`;panel.hidden=!active;panel.classList.toggle('active',active)});
   if(view==='renders')updateRender();
   if(view==='model'&&state.ready){resizeScene();if(!state.walking)controls.update()}
+  designEditor?.setView(view);
 }
 
 function updateRender(){
@@ -858,7 +869,7 @@ function makePlan(){
   }).join('');
   if(data.layout?.entryZone){const z=data.layout.entryZone;labels.push(`<g data-suite-entry="private"><rect x="${z.x}" y="${z.y}" width="${z.w}" height="${z.d}" fill="none" stroke="#a98c63" stroke-dasharray="4 5" stroke-width="1.5"/><text x="${z.x+z.w/2}" y="${z.y+30}" text-anchor="middle" font-size="13" fill="#806b50">套内玄关</text><text x="${z.x+z.w/2}" y="${z.y+49}" text-anchor="middle" font-size="10" fill="#806b50">${z.w*10} × ${z.d*10}</text></g>`)}
   const storageIds=new Set((data.storageFitouts||[]).map(f=>f.id));
-  const furniture=(activeDiningData().furniture||[]).filter(f=>!storageIds.has(f.storageFitoutId)).map(planFurniture).join('');
+  const furniture=(activeDiningData().furniture||[]).filter(f=>!storageIds.has(f.storageFitoutId)).map(f=>`<g data-editor-furniture="${escapeHTML(furnitureKey(f))}">${planFurniture(f)}</g>`).join('');
   const rug=data.modelAddons?.livingRugCm,lamp=data.modelAddons?.livingFloorLampCm;
   const livingSoft=data.familyFlowRevision&&rug&&lamp?`<g data-living-flow pointer-events="none"><rect data-living-rug x="${rug.x}" y="${rug.y}" width="${rug.w}" height="${rug.d}" rx="4" fill="#f5f1ea" stroke="#cdc6b9" stroke-dasharray="4 3" stroke-width="1"/><circle data-living-lamp cx="${lamp.x}" cy="${lamp.y}" r="22" fill="#e7e0d1" stroke="#a99b84" stroke-width="1.2"/><title>${data.familyPublicP2Revision?'地毯按电视柜前沿与沙发前沿居中，两端各70mm；茶几同轴。圆形为原位落地灯440mm灯罩投影。':'地毯随沙发东移并收回墙线内；圆形为落地灯440mm灯罩投影，电线贴墙固定。尺寸为暂估。'}</title></g>`:'';
   const wallFitouts=(data.wallFitouts||[]).map(f=>`<g data-wall-fitout="${escapeHTML(f.id)}" pointer-events="none"><title>${escapeHTML(f.description)} 上方投影，非落地柜。</title><rect x="${f.x}" y="${f.y}" width="${f.w}" height="${f.d}" fill="#f5f2ed" fill-opacity=".4" stroke="#8b928b" stroke-width="1.4" stroke-dasharray="5 4"/><text x="${f.x+f.w/2}" y="${f.y+f.d/2+4}" text-anchor="middle" font-size="11" fill="#747970">上方浅书架 · 虚线投影</text></g>`).join('');
@@ -884,6 +895,39 @@ function makePlan(){
   const diningState=hasPulloutDining()?`<g data-dining-state="${state.diningClosed?'closed':'expanded'}" pointer-events="none"><text x="410" y="1198" text-anchor="middle" font-size="11" fill="#829781">${state.diningClosed?'桌已收起 · 四椅靠柜停放':'三侧四席 · 先挪椅再收桌'}</text></g>`:'';
   $('#floor-plan').innerHTML=`<svg viewBox="${planMinX-115} ${planMinY-110} ${maxX-planMinX+160} ${maxY-planMinY+215}" role="img" aria-label="由同源尺寸数据绘制的三房两卫平面图，含厨房设备、飘窗与玄关餐边收纳条件方案；窗台投影不计入房间面积">${polygons}${livingSoft}${furniture}${storage}${diningState}${planGarage()}${planLaundry()}${planKitchen()}${walls}${opening((data.windows||[]).filter(w=>w.windowType!=='bay'),'#8fa6a8')}${bayWindows}${opening(data.doors,'#c2a071')}${fitouts}${bayFrames}${wallFitouts}${planPublicP2Art()}${labels.join('')}${dimensions}</svg>`;
   $$('#floor-plan [data-plan-room]').forEach(p=>{p.addEventListener('click',()=>selectRoom(p.dataset.planRoom));p.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectRoom(p.dataset.planRoom)}})});
+  designEditor?.afterPlanRender($('#floor-plan svg'));
+}
+
+// Personal drafts never mutate published data, native assets or server state.
+function applyPersonalDraft(draft){
+  editorDraft=draft;
+  if(!editorBaseline)return;
+  if(state.walking)stopWalk({refocus:false});
+  data=deriveData(editorBaseline,draft);
+  editorScene?.applyPositions(draft.offsets||{});
+  editorScene?.applyPalette(draft.colors||{});
+  makePlan();paintSchemePlan($('#floor-plan'));
+  if(walkthrough){walkWorld=buildWalkWorld(activeDiningData());walkthrough.world=walkWorld}
+  if(state.view==='renders')updateRender();
+  scheduleRender();
+}
+
+function setupDesignEditor(){
+  editorBaseline=structuredClone(data);
+  designEditor=createDesignEditor({
+    source:editorBaseline,schemeId:scheme.id,sourceFingerprint:manifest.sourceSha256||sourceFingerprint(editorBaseline),
+    getSvg:()=>$('#floor-plan svg'),getData:()=>data,
+    onDraftChange:applyPersonalDraft,
+    onRoomSelect:id=>selectRoom(id,{animate:false}),
+    onRequestPlan:()=>switchView('plan'),
+    onPanelChange:open=>{
+      if(open){if(state.walking)stopWalk({refocus:false});editorCardRestore=state.roomCardVisible;setRoomCardVisible(false,{persist:false})}
+      else if(editorCardRestore!==null){setRoomCardVisible(editorCardRestore,{persist:false});editorCardRestore=null}
+      scheduleRender();
+    }
+  });
+  editorDraft=designEditor.getDraft();
+  data=deriveData(editorBaseline,editorDraft);
 }
 
 // The authored closed pose keeps every full-size chair visible; nothing is
@@ -919,18 +963,18 @@ function toggleDiningState(){
 function exportPlan(openInTab=false){
   const source=$('#floor-plan svg');if(!source){toast('平面数据尚未载入');return}
   const svg=source.cloneNode(true),namespace='http://www.w3.org/2000/svg';
-  const [x,y,width,height]=svg.getAttribute('viewBox').split(/\s+/).map(Number);
+  const [x,y,width,height]=(svg.dataset.editorOriginalViewBox||svg.getAttribute('viewBox')).split(/\s+/).map(Number);
   const context=document.createElement('canvas').getContext('2d');
   if(context)context.font='15px "Microsoft YaHei", "PingFang SC", sans-serif';
   const measure=text=>context?context.measureText(text).width:Array.from(text).length*15;
-  const footnotes=wrapPlanFootnotes([data.measurementRevision?'部分复尺应用；外轮廓、尺寸链及房间面积仍为旧模型参考，未完成全屋实测闭合。':'模型示意，未经完整实测；公共区面积含客厅、餐厅及过道。',...(data.balconyOpennessRevision?.conditions||[]),...windowModelNotes(data),...windowEvidenceExportNotes(data),...kitchenExportNotes(data),...(data.woodRevision?.conditions||[]),...(data.familyR3Revision?.conditions||[]),...(data.familyPublicP2Revision?.conditions||[]),'飘窗投影不计房间面积；窗台高度不代表允许拆改。施工与防坠须专业复核。'],width-56,measure),extraHeight=180+footnotes.length*30;
+  const footnotes=wrapPlanFootnotes([...(hasPersonalDraft()?['本图含当前浏览器的个人临时试摆/配色，不是正式设计修订；移动后碰撞、净空与可施工性未核验。下列原设计说明不代表试摆后的净距。']:[]),data.measurementRevision?'部分复尺应用；外轮廓、尺寸链及房间面积仍为旧模型参考，未完成全屋实测闭合。':'模型示意，未经完整实测；公共区面积含客厅、餐厅和过道。',...(data.balconyOpennessRevision?.conditions||[]),...windowModelNotes(data),...windowEvidenceExportNotes(data),...kitchenExportNotes(data),...(data.woodRevision?.conditions||[]),...(data.familyR3Revision?.conditions||[]),...(data.familyPublicP2Revision?.conditions||[]),'飘窗投影不计房间面积；窗台高度不代表允许拆改。施工与防坠须专业复核。'],width-56,measure),extraHeight=180+footnotes.length*30;
   svg.setAttribute('xmlns',namespace);svg.setAttribute('viewBox',`${x} ${y-110} ${width} ${height+extraHeight}`);svg.setAttribute('width','1200');svg.setAttribute('height',String(Math.ceil(1200*(height+extraHeight)/width)));
   svg.removeAttribute('role');svg.removeAttribute('aria-label');
   svg.querySelectorAll('[tabindex],[role]').forEach(node=>{node.removeAttribute('tabindex');node.removeAttribute('role')});
   const title=document.createElementNS(namespace,'title');title.textContent='荟雅苑 · 同源模型平面示意（非施工图）';svg.prepend(title);
   const background=document.createElementNS(namespace,'rect');Object.entries({x,y:y-110,width,height:height+extraHeight,fill:'#fffcf6'}).forEach(([key,value])=>background.setAttribute(key,String(value)));svg.insertBefore(background,title.nextSibling);
   const addText=(text,atY,size,color,footnote=false)=>{const node=document.createElementNS(namespace,'text');Object.entries({x:x+24,y:atY,'font-size':size,fill:color,'font-family':'Microsoft YaHei, PingFang SC, sans-serif'}).forEach(([key,value])=>node.setAttribute(key,String(value)));if(footnote)node.dataset.exportFootnote='';node.textContent=text;svg.appendChild(node)};
-  addText(`荟雅苑 · ${scheme?.name||'三房两卫'} / 同源模型平面`,y-57,26,'#615943');
+  addText(`荟雅苑 · ${scheme?.name||'三房两卫'} / ${hasPersonalDraft()?'个人临时试摆':'同源模型平面'}`,y-57,26,'#615943');
   addText(`模型示意，非施工图 · 单位：mm${data.measurementRevision?' · '+data.measurementRevision.date+' 部分复尺修订':' · 墙体、门窗与管井需现场复尺'}`,y-20,16,'#96856a');
   footnotes.forEach((note,i)=>addText(note,y+height+30+i*30,15,'#96856a',true));
   svg.querySelectorAll('text').forEach(node=>node.setAttribute('font-family','Microsoft YaHei, PingFang SC, sans-serif'));
@@ -962,6 +1006,7 @@ async function buildScene(){
     const gltf=await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error('Model load timeout')),45000);loader.load(revisedAsset(scheme.model),result=>{clearTimeout(timer);resolve(result)},event=>{
       const p=event.total?Math.min(98,Math.round(event.loaded/event.total*100)):Math.min(93,10+Math.round(event.loaded/1024/100));$('#loading-progress').style.width=p+'%';$('#loading-status').textContent=event.total?`正在载入模型 · ${p}%`:`正在载入模型 · ${(event.loaded/1024/1024).toFixed(1)} MB`;
     },error=>{clearTimeout(timer);reject(error)})});
+    annotateEditorScene(gltf.scene,editorBaseline||data);
     model=optimizeStaticModel(gltf.scene,THREE,mergeGeometries);
     model.traverse(object=>{
       if(!object.isMesh)return;object.castShadow=false;object.receiveShadow=false;
@@ -978,7 +1023,15 @@ async function buildScene(){
       if(['wall','window','door'].includes(kind)){
         const materials=(Array.isArray(object.material)?object.material:[object.material]).map(m=>{const clone=m.clone();wallMaterials.push(clone);return clone});object.material=Array.isArray(object.material)?materials:materials[0];
       }
-    });applyDiningVisibility();scene.add(model);state.ready=true;
+    });
+    editorScene=createEditorSceneAdapter({model,data:editorBaseline||data,THREE});
+    // The editor clones materials for reversible tinting. Clip the live clones,
+    // not the now-detached originals from the viewer's material preparation.
+    wallMaterials.length=0;
+    model.traverse(object=>{if(object.isMesh&&['wall','window','door'].includes(object.userData.kind))for(const material of (Array.isArray(object.material)?object.material:[object.material]))wallMaterials.push(material)});
+    designEditor?.setAvailableMovableKeys(editorScene.getFurnitureStates());
+    editorScene.applyPositions(editorDraft?.offsets||{});editorScene.applyPalette(editorDraft?.colors||{});
+    applyDiningVisibility();scene.add(model);state.ready=true;
     buildLabels();setWalls(true);focusRoom(state.room,false,false);resizeScene();
     try{setupWalk()}catch(error){console.error('Walk setup failed',error);walkthrough?.dispose();walkthrough=null;$('#start-walk').disabled=true;$('#start-walk').textContent='漫游暂不可用'}
     resizeObserver=new ResizeObserver(resizeScene);resizeObserver.observe(container);
@@ -1076,13 +1129,13 @@ function optimizeStaticModel(source,THREE,mergeGeometries){
   source.traverse(object=>{
     if(!object.isMesh)return;
     let owner=object,semantic={};
-    while(owner){for(const key of ['kind','roomId','external','wallIndex','openingId','doorRole','diningVisibility','diningFitoutId'])if(semantic[key]===undefined&&owner.userData[key]!==undefined)semantic[key]=owner.userData[key];owner=owner.parent}
+    while(owner){for(const key of ['kind','roomId','external','wallIndex','openingId','doorRole','diningVisibility','diningFitoutId','editorFurnitureKey','editorMovable','editorColorCategory','editorColorCategories'])if(semantic[key]===undefined&&owner.userData[key]!==undefined)semantic[key]=owner.userData[key];owner=owner.parent}
     const originalMaterial=object.material;
     if(semantic.diningVisibility||semantic.kind==='door'||Array.isArray(originalMaterial)||object.isSkinnedMesh||originalMaterial.transparent||originalMaterial.transmission>0){
       const clone=object.clone(false);clone.geometry=object.geometry.clone().applyMatrix4(object.matrixWorld);clone.position.set(0,0,0);clone.quaternion.identity();clone.scale.set(1,1,1);clone.userData={...object.userData,...semantic,walkDoorInfill:Boolean(isWalkDoorInfill(object.name,semantic))};optimized.add(clone);return;
     }
     const signature=Object.keys(object.geometry.attributes).sort().map(key=>`${key}:${object.geometry.attributes[key].itemSize}`).join(',');
-    const key=[originalMaterial.uuid,semantic.kind||'',semantic.roomId||'',semantic.external||false,signature].join('|');
+    const key=[originalMaterial.uuid,semantic.kind||'',semantic.roomId||'',semantic.external||false,editorBatchKey(semantic),signature].join('|');
     if(!groups.has(key))groups.set(key,{material:originalMaterial,semantic,geometries:[]});
     let geometry=object.geometry.clone().applyMatrix4(object.matrixWorld);
     if(geometry.index){const unindexed=geometry.toNonIndexed();geometry.dispose();geometry=unindexed}
@@ -1260,6 +1313,7 @@ async function init(){
     const base=rawRooms.find(r=>r.id===(id==='dining'?'living':id))||{},extra=manifest.rooms?.find(r=>r.id===id)||{};
     return {...base,...extra,...schemeTextOverride(scheme.roomOverrides,id),...measuredDescriptions[id],id,name:roomDescription(id).name};
   });
+  setupDesignEditor();
   makeNavigation();makePlan();renderDesignNotes();renderMeasurementAudit();renderBayFitouts();renderStorageFitouts();renderLaundryFitout();renderKitchenFitout();paintSchemePlan($('#floor-plan'));paintSchemePlan($('#storage-fitout-cards'));selectRoom(descriptions[location.hash.slice(1)]?location.hash.slice(1):'overall',{updateHash:false,animate:false});switchView('model');
   buildScene();
 }
