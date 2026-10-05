@@ -1,10 +1,10 @@
-import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.7.0';
-import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.7.0';
+import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.8.0';
+import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.8.0';
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
-const UI_REVISION = '3.7.0';
+const UI_REVISION = '3.8.0';
 document.documentElement.dataset.uiRevision = UI_REVISION;
-let ASSET_REVISION = '3.7.0';
+let ASSET_REVISION = '3.8.0';
 const revisedAsset = path => {const url=new URL(path,document.baseURI);url.searchParams.set('v',ASSET_REVISION);return url.href};
 const icons = {
   cube:'<path d="m8 2 6 3.5v5L8 14l-6-3.5v-5L8 2Z M2 5.5 8 9l6-3.5 M8 9v5 M5 3.8l6 3.5"/>',
@@ -444,15 +444,16 @@ function selectRoom(id,{updateHash=true,animate=true}={}){
   const accessNote=id==='bath_1'?(data.layout?.id==='suite'?'主卫西门通主卧小玄关，不直接向公共走廊开门。':'主卫北门通主卧，按套内卫生间使用；门宽与侧面构造待复尺。'):id==='bath_2'?'客卫从公共走廊进入；门宽与侧面构造待复尺。':'';
   const bedroom=bedroomSpecification(id),fitout=bayFitoutFor(id);
   const styleNote=scheme.id!=='wood'&&['room_a','room_b','bath_1','bath_2','dining'].includes(id)?scheme.roomOverrides?.[id]?.description:'';
-  const measuredDescription=purchasedRoomDescription(id)||measurementRoomDescription(id);
+  const measuredDescription=(id==='kitchen'?data.kitchenFitout?.summary:'')||purchasedRoomDescription(id)||measurementRoomDescription(id);
   $('#card-description').textContent=measuredDescription?measuredDescription+' 外轮廓、面积和未确认位置仍为旧模型参考。':[styleNote,(id==='dining'?diningSpecification():'') || bedroom?.description || bathroomDescription(id) || (fitout?content.description:'') || r?.description || content.description,accessNote,...designNotes().filter(note=>note.roomId===id).map(note=>note.text)].filter(Boolean).join(' ');
   $('#view-bay-fitout').hidden=!(fitout||id==='overall');
   $('#view-bay-fitout').innerHTML=`${id==='overall'?'三处飘窗功能设计':'飘窗方案 · 尺寸 / 参考'} <span>↗</span>`;
   $('#view-storage-fitout').hidden=!['overall','dining','living'].includes(id);
+  if($('#view-kitchen-fitout'))$('#view-kitchen-fitout').hidden=!['overall','kitchen'].includes(id);
   $('#view-suite-entry').hidden=!(data.layout?.id==='suite'&&['overall','room_a','bath_1'].includes(id));
   $('#project-suite-entry').hidden=data.layout?.id!=='suite';
   $('#bath-access-note').textContent=data.layout?.id==='suite'?'新增布局：主卫西门通套内小玄关，北侧旧门封闭；客卫仍从公共走廊进入。两卫共墙拉直，具体墙位、门宽与防水排水需复核。':'主卫北门通主卧，客卫从公共走廊进入；两卫阶梯边界及门侧构造仍需现场复尺。';
-  const features=data.purchasedFurnitureRevision?.roomDescriptions?.[id]?.features || scheme.roomOverrides?.[id]?.features || bedroom?.features || ((scheme.id!=='wood'||fitout||id==='dining'||id==='bath_1'||id==='bath_2')?content.features:(r?.features || content.features));
+  const features=(id==='kitchen'&&data.kitchenFitout?['独立柜下洗碗机','东墙双槽','窗边明装热水器']:null) || data.purchasedFurnitureRevision?.roomDescriptions?.[id]?.features || scheme.roomOverrides?.[id]?.features || bedroom?.features || ((scheme.id!=='wood'||fitout||id==='dining'||id==='bath_1'||id==='bath_2')?content.features:(r?.features || content.features));
   $('#room-tags').innerHTML=features.slice(0,3).map(t=>scheme.id==='wood'?t:({'现代原木':scheme.name,'暖色石材':'浅色卫浴','亚麻触感':'织物软包'})[t]||t).map(t=>`<span>${escapeHTML(t)}</span>`).join('');
   $('#room-preview').src=renderPath(id);$('#room-preview').alt=`${content.name} Blender 渲染预览`;
   $('#enter-room').innerHTML=`${id==='overall'?'探索客厅':'走进'+content.name} <span>↗</span>`;
@@ -506,7 +507,7 @@ function updateRender(){
 }
 
 function planFurniture(f){
-  if(f.garageFitoutId||f.laundryFitoutId)return '';
+  if(f.garageFitoutId||f.laundryFitoutId||f.kitchenFitoutId)return '';
   if(f.purchasedProductId)return planPurchasedFurniture(f);
   const direction=f.headDirection,isBed=['east','west','north','south'].includes(direction);
   const frame=`<rect data-furniture-frame x="${f.x}" y="${f.y}" width="${f.w}" height="${f.d}" rx="${f.tone==='fabric'?6:2}" fill="${({wood:'#d2b791',cabinet:'#d4c9b4',fabric:'#f8f3e8',sanitary:'#faf9f3',wet:'#d5dedb',metal:'#babbb0'})[f.tone]||'#e3d9c5'}" stroke="#b4a68e" stroke-width="1.5"${!isBed&&f.a?` transform="rotate(${f.a} ${f.x+f.w/2} ${f.y+f.d/2})"`:''}/>`;
@@ -640,6 +641,87 @@ function planGarage(){
   return `<g data-family-garage="${escapeHTML(g.id)}" data-opening-face="${g.face}" pointer-events="none"><title>外包${g.w*10}×${g.d*10}；${east?'东向开口朝入户玄关，儿童车抬放1230mm、婴儿车落地；重叠为分层投影，非两车同层。':'北向开口朝厅内与餐桌。'}尺寸与承重待深化。</title><rect x="${g.x}" y="${g.y}" width="${g.w}" height="${g.d}" fill="#efeee6"/>${sides}${vehicles}<rect data-garage-upper-rack x="${shelf.x}" y="${shelf.y}" width="${shelf.w}" height="${shelf.d}" fill="none" stroke="#9d8e73" stroke-dasharray="4 4"/><path data-garage-exit="${g.face}" d="${arrows}" fill="none" stroke="#829781" stroke-width="2"/><text x="${g.x+g.w/2}" y="${g.y+g.d+(east?35:19)}" text-anchor="middle" font-size="13" fill="#6e8069">800库 · ${g.w*10}×${g.d*10}</text><text x="${g.x+g.w+64}" y="${g.y-17}" text-anchor="middle" font-size="10" fill="#829781">${east?'开口朝入户玄关':'开口朝厅 / 餐桌'}</text><text x="423" y="${g.y+(east?61:14)}" text-anchor="middle" font-size="8" fill="#829781">${east?'取车先关入户门':'取车时暂占前场'}</text></g>`;
 }
 
+function kitchenApplianceMarkup(appliance,local=false){
+  const p=local?{...appliance,...appliance.local}:appliance;
+  if(!p||![p.x,p.y,p.w,p.d].every(Number.isFinite)||p.w<=0||p.d<=0)return '';
+  const {x,y,w,d,type}=p,cx=x+w/2,cy=y+d/2;
+  const label=({fridge:'冰箱',dishwasher:'洗碗机',doubleSink:'双槽水槽',gasHob:'燃气灶',hood:'油烟机',waterHeater:'明装热水器',faucet:'龙头'})[type]||type;
+  const box=(a,b,c,e,attrs)=>`<rect x="${a}" y="${b}" width="${c}" height="${e}" ${attrs}/>`;
+  const text=(tx,ty,value,size=8)=>`<text x="${tx}" y="${ty}" text-anchor="middle" font-size="${size}" fill="#5b625c">${escapeHTML(value)}</text>`;
+  let shape='';
+  if(type==='doubleSink'){
+    const vertical=d>w,gap=2,inset=2.5,innerW=w-inset*2,innerD=d-inset*2;
+    const bowls=vertical?[[x+inset,y+inset,innerW,(innerD-gap)*.57],[x+inset,y+inset+(innerD-gap)*.57+gap,innerW,(innerD-gap)*.43]]:[[x+inset,y+inset,(innerW-gap)*.57,innerD],[x+inset+(innerW-gap)*.57+gap,y+inset,(innerW-gap)*.43,innerD]];
+    shape=box(x,y,w,d,'rx="1.2" fill="#cbd2d1" stroke="#788b8b" stroke-width="1"')+bowls.map(([bx,by,bw,bd])=>box(bx,by,bw,bd,'rx="1.2" fill="#eaf0ee" stroke="#91a3a2" stroke-width=".8"')+`<circle cx="${bx+bw/2}" cy="${by+bd*.62}" r="2.7" fill="#a5b3b1" stroke="#839895" stroke-width=".7"/>`).join('');
+  }else if(type==='gasHob'){
+    const horizontal=w>=d,burners=horizontal?[[x+w*.27,cy],[x+w*.73,cy]]:[[cx,y+d*.27],[cx,y+d*.73]],radius=Math.min(w,d)*.26;
+    shape=box(x,y,w,d,'rx="2" fill="#555c58" stroke="#424a45" stroke-width="1"')+burners.map(([bx,by])=>`<circle cx="${bx}" cy="${by}" r="${radius}" fill="none" stroke="#c4c5b8" stroke-width="1.3"/><circle cx="${bx}" cy="${by}" r="${radius*.48}" fill="#7d8680"/><path d="M${bx-radius-1} ${by}h${radius*2+2} M${bx} ${by-radius-1}v${radius*2+2}" stroke="#303c35" stroke-width="1.4"/>`).join('');
+  }else if(type==='hood'){
+    shape=box(x,y,w,d,'rx="1" fill="none" stroke="#70877b" stroke-width="1.1" stroke-dasharray="3 2"');
+  }else if(type==='faucet'){
+    shape=`<circle cx="${cx}" cy="${cy}" r="${Math.max(1.5,Math.min(w,d)/3)}" fill="#879d9a"/><path d="M${cx} ${cy}v-6q0-4 4-4h4" fill="none" stroke="#6e8783" stroke-width="1.6"/>`;
+  }else{
+    const isHeater=type==='waterHeater',fill=type==='fridge'?'#e6e7e0':type==='dishwasher'?'#d8dfdc':'#f7f5e9';
+    shape=box(x,y,w,d,`rx="1.4" fill="${fill}" stroke="#82938a" stroke-width="1.2"${isHeater?' stroke-dasharray="3 2"':''}`)+text(cx,cy-1,isHeater?'热水器':label,isHeater?6.3:8.5);
+    if(isHeater)shape+=text(cx,cy+7,'明装',5.5);
+    if(!isHeater)shape+=text(cx,cy+11,`${Math.round(w*10)}×${Math.round(d*10)}`,7);
+    if(type==='dishwasher')shape+=`<path d="M${x+5} ${y+7}h${w-10}" stroke="#83938b" stroke-width="1.3"/>`;
+    if(type==='fridge')shape+=`<path d="M${x+3} ${y+d-7}h${w-6}" stroke="#9ca79a" stroke-width="1.1"/>`;
+  }
+  return `<g ${local?'data-kitchen-local-appliance':'data-kitchen-appliance-id'}="${escapeHTML(p.id)}" data-kitchen-type="${escapeHTML(type)}" data-kitchen-face="${escapeHTML(p.face||'')}" data-z-cm="${p.zCm??0}" data-height-cm="${p.heightCm??0}"><title>${escapeHTML(label)} · 机身占位 ${Math.round(w*10)}×${Math.round(d*10)}${Number.isFinite(p.heightCm)?'×'+Math.round(p.heightCm*10):''}mm；安装条件待复核</title>${shape}</g>`;
+}
+
+function planKitchen(){
+  const k=data.kitchenFitout;if(!k)return '';
+  const rect=(p,attrs)=>`<rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.d}" ${attrs}/>`;
+  const appliances=[...(k.appliances||[])].sort((a,b)=>Number(b.type==='hood')-Number(a.type==='hood'));
+  const counters=(k.countertops||[]).map(p=>rect(p,`data-kitchen-counter="${escapeHTML(p.id)}" fill="#f2eee3" stroke="#a9a390" stroke-width="1.1"`)+(p.cutouts||[]).filter(c=>[c.x,c.y,c.w,c.d].every(Number.isFinite)).map(c=>rect(c,'fill="#e4e0d6" stroke="#b2b1a4" stroke-width=".6"')).join('')).join('');
+  const fronts=(k.parts||[]).filter(p=>p.role==='base-front').map(p=>rect(p,`data-kitchen-part="${escapeHTML(p.id)}" data-kitchen-role="base-front" fill="#d3c4a5" stroke="#a4977a" stroke-width=".7"`)).join('');
+  const uppers=(k.parts||[]).filter(p=>p.role==='upper-front'||p.role==='upper-cabinet'||(p.role==='upper-panel'&&p.id.endsWith('_floor'))).map(p=>rect(p,`data-kitchen-part="${escapeHTML(p.id)}" data-kitchen-role="${p.role}" fill="none" stroke="#7c9183" stroke-width="1.3" stroke-dasharray="4 3"`)).join('');
+  const shafts=(k.parts||[]).filter(p=>p.role==='shaft').map(p=>rect(p,`data-kitchen-part="${escapeHTML(p.id)}" data-kitchen-role="shaft" fill="#8c887b" stroke="#716e63" stroke-width="1"`)+`<text x="${p.x+p.w/2}" y="${p.y+p.d/2+3}" text-anchor="middle" font-size="8" fill="#fffaf0">烟道</text>`).join('');
+  const e=k.modelEnvelope,a=k.adjustmentBand;
+  const adjustmentTops=a?(k.countertops||[]).map(p=>({x:Math.max(p.x,a.x),y:p.y,w:Math.min(p.x+p.w,a.x+a.w)-Math.max(p.x,a.x),d:p.d})).filter(p=>p.w>0):[];
+  const band=a?`<g data-kitchen-adjustment-band="${a.w}" aria-label="南北柜体${a.w*10}mm待核调整段，不计入可用机位">${adjustmentTops.map(p=>rect(p,'fill="#c49365" fill-opacity=".18" stroke="#b48660" stroke-width=".9" stroke-dasharray="4 4"')+`<text x="${p.x+p.w/2}" y="${p.y+p.d/2-2}" text-anchor="middle" font-size="7" fill="#966a46">${a.w*10} 待核</text><text x="${p.x+p.w/2}" y="${p.y+p.d/2+8}" text-anchor="middle" font-size="6.5" fill="#966a46">不计机位</text>`).join('')}</g>`:'';
+  const note=e?`<text x="${e.x+e.w/2}" y="${e.y+e.d-4}" text-anchor="middle" font-size="8" fill="#8a7356">厨房设备占位 · 虚线为上方 · 净距待核</text>`:'';
+  return `<g data-kitchen-plan="${escapeHTML(k.id)}" pointer-events="none"><title>${escapeHTML(k.summary||'厨房条件方案')} 全屋仍沿旧模型墙线；调整段不计可用机位。</title>${counters}${fronts}${appliances.map(p=>kitchenApplianceMarkup(p)).join('')}${uppers}${shafts}${band}${note}</g>`;
+}
+
+function localKitchenPlanMarkup(k){
+  const e=k?.localEnvelope;if(!e||![e.w,e.d].every(Number.isFinite))return '';
+  const localParts=k.localShaft?[k.localShaft]:(k.parts||[]).filter(p=>p.role==='shaft'&&p.local).map(p=>({...p,...p.local}));
+  const shafts=localParts.filter(p=>p.x>=0&&p.y>=0&&p.x+p.w<=e.w&&p.y+p.d<=e.d).map(p=>`<rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.d}" fill="#8c887b"/><text x="${p.x+p.w/2}" y="${p.y+p.d/2+3}" text-anchor="middle" font-size="8" fill="#fffaf0">烟道占位</text>`).join('');
+  const counters=(k.localCountertops||[]).map(p=>`<rect data-kitchen-local-counter x="${p.x}" y="${p.y}" width="${p.w}" height="${p.d}" fill="#f2eee3" stroke="#b1a691" stroke-width="1"/>`).join('');
+  const devices=(k.appliances||[]).filter(p=>p.local).sort((a,b)=>Number(b.type==='hood')-Number(a.type==='hood')).map(p=>kitchenApplianceMarkup(p,true)).join('');
+  return `<svg data-kitchen-local-plan="${escapeHTML(k.id)}" viewBox="-35 -42 ${e.w+70} ${e.d+92}" role="img" aria-label="厨房${e.w*10}乘${e.d*10}毫米局部保守设备排布，独立局部坐标，非全屋定位或施工图"><title>厨房局部保守排布</title><rect x="0" y="0" width="${e.w}" height="${e.d}" fill="#eae8dd" stroke="#8c887b" stroke-width="3"/>${counters}${shafts}${devices}<g stroke="#b2a084" stroke-width=".8" fill="none"><path d="M0 -21H${e.w} M0 -26v10 M${e.w} -26v10 M-19 0V${e.d} M-24 0h10 M-24 ${e.d}h10"/></g><g font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="10" fill="#74674f" text-anchor="middle"><text x="${e.w/2}" y="-27">${e.w*10} mm · 局部尺寸</text><text x="-26" y="${e.d/2}" transform="rotate(-90 -26 ${e.d/2})">${e.d*10} mm</text><text x="${e.w-6}" y="-7">N ↑</text><text x="${e.w/2}" y="${e.d+20}">设备机身示意 · 未作为柜洞及安全净距</text><text x="${e.w/2}" y="${e.d+36}">窗、门与管线最终定位待现场闭合</text></g></svg>`;
+}
+
+function renderKitchenFitout(){
+  const k=data.kitchenFitout;if(!k||$('#kitchen-dialog'))return;
+  const dialog=document.createElement('dialog');dialog.id='kitchen-dialog';dialog.className='bay-dialog';dialog.setAttribute('aria-labelledby','kitchen-dialog-title');
+  const list=values=>(values||[]).map(value=>`<li>${escapeHTML(detailText(value))}</li>`).join('');
+  const refs=(k.references||[]).filter(r=>referenceURL(r.url));
+  const views=[['kitchen','南墙烹饪 · 东墙双槽'],['kitchen-north','北侧冰箱 · 洗碗机 · 明装热水器']];
+  const renders=`<div class="bay-fitout-grid" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))">${views.map(([view,title])=>`<article class="bay-fitout-card"><button class="bay-fitout-image" data-kitchen-render="${view}" aria-label="放大${title}"><img src="${schemeRender(scheme,view)}" alt="${title} · 同源参数示意，安装待核" loading="lazy"/><span class="bay-render-pending" hidden>同源视角暂未载入</span><span class="bay-image-label">同源参数示意 · 安装待核 ${icon('expand')}</span></button><div class="bay-fitout-copy"><h3>${title}</h3><p class="bay-fitout-summary">${escapeHTML(renderProvenance(view))}</p></div></article>`).join('')}</div>`;
+  dialog.innerHTML=`<button class="dialog-close icon-button" aria-label="关闭厨房设计">${icon('close')}</button><header class="bay-dialog-heading"><p class="eyebrow">KITCHEN / CONDITIONAL LAYOUT</p><h2 id="kitchen-dialog-title">厨房 · 设备与柜体排布</h2><p>${escapeHTML(k.summary||'')}</p><span class="bay-conditional-badge">设备外形占位 · 型号与安装条件待核</span></header>${renders}<article class="measurement-existing-plan"><h4>${k.localEnvelope.w*10}×${k.localEnvelope.d*10} mm 局部保守排布</h4><p class="existing-plan-status">此图使用独立局部坐标。全屋模型暂保留${k.modelEnvelope.w*10}×${k.modelEnvelope.d*10} mm旧墙线，待尺寸链闭合；${k.adjustmentBand.w*10} mm调整段不计入可用机位。</p><div class="existing-plan-scroll">${localKitchenPlanMarkup(k)}</div><p>洗碗机单独设于台面下；双槽和燃气灶不置于洗碗机上方。热水器明装，吊柜在窗边前停止，独立排烟与检修条件待核。</p><ul class="bay-fitout-dimensions">${list(k.dimensions)}</ul></article><footer class="bay-dialog-notes"><h3>施工前需要核实的条件</h3><ul>${list(k.conditions)}</ul><h3>原厂参考 · 尺寸与造型的依据</h3><div class="bay-references">${refs.map(r=>`<article><a href="${escapeHTML(referenceURL(r.url))}" target="_blank" rel="noopener noreferrer">${escapeHTML(r.title)} ↗</a><p>${escapeHTML(detailText(r.borrow))}</p></article>`).join('')}</div></footer>`;
+  document.body.append(dialog);
+  dialog.querySelector('.dialog-close').addEventListener('click',()=>dialog.close());
+  dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close()});
+  dialog.querySelectorAll('[data-kitchen-render]').forEach(button=>{
+    const img=button.querySelector('img'),pending=button.querySelector('.bay-render-pending');
+    const loaded=()=>{button.disabled=false;img.hidden=false;pending.hidden=true};
+    const failed=()=>{button.disabled=true;img.hidden=true;pending.hidden=false};
+    img.addEventListener('load',loaded);img.addEventListener('error',failed);if(img.complete){if(img.naturalWidth)loaded();else failed()}
+    button.addEventListener('click',()=>{if(button.disabled)return;const view=button.dataset.kitchenRender;$('#large-render').src=schemeRender(scheme,view);$('#large-render').alt=img.alt;$('#large-render-caption').textContent=img.alt+' · '+renderProvenance(view);$('#image-dialog').showModal()});
+  });
+  const show=()=>{if($('#project-dialog').open)$('#project-dialog').close();if(state.walking)stopWalk();if(!dialog.open)dialog.showModal();dialog.scrollTop=0};
+  for(const [parent,id,cls]of [['.sidebar-bottom','open-kitchen','quiet-link'],['#project-dialog','project-kitchen','project-bay-link'],['.room-card-copy','view-kitchen-fitout','secondary-link bay-card-link']]){const button=document.createElement('button');button.id=id;button.className=cls;button.textContent='厨房排布 · 尺寸与安装条件 ↗';button.addEventListener('click',show);$(parent).append(button)}
+}
+
+function kitchenExportNotes(source){
+  const k=source.kitchenFitout;if(!k)return [];
+  return [`厨房局部保守排布${k.localEnvelope.w*10}×${k.localEnvelope.d*10}mm；全屋仍沿${k.modelEnvelope.w*10}×${k.modelEnvelope.d*10}mm旧模型墙线。${k.adjustmentBand.w*10}mm调整段待核，不计入可用机位。`,'厨房符号为设备外形占位，非柜洞尺寸；吊柜虚线表示上方投影。洗碗机独立柜下，不在灶或水槽下方。',...(k.conditions||[]).map(note=>'厨房待核：'+(typeof note==='string'?note:note.text||note.description||''))];
+}
+
 function envelopeDimensions(source){
   const points=source.envelope||[[0,0],[841,0],[841,1401],[0,1401]],xs=points.map(p=>p[0]),ys=points.map(p=>p[1]);
   const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
@@ -731,7 +813,7 @@ function makePlan(){
   const dimensionLabel=cm=>`${Math.round(cm*10).toLocaleString('en-US')}${data.measurementRevision?' · 旧模型参考':''}`;
   const dimensions=`<g data-envelope-dimensions="${data.measurementRevision?'old-reference':'model'}" stroke="#b4a58e" stroke-width="1.5" fill="none"><path d="M${dim.northLeft} ${topDimensionY}H${dim.northRight} M${dim.northLeft} ${topDimensionY-14}v28 M${dim.northRight} ${topDimensionY-14}v28 M${leftDimensionX} ${minY}V${maxY} M${leftDimensionX-14} ${minY}h28 M${leftDimensionX-14} ${maxY}h28 M${dim.southLeft} ${bottomDimensionY}H${dim.southRight} M${dim.southLeft} ${bottomDimensionY-14}v28 M${dim.southRight} ${bottomDimensionY-14}v28"/></g><g fill="#9c8d73" font-size="${data.measurementRevision?16:19}" text-anchor="middle"><text x="${(dim.northLeft+dim.northRight)/2}" y="${topDimensionY-17}">${dimensionLabel(dim.northRight-dim.northLeft)}</text><text x="${(dim.southLeft+dim.southRight)/2}" y="${bottomDimensionY+29}">${dimensionLabel(dim.southRight-dim.southLeft)}</text><text x="${leftDimensionX-20}" y="${(minY+maxY)/2}" transform="rotate(-90 ${leftDimensionX-20} ${(minY+maxY)/2})">${dimensionLabel(maxY-minY)}</text><text x="${maxX-48}" y="${topDimensionY-2}" font-size="23">N ↑</text></g>`;
   const diningState=hasPulloutDining()?`<g data-dining-state="${state.diningClosed?'closed':'expanded'}" pointer-events="none"><text x="410" y="1198" text-anchor="middle" font-size="11" fill="#829781">${state.diningClosed?'桌已收起 · 四椅靠柜停放':'三侧四席 · 先挪椅再收桌'}</text></g>`:'';
-  $('#floor-plan').innerHTML=`<svg viewBox="${planMinX-115} ${planMinY-110} ${maxX-planMinX+160} ${maxY-planMinY+215}" role="img" aria-label="由同源尺寸数据绘制的三房两卫平面图，含飘窗与玄关餐边收纳条件方案；窗台投影不计入房间面积">${polygons}${livingSoft}${furniture}${storage}${diningState}${planGarage()}${planLaundry()}${walls}${opening((data.windows||[]).filter(w=>w.windowType!=='bay'),'#8fa6a8')}${bayWindows}${opening(data.doors,'#c2a071')}${fitouts}${bayFrames}${wallFitouts}${labels.join('')}${dimensions}</svg>`;
+  $('#floor-plan').innerHTML=`<svg viewBox="${planMinX-115} ${planMinY-110} ${maxX-planMinX+160} ${maxY-planMinY+215}" role="img" aria-label="由同源尺寸数据绘制的三房两卫平面图，含厨房设备、飘窗与玄关餐边收纳条件方案；窗台投影不计入房间面积">${polygons}${livingSoft}${furniture}${storage}${diningState}${planGarage()}${planLaundry()}${planKitchen()}${walls}${opening((data.windows||[]).filter(w=>w.windowType!=='bay'),'#8fa6a8')}${bayWindows}${opening(data.doors,'#c2a071')}${fitouts}${bayFrames}${wallFitouts}${labels.join('')}${dimensions}</svg>`;
   $$('#floor-plan [data-plan-room]').forEach(p=>{p.addEventListener('click',()=>selectRoom(p.dataset.planRoom));p.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectRoom(p.dataset.planRoom)}})});
 }
 
@@ -772,7 +854,7 @@ function exportPlan(openInTab=false){
   const context=document.createElement('canvas').getContext('2d');
   if(context)context.font='15px "Microsoft YaHei", "PingFang SC", sans-serif';
   const measure=text=>context?context.measureText(text).width:Array.from(text).length*15;
-  const footnotes=wrapPlanFootnotes([data.measurementRevision?'部分复尺应用；外轮廓、尺寸链及房间面积仍为旧模型参考，未完成全屋实测闭合。':'模型示意，未经完整实测；公共区面积含客厅、餐厅及过道。',...windowModelNotes(data),...windowEvidenceExportNotes(data),'飘窗投影不计房间面积；窗台高度不代表允许拆改。施工与防坠须专业复核。'],width-56,measure),extraHeight=180+footnotes.length*30;
+  const footnotes=wrapPlanFootnotes([data.measurementRevision?'部分复尺应用；外轮廓、尺寸链及房间面积仍为旧模型参考，未完成全屋实测闭合。':'模型示意，未经完整实测；公共区面积含客厅、餐厅及过道。',...windowModelNotes(data),...windowEvidenceExportNotes(data),...kitchenExportNotes(data),'飘窗投影不计房间面积；窗台高度不代表允许拆改。施工与防坠须专业复核。'],width-56,measure),extraHeight=180+footnotes.length*30;
   svg.setAttribute('xmlns',namespace);svg.setAttribute('viewBox',`${x} ${y-110} ${width} ${height+extraHeight}`);svg.setAttribute('width','1200');svg.setAttribute('height',String(Math.ceil(1200*(height+extraHeight)/width)));
   svg.removeAttribute('role');svg.removeAttribute('aria-label');
   svg.querySelectorAll('[tabindex],[role]').forEach(node=>{node.removeAttribute('tabindex');node.removeAttribute('role')});
@@ -887,7 +969,9 @@ function startWalk(){
   if(!state.ready||!walkthrough){toast('三维模型正在载入，请稍后再进入漫游');return}
   if(document.querySelector('dialog[open]'))return;
   switchView('model');
-  const seed=WALK_STARTS[state.room]||WALK_STARTS.overall;
+  const fittedKitchen=state.room==='kitchen'&&Boolean(data?.kitchenFitout);
+  const narrowKitchen=fittedKitchen&&matchMedia('(max-width: 860px)').matches;
+  const seed=fittedKitchen?[6.55,12.25]:WALK_STARTS[state.room]||WALK_STARTS.overall;
   const start=findWalkStart(walkWorld,state.room,{x:seed[0],z:seed[1]});
   if(!start){toast('这个空间暂时没有合适的站立位置，请从全屋入口进入');return}
   walkRestore={cutWalls:state.cutWalls,doors:walkDoorParts.map(part=>[part,part.visible]),sliding:walkSlidingParts.map(part=>[part,part.position.clone()])};
@@ -897,9 +981,10 @@ function startWalk(){
   activeHorizontalFov=null;camera.clearViewOffset();camera.near=.045;camera.fov=64;camera.updateProjectionMatrix();
   setWalls(false);$('#workspace').classList.add('walking');$('#walk-hud').hidden=false;$('#walk-pad').hidden=false;$('#walk-look-hint').hidden=false;
   $('#download-popover').hidden=true;$('#download-toggle').setAttribute('aria-expanded','false');
-  const target=roomById(state.room)?.interiorCamera?.target;
+  const target=fittedKitchen?(narrowKitchen?[6.495,1.05,13.575]:[7.35,1.15,13.4]):roomById(state.room)?.interiorCamera?.target;
   const yaw=target?Math.atan2(target[0]-start.x,start.z-target[2]):0;
   walkthrough.start(start,yaw);
+  if(fittedKitchen){walkthrough.pitch=narrowKitchen?-.38:-.25;walkthrough.publish();scheduleRender()}
   toast('已进入第一人称漫游 · 拖动转头，按键移动');
 }
 function stopWalk({refocus=true,restoreFocus=true}={}){
@@ -974,6 +1059,7 @@ function focusRoom(id,interior=false,animate=true){
     const room=roomById(id);preset=interior?room?.interiorCamera:room?.camera;
     if(!preset){const center=room?.points?.length?centroid(room.points):[4.2,7];preset=interior?{position:[center[0]-.6,1.55,center[1]+1.5],target:[center[0],1.2,center[1]-.6]}:{position:[center[0]+5,7,center[1]+6],target:[center[0],.4,center[1]]}}
   }
+  if(id==='kitchen'&&data?.kitchenFitout&&!interior)preset={position:[4.8,4.5,12.6],target:[7.05,.75,12.65],fov:46};
   state.interior=interior;
   if(interior){setWalls(false);controls.maxPolarAngle=Math.PI*.97;toast('已进入房间 · 拖动环视，滚轮前后移动')}
   else{controls.maxPolarAngle=Math.PI*.49;if(!state.cutWalls)setWalls(true)}
@@ -1104,7 +1190,7 @@ async function init(){
     const base=rawRooms.find(r=>r.id===(id==='dining'?'living':id))||{},extra=manifest.rooms?.find(r=>r.id===id)||{};
     return {...base,...extra,...schemeTextOverride(scheme.roomOverrides,id),...measuredDescriptions[id],id,name:roomDescription(id).name};
   });
-  makeNavigation();makePlan();renderDesignNotes();renderMeasurementAudit();renderBayFitouts();renderStorageFitouts();renderLaundryFitout();paintSchemePlan($('#floor-plan'));paintSchemePlan($('#storage-fitout-cards'));selectRoom(descriptions[location.hash.slice(1)]?location.hash.slice(1):'overall',{updateHash:false,animate:false});switchView('model');
+  makeNavigation();makePlan();renderDesignNotes();renderMeasurementAudit();renderBayFitouts();renderStorageFitouts();renderLaundryFitout();renderKitchenFitout();paintSchemePlan($('#floor-plan'));paintSchemePlan($('#storage-fitout-cards'));selectRoom(descriptions[location.hash.slice(1)]?location.hash.slice(1):'overall',{updateHash:false,animate:false});switchView('model');
   buildScene();
 }
 init();

@@ -21,6 +21,9 @@ const physical = value => Object.fromEntries(Object.entries(value).filter(([key]
 const roomGeometry = rooms => rooms.map(({id,points,heightCm,modelAreaM2}) => ({id,points,heightCm,modelAreaM2}));
 const wallGeometry = walls => walls.map(({id,coords,thicknessCm,heightCm,heightSegments}) => ({id,coords,thicknessCm,heightCm,heightSegments}));
 const purchasedNames=new Set(['三人沙发','四人餐桌','餐椅北1','餐椅北2','餐椅南1','餐椅南2','餐椅东1','餐椅东2']);
+const legacyKitchenNames=new Set(['厨房南侧地柜','厨房北侧地柜','冰箱高柜','蒸烤高柜']);
+const kitchenFurnitureIds=new Set(['kitchen_shaft_footprint','kitchen_north_footprint','kitchen_east_footprint','kitchen_south_footprint','kitchen_fridge_footprint']);
+const kitchenRevision='kitchen-20261005';
 const omit=(object,keys)=>Object.fromEntries(Object.entries(object).filter(([key])=>!keys.includes(key)));
 // Exact display-only corrections authorised for the bought products. Transform
 // the expected baseline strings, not arbitrary current strings; every other
@@ -91,10 +94,25 @@ if(process.argv.includes('--evidence-only')) {
 
 const catalog = await json('models/design-schemes.json');
 const reports=[];
-let purchasedActive=false;
+let purchasedActive=false,kitchenActive=false;
 for (const id of ['wood','family','laundry']) {
   const path=`models/schemes/${id}/design-data.json`, data=await json(path), old=previous(path), rev=data.measurementRevision;
   const purchased=data.purchasedFurnitureRevision?.version==='3.7.0';purchasedActive ||= purchased;
+  const kitchen=Boolean(data.kitchenFitout);kitchenActive ||= kitchen;
+  const kitchenFurniture=f=>kitchen&&(legacyKitchenNames.has(f.name)||(kitchenFurnitureIds.has(f.id)&&f.kitchenFitoutId===kitchenRevision));
+  if(kitchen){
+    same(data.kitchenFitout.id,kitchenRevision,`${id}: only the reviewed kitchen replacement is allowed`);
+    same(data.kitchenFitout.version,'3.8.0',`${id}: explicit kitchen revision`);
+    same(old.furniture.filter(f=>legacyKitchenNames.has(f.name)).map(f=>f.name).sort(),[...legacyKitchenNames].sort(),`${id}: exactly four old kitchen aggregates are replaced`);
+    const fit=data.kitchenFitout;
+    const sourceParts=new Map(fit.parts.concat(fit.countertops,fit.appliances).map(p=>[p.id,p]));
+    const expected=[['shaft','shaft','wall'],['north','north_top','cabinet'],['east','east_top','cabinet'],['south','south_top','cabinet'],['fridge','kitchen_fridge','metal']].map(([suffix,sourceId,tone])=>{
+      const p=sourceParts.get(sourceId);ok(p,`${id}: kitchen footprint has explicit source ${sourceId}`);
+      return {id:`kitchen_${suffix}_footprint`,x:p.x,y:p.y,w:p.w,d:p.d,heightCm:p.zCm+(p.hCm??p.heightCm),tone,roomId:'kitchen',a:0,kitchenFitoutId:kitchenRevision};
+    });
+    same(data.furniture.filter(f=>kitchenFurnitureIds.has(f.id)).map(physical),expected,`${id}: five exact kitchen collision/plan aggregates derive from fitout parts`);
+    ok(!data.furniture.some(f=>legacyKitchenNames.has(f.name)),`${id}: no duplicate legacy kitchen aggregates`);
+  }
   same(rev.version,'3.6.1',`${id}: supplement release version`);
   same(rev.source,sourcePath,`${id}: current evidence source`);
   same(rev.stage,'partial-confirmed',`${id}: no false complete-survey claim`);
@@ -108,13 +126,13 @@ for (const id of ['wood','family','laundry']) {
   same(data.walls,old.walls,`${id}: every wall XY unchanged`);
   same(wallGeometry(data.wallSpecs),wallGeometry(old.wallSpecs),`${id}: wall thicknesses and segment heights unchanged`);
   same(roomGeometry(data.rooms),roomGeometry(old.rooms),`${id}: all renovation floor polygons, areas and heights unchanged`);
-  if(!purchased)same(data.furniture.map(physical),old.furniture.map(physical),`${id}: furniture and its operational fields unchanged`);
+  if(!purchased)same(data.furniture.filter(f=>!kitchenFurniture(f)).map(physical),old.furniture.filter(f=>!kitchenFurniture(f)).map(physical),`${id}: furniture and its operational fields unchanged outside the exact kitchen replacement`);
   else {
     // Six explicitly selected products are checked independently below, not
     // granted a generic furniture exemption. No unrelated furniture may move.
-    const protectedFurniture=items=>items.filter(f=>!purchasedNames.has(f.name)).map(f=>physical(id==='family'&&f.id==='family_sofa_back_storage'?{...f,y:899}:f));
+    const protectedFurniture=items=>items.filter(f=>!purchasedNames.has(f.name)&&!kitchenFurniture(f)).map(f=>physical(id==='family'&&f.id==='family_sofa_back_storage'?{...f,y:899}:f));
     same(protectedFurniture(data.furniture),protectedFurniture(old.furniture),`${id}: every non-purchased furniture field preserved; only family back cabinet moves 10 cm`);
-    same(data.furniture.length,old.furniture.length,`${id}: no unrelated furniture added/removed`);
+    same(data.furniture.length,old.furniture.length+(kitchen?1:0),`${id}: only four old kitchen aggregates replaced by five exact new footprints; no unrelated furniture added/removed`);
     if(id==='family')near(data.furniture.find(f=>f.id==='family_sofa_back_storage').y,909,'Family back cabinet exact authorised new y');
     const currentSofa=data.furniture.find(f=>f.name==='三人沙发'),oldSofa=old.furniture.find(f=>f.name==='三人沙发');
     same(currentSofa.rugCm,oldSofa.rugCm??{x:oldSofa.x-12,y:oldSofa.y-185,w:oldSofa.w+24,d:192},`${id}: existing rug exactly preserved`);
@@ -200,8 +218,9 @@ for (const id of ['wood','family','laundry']) {
 }
 
 // Actual exported geometry regression, including inherited object transforms.
-// Only the master opening meshes and their north-wall cuts can differ; the
-// Blender audit separately verifies every real north-wall solid/cut/trim.
+// The kitchen exception below names individual parts/devices and four legacy
+// furniture IDs. It never exempts a room, kitchen window, or existing wall.
+// The Blender audit separately verifies every real north-wall solid/cut/trim.
 if(process.argv.includes('--glb')) {
   function decode(bytes) {
     same(bytes.readUInt32LE(0),0x46546c67,'Valid GLB magic');
@@ -231,6 +250,8 @@ if(process.argv.includes('--glb')) {
     // Office-fitout meshes inherit openingId as well: they are furniture, not
     // window-frame exceptions, and must remain in the protected comparison.
     const data=await json(`models/schemes/${id}/design-data.json`),purchased=data.purchasedFurnitureRevision?.version==='3.7.0';
+    const fit=data.kitchenFitout,parts=new Map((fit?.parts??[]).concat((fit?.countertops??[]).map(p=>({...p,role:'countertop'}))).map(p=>[p.id,p]));
+    const applianceIds=new Set((fit?.appliances??[]).map(a=>a.id));
     const diningLight=m=>/^(Dining[ _]pendant[ _]ceiling[ _]rose|Pendant[ _]thin[ _]suspension|Organic[ _]linen[ _]pendant|Pendant[ _]opal[ _]diffuser)(?:[ ._]|$)/.test(m.name);
     // Product meshes are envelope-audited by test_purchased_furniture. Rugs
     // share sofa metadata but stay protected. Cabinet exceptions are individual
@@ -239,10 +260,19 @@ if(process.argv.includes('--glb')) {
       (purchasedNames.has(m.meta.furnitureName)&&!/rug/i.test(m.name))||
       (id==='family'&&m.meta.diningFitoutId==='family_pullout_dining')||
       (id==='family'&&['family_sideboard_1_base','family_sofa_back_base'].includes(m.meta.storagePartId))||diningLight(m));
-    const allowed=m=>(m.meta.openingId==='window_a'&&m.meta.kind==='window')||(m.meta.wallIndex===0&&m.meta.kind==='wall')||/^Skirting 00(?:\.|$)/.test(m.name)||purchaseAllowed(m);
+    const surveyOrPurchaseAllowed=m=>(m.meta.openingId==='window_a'&&m.meta.kind==='window')||(m.meta.wallIndex===0&&m.meta.kind==='wall')||/^Skirting 00(?:\.|$)/.test(m.name)||purchaseAllowed(m);
+    const kitchenAllowed=m=>{
+      if(!fit||fit.id!==kitchenRevision||m.meta.openingId||m.meta.wallIndex!==undefined)return false;
+      if(m.meta.kind==='furniture'&&legacyKitchenNames.has(m.meta.furnitureName)&&m.meta.furnitureId===m.meta.furnitureName)return true;
+      if(m.meta.kitchenFitoutId!==fit.id)return false;
+      const part=parts.get(m.meta.kitchenPartId);
+      if(part)return m.meta.kitchenRole===part.role&&m.meta.kind===(part.role==='shaft'?'wall':'furniture');
+      return m.meta.kind==='furniture'&&m.meta.kitchenRole==='appliance'&&applianceIds.has(m.meta.kitchenApplianceId);
+    };
+    const allowed=m=>surveyOrPurchaseAllowed(m)||kitchenAllowed(m);
     const oldProtected=before.filter(m=>!allowed(m)),newProtected=now.filter(m=>!allowed(m));
-    ok(oldProtected.length>1250,`${id}: broad actual-mesh coverage`);
-    same(newProtected.map(m=>m.geometry).sort(),oldProtected.map(m=>m.geometry).sort(),`${id}: every world triangle outside the exact master-opening/product/individual-cabinet/pendant scope is unchanged`);
+    ok(before.filter(m=>!surveyOrPurchaseAllowed(m)).length>1250,`${id}: original broad actual-mesh coverage before subtracting the four exact kitchen furniture IDs`);
+    same(newProtected.map(m=>m.geometry).sort(),oldProtected.map(m=>m.geometry).sort(),`${id}: every world triangle outside the exact master-opening/product/individual-cabinet/pendant/kitchen-part scope is unchanged; kitchen walls and windows stay protected`);
     const blender=process.env.BLENDER_PATH||fileURLToPath(new URL('../.house-design-tools/blender-4.5.9-windows-x64/blender.exe',root));
     const audit=execFileSync(blender,['--background',fileURLToPath(new URL(path.replace(/\.glb$/,'.blend'),root)),'--python-exit-code','1','--python',fileURLToPath(new URL('tools/audit_measurement_native.py',root)),'--',id],{cwd,encoding:'utf8',maxBuffer:30*1024*1024});
     ok(audit.includes('"passed": true')&&audit.includes('"scheme": "'+id+'"'),`${id}: independent native mesh audit checks allowed wall/opening changes`);
@@ -251,5 +281,6 @@ if(process.argv.includes('--glb')) {
 }
 // Run the independent numeric/physical guard whenever the narrow purchased
 // exception is active; --glb also verifies six real product envelopes/pendants.
+if(kitchenActive)await import('./test_kitchen_fitout.mjs');
 if(purchasedActive)await import('./test_purchased_furniture.mjs');
 console.log(JSON.stringify({passed:true,baseline,measurementSource:sourcePath,checks,schemes:reports},null,2));

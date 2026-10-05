@@ -35,6 +35,9 @@ VIEWS = ("overall", "living", "dining", "master", "bedroom-b", "study",
          "bay-tea", "bay-living", "entry-storage", "sideboard")
 ACTIVE_IDS = ("wood", "family", "laundry")
 ARCHIVED_IDS = ("terracotta", "moss", "cobalt")
+KITCHEN_RETAINED_COMMIT = '92162a8cbc713f5ce72fa6632f37364328778253'
+KITCHEN_FRESH_VIEWS = {'overall', 'kitchen', 'kitchen-north'}
+KITCHEN_RETAINED_REASON = 'kitchen-only-refresh; historical reference, not a current kitchen render'
 ALLOWED_SHADES = {"Organic linen pendant", "Organic linen pendant.001"}
 # Ten micrometres is far below both survey precision and furniture tolerance.
 GEOMETRY_GRID_M = 0.00001
@@ -414,6 +417,36 @@ class Audit:
         self.waiting = []
         self.details = {}
         self.proved_metadata_source = None
+        self.kitchen_source_guard_passed = None
+
+    def kitchen_refresh_proof(self, scheme, manifest):
+        """Permit one scoped refresh only after the independent source guard."""
+        fit = manifest.get('kitchenFitout', {})
+        if fit.get('version') != '3.8.0':
+            return False
+        source = load_json(relative_file(scheme['geometrySource']))
+        valid = self.check(scheme['id'] in ACTIVE_IDS and
+                           fit.get('id') == 'kitchen-20261005' and
+                           source.get('version') == '3.8.0' and
+                           source.get('kitchenFitout') == fit,
+                           f"{scheme['id']}: kitchen-only reuse names the exact source/manifest 3.8.0 fitout")
+        if self.kitchen_source_guard_passed is None:
+            node = shutil.which('node')
+            if not node:
+                self.kitchen_source_guard_passed = False
+                self.check(False, 'Kitchen-only reuse requires the independent Node source/unchanged-architecture guard')
+            else:
+                try:
+                    result = subprocess.run([node, str(ROOT / 'tools/test_kitchen_fitout.mjs')],
+                                            cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                            check=True, timeout=60, encoding='utf-8')
+                    self.kitchen_source_guard_passed = json.loads(result.stdout).get('passed') is True
+                    self.check(self.kitchen_source_guard_passed,
+                               'Kitchen-only reuse: independent fitout dimensions and unchanged non-kitchen source guard passed')
+                except (OSError, subprocess.SubprocessError, ValueError) as exc:
+                    self.kitchen_source_guard_passed = False
+                    self.check(False, f'Kitchen-only reuse source guard failed: {type(exc).__name__}')
+        return valid and self.kitchen_source_guard_passed
 
     def check(self, condition, success, failure=None):
         if condition:
@@ -488,8 +521,20 @@ class Audit:
         prefix = scheme.get('renderDirectory') or ("assets/blender-renders" if sid == "wood" else f"assets/schemes/{sid}")
         views = scheme.get("renderViews", VIEWS)
         expected = {f"{prefix}/{name}.jpg" for name in views}
+        kitchen_refresh = self.kitchen_refresh_proof(scheme, manifest)
+        kitchen_previous = None
+        if kitchen_refresh:
+            kitchen_previous = json.loads(subprocess.check_output(
+                ['git', 'show', KITCHEN_RETAINED_COMMIT + ':' + scheme['manifest']], cwd=ROOT))
+            records = manifest.get('renderedViews', {})
+            self.check(set(views) == set(kitchen_previous.get('renderedViews', {})) | {'kitchen-north'} and
+                       KITCHEN_FRESH_VIEWS <= set(views),
+                       f'{sid}: kitchen refresh adds only the new north view to the reviewed 3.7.0 inventory')
+            self.check({name for name, record in records.items() if 'retainedFrom' not in record} == KITCHEN_FRESH_VIEWS and
+                       {name for name, record in records.items() if 'retainedFrom' in record} == set(views) - KITCHEN_FRESH_VIEWS,
+                       f'{sid}: exactly overall/kitchen/kitchen-north are fresh; every other view is explicitly historical')
         if manifest.get('purchasedFurnitureRevision'):
-            self.check(len(views) == {'wood': 15, 'family': 19, 'laundry': 18}[sid] and
+            self.check(len(views) == {'wood': 15, 'family': 19, 'laundry': 18}[sid] + bool(manifest.get('kitchenFitout')) and
                        set(manifest.get('renderedViews', {})) == set(views) and 'dining-closed' not in views,
                        f'{sid}: exact final purchased-furniture render inventory; fixed table has no closed state')
             self.check(not manifest.get('metadataOnlySourceRefresh'),
@@ -506,7 +551,7 @@ class Audit:
                 self.check(sum(not record.get('retainedFrom') for record in records.values()) == 12 and
                            sum(bool(record.get('retainedFrom')) for record in records.values()) == 8,
                            'family: exactly 12 current public frames and 8 honest retained private frames')
-        if manifest.get('measurementRevision'):
+        if manifest.get('measurementRevision') and not kitchen_refresh:
             self.check(len(manifest.get('renderedViews', {})) == len(views) and
                        all(not r.get('retainedFrom') for r in manifest.get('renderedViews', {}).values()),
                        f'{sid}: all partial-measurement renders are freshly generated from the current scene')
@@ -540,11 +585,25 @@ class Audit:
                 continue
             self.check(record.get("imageSha256") == image_hash, f"{sid}/{name}: actual JPEG hash matches final frame record")
             retained = record.get('retainedFrom')
-            if retained:
+            camera_manifest = manifest
+            if kitchen_refresh and name not in KITCHEN_FRESH_VIEWS:
+                expected_origin = {'commit': KITCHEN_RETAINED_COMMIT, 'manifest': scheme['manifest'],
+                                   'view': name, 'reason': KITCHEN_RETAINED_REASON}
+                self.check(retained == expected_origin,
+                           f'{sid}/{name}: exact kitchen-scoped historical-reference origin and reason')
+                old_record = kitchen_previous.get('renderedViews', {}).get(name)
+                self.check(old_record is not None and 'retainedFrom' not in old_record and
+                           {k: v for k, v in record.items() if k != 'retainedFrom'} == old_record,
+                           f'{sid}/{name}: complete original source/model/camera/image provenance is preserved without retrofitting')
+                prior_image = subprocess.check_output(
+                    ['git', 'show', KITCHEN_RETAINED_COMMIT + ':' + f'{prefix}/{name}.jpg'], cwd=ROOT)
+                self.check(raw == prior_image and image_hash == sha(prior_image),
+                           f'{sid}/{name}: retained JPEG bytes exactly equal the reviewed 3.7.0 image')
+                camera_manifest = kitchen_previous
+            elif retained:
                 if manifest.get('measurementRevision'):
                     self.check(False, f'{sid}/{name}: partial-measurement revision rejects all retained historical geometry frames')
                     continue
-                import subprocess
                 commit=retained.get('commit')
                 allowed_commits={'c2e5a5f399709185b2e843c64e622a0373927602','647d219fdc52e0bc71810f6a8e2daa97135be0cc'}
                 compact_family=sid=='family' and manifest.get('garageRevision',{}).get('version') in ('3.4.3','3.5.1','3.5.2','3.5.3')
@@ -569,12 +628,15 @@ class Audit:
                 if manifest.get('livingBayRevision',{}).get('version')=='3.4.2':
                     self.check(manifest['livingBayRevision'].get('estimatedSillCm')==40 and manifest['livingBayRevision'].get('cushionThicknessCm')==5 and manifest['livingBayRevision'].get('measured') is False,f'{sid}/{name}: low-bay estimate remains explicitly unmeasured')
             else:
+                if kitchen_refresh:
+                    self.check(name in KITCHEN_FRESH_VIEWS and 'retainedFrom' not in record,
+                               f'{sid}/{name}: required kitchen/current overview view cannot be retained')
                 if dining_revision:
                     self.check(record.get('diningState') == ('closed' if name == 'dining-closed' else 'expanded'),
                                f'family/{name}: final render explicitly records the correct physical dining endpoint')
                 self.check(record.get("baseBlendSha256") == manifest.get("baseBlendSha256") == self.base_blend_hash,
                            f"{sid}/{name}: frame belongs to actual final baseline Blender scene")
-                old_copy_source = self.proved_metadata_source if sid == 'wood' and name in WINDOW_COPY_OLD_FRAME_VIEWS else None
+                old_copy_source = self.proved_metadata_source if not kitchen_refresh and sid == 'wood' and name in WINDOW_COPY_OLD_FRAME_VIEWS else None
                 self.check(frame_source_matches(record, manifest, self.source_hash, self.base_blend_hash,
                                                 old_copy_source),
                            f"{sid}/{name}: frame belongs to current source geometry")
@@ -591,7 +653,7 @@ class Audit:
                            f"{sid}/{name}: recorded render quality matches scheme")
                 self.check(record.get("schemeBlendSha256") == manifest.get("schemeBlendSha256") == self.details[sid]["blendSha256"],
                            f"{sid}/{name}: frame belongs to actual current scheme Blender scene")
-            self.camera_record(name, record, manifest)
+            self.camera_record(name, record, camera_manifest)
             if len(self.errors) == prior_errors:
                 self.details[sid]["verifiedRenderHashes"][name] = image_hash
 
@@ -643,8 +705,11 @@ class Audit:
         sid = scheme['id']
         revision = source.get('purchasedFurnitureRevision', {})
         self.check(bool(revision) and revision.get('version') == scheme.get('purchasedFurnitureRevision') ==
-                   product_source.get('version') == catalog.get('version'),
-                   f'{sid}: catalog, source and purchased product evidence revisions agree')
+                   product_source.get('version') and
+                   (product_source.get('version') == catalog.get('version') or
+                    (product_source.get('version') == '3.7.0' and catalog.get('version') == '3.8.0' and
+                     self.kitchen_refresh_proof(scheme, manifest))),
+                   f'{sid}: purchased evidence revisions agree; only the proved kitchen release may advance independently')
         self.check(manifest.get('purchasedFurnitureRevision') == revision and
                    revision.get('date') == product_source.get('verifiedAt'),
                    f'{sid}: native manifest contains the complete current purchased furniture revision')

@@ -1,5 +1,5 @@
 {
-  "version": "3.7.0",
+  "version": "3.8.0",
   "defaultScheme": "wood",
   "updatedAt": "2026-10-05",
   "geometrySource": "models/design-data.json",
@@ -130,7 +130,8 @@
         "保留原三房、北侧过道、主卧直通主卫与两卫阶梯共墙。",
         "厨房已拓宽为1700mm三轨推拉门；右鞋柜、左7字餐柜保留。",
         "原版模型与15张效果图留档；厨房同步更新另存独立模型与新效果图。",
-        "已购2410×980mm沙发与1400×780mm固定餐桌，餐桌南北各两把LISABO木椅。"
+        "已购2410×980mm沙发与1400×780mm固定餐桌，餐桌南北各两把LISABO木椅。",
+        "厨房重排：北侧冰箱与独立洗碗机、东侧双槽、南灶近烟道，吊柜在窗边热水器前留空。"
       ],
       "tradeoffs": [
         "整体较克制；喜欢强烈个性的人可能觉得变化不足。",
@@ -142,12 +143,12 @@
       "planPalette": {},
       "roomOverrides": {
         "kitchen": {
-          "title": "让厨房与阳台之间通透起来",
-          "description": "补回厨房北侧与家政阳台共墙大窗，暂定1200×1300mm、窗台高1000mm，双扇推拉窗型仅为示意。台下柜、洗菜盆和1700mm厨房推拉门不动；北墙层板缩回窗左侧实墙，不横挡玻璃。窗洞、墙体、五金与防水收口须复尺。",
+          "title": "洗切烹，各就其位",
+          "description": "厨房按标注图重排：西北650×600×1900mm冰箱，北侧独立600×600×805mm洗碗机；东侧双槽，南侧燃气灶及上方油烟机，西南烟道封实不可用。东、南吊柜在窗边热水器前止步。2420×2610mm局部复尺排布与旧2870×2620mm全屋示意分开核对，450mm差额仅作待闭合调整段。",
           "features": [
-            "共墙大窗",
-            "窗下台面保留",
-            "尺寸待复尺"
+            "北侧独立洗碗机",
+            "东双槽 · 南灶台",
+            "窗边热水器留空"
           ]
         },
         "balcony": {
@@ -185,19 +186,38 @@
       "model": "models/schemes/wood/huiyayuan-wood.glb",
       "blend": "models/schemes/wood/huiyayuan-wood.blend",
       "manifest": "models/schemes/wood/scene-manifest.json",
-      "assetRevision": "3.7.0",
+      "assetRevision": "3.8.0",
       "renderSpec": {
         "engine": "Cycles",
         "width": 960,
         "height": 640,
         "samples": 8,
         "denoising": true,
-        "note": "全部视图由R2补充复尺同一原生场景生成，主卧窗宽1760mm已更新；主卫台1500／窗高800mm仍为待定位旧示意，实际窗高记录1400mm。墙线/面积仍是旧设计参考。逐帧记录实际采样与哈希。"
+        "note": "本轮全屋总览与厨房双向为当前模型新渲染；其他视图保留V3.7.0原图及原始来源，网页明确标注历史参考。每帧实际质量与来源见renderedViews。"
       },
       "geometrySource": "models/schemes/wood/design-data.json",
       "layoutKind": "baseline",
       "renderDirectory": "assets/schemes/wood",
-      "purchasedFurnitureRevision": "3.7.0"
+      "purchasedFurnitureRevision": "3.7.0",
+      "version": "3.8.0",
+      "renderViews": [
+        "overall",
+        "living",
+        "dining",
+        "master",
+        "bedroom-b",
+        "study",
+        "kitchen",
+        "master-bath",
+        "guest-bath",
+        "balcony",
+        "bay-master",
+        "bay-tea",
+        "bay-living",
+        "entry-storage",
+        "sideboard",
+        "kitchen-north"
+      ]
     },
     {
       "id": "family",
@@ -230,7 +250,8 @@
         "背柜2000×250×650mm，随沙发增深向南移100mm，朝餐区用移门取物。",
         "LISABO固定餐桌1400×780×740mm；四把木餐椅南北各两席。",
         "桌椅按实际外廓占地，固定餐桌持续保留，不提供收起状态。",
-        "入户库、两车分层、家政阳台与卧卫建筑保留；局部复尺信息同步。"
+        "入户库、两车分层、家政阳台与卧卫建筑保留；局部复尺信息同步。",
+        "厨房重排：北侧冰箱与独立洗碗机、东侧双槽、南灶近烟道，吊柜在窗边热水器前留空。"
       ],
       "tradeoffs": [
         "沙发西侧至普通餐柜模型净距915mm，东侧书架前600mm；仍需现场核对取物与通行。",
@@ -238,7 +259,7 @@
         "北侧餐椅拉出300mm后与背柜仅125mm，不作椅后通道；从桌两端侧向入座。南椅同幅拉出后至北返柜685mm。",
         "沙发、桌椅采用商品公布外廓；软包、木腿与板厚为图像近似，并非厂家CAD。家具安装净距与搬运路线需实物核对。",
         "沙发背柜2000×250×650mm，距沙发20mm，朝餐区用移门取物；内部进深约210mm，只放小件，不代替儿童车库。防倾倒固定、通风和儿童防夹须厂家深化。",
-        "入户双折门停车、两车分层、卧卫/书房/飘窗/厨房/家政阳台实体全部保留；库门完整运动、抬车、防水和设备复尺仍沿用前版待核条件。",
+        "入户双折门停车、两车分层、卧卫/书房/飘窗/家政阳台实体保留；厨房按本轮七项要求重新排布；库门完整运动、抬车、防水和设备复尺仍沿用前版待核条件。",
         "1500×650mm入户库、两车分层及1230mm抬放平台保留；55cm宽推车穿57cm架腿净距仍很紧，需实车核验，承重/防坠须专业深化。",
         "东面双折门各305mm宽，完全外翻180°后在北侧门洞外叠停；叠门约55mm厚、向北投影305mm，不占名义610mm洞口。180°偏置铰链、板厚、轨道与完整折叠过程必须由厂家确认。",
         "完全停车示意至右鞋柜约1275mm，不代表开启全程已通过。取车先关闭入户门，收好餐椅；车移出门扫范围、关好储物门后再开入户门，一次一辆，人体抬放和转向需实物排演。",
@@ -271,7 +292,7 @@
       "model": "models/schemes/family/huiyayuan-wood.glb",
       "blend": "models/schemes/family/huiyayuan-wood.blend",
       "manifest": "models/schemes/family/scene-manifest.json",
-      "assetRevision": "3.7.0",
+      "assetRevision": "3.8.0",
       "renderViews": [
         "overall",
         "living",
@@ -291,7 +312,8 @@
         "suite-entry",
         "storage-library",
         "laundry-detail",
-        "living-wall"
+        "living-wall",
+        "kitchen-north"
       ],
       "renderSpec": {
         "engine": "Cycles",
@@ -299,7 +321,7 @@
         "height": 640,
         "samples": 8,
         "denoising": true,
-        "note": "全部视图由R2补充复尺同一原生场景生成，主卧窗宽1760mm已更新；主卫台1500／窗高800mm仍为待定位旧示意，实际窗高记录1400mm。墙线/面积仍是旧设计参考。逐帧记录实际采样与哈希。"
+        "note": "本轮全屋总览与厨房双向为当前模型新渲染；其他视图保留V3.7.0原图及原始来源，网页明确标注历史参考。每帧实际质量与来源见renderedViews。"
       },
       "roomOverrides": {
         "overall": {
@@ -366,12 +388,12 @@
           ]
         },
         "kitchen": {
-          "title": "让厨房与阳台之间通透起来",
-          "description": "补回厨房北侧与家政阳台共墙大窗，暂定1200×1300mm、窗台高1000mm，双扇推拉窗型仅为示意。台下柜、洗菜盆和1700mm厨房推拉门不动；北墙层板缩回窗左侧实墙，不横挡玻璃。窗洞、墙体、五金与防水收口须复尺。",
+          "title": "洗切烹，各就其位",
+          "description": "厨房按标注图重排：西北650×600×1900mm冰箱，北侧独立600×600×805mm洗碗机；东侧双槽，南侧燃气灶及上方油烟机，西南烟道封实不可用。东、南吊柜在窗边热水器前止步。2420×2610mm局部复尺排布与旧2870×2620mm全屋示意分开核对，450mm差额仅作待闭合调整段。",
           "features": [
-            "共墙大窗",
-            "窗下台面保留",
-            "尺寸待复尺"
+            "北侧独立洗碗机",
+            "东双槽 · 南灶台",
+            "窗边热水器留空"
           ]
         },
         "balcony": {
@@ -403,7 +425,8 @@
         "沙发西侧至普通餐柜91.5cm，东侧书架前60cm；桌西侧普通柜段67.5cm、局部44cm深柜段仅63.5cm，属于紧凑单人通道，不是舒适或无障碍认证。",
         "取车时餐椅回到默认位、入户门先关闭，车辆移到门扇扫区外后才开门。"
       ],
-      "constraints": []
+      "constraints": [],
+      "version": "3.8.0"
     },
     {
       "id": "laundry",
@@ -436,7 +459,8 @@
         "A台面1680×800mm，完成面980mm；专用浅盆外深100mm，盆底880mm。",
         "B书架3180mm长、300mm深、2400mm高；C门框外沿向客厅移287.5mm，与书架正面齐平。",
         "阳台操作过道约690mm；已购2410mm沙发东侧书架前模型净距600mm。",
-        "C洞口1500mm、向南三轨叠停，名义净开约900mm；台面限制使实际北侧入内段约690mm。"
+        "C洞口1500mm、向南三轨叠停，名义净开约900mm；台面限制使实际北侧入内段约690mm。",
+        "厨房重排：北侧冰箱与独立洗碗机、东侧双槽、南灶近烟道，吊柜在窗边热水器前留空。"
       ],
       "tradeoffs": [
         "家政设备、柜体和安装净空仍为条件推演；已采用的局部窗尺寸与待核墙线另见复尺明细。",
@@ -466,7 +490,7 @@
       "model": "models/schemes/laundry/huiyayuan-wood.glb",
       "blend": "models/schemes/laundry/huiyayuan-wood.blend",
       "manifest": "models/schemes/laundry/scene-manifest.json",
-      "assetRevision": "3.7.0",
+      "assetRevision": "3.8.0",
       "renderViews": [
         "overall",
         "living",
@@ -485,7 +509,8 @@
         "sideboard",
         "suite-entry",
         "laundry-detail",
-        "living-wall"
+        "living-wall",
+        "kitchen-north"
       ],
       "renderSpec": {
         "engine": "Cycles",
@@ -493,7 +518,7 @@
         "height": 640,
         "samples": 12,
         "denoising": true,
-        "note": "全部视图由R2补充复尺同一原生场景生成，主卧窗宽1760mm已更新；主卫台1500／窗高800mm仍为待定位旧示意，实际窗高记录1400mm。墙线/面积仍是旧设计参考。逐帧记录实际采样与哈希。"
+        "note": "本轮全屋总览与厨房双向为当前模型新渲染；其他视图保留V3.7.0原图及原始来源，网页明确标注历史参考。每帧实际质量与来源见renderedViews。"
       },
       "roomOverrides": {
         "overall": {
@@ -560,12 +585,12 @@
           ]
         },
         "kitchen": {
-          "title": "让厨房与阳台之间通透起来",
-          "description": "补回厨房北侧与家政阳台共墙大窗，暂定1200×1300mm、窗台高1000mm，双扇推拉窗型仅为示意。台下柜、洗菜盆和1700mm厨房推拉门不动；北墙层板缩回窗左侧实墙，不横挡玻璃。窗洞、墙体、五金与防水收口须复尺。",
+          "title": "洗切烹，各就其位",
+          "description": "厨房按标注图重排：西北650×600×1900mm冰箱，北侧独立600×600×805mm洗碗机；东侧双槽，南侧燃气灶及上方油烟机，西南烟道封实不可用。东、南吊柜在窗边热水器前止步。2420×2610mm局部复尺排布与旧2870×2620mm全屋示意分开核对，450mm差额仅作待闭合调整段。",
           "features": [
-            "共墙大窗",
-            "窗下台面保留",
-            "尺寸待复尺"
+            "北侧独立洗碗机",
+            "东双槽 · 南灶台",
+            "窗边热水器留空"
           ]
         },
         "balcony": {
@@ -588,7 +613,8 @@
         }
       },
       "renderDirectory": "assets/schemes/laundry",
-      "purchasedFurnitureRevision": "3.7.0"
+      "purchasedFurnitureRevision": "3.7.0",
+      "version": "3.8.0"
     }
   ],
   "archivedPalettes": [

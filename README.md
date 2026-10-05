@@ -4,7 +4,13 @@
 
 **在线查看：[itwake.github.io/house-design](https://itwake.github.io/house-design/)**
 
-**当前 V3.7.0 / 已购家具替换**：[进入方案2客厅](https://itwake.github.io/house-design/studio.html?scheme=family&v=3.7.0#living)。wood、family、laundry 三套布局均采用已购 [VIMLE 维姆勒浅米色三人沙发 396.351.14](https://www.ikea.cn/cn/zh/p/vimle-wei-mu-le-san-ren-sha-fa-ke-nai-bei-ke-qian-mi-se-s39635114/)（2410×980×830mm）、[LISABO 利萨伯餐桌 803.657.17](https://www.ikea.cn/cn/zh/p/lisabo-li-sa-bo-zhuo-zi-bai-zha-mu-tie-mian-80365717/)（1400×780×740mm）与 [LISABO 餐椅 804.572.36](https://www.ikea.cn/cn/zh/p/lisabo-li-sa-bo-yi-zi-bai-zha-mu-80457236/)（460×510×800mm，座高450mm）。方案2改为固定餐桌，移除收桌切换；原抽桌为历史方案。家具外廓采用官方公布尺寸，软包轮廓、板厚与木腿曲线按商品图近似，不是厂家 CAD；摆位与净空仍须现场试摆。第二轮局部复尺证据版本仍为 **3.6.1**，没有因家具更新变成完整实测成果。
+**当前 V3.8.0 / 厨房七项重排**：[进入方案2厨房](https://itwake.github.io/house-design/studio.html?scheme=family&v=3.8.0#kitchen)。三套同步：西南烟道不可用、南灶及油烟机、东侧双槽、西北650×600×1900mm冰箱、北侧独立600×600×805mm洗碗机、东南吊柜与窗边外露的热水器。参考照片水平镜像对照，平面仍上北下南；双槽实际挖空，台面留孔，旧蒸烤高柜移除。
+
+**尺寸与安装边界**：厨房局部复尺2420×2610mm与旧全屋模型2870×2620mm尚未闭合，网站单独展示保守局部排布；旧图450mm调整段不算作确认可用机位。烟道600×600mm为暂估；水槽、灶、烟机、热水器尚未选型。厨房通阳台是内窗，不是热水器室外排烟出口。机电、防火、散热、检修、安装净空和完整开门均须厂家与专业人员复核。已购家具和3.6.1复尺证据原样保留。
+
+本轮三套各新渲染全屋总览、厨房南向及北向，共9张；其余46张原图保留V3.7.0原始模型、相机与图片哈希，网页明确标注历史参考。`tools/test_kitchen_fitout.mjs --glb`核验真实设备外廓、台面开孔与非厨房保护；`tools/test_measurement_supplement.mjs --glb`继续保护既有复尺、已购家具和原建筑。
+
+**V3.7.0 / 已购家具替换**：[进入方案2客厅](https://itwake.github.io/house-design/studio.html?scheme=family&v=3.7.0#living)。wood、family、laundry 三套布局均采用已购 [VIMLE 维姆勒浅米色三人沙发 396.351.14](https://www.ikea.cn/cn/zh/p/vimle-wei-mu-le-san-ren-sha-fa-ke-nai-bei-ke-qian-mi-se-s39635114/)（2410×980×830mm）、[LISABO 利萨伯餐桌 803.657.17](https://www.ikea.cn/cn/zh/p/lisabo-li-sa-bo-zhuo-zi-bai-zha-mu-tie-mian-80365717/)（1400×780×740mm）与 [LISABO 餐椅 804.572.36](https://www.ikea.cn/cn/zh/p/lisabo-li-sa-bo-yi-zi-bai-zha-mu-80457236/)（460×510×800mm，座高450mm）。方案2改为固定餐桌，移除收桌切换；原抽桌为历史方案。家具外廓采用官方公布尺寸，软包轮廓、板厚与木腿曲线按商品图近似，不是厂家 CAD；摆位与净空仍须现场试摆。第二轮局部复尺证据版本仍为 **3.6.1**，没有因家具更新变成完整实测成果。
 
 **V3.6.1 / 补充复尺应用（现行测量依据）**：三个方案主卧窗宽改为1760mm，按西墙段860mm条件定位，保留10mm闭合差；「复尺明细」新增主卫现状局部轮廓，不覆盖拟建套内玄关。主卫实测窗高已明确1400mm；依业主选择，模型仍保留台1500／高800mm旧示意，窗台及定位待核。全屋墙线、面积与家具净空尚非完整复尺结果。详见 [采用范围与待核记录](docs/measurement-revision-20261004.md)。以下为版本历史。
 

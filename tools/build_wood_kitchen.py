@@ -21,7 +21,8 @@ def opening(op,data):
     return scope['shared_kitchen_window'](op) if op['id']=='window_kitchen_balcony' else original_opening(op,data)
 b.opening_details=opening
 b.MODEL_DIR=ROOT/'models/schemes/wood';b.RENDER_DIR=ROOT/'assets/schemes/wood';b.TEX_DIR=b.MODEL_DIR/'textures'
-b.VIEWS['kitchen']=((6.00,12.70,1.60),(7.55,11.21,1.52),20)
+b.VIEWS['kitchen']=((6.45,12.00,1.64),(7.32,13.57,1.24),17)
+b.VIEWS['kitchen-north']=((6.25,12.90,1.64),(7.03,11.38,1.30),18)
 b.VIEWS['balcony']=((7.18,10.31,1.60),(7.58,11.21,1.53),18)
 original_manifest=b.manifest
 def manifest(data,openings,src):
@@ -34,7 +35,7 @@ def manifest(data,openings,src):
         return v
     m=paths(m);m.update(version=data['version'],schemeId='wood',layout=data['layout'],kitchenReference=data['kitchenReference'])
     for r in m['rooms']:
-        if r['id'] in ('kitchen','balcony'):r['description']+=' 厨房与阳台之间新增方案3同尺寸大窗，1200×1300mm、窗台1000mm均待实测；厨房柜体位置和摆设同步方案3。'
+        if r['id']=='balcony':r['description']+=' 厨房与阳台之间大窗1200×1300mm、窗台1000mm仍待实测。'
     path.write_text(json.dumps(m,ensure_ascii=False,indent=2),encoding='utf-8')
 b.manifest=manifest
 if __name__=='__main__':b.main()

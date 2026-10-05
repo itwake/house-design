@@ -1,6 +1,6 @@
 {
   "name": "荟雅苑 104.83㎡ · 28F",
-  "version": "3.7.0 · wood · 已购家具＋补充复尺",
+  "version": "3.8.0",
   "unit": "cm",
   "north": "图上方（临道路侧）",
   "palette": [
@@ -1171,46 +1171,6 @@
       "notes": "400×400mm下柜转角封闭不用，台面在上方连续转折；退进上柜的盲角单独按实际280mm深生成。非实心满高占位，不重复生成模型。"
     },
     {
-      "name": "厨房南侧地柜",
-      "x": 542,
-      "y": 1329,
-      "w": 287,
-      "d": 60,
-      "a": 0,
-      "tone": "cabinet",
-      "face": "north"
-    },
-    {
-      "name": "厨房北侧地柜",
-      "x": 590,
-      "y": 1127,
-      "w": 239,
-      "d": 60,
-      "a": 0,
-      "tone": "cabinet",
-      "face": "south"
-    },
-    {
-      "name": "冰箱高柜",
-      "x": 765,
-      "y": 1188,
-      "w": 60,
-      "d": 70,
-      "a": 0,
-      "tone": "metal",
-      "face": "west"
-    },
-    {
-      "name": "蒸烤高柜",
-      "x": 765,
-      "y": 1259,
-      "w": 60,
-      "d": 70,
-      "a": 0,
-      "tone": "cabinet",
-      "face": "west"
-    },
-    {
       "name": "洗烘塔",
       "x": 764,
       "y": 966,
@@ -1291,6 +1251,71 @@
       "d": 111,
       "a": 0,
       "tone": "wet"
+    },
+    {
+      "id": "kitchen_shaft_footprint",
+      "name": "西南烟道不可用",
+      "x": 542,
+      "y": 1329,
+      "w": 60,
+      "d": 60,
+      "heightCm": 270,
+      "tone": "wall",
+      "roomId": "kitchen",
+      "a": 0,
+      "kitchenFitoutId": "kitchen-20261005"
+    },
+    {
+      "id": "kitchen_north_footprint",
+      "name": "厨房北侧台面占地",
+      "x": 622,
+      "y": 1127,
+      "w": 207,
+      "d": 65,
+      "heightCm": 89,
+      "tone": "cabinet",
+      "roomId": "kitchen",
+      "a": 0,
+      "kitchenFitoutId": "kitchen-20261005"
+    },
+    {
+      "id": "kitchen_east_footprint",
+      "name": "厨房东侧双槽柜",
+      "x": 764,
+      "y": 1192,
+      "w": 65,
+      "d": 132,
+      "heightCm": 89,
+      "tone": "cabinet",
+      "roomId": "kitchen",
+      "a": 0,
+      "kitchenFitoutId": "kitchen-20261005"
+    },
+    {
+      "id": "kitchen_south_footprint",
+      "name": "厨房南侧炉灶柜",
+      "x": 602,
+      "y": 1324,
+      "w": 227,
+      "d": 65,
+      "heightCm": 89,
+      "tone": "cabinet",
+      "roomId": "kitchen",
+      "a": 0,
+      "kitchenFitoutId": "kitchen-20261005"
+    },
+    {
+      "id": "kitchen_fridge_footprint",
+      "name": "厨房冰箱",
+      "x": 550,
+      "y": 1132,
+      "w": 65,
+      "d": 60,
+      "heightCm": 190,
+      "tone": "metal",
+      "roomId": "kitchen",
+      "a": 0,
+      "kitchenFitoutId": "kitchen-20261005"
     }
   ],
   "geometryRevision": "2026-10-04 R2 · 主卧窗宽及条件定位；主卫窗保持旧示意",
@@ -1677,6 +1702,10 @@
     {
       "roomId": "dining",
       "text": "已购LISABO固定餐桌1400×780×740mm，四把LISABO木餐椅外包460×510×800mm，南北两侧各两席。取消旧抽拉桌及收桌演示，不假设桌椅可折叠或藏进柜里。 沙发保留东缘655与南缘999cm；扩大21cm向西、增深10cm向北。 餐桌保留原中心390/1145cm；北椅拉出后的椅后窄带不作通道，走桌两端。 家具为按官方外包尺寸及产品照片重建的参数模型，缝线、弧度和腿型为近似，并非宜家官方CAD；不替代现场搬运、门洞和净距核验。"
+    },
+    {
+      "roomId": "kitchen",
+      "text": "厨房按标注图重排：西北650×600×1900mm冰箱，北侧独立600×600×805mm洗碗机；东侧双槽，南侧燃气灶及上方油烟机，西南烟道封实不可用。东、南吊柜在窗边热水器前止步。2420×2610mm局部复尺排布与旧2870×2620mm全屋示意分开核对，450mm差额仅作待闭合调整段。"
     }
   ],
   "bayDesign": {
@@ -2857,5 +2886,1200 @@
       "living": "已购VIMLE浅米色三人沙发2410×980×830mm，三座垫、三靠垫，坐高480mm。以官方外包尺寸替换旧通用沙发，不为适配走道缩小家具。 沙发保留东缘655与南缘999cm；扩大21cm向西、增深10cm向北。 餐桌保留原中心390/1145cm；北椅拉出后的椅后窄带不作通道，走桌两端。 复尺记录客厅窗宽2120mm、窗高2210mm、台面离地400mm、外凸600mm，窗顶2610mm。两片960×550mm可拆洗软垫各厚50mm，完成坐面约450mm；不加桌椅，不向厅内外扩。窗在整墙上的定位暂留旧中心，框内净深、排水和高层防坠仍须核验。",
       "dining": "已购LISABO固定餐桌1400×780×740mm，四把LISABO木餐椅外包460×510×800mm，南北两侧各两席。取消旧抽拉桌及收桌演示，不假设桌椅可折叠或藏进柜里。 沙发保留东缘655与南缘999cm；扩大21cm向西、增深10cm向北。 餐桌保留原中心390/1145cm；北椅拉出后的椅后窄带不作通道，走桌两端。 家具为按官方外包尺寸及产品照片重建的参数模型，缝线、弧度和腿型为近似，并非宜家官方CAD；不替代现场搬运、门洞和净距核验。"
     }
+  },
+  "kitchenFitout": {
+    "id": "kitchen-20261005",
+    "version": "3.8.0",
+    "date": "2026-10-05",
+    "roomId": "kitchen",
+    "summary": "厨房按标注图重排：西北650×600×1900mm冰箱，北侧独立600×600×805mm洗碗机；东侧双槽，南侧燃气灶及上方油烟机，西南烟道封实不可用。东、南吊柜在窗边热水器前止步。2420×2610mm局部复尺排布与旧2870×2620mm全屋示意分开核对，450mm差额仅作待闭合调整段。",
+    "orientation": "north-up; reference photograph compared horizontally mirrored",
+    "modelEnvelope": {
+      "x": 542,
+      "y": 1127,
+      "w": 287,
+      "d": 262,
+      "status": "old-unclosed"
+    },
+    "localEnvelope": {
+      "w": 242,
+      "d": 261,
+      "status": "r2-confirmed-room-net-only"
+    },
+    "adjustmentBand": {
+      "x": 694,
+      "w": 45,
+      "status": "unclosed-filler-not-confirmed-usable-space"
+    },
+    "localShaft": {
+      "x": 0,
+      "y": 201,
+      "w": 60,
+      "d": 60,
+      "status": "provisional"
+    },
+    "localCountertops": [
+      {
+        "x": 80,
+        "y": 0,
+        "w": 162,
+        "d": 65
+      },
+      {
+        "x": 177,
+        "y": 65,
+        "w": 65,
+        "d": 131
+      },
+      {
+        "x": 60,
+        "y": 196,
+        "w": 182,
+        "d": 65
+      }
+    ],
+    "dishwasherCavity": {
+      "x": 626,
+      "y": 1127,
+      "w": 62,
+      "d": 65,
+      "clearHeightCm": 86
+    },
+    "parts": [
+      {
+        "id": "shaft",
+        "role": "shaft",
+        "x": 542,
+        "y": 1329,
+        "zCm": 0,
+        "w": 60,
+        "d": 60,
+        "hCm": 270,
+        "material": "Wall"
+      },
+      {
+        "id": "dw_west_gable",
+        "role": "base-panel",
+        "x": 624.2,
+        "y": 1127,
+        "zCm": 0,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 86,
+        "material": "Cream",
+        "face": "south"
+      },
+      {
+        "id": "dw_east_gable",
+        "role": "base-panel",
+        "x": 688,
+        "y": 1127,
+        "zCm": 0,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 86,
+        "material": "Cream",
+        "face": "south"
+      },
+      {
+        "id": "north_west_filler",
+        "role": "base-front",
+        "x": 622,
+        "y": 1190.2,
+        "zCm": 10,
+        "w": 2.2,
+        "d": 1.8,
+        "hCm": 76,
+        "material": "OakLight",
+        "face": "south"
+      },
+      {
+        "id": "north_fixed_filler",
+        "role": "base-front",
+        "x": 689.8,
+        "y": 1190.2,
+        "zCm": 10,
+        "w": 4.2,
+        "d": 1.8,
+        "hCm": 76,
+        "material": "OakLight",
+        "face": "south"
+      },
+      {
+        "id": "north_adjustment_floor",
+        "role": "adjustment-panel",
+        "x": 694,
+        "y": 1127,
+        "zCm": 10,
+        "w": 45,
+        "d": 65,
+        "hCm": 1.8,
+        "material": "Cream",
+        "face": "south"
+      },
+      {
+        "id": "north_adjustment_back",
+        "role": "adjustment-panel",
+        "x": 694,
+        "y": 1127,
+        "zCm": 10,
+        "w": 45,
+        "d": 1.8,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "south"
+      },
+      {
+        "id": "north_adjustment_w",
+        "role": "adjustment-panel",
+        "x": 694,
+        "y": 1127,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "south"
+      },
+      {
+        "id": "north_adjustment_e",
+        "role": "adjustment-panel",
+        "x": 737.2,
+        "y": 1127,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "south"
+      },
+      {
+        "id": "north_adjustment_door_0",
+        "role": "adjustment-front",
+        "x": 694.2,
+        "y": 1190.2,
+        "zCm": 11,
+        "w": 44.6,
+        "d": 1.8,
+        "hCm": 74.6,
+        "material": "OakLight",
+        "face": "south"
+      },
+      {
+        "id": "north_adjustment_plinth",
+        "role": "plinth",
+        "x": 694,
+        "y": 1127,
+        "zCm": 0,
+        "w": 45,
+        "d": 58,
+        "hCm": 10,
+        "material": "Charcoal",
+        "face": "south"
+      },
+      {
+        "id": "north_prep_floor",
+        "role": "base-panel",
+        "x": 739,
+        "y": 1127,
+        "zCm": 10,
+        "w": 25,
+        "d": 65,
+        "hCm": 1.8,
+        "material": "Cream",
+        "face": "south"
+      },
+      {
+        "id": "north_prep_back",
+        "role": "base-panel",
+        "x": 739,
+        "y": 1127,
+        "zCm": 10,
+        "w": 25,
+        "d": 1.8,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "south"
+      },
+      {
+        "id": "north_prep_w",
+        "role": "base-panel",
+        "x": 739,
+        "y": 1127,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "south"
+      },
+      {
+        "id": "north_prep_e",
+        "role": "base-panel",
+        "x": 762.2,
+        "y": 1127,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "south"
+      },
+      {
+        "id": "north_prep_door_0",
+        "role": "base-front",
+        "x": 739.2,
+        "y": 1190.2,
+        "zCm": 11,
+        "w": 24.6,
+        "d": 1.8,
+        "hCm": 74.6,
+        "material": "OakLight",
+        "face": "south"
+      },
+      {
+        "id": "north_prep_plinth",
+        "role": "plinth",
+        "x": 739,
+        "y": 1127,
+        "zCm": 0,
+        "w": 25,
+        "d": 58,
+        "hCm": 10,
+        "material": "Charcoal",
+        "face": "south"
+      },
+      {
+        "id": "north_corner_floor",
+        "role": "base-panel",
+        "x": 764,
+        "y": 1127,
+        "zCm": 10,
+        "w": 65,
+        "d": 65,
+        "hCm": 1.8,
+        "material": "Cream",
+        "face": "south"
+      },
+      {
+        "id": "north_corner_back",
+        "role": "base-panel",
+        "x": 764,
+        "y": 1127,
+        "zCm": 10,
+        "w": 65,
+        "d": 1.8,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "south"
+      },
+      {
+        "id": "north_corner_w",
+        "role": "base-panel",
+        "x": 764,
+        "y": 1127,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "south"
+      },
+      {
+        "id": "north_corner_e",
+        "role": "base-panel",
+        "x": 827.2,
+        "y": 1127,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "south"
+      },
+      {
+        "id": "north_corner_door_0",
+        "role": "base-front",
+        "x": 764.2,
+        "y": 1190.2,
+        "zCm": 11,
+        "w": 32.1,
+        "d": 1.8,
+        "hCm": 74.6,
+        "material": "OakLight",
+        "face": "south"
+      },
+      {
+        "id": "north_corner_door_1",
+        "role": "base-front",
+        "x": 796.7,
+        "y": 1190.2,
+        "zCm": 11,
+        "w": 32.1,
+        "d": 1.8,
+        "hCm": 74.6,
+        "material": "OakLight",
+        "face": "south"
+      },
+      {
+        "id": "north_corner_plinth",
+        "role": "plinth",
+        "x": 764,
+        "y": 1127,
+        "zCm": 0,
+        "w": 65,
+        "d": 58,
+        "hCm": 10,
+        "material": "Charcoal",
+        "face": "south"
+      },
+      {
+        "id": "east_sink_floor",
+        "role": "base-panel",
+        "x": 764,
+        "y": 1192,
+        "zCm": 10,
+        "w": 65,
+        "d": 132,
+        "hCm": 1.8,
+        "material": "Cream",
+        "face": "west"
+      },
+      {
+        "id": "east_sink_back",
+        "role": "base-panel",
+        "x": 827.2,
+        "y": 1192,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 132,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "west"
+      },
+      {
+        "id": "east_sink_n",
+        "role": "base-panel",
+        "x": 764,
+        "y": 1192,
+        "zCm": 10,
+        "w": 65,
+        "d": 1.8,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "west"
+      },
+      {
+        "id": "east_sink_s",
+        "role": "base-panel",
+        "x": 764,
+        "y": 1322.2,
+        "zCm": 10,
+        "w": 65,
+        "d": 1.8,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "west"
+      },
+      {
+        "id": "east_sink_door_0",
+        "role": "base-front",
+        "x": 764,
+        "y": 1192.2,
+        "zCm": 11,
+        "w": 1.8,
+        "d": 43.6,
+        "hCm": 74.6,
+        "material": "OakLight",
+        "face": "west"
+      },
+      {
+        "id": "east_sink_door_1",
+        "role": "base-front",
+        "x": 764,
+        "y": 1236.2,
+        "zCm": 11,
+        "w": 1.8,
+        "d": 43.6,
+        "hCm": 74.6,
+        "material": "OakLight",
+        "face": "west"
+      },
+      {
+        "id": "east_sink_door_2",
+        "role": "base-front",
+        "x": 764,
+        "y": 1280.2,
+        "zCm": 11,
+        "w": 1.8,
+        "d": 43.6,
+        "hCm": 74.6,
+        "material": "OakLight",
+        "face": "west"
+      },
+      {
+        "id": "east_sink_plinth",
+        "role": "plinth",
+        "x": 771,
+        "y": 1192,
+        "zCm": 0,
+        "w": 58,
+        "d": 132,
+        "hCm": 10,
+        "material": "Charcoal",
+        "face": "west"
+      },
+      {
+        "id": "south_hob_floor",
+        "role": "base-panel",
+        "x": 602,
+        "y": 1324,
+        "zCm": 10,
+        "w": 92,
+        "d": 65,
+        "hCm": 1.8,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_hob_back",
+        "role": "base-panel",
+        "x": 602,
+        "y": 1387.2,
+        "zCm": 10,
+        "w": 92,
+        "d": 1.8,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_hob_w",
+        "role": "base-panel",
+        "x": 602,
+        "y": 1324,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_hob_e",
+        "role": "base-panel",
+        "x": 692.2,
+        "y": 1324,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_hob_door_0",
+        "role": "base-front",
+        "x": 602.2,
+        "y": 1324,
+        "zCm": 11,
+        "w": 45.6,
+        "d": 1.8,
+        "hCm": 74.6,
+        "material": "OakLight",
+        "face": "north"
+      },
+      {
+        "id": "south_hob_door_1",
+        "role": "base-front",
+        "x": 648.2,
+        "y": 1324,
+        "zCm": 11,
+        "w": 45.6,
+        "d": 1.8,
+        "hCm": 74.6,
+        "material": "OakLight",
+        "face": "north"
+      },
+      {
+        "id": "south_hob_plinth",
+        "role": "plinth",
+        "x": 602,
+        "y": 1331,
+        "zCm": 0,
+        "w": 92,
+        "d": 58,
+        "hCm": 10,
+        "material": "Charcoal",
+        "face": "north"
+      },
+      {
+        "id": "south_adjustment_floor",
+        "role": "adjustment-panel",
+        "x": 694,
+        "y": 1324,
+        "zCm": 10,
+        "w": 45,
+        "d": 65,
+        "hCm": 1.8,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_adjustment_back",
+        "role": "adjustment-panel",
+        "x": 694,
+        "y": 1387.2,
+        "zCm": 10,
+        "w": 45,
+        "d": 1.8,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_adjustment_w",
+        "role": "adjustment-panel",
+        "x": 694,
+        "y": 1324,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_adjustment_e",
+        "role": "adjustment-panel",
+        "x": 737.2,
+        "y": 1324,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_adjustment_door_0",
+        "role": "adjustment-front",
+        "x": 694.2,
+        "y": 1324,
+        "zCm": 11,
+        "w": 44.6,
+        "d": 1.8,
+        "hCm": 74.6,
+        "material": "OakLight",
+        "face": "north"
+      },
+      {
+        "id": "south_adjustment_plinth",
+        "role": "plinth",
+        "x": 694,
+        "y": 1331,
+        "zCm": 0,
+        "w": 45,
+        "d": 58,
+        "hCm": 10,
+        "material": "Charcoal",
+        "face": "north"
+      },
+      {
+        "id": "south_prep_floor",
+        "role": "base-panel",
+        "x": 739,
+        "y": 1324,
+        "zCm": 10,
+        "w": 58,
+        "d": 65,
+        "hCm": 1.8,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_prep_back",
+        "role": "base-panel",
+        "x": 739,
+        "y": 1387.2,
+        "zCm": 10,
+        "w": 58,
+        "d": 1.8,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_prep_w",
+        "role": "base-panel",
+        "x": 739,
+        "y": 1324,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_prep_e",
+        "role": "base-panel",
+        "x": 795.2,
+        "y": 1324,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_prep_door_0",
+        "role": "base-front",
+        "x": 739.2,
+        "y": 1324,
+        "zCm": 11,
+        "w": 28.6,
+        "d": 1.8,
+        "hCm": 74.6,
+        "material": "OakLight",
+        "face": "north"
+      },
+      {
+        "id": "south_prep_door_1",
+        "role": "base-front",
+        "x": 768.2,
+        "y": 1324,
+        "zCm": 11,
+        "w": 28.6,
+        "d": 1.8,
+        "hCm": 74.6,
+        "material": "OakLight",
+        "face": "north"
+      },
+      {
+        "id": "south_prep_plinth",
+        "role": "plinth",
+        "x": 739,
+        "y": 1331,
+        "zCm": 0,
+        "w": 58,
+        "d": 58,
+        "hCm": 10,
+        "material": "Charcoal",
+        "face": "north"
+      },
+      {
+        "id": "south_corner_floor",
+        "role": "base-panel",
+        "x": 797,
+        "y": 1324,
+        "zCm": 10,
+        "w": 32,
+        "d": 65,
+        "hCm": 1.8,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_corner_back",
+        "role": "base-panel",
+        "x": 797,
+        "y": 1387.2,
+        "zCm": 10,
+        "w": 32,
+        "d": 1.8,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_corner_w",
+        "role": "base-panel",
+        "x": 797,
+        "y": 1324,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_corner_e",
+        "role": "base-panel",
+        "x": 827.2,
+        "y": 1324,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_corner_door_0",
+        "role": "base-front",
+        "x": 797.2,
+        "y": 1324,
+        "zCm": 11,
+        "w": 31.6,
+        "d": 1.8,
+        "hCm": 74.6,
+        "material": "OakLight",
+        "face": "north"
+      },
+      {
+        "id": "south_corner_plinth",
+        "role": "plinth",
+        "x": 797,
+        "y": 1331,
+        "zCm": 0,
+        "w": 32,
+        "d": 58,
+        "hCm": 10,
+        "material": "Charcoal",
+        "face": "north"
+      },
+      {
+        "id": "east_upper_floor",
+        "role": "upper-panel",
+        "x": 797,
+        "y": 1207,
+        "zCm": 150,
+        "w": 32,
+        "d": 150,
+        "hCm": 1.8,
+        "material": "Cream",
+        "face": "west"
+      },
+      {
+        "id": "east_upper_top",
+        "role": "upper-panel",
+        "x": 797,
+        "y": 1207,
+        "zCm": 233.2,
+        "w": 32,
+        "d": 150,
+        "hCm": 1.8,
+        "material": "Cream",
+        "face": "west"
+      },
+      {
+        "id": "east_upper_back",
+        "role": "upper-panel",
+        "x": 827.2,
+        "y": 1207,
+        "zCm": 150,
+        "w": 1.8,
+        "d": 150,
+        "hCm": 85,
+        "material": "Cream",
+        "face": "west"
+      },
+      {
+        "id": "east_upper_n",
+        "role": "upper-panel",
+        "x": 797,
+        "y": 1207,
+        "zCm": 150,
+        "w": 32,
+        "d": 1.8,
+        "hCm": 85,
+        "material": "Cream",
+        "face": "west"
+      },
+      {
+        "id": "east_upper_s",
+        "role": "upper-panel",
+        "x": 797,
+        "y": 1355.2,
+        "zCm": 150,
+        "w": 32,
+        "d": 1.8,
+        "hCm": 85,
+        "material": "Cream",
+        "face": "west"
+      },
+      {
+        "id": "east_upper_door_0",
+        "role": "upper-front",
+        "x": 797,
+        "y": 1207.2,
+        "zCm": 151,
+        "w": 1.8,
+        "d": 37.1,
+        "hCm": 83.6,
+        "material": "Cream",
+        "face": "west"
+      },
+      {
+        "id": "east_upper_door_1",
+        "role": "upper-front",
+        "x": 797,
+        "y": 1244.7,
+        "zCm": 151,
+        "w": 1.8,
+        "d": 37.1,
+        "hCm": 83.6,
+        "material": "Cream",
+        "face": "west"
+      },
+      {
+        "id": "east_upper_door_2",
+        "role": "upper-front",
+        "x": 797,
+        "y": 1282.2,
+        "zCm": 151,
+        "w": 1.8,
+        "d": 37.1,
+        "hCm": 83.6,
+        "material": "Cream",
+        "face": "west"
+      },
+      {
+        "id": "east_upper_door_3",
+        "role": "upper-front",
+        "x": 797,
+        "y": 1319.7,
+        "zCm": 151,
+        "w": 1.8,
+        "d": 37.1,
+        "hCm": 83.6,
+        "material": "Cream",
+        "face": "west"
+      },
+      {
+        "id": "south_upper_floor",
+        "role": "upper-panel",
+        "x": 739,
+        "y": 1357,
+        "zCm": 150,
+        "w": 58,
+        "d": 32,
+        "hCm": 1.8,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_upper_top",
+        "role": "upper-panel",
+        "x": 739,
+        "y": 1357,
+        "zCm": 233.2,
+        "w": 58,
+        "d": 32,
+        "hCm": 1.8,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_upper_back",
+        "role": "upper-panel",
+        "x": 739,
+        "y": 1387.2,
+        "zCm": 150,
+        "w": 58,
+        "d": 1.8,
+        "hCm": 85,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_upper_w",
+        "role": "upper-panel",
+        "x": 739,
+        "y": 1357,
+        "zCm": 150,
+        "w": 1.8,
+        "d": 32,
+        "hCm": 85,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_upper_e",
+        "role": "upper-panel",
+        "x": 795.2,
+        "y": 1357,
+        "zCm": 150,
+        "w": 1.8,
+        "d": 32,
+        "hCm": 85,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_upper_door_0",
+        "role": "upper-front",
+        "x": 739.2,
+        "y": 1357,
+        "zCm": 151,
+        "w": 28.6,
+        "d": 1.8,
+        "hCm": 83.6,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_upper_door_1",
+        "role": "upper-front",
+        "x": 768.2,
+        "y": 1357,
+        "zCm": 151,
+        "w": 28.6,
+        "d": 1.8,
+        "hCm": 83.6,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "east_splash",
+        "role": "backsplash",
+        "x": 827.8,
+        "y": 1174,
+        "zCm": 89,
+        "w": 1.2,
+        "d": 183,
+        "hCm": 61,
+        "material": "Tile"
+      },
+      {
+        "id": "south_splash",
+        "role": "backsplash",
+        "x": 602,
+        "y": 1387.8,
+        "zCm": 89,
+        "w": 227,
+        "d": 1.2,
+        "hCm": 61,
+        "material": "Tile"
+      }
+    ],
+    "appliances": [
+      {
+        "id": "kitchen_fridge",
+        "type": "fridge",
+        "x": 550,
+        "y": 1132,
+        "w": 65,
+        "d": 60,
+        "heightCm": 190,
+        "zCm": 0,
+        "face": "south",
+        "local": {
+          "x": 8,
+          "y": 5,
+          "w": 65,
+          "d": 60
+        },
+        "dimensionStatus": "user-confirmed-body",
+        "hinge": "east-provisional"
+      },
+      {
+        "id": "kitchen_dishwasher",
+        "type": "dishwasher",
+        "x": 627,
+        "y": 1132,
+        "w": 60,
+        "d": 60,
+        "heightCm": 80.5,
+        "zCm": 0,
+        "face": "south",
+        "local": {
+          "x": 85,
+          "y": 5,
+          "w": 60,
+          "d": 60
+        },
+        "dimensionStatus": "user-confirmed-body"
+      },
+      {
+        "id": "kitchen_double_sink",
+        "type": "doubleSink",
+        "x": 774,
+        "y": 1216,
+        "w": 45,
+        "d": 78,
+        "heightCm": 20,
+        "zCm": 69,
+        "face": "west",
+        "local": {
+          "x": 187,
+          "y": 89,
+          "w": 45,
+          "d": 78
+        },
+        "dimensionStatus": "reference-only",
+        "referenceId": "franke-bxx220-74"
+      },
+      {
+        "id": "kitchen_hob",
+        "type": "gasHob",
+        "x": 612,
+        "y": 1335,
+        "w": 75,
+        "d": 45,
+        "heightCm": 5,
+        "zCm": 89,
+        "face": "north",
+        "local": {
+          "x": 70,
+          "y": 207,
+          "w": 75,
+          "d": 45
+        },
+        "dimensionStatus": "provisional"
+      },
+      {
+        "id": "kitchen_hood",
+        "type": "hood",
+        "x": 609.5,
+        "y": 1349,
+        "w": 80,
+        "d": 40,
+        "heightCm": 45,
+        "zCm": 155,
+        "face": "north",
+        "local": {
+          "x": 67.5,
+          "y": 221,
+          "w": 80,
+          "d": 40
+        },
+        "dimensionStatus": "provisional"
+      },
+      {
+        "id": "kitchen_heater",
+        "type": "waterHeater",
+        "x": 808.5,
+        "y": 1137,
+        "w": 20.5,
+        "d": 33,
+        "heightCm": 53,
+        "zCm": 132,
+        "face": "west",
+        "local": {
+          "x": 221.5,
+          "y": 10,
+          "w": 20.5,
+          "d": 33
+        },
+        "dimensionStatus": "reference-only",
+        "referenceId": "noritz-13ex31fex"
+      },
+      {
+        "id": "kitchen_tap",
+        "type": "faucet",
+        "x": 812,
+        "y": 1252,
+        "w": 15,
+        "d": 6,
+        "heightCm": 32,
+        "zCm": 89,
+        "face": "west",
+        "local": {
+          "x": 225,
+          "y": 125,
+          "w": 15,
+          "d": 6
+        },
+        "dimensionStatus": "provisional"
+      }
+    ],
+    "countertops": [
+      {
+        "id": "north_top",
+        "x": 622,
+        "y": 1127,
+        "w": 207,
+        "d": 65,
+        "zCm": 86,
+        "hCm": 3,
+        "material": "Stone",
+        "cutouts": []
+      },
+      {
+        "id": "east_top",
+        "x": 764,
+        "y": 1192,
+        "w": 65,
+        "d": 132,
+        "zCm": 86,
+        "hCm": 3,
+        "material": "Stone",
+        "cutouts": [
+          {
+            "x": 775,
+            "y": 1217,
+            "w": 43,
+            "d": 76
+          }
+        ]
+      },
+      {
+        "id": "south_top",
+        "x": 602,
+        "y": 1324,
+        "w": 227,
+        "d": 65,
+        "zCm": 86,
+        "hCm": 3,
+        "material": "Stone",
+        "cutouts": [
+          {
+            "x": 615,
+            "y": 1338,
+            "w": 69,
+            "d": 39
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      "本轮只改厨房家具与设备；全屋墙线未闭合，旧模型厨房2870×2620mm不代表实测。局部复尺净宽2420、净深2610mm用于保守占地核对；两者不得混作一张施工图。",
+      "全屋示意在中段保留450mm调整柜段；收窄至2420mm时须删减该段，不能把它算作已经确认的备餐宽度。完成墙厚、共墙、门窗基准闭合后再统一定位。",
+      "西南烟道暂估600×600mm、按墙体不可占用。烟道实际外包、检修口、排烟接口与止回阀未测；若更大，炉灶及柜宽必须重排。",
+      "冰箱650×600×1900mm、洗碗机600×600×805mm是用户提供的机器外廓，不是橱柜开孔尺寸。散热、管线、柜门厚度、踢脚及完整开门尺寸按最终型号说明书深化。",
+      "洗碗机独立在北侧台下，模型空腔620×650mm、净高860mm，无遮挡底板或背板；台面完成面890mm。以上安装余量待厂家确认，排水和电源不设在无法检修的机器正后方。",
+      "保守尺寸下南北台面间1310mm；若洗碗机门向前投影600mm，余710mm；若投影805mm，余505mm。均为敏感性示例而非实机开门保证，一次一人操作。",
+      "冰箱门暂按向东侧铰接、朝南开启；90°开门会侵入厨房入口投影，余约542mm，不宜同时进出。需确认实际铰链、开门角度、抽屉拉出和搬入路线。",
+      "双槽780×450×200mm借鉴弗兰卡BXX220-74，沿东墙纵向摆放；只是尺寸及外形参考，非已购物品。水槽下留排水空间，东侧柜不再放洗碗机。",
+      "燃气灶暂估750×450mm，南墙近烟道；油烟机暂估800mm宽，下沿1550mm。灶面、油烟机安装高度、两侧防火距离和燃气阀位置须按选定型号复核，未把烟道接口画成已确认。",
+      "灶右至东侧台面转角在保守布局里仅320mm直线台面，属于紧凑备餐；可用北侧及转角备餐，但不把旧模型多出的450mm当实际余量。",
+      "热水器按参考照片暂作壁挂燃气式，机身参考530×330×205mm；型号/能源未定。独立外露，不封进吊柜；检修和燃烧安全净距须厂家确认。",
+      "厨房与家政阳台之间为内窗，不是室外排气出口。燃气热水器必须有经专业确认的独立排烟通向室外，不能与油烟机/公共烟道混接，也不能排在封闭阳台内。",
+      "北侧窗洞1200×1300mm、窗台1000mm仍为原条件占位；吊柜不跨窗，东柜起点距北墙800mm、止于热水器之外。热水器与窗扇、阳台龙头/机器及全部柜门开启须现场核验。",
+      "效果图、局部占地校核和网页漫游均非施工或燃气安装图；湿区防水、电路、接地、燃气、排烟必须由有资质人员复核。"
+    ],
+    "dimensions": [
+      "冰箱：650W × 600D × 1900H mm（用户提供）",
+      "洗碗机：600W × 600D × 805H mm（用户提供）",
+      "台面暂定高890mm；洗碗机上方净高860mm",
+      "双槽参考780 × 450 × 200mm，尚未选定",
+      "烟道暂估600 × 600mm，不可利用",
+      "局部复尺2420 × 2610mm；全屋图旧边界待闭合"
+    ],
+    "references": [
+      {
+        "id": "franke-bxx220-74",
+        "title": "弗兰卡 BXX220-74 双槽 · 官方尺寸",
+        "url": "https://hschinaproduct.franke.com/list/post/86/",
+        "borrow": "780×450×200mm双槽，内盆420与298mm；仅作为可视尺寸参考，不等于选定型号。"
+      },
+      {
+        "id": "noritz-13ex31fex",
+        "title": "能率 13EX31FEX · 壁挂热水器尺寸参考",
+        "url": "https://www.noritz.com.cn/product/detail/?id=802",
+        "borrow": "530×330×205mm机身作为占位。能源、检修距离、独立排烟路线均待选型，不构成购买建议。"
+      },
+      {
+        "id": "rinnai-safety",
+        "title": "林内官方安装常见问题",
+        "url": "https://www.rinnai.com.cn/mobile/commonProblem3-baseKnowledge-page-2.html",
+        "borrow": "燃气热水器独立排烟至室外，不与厨房公共烟道混用；油烟机高度等按具体产品确认。"
+      }
+    ],
+    "render": "assets/schemes/wood/kitchen-north.jpg"
   }
 }

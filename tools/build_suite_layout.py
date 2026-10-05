@@ -24,7 +24,8 @@ b.VIEWS['bay-tea']=((2.48,1.47,1.52),(1.53,-.11,1.03),18)
 b.VIEWS['master-bath']=((6.57,4.65,1.60),(4.95,3.72,1.12),18)
 b.VIEWS['guest-bath']=((6.54,6.03,1.60),(4.32,5.33,1.06),17)
 b.VIEWS['suite-entry']=((4.20,4.56,1.60),(4.19,2.55,1.24),17)
-b.VIEWS['kitchen']=((6.00,12.70,1.60),(7.55,11.21,1.52),20)
+b.VIEWS['kitchen']=((6.45,12.00,1.64),(7.32,13.57,1.24),17)
+b.VIEWS['kitchen-north']=((6.25,12.90,1.64),(7.03,11.38,1.30),18)
 b.VIEWS['balcony']=((7.18,10.31,1.60),(7.58,11.21,1.53),18)
 
 # Suite-only finishes: embedded textures are really changed, not a browser tint.

@@ -67,8 +67,10 @@ function decode(bytes){
 }
 
 const catalog=await read('models/design-schemes.json'),reports=[];
+let kitchenActive=false;
 for(const [id,p] of Object.entries(layouts)){
   const d=await read(`models/schemes/${id}/design-data.json`),f=name=>{const a=d.furniture.filter(f=>f.name===name);assert.equal(a.length,1,`${id}: one ${name}`);return a[0];};
+  kitchenActive ||= Boolean(d.kitchenFitout);
   assert.equal(d.purchasedFurnitureRevision.version,'3.7.0');assert.equal(d.measurementRevision.version,'3.6.1');
   assert.equal(d.furniture.filter(f=>f.purchasedProductId).length,6,'Exactly one sofa, one table and four chairs replaced');
   assert.equal(d.furniture.filter(f=>f.name.startsWith('餐椅')).length,4,'No extra/hidden east chairs');
@@ -111,4 +113,8 @@ for(const [id,p] of Object.entries(layouts)){
   }
   reports.push(result);
 }
-console.log(JSON.stringify({passed:true,scope:'purchased furniture only; R2 architectural guard runs separately',reports},null,2));
+// Keep bought-product dimensions, collision sweeps and pendant checks intact.
+// A later kitchen revision must pass its independent exact source guard; with
+// --glb that guard also checks actual kitchen parts and product envelopes.
+if(kitchenActive)await import('./test_kitchen_fitout.mjs');
+console.log(JSON.stringify({passed:true,scope:'purchased furniture and explicit kitchen guard; R2 architectural guard runs separately',reports},null,2));

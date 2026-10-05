@@ -1,10 +1,10 @@
 {
-  "version": "3.7.0 · family · 已购家具＋补充复尺",
+  "version": "3.8.0",
   "model": "models/schemes/family/huiyayuan-wood.glb",
   "blend": "models/schemes/family/huiyayuan-wood.blend",
   "units": "m",
   "source": "models/schemes/family/design-data.json",
-  "sourceSha256": "273e18efebc5beeb38f8e7c2637c881fb0afac9dbdb76a1d1f46a61f1b829840",
+  "sourceSha256": "b610d270058c753f765ad06867a92f4dbd3ca66e95f25e703db96a4e001484b1",
   "bounds": {
     "min": [
       0.0,
@@ -521,20 +521,20 @@
       },
       "interiorCamera": {
         "position": [
-          6.0,
-          1.6,
-          12.7
+          6.45,
+          1.64,
+          12.0
         ],
         "target": [
-          7.55,
-          1.52,
-          11.21
+          7.32,
+          1.24,
+          13.57
         ],
-        "horizontalFov": 83.97,
-        "fov": 61.93
+        "horizontalFov": 93.27,
+        "fov": 70.44
       },
       "render": "assets/schemes/family/kitchen.jpg",
-      "description": "补回厨房北侧与家政阳台共墙大窗，暂定1200×1300mm、窗台高1000mm，双扇推拉窗型仅为示意。台下柜、洗菜盆和1700mm厨房推拉门不动；北墙层板缩回窗左侧实墙，不横挡玻璃。窗洞、墙体、五金与防水收口须复尺。",
+      "description": "厨房按标注图重排：西北650×600×1900mm冰箱，北侧独立600×600×805mm洗碗机；东侧双槽，南侧燃气灶及上方油烟机，西南烟道封实不可用。东、南吊柜在窗边热水器前止步。2420×2610mm局部复尺排布与旧2870×2620mm全屋示意分开核对，450mm差额仅作待闭合调整段。",
       "features": [
         "同一 Blender 场景生成模型和渲染",
         "原木 · 奶油白 · 亚麻",
@@ -1217,6 +1217,7 @@
     "本轮仅应用明确的局部复尺值；未闭合的外轮廓、墙位及房间面积仍保留旧模型参考，不是完整实测施工图。",
     "补充复尺已录入：主卧窗宽1760mm并按西墙段860mm条件定位；主卫实测局部轮廓独立展示。主卫窗高1400mm已确认，但模型保留旧窗占位等待定位；全屋墙线、面积及家具通道仍为旧设计参考。",
     "复尺记录客厅窗宽2120mm、窗高2210mm、台面离地400mm、外凸600mm，窗顶2610mm。两片960×550mm可拆洗软垫各厚50mm，完成坐面约450mm；不加桌椅，不向厅内外扩。窗在整墙上的定位暂留旧中心，框内净深、排水和高层防坠仍须核验。",
+    "厨房按标注图重排：西北650×600×1900mm冰箱，北侧独立600×600×805mm洗碗机；东侧双槽，南侧燃气灶及上方油烟机，西南烟道封实不可用。东、南吊柜在窗边热水器前止步。2420×2610mm局部复尺排布与旧2870×2620mm全屋示意分开核对，450mm差额仅作待闭合调整段。",
     "补充复尺已录入：主卧窗宽1760mm并按西墙段860mm条件定位；主卫实测局部轮廓独立展示。主卫窗高1400mm已确认，但模型保留旧窗占位等待定位；全屋墙线、面积及家具通道仍为旧设计参考。",
     "已购LISABO固定餐桌1400×780×740mm，四把LISABO木餐椅外包460×510×800mm，南北两侧各两席。取消旧抽拉桌及收桌演示，不假设桌椅可折叠或藏进柜里。 已购VIMLE浅米色三人沙发2410×980×830mm，三座垫、三靠垫，坐高480mm。以官方外包尺寸替换旧通用沙发，不为适配走道缩小家具。",
     "已购LISABO固定餐桌1400×780×740mm，四把LISABO木餐椅外包460×510×800mm，南北两侧各两席。取消旧抽拉桌及收桌演示，不假设桌椅可折叠或藏进柜里。 已购VIMLE浅米色三人沙发2410×980×830mm，三座垫、三靠垫，坐高480mm。以官方外包尺寸替换旧通用沙发，不为适配走道缩小家具。",
@@ -1245,7 +1246,8 @@
     "家具为按官方外包尺寸及产品照片重建的参数模型，缝线、弧度和腿型为近似，并非宜家官方CAD；不替代现场搬运、门洞和净距核验。",
     "背柜只向南移10cm，保留200cm宽和东侧对齐；茶几与地毯原位。",
     "北椅拉出30cm后与背柜仅12.5cm，不是椅后通道；从两端侧向入座，主要绕行走餐桌两端。",
-    "沙发西侧至普通餐柜91.5cm，东侧书架前60cm；桌西侧普通柜段67.5cm、局部44cm深柜段仅63.5cm，属于紧凑单人通道，不是舒适或无障碍认证。"
+    "沙发西侧至普通餐柜91.5cm，东侧书架前60cm；桌西侧普通柜段67.5cm、局部44cm深柜段仅63.5cm，属于紧凑单人通道，不是舒适或无障碍认证。",
+    "V3.8.0厨房与全屋总览为当前模型新渲染；其他房间图片沿用V3.7.0原图及原始来源，并明确标注历史参考，不作为新厨房效果图。"
   ],
   "measurementRevision": {
     "date": "2026-10-04",
@@ -1765,6 +1767,1201 @@
       "living": "已购VIMLE浅米色三人沙发2410×980×830mm，三座垫、三靠垫，坐高480mm。以官方外包尺寸替换旧通用沙发，不为适配走道缩小家具。 固定横放桌，南北各两把椅；原抽拉桌与收起状态移除。 背柜只向南移10cm，保留200cm宽和东侧对齐；茶几与地毯原位。 北椅拉出30cm后与背柜仅12.5cm，不是椅后通道；从两端侧向入座，主要绕行走餐桌两端。 沙发西侧至普通餐柜91.5cm，东侧书架前60cm；桌西侧普通柜段67.5cm、局部44cm深柜段仅63.5cm，属于紧凑单人通道，不是舒适或无障碍认证。 取车时餐椅回到默认位、入户门先关闭，车辆移到门扇扫区外后才开门。 复尺记录客厅窗宽2120mm、窗高2210mm、台面离地400mm、外凸600mm，窗顶2610mm。两片960×550mm可拆洗软垫各厚50mm，完成坐面约450mm；不加桌椅，不向厅内外扩。窗在整墙上的定位暂留旧中心，框内净深、排水和高层防坠仍须核验。",
       "dining": "已购LISABO固定餐桌1400×780×740mm，四把LISABO木餐椅外包460×510×800mm，南北两侧各两席。取消旧抽拉桌及收桌演示，不假设桌椅可折叠或藏进柜里。 固定横放桌，南北各两把椅；原抽拉桌与收起状态移除。 背柜只向南移10cm，保留200cm宽和东侧对齐；茶几与地毯原位。 北椅拉出30cm后与背柜仅12.5cm，不是椅后通道；从两端侧向入座，主要绕行走餐桌两端。 沙发西侧至普通餐柜91.5cm，东侧书架前60cm；桌西侧普通柜段67.5cm、局部44cm深柜段仅63.5cm，属于紧凑单人通道，不是舒适或无障碍认证。 取车时餐椅回到默认位、入户门先关闭，车辆移到门扇扫区外后才开门。 家具为按官方外包尺寸及产品照片重建的参数模型，缝线、弧度和腿型为近似，并非宜家官方CAD；不替代现场搬运、门洞和净距核验。"
     }
+  },
+  "kitchenFitout": {
+    "id": "kitchen-20261005",
+    "version": "3.8.0",
+    "date": "2026-10-05",
+    "roomId": "kitchen",
+    "summary": "厨房按标注图重排：西北650×600×1900mm冰箱，北侧独立600×600×805mm洗碗机；东侧双槽，南侧燃气灶及上方油烟机，西南烟道封实不可用。东、南吊柜在窗边热水器前止步。2420×2610mm局部复尺排布与旧2870×2620mm全屋示意分开核对，450mm差额仅作待闭合调整段。",
+    "orientation": "north-up; reference photograph compared horizontally mirrored",
+    "modelEnvelope": {
+      "x": 542,
+      "y": 1127,
+      "w": 287,
+      "d": 262,
+      "status": "old-unclosed"
+    },
+    "localEnvelope": {
+      "w": 242,
+      "d": 261,
+      "status": "r2-confirmed-room-net-only"
+    },
+    "adjustmentBand": {
+      "x": 694,
+      "w": 45,
+      "status": "unclosed-filler-not-confirmed-usable-space"
+    },
+    "localShaft": {
+      "x": 0,
+      "y": 201,
+      "w": 60,
+      "d": 60,
+      "status": "provisional"
+    },
+    "localCountertops": [
+      {
+        "x": 80,
+        "y": 0,
+        "w": 162,
+        "d": 65
+      },
+      {
+        "x": 177,
+        "y": 65,
+        "w": 65,
+        "d": 131
+      },
+      {
+        "x": 60,
+        "y": 196,
+        "w": 182,
+        "d": 65
+      }
+    ],
+    "dishwasherCavity": {
+      "x": 626,
+      "y": 1127,
+      "w": 62,
+      "d": 65,
+      "clearHeightCm": 86
+    },
+    "parts": [
+      {
+        "id": "shaft",
+        "role": "shaft",
+        "x": 542,
+        "y": 1329,
+        "zCm": 0,
+        "w": 60,
+        "d": 60,
+        "hCm": 270,
+        "material": "Wall"
+      },
+      {
+        "id": "dw_west_gable",
+        "role": "base-panel",
+        "x": 624.2,
+        "y": 1127,
+        "zCm": 0,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 86,
+        "material": "Cream",
+        "face": "south"
+      },
+      {
+        "id": "dw_east_gable",
+        "role": "base-panel",
+        "x": 688,
+        "y": 1127,
+        "zCm": 0,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 86,
+        "material": "Cream",
+        "face": "south"
+      },
+      {
+        "id": "north_west_filler",
+        "role": "base-front",
+        "x": 622,
+        "y": 1190.2,
+        "zCm": 10,
+        "w": 2.2,
+        "d": 1.8,
+        "hCm": 76,
+        "material": "OakLight",
+        "face": "south"
+      },
+      {
+        "id": "north_fixed_filler",
+        "role": "base-front",
+        "x": 689.8,
+        "y": 1190.2,
+        "zCm": 10,
+        "w": 4.2,
+        "d": 1.8,
+        "hCm": 76,
+        "material": "OakLight",
+        "face": "south"
+      },
+      {
+        "id": "north_adjustment_floor",
+        "role": "adjustment-panel",
+        "x": 694,
+        "y": 1127,
+        "zCm": 10,
+        "w": 45,
+        "d": 65,
+        "hCm": 1.8,
+        "material": "Cream",
+        "face": "south"
+      },
+      {
+        "id": "north_adjustment_back",
+        "role": "adjustment-panel",
+        "x": 694,
+        "y": 1127,
+        "zCm": 10,
+        "w": 45,
+        "d": 1.8,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "south"
+      },
+      {
+        "id": "north_adjustment_w",
+        "role": "adjustment-panel",
+        "x": 694,
+        "y": 1127,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "south"
+      },
+      {
+        "id": "north_adjustment_e",
+        "role": "adjustment-panel",
+        "x": 737.2,
+        "y": 1127,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "south"
+      },
+      {
+        "id": "north_adjustment_door_0",
+        "role": "adjustment-front",
+        "x": 694.2,
+        "y": 1190.2,
+        "zCm": 11,
+        "w": 44.6,
+        "d": 1.8,
+        "hCm": 74.6,
+        "material": "OakLight",
+        "face": "south"
+      },
+      {
+        "id": "north_adjustment_plinth",
+        "role": "plinth",
+        "x": 694,
+        "y": 1127,
+        "zCm": 0,
+        "w": 45,
+        "d": 58,
+        "hCm": 10,
+        "material": "Charcoal",
+        "face": "south"
+      },
+      {
+        "id": "north_prep_floor",
+        "role": "base-panel",
+        "x": 739,
+        "y": 1127,
+        "zCm": 10,
+        "w": 25,
+        "d": 65,
+        "hCm": 1.8,
+        "material": "Cream",
+        "face": "south"
+      },
+      {
+        "id": "north_prep_back",
+        "role": "base-panel",
+        "x": 739,
+        "y": 1127,
+        "zCm": 10,
+        "w": 25,
+        "d": 1.8,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "south"
+      },
+      {
+        "id": "north_prep_w",
+        "role": "base-panel",
+        "x": 739,
+        "y": 1127,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "south"
+      },
+      {
+        "id": "north_prep_e",
+        "role": "base-panel",
+        "x": 762.2,
+        "y": 1127,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "south"
+      },
+      {
+        "id": "north_prep_door_0",
+        "role": "base-front",
+        "x": 739.2,
+        "y": 1190.2,
+        "zCm": 11,
+        "w": 24.6,
+        "d": 1.8,
+        "hCm": 74.6,
+        "material": "OakLight",
+        "face": "south"
+      },
+      {
+        "id": "north_prep_plinth",
+        "role": "plinth",
+        "x": 739,
+        "y": 1127,
+        "zCm": 0,
+        "w": 25,
+        "d": 58,
+        "hCm": 10,
+        "material": "Charcoal",
+        "face": "south"
+      },
+      {
+        "id": "north_corner_floor",
+        "role": "base-panel",
+        "x": 764,
+        "y": 1127,
+        "zCm": 10,
+        "w": 65,
+        "d": 65,
+        "hCm": 1.8,
+        "material": "Cream",
+        "face": "south"
+      },
+      {
+        "id": "north_corner_back",
+        "role": "base-panel",
+        "x": 764,
+        "y": 1127,
+        "zCm": 10,
+        "w": 65,
+        "d": 1.8,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "south"
+      },
+      {
+        "id": "north_corner_w",
+        "role": "base-panel",
+        "x": 764,
+        "y": 1127,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "south"
+      },
+      {
+        "id": "north_corner_e",
+        "role": "base-panel",
+        "x": 827.2,
+        "y": 1127,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "south"
+      },
+      {
+        "id": "north_corner_door_0",
+        "role": "base-front",
+        "x": 764.2,
+        "y": 1190.2,
+        "zCm": 11,
+        "w": 32.1,
+        "d": 1.8,
+        "hCm": 74.6,
+        "material": "OakLight",
+        "face": "south"
+      },
+      {
+        "id": "north_corner_door_1",
+        "role": "base-front",
+        "x": 796.7,
+        "y": 1190.2,
+        "zCm": 11,
+        "w": 32.1,
+        "d": 1.8,
+        "hCm": 74.6,
+        "material": "OakLight",
+        "face": "south"
+      },
+      {
+        "id": "north_corner_plinth",
+        "role": "plinth",
+        "x": 764,
+        "y": 1127,
+        "zCm": 0,
+        "w": 65,
+        "d": 58,
+        "hCm": 10,
+        "material": "Charcoal",
+        "face": "south"
+      },
+      {
+        "id": "east_sink_floor",
+        "role": "base-panel",
+        "x": 764,
+        "y": 1192,
+        "zCm": 10,
+        "w": 65,
+        "d": 132,
+        "hCm": 1.8,
+        "material": "Cream",
+        "face": "west"
+      },
+      {
+        "id": "east_sink_back",
+        "role": "base-panel",
+        "x": 827.2,
+        "y": 1192,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 132,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "west"
+      },
+      {
+        "id": "east_sink_n",
+        "role": "base-panel",
+        "x": 764,
+        "y": 1192,
+        "zCm": 10,
+        "w": 65,
+        "d": 1.8,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "west"
+      },
+      {
+        "id": "east_sink_s",
+        "role": "base-panel",
+        "x": 764,
+        "y": 1322.2,
+        "zCm": 10,
+        "w": 65,
+        "d": 1.8,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "west"
+      },
+      {
+        "id": "east_sink_door_0",
+        "role": "base-front",
+        "x": 764,
+        "y": 1192.2,
+        "zCm": 11,
+        "w": 1.8,
+        "d": 43.6,
+        "hCm": 74.6,
+        "material": "OakLight",
+        "face": "west"
+      },
+      {
+        "id": "east_sink_door_1",
+        "role": "base-front",
+        "x": 764,
+        "y": 1236.2,
+        "zCm": 11,
+        "w": 1.8,
+        "d": 43.6,
+        "hCm": 74.6,
+        "material": "OakLight",
+        "face": "west"
+      },
+      {
+        "id": "east_sink_door_2",
+        "role": "base-front",
+        "x": 764,
+        "y": 1280.2,
+        "zCm": 11,
+        "w": 1.8,
+        "d": 43.6,
+        "hCm": 74.6,
+        "material": "OakLight",
+        "face": "west"
+      },
+      {
+        "id": "east_sink_plinth",
+        "role": "plinth",
+        "x": 771,
+        "y": 1192,
+        "zCm": 0,
+        "w": 58,
+        "d": 132,
+        "hCm": 10,
+        "material": "Charcoal",
+        "face": "west"
+      },
+      {
+        "id": "south_hob_floor",
+        "role": "base-panel",
+        "x": 602,
+        "y": 1324,
+        "zCm": 10,
+        "w": 92,
+        "d": 65,
+        "hCm": 1.8,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_hob_back",
+        "role": "base-panel",
+        "x": 602,
+        "y": 1387.2,
+        "zCm": 10,
+        "w": 92,
+        "d": 1.8,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_hob_w",
+        "role": "base-panel",
+        "x": 602,
+        "y": 1324,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_hob_e",
+        "role": "base-panel",
+        "x": 692.2,
+        "y": 1324,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_hob_door_0",
+        "role": "base-front",
+        "x": 602.2,
+        "y": 1324,
+        "zCm": 11,
+        "w": 45.6,
+        "d": 1.8,
+        "hCm": 74.6,
+        "material": "OakLight",
+        "face": "north"
+      },
+      {
+        "id": "south_hob_door_1",
+        "role": "base-front",
+        "x": 648.2,
+        "y": 1324,
+        "zCm": 11,
+        "w": 45.6,
+        "d": 1.8,
+        "hCm": 74.6,
+        "material": "OakLight",
+        "face": "north"
+      },
+      {
+        "id": "south_hob_plinth",
+        "role": "plinth",
+        "x": 602,
+        "y": 1331,
+        "zCm": 0,
+        "w": 92,
+        "d": 58,
+        "hCm": 10,
+        "material": "Charcoal",
+        "face": "north"
+      },
+      {
+        "id": "south_adjustment_floor",
+        "role": "adjustment-panel",
+        "x": 694,
+        "y": 1324,
+        "zCm": 10,
+        "w": 45,
+        "d": 65,
+        "hCm": 1.8,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_adjustment_back",
+        "role": "adjustment-panel",
+        "x": 694,
+        "y": 1387.2,
+        "zCm": 10,
+        "w": 45,
+        "d": 1.8,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_adjustment_w",
+        "role": "adjustment-panel",
+        "x": 694,
+        "y": 1324,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_adjustment_e",
+        "role": "adjustment-panel",
+        "x": 737.2,
+        "y": 1324,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_adjustment_door_0",
+        "role": "adjustment-front",
+        "x": 694.2,
+        "y": 1324,
+        "zCm": 11,
+        "w": 44.6,
+        "d": 1.8,
+        "hCm": 74.6,
+        "material": "OakLight",
+        "face": "north"
+      },
+      {
+        "id": "south_adjustment_plinth",
+        "role": "plinth",
+        "x": 694,
+        "y": 1331,
+        "zCm": 0,
+        "w": 45,
+        "d": 58,
+        "hCm": 10,
+        "material": "Charcoal",
+        "face": "north"
+      },
+      {
+        "id": "south_prep_floor",
+        "role": "base-panel",
+        "x": 739,
+        "y": 1324,
+        "zCm": 10,
+        "w": 58,
+        "d": 65,
+        "hCm": 1.8,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_prep_back",
+        "role": "base-panel",
+        "x": 739,
+        "y": 1387.2,
+        "zCm": 10,
+        "w": 58,
+        "d": 1.8,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_prep_w",
+        "role": "base-panel",
+        "x": 739,
+        "y": 1324,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_prep_e",
+        "role": "base-panel",
+        "x": 795.2,
+        "y": 1324,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_prep_door_0",
+        "role": "base-front",
+        "x": 739.2,
+        "y": 1324,
+        "zCm": 11,
+        "w": 28.6,
+        "d": 1.8,
+        "hCm": 74.6,
+        "material": "OakLight",
+        "face": "north"
+      },
+      {
+        "id": "south_prep_door_1",
+        "role": "base-front",
+        "x": 768.2,
+        "y": 1324,
+        "zCm": 11,
+        "w": 28.6,
+        "d": 1.8,
+        "hCm": 74.6,
+        "material": "OakLight",
+        "face": "north"
+      },
+      {
+        "id": "south_prep_plinth",
+        "role": "plinth",
+        "x": 739,
+        "y": 1331,
+        "zCm": 0,
+        "w": 58,
+        "d": 58,
+        "hCm": 10,
+        "material": "Charcoal",
+        "face": "north"
+      },
+      {
+        "id": "south_corner_floor",
+        "role": "base-panel",
+        "x": 797,
+        "y": 1324,
+        "zCm": 10,
+        "w": 32,
+        "d": 65,
+        "hCm": 1.8,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_corner_back",
+        "role": "base-panel",
+        "x": 797,
+        "y": 1387.2,
+        "zCm": 10,
+        "w": 32,
+        "d": 1.8,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_corner_w",
+        "role": "base-panel",
+        "x": 797,
+        "y": 1324,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_corner_e",
+        "role": "base-panel",
+        "x": 827.2,
+        "y": 1324,
+        "zCm": 10,
+        "w": 1.8,
+        "d": 65,
+        "hCm": 76,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_corner_door_0",
+        "role": "base-front",
+        "x": 797.2,
+        "y": 1324,
+        "zCm": 11,
+        "w": 31.6,
+        "d": 1.8,
+        "hCm": 74.6,
+        "material": "OakLight",
+        "face": "north"
+      },
+      {
+        "id": "south_corner_plinth",
+        "role": "plinth",
+        "x": 797,
+        "y": 1331,
+        "zCm": 0,
+        "w": 32,
+        "d": 58,
+        "hCm": 10,
+        "material": "Charcoal",
+        "face": "north"
+      },
+      {
+        "id": "east_upper_floor",
+        "role": "upper-panel",
+        "x": 797,
+        "y": 1207,
+        "zCm": 150,
+        "w": 32,
+        "d": 150,
+        "hCm": 1.8,
+        "material": "Cream",
+        "face": "west"
+      },
+      {
+        "id": "east_upper_top",
+        "role": "upper-panel",
+        "x": 797,
+        "y": 1207,
+        "zCm": 233.2,
+        "w": 32,
+        "d": 150,
+        "hCm": 1.8,
+        "material": "Cream",
+        "face": "west"
+      },
+      {
+        "id": "east_upper_back",
+        "role": "upper-panel",
+        "x": 827.2,
+        "y": 1207,
+        "zCm": 150,
+        "w": 1.8,
+        "d": 150,
+        "hCm": 85,
+        "material": "Cream",
+        "face": "west"
+      },
+      {
+        "id": "east_upper_n",
+        "role": "upper-panel",
+        "x": 797,
+        "y": 1207,
+        "zCm": 150,
+        "w": 32,
+        "d": 1.8,
+        "hCm": 85,
+        "material": "Cream",
+        "face": "west"
+      },
+      {
+        "id": "east_upper_s",
+        "role": "upper-panel",
+        "x": 797,
+        "y": 1355.2,
+        "zCm": 150,
+        "w": 32,
+        "d": 1.8,
+        "hCm": 85,
+        "material": "Cream",
+        "face": "west"
+      },
+      {
+        "id": "east_upper_door_0",
+        "role": "upper-front",
+        "x": 797,
+        "y": 1207.2,
+        "zCm": 151,
+        "w": 1.8,
+        "d": 37.1,
+        "hCm": 83.6,
+        "material": "Cream",
+        "face": "west"
+      },
+      {
+        "id": "east_upper_door_1",
+        "role": "upper-front",
+        "x": 797,
+        "y": 1244.7,
+        "zCm": 151,
+        "w": 1.8,
+        "d": 37.1,
+        "hCm": 83.6,
+        "material": "Cream",
+        "face": "west"
+      },
+      {
+        "id": "east_upper_door_2",
+        "role": "upper-front",
+        "x": 797,
+        "y": 1282.2,
+        "zCm": 151,
+        "w": 1.8,
+        "d": 37.1,
+        "hCm": 83.6,
+        "material": "Cream",
+        "face": "west"
+      },
+      {
+        "id": "east_upper_door_3",
+        "role": "upper-front",
+        "x": 797,
+        "y": 1319.7,
+        "zCm": 151,
+        "w": 1.8,
+        "d": 37.1,
+        "hCm": 83.6,
+        "material": "Cream",
+        "face": "west"
+      },
+      {
+        "id": "south_upper_floor",
+        "role": "upper-panel",
+        "x": 739,
+        "y": 1357,
+        "zCm": 150,
+        "w": 58,
+        "d": 32,
+        "hCm": 1.8,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_upper_top",
+        "role": "upper-panel",
+        "x": 739,
+        "y": 1357,
+        "zCm": 233.2,
+        "w": 58,
+        "d": 32,
+        "hCm": 1.8,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_upper_back",
+        "role": "upper-panel",
+        "x": 739,
+        "y": 1387.2,
+        "zCm": 150,
+        "w": 58,
+        "d": 1.8,
+        "hCm": 85,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_upper_w",
+        "role": "upper-panel",
+        "x": 739,
+        "y": 1357,
+        "zCm": 150,
+        "w": 1.8,
+        "d": 32,
+        "hCm": 85,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_upper_e",
+        "role": "upper-panel",
+        "x": 795.2,
+        "y": 1357,
+        "zCm": 150,
+        "w": 1.8,
+        "d": 32,
+        "hCm": 85,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_upper_door_0",
+        "role": "upper-front",
+        "x": 739.2,
+        "y": 1357,
+        "zCm": 151,
+        "w": 28.6,
+        "d": 1.8,
+        "hCm": 83.6,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "south_upper_door_1",
+        "role": "upper-front",
+        "x": 768.2,
+        "y": 1357,
+        "zCm": 151,
+        "w": 28.6,
+        "d": 1.8,
+        "hCm": 83.6,
+        "material": "Cream",
+        "face": "north"
+      },
+      {
+        "id": "east_splash",
+        "role": "backsplash",
+        "x": 827.8,
+        "y": 1174,
+        "zCm": 89,
+        "w": 1.2,
+        "d": 183,
+        "hCm": 61,
+        "material": "Tile"
+      },
+      {
+        "id": "south_splash",
+        "role": "backsplash",
+        "x": 602,
+        "y": 1387.8,
+        "zCm": 89,
+        "w": 227,
+        "d": 1.2,
+        "hCm": 61,
+        "material": "Tile"
+      }
+    ],
+    "appliances": [
+      {
+        "id": "kitchen_fridge",
+        "type": "fridge",
+        "x": 550,
+        "y": 1132,
+        "w": 65,
+        "d": 60,
+        "heightCm": 190,
+        "zCm": 0,
+        "face": "south",
+        "local": {
+          "x": 8,
+          "y": 5,
+          "w": 65,
+          "d": 60
+        },
+        "dimensionStatus": "user-confirmed-body",
+        "hinge": "east-provisional"
+      },
+      {
+        "id": "kitchen_dishwasher",
+        "type": "dishwasher",
+        "x": 627,
+        "y": 1132,
+        "w": 60,
+        "d": 60,
+        "heightCm": 80.5,
+        "zCm": 0,
+        "face": "south",
+        "local": {
+          "x": 85,
+          "y": 5,
+          "w": 60,
+          "d": 60
+        },
+        "dimensionStatus": "user-confirmed-body"
+      },
+      {
+        "id": "kitchen_double_sink",
+        "type": "doubleSink",
+        "x": 774,
+        "y": 1216,
+        "w": 45,
+        "d": 78,
+        "heightCm": 20,
+        "zCm": 69,
+        "face": "west",
+        "local": {
+          "x": 187,
+          "y": 89,
+          "w": 45,
+          "d": 78
+        },
+        "dimensionStatus": "reference-only",
+        "referenceId": "franke-bxx220-74"
+      },
+      {
+        "id": "kitchen_hob",
+        "type": "gasHob",
+        "x": 612,
+        "y": 1335,
+        "w": 75,
+        "d": 45,
+        "heightCm": 5,
+        "zCm": 89,
+        "face": "north",
+        "local": {
+          "x": 70,
+          "y": 207,
+          "w": 75,
+          "d": 45
+        },
+        "dimensionStatus": "provisional"
+      },
+      {
+        "id": "kitchen_hood",
+        "type": "hood",
+        "x": 609.5,
+        "y": 1349,
+        "w": 80,
+        "d": 40,
+        "heightCm": 45,
+        "zCm": 155,
+        "face": "north",
+        "local": {
+          "x": 67.5,
+          "y": 221,
+          "w": 80,
+          "d": 40
+        },
+        "dimensionStatus": "provisional"
+      },
+      {
+        "id": "kitchen_heater",
+        "type": "waterHeater",
+        "x": 808.5,
+        "y": 1137,
+        "w": 20.5,
+        "d": 33,
+        "heightCm": 53,
+        "zCm": 132,
+        "face": "west",
+        "local": {
+          "x": 221.5,
+          "y": 10,
+          "w": 20.5,
+          "d": 33
+        },
+        "dimensionStatus": "reference-only",
+        "referenceId": "noritz-13ex31fex"
+      },
+      {
+        "id": "kitchen_tap",
+        "type": "faucet",
+        "x": 812,
+        "y": 1252,
+        "w": 15,
+        "d": 6,
+        "heightCm": 32,
+        "zCm": 89,
+        "face": "west",
+        "local": {
+          "x": 225,
+          "y": 125,
+          "w": 15,
+          "d": 6
+        },
+        "dimensionStatus": "provisional"
+      }
+    ],
+    "countertops": [
+      {
+        "id": "north_top",
+        "x": 622,
+        "y": 1127,
+        "w": 207,
+        "d": 65,
+        "zCm": 86,
+        "hCm": 3,
+        "material": "Stone",
+        "cutouts": []
+      },
+      {
+        "id": "east_top",
+        "x": 764,
+        "y": 1192,
+        "w": 65,
+        "d": 132,
+        "zCm": 86,
+        "hCm": 3,
+        "material": "Stone",
+        "cutouts": [
+          {
+            "x": 775,
+            "y": 1217,
+            "w": 43,
+            "d": 76
+          }
+        ]
+      },
+      {
+        "id": "south_top",
+        "x": 602,
+        "y": 1324,
+        "w": 227,
+        "d": 65,
+        "zCm": 86,
+        "hCm": 3,
+        "material": "Stone",
+        "cutouts": [
+          {
+            "x": 615,
+            "y": 1338,
+            "w": 69,
+            "d": 39
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      "本轮只改厨房家具与设备；全屋墙线未闭合，旧模型厨房2870×2620mm不代表实测。局部复尺净宽2420、净深2610mm用于保守占地核对；两者不得混作一张施工图。",
+      "全屋示意在中段保留450mm调整柜段；收窄至2420mm时须删减该段，不能把它算作已经确认的备餐宽度。完成墙厚、共墙、门窗基准闭合后再统一定位。",
+      "西南烟道暂估600×600mm、按墙体不可占用。烟道实际外包、检修口、排烟接口与止回阀未测；若更大，炉灶及柜宽必须重排。",
+      "冰箱650×600×1900mm、洗碗机600×600×805mm是用户提供的机器外廓，不是橱柜开孔尺寸。散热、管线、柜门厚度、踢脚及完整开门尺寸按最终型号说明书深化。",
+      "洗碗机独立在北侧台下，模型空腔620×650mm、净高860mm，无遮挡底板或背板；台面完成面890mm。以上安装余量待厂家确认，排水和电源不设在无法检修的机器正后方。",
+      "保守尺寸下南北台面间1310mm；若洗碗机门向前投影600mm，余710mm；若投影805mm，余505mm。均为敏感性示例而非实机开门保证，一次一人操作。",
+      "冰箱门暂按向东侧铰接、朝南开启；90°开门会侵入厨房入口投影，余约542mm，不宜同时进出。需确认实际铰链、开门角度、抽屉拉出和搬入路线。",
+      "双槽780×450×200mm借鉴弗兰卡BXX220-74，沿东墙纵向摆放；只是尺寸及外形参考，非已购物品。水槽下留排水空间，东侧柜不再放洗碗机。",
+      "燃气灶暂估750×450mm，南墙近烟道；油烟机暂估800mm宽，下沿1550mm。灶面、油烟机安装高度、两侧防火距离和燃气阀位置须按选定型号复核，未把烟道接口画成已确认。",
+      "灶右至东侧台面转角在保守布局里仅320mm直线台面，属于紧凑备餐；可用北侧及转角备餐，但不把旧模型多出的450mm当实际余量。",
+      "热水器按参考照片暂作壁挂燃气式，机身参考530×330×205mm；型号/能源未定。独立外露，不封进吊柜；检修和燃烧安全净距须厂家确认。",
+      "厨房与家政阳台之间为内窗，不是室外排气出口。燃气热水器必须有经专业确认的独立排烟通向室外，不能与油烟机/公共烟道混接，也不能排在封闭阳台内。",
+      "北侧窗洞1200×1300mm、窗台1000mm仍为原条件占位；吊柜不跨窗，东柜起点距北墙800mm、止于热水器之外。热水器与窗扇、阳台龙头/机器及全部柜门开启须现场核验。",
+      "效果图、局部占地校核和网页漫游均非施工或燃气安装图；湿区防水、电路、接地、燃气、排烟必须由有资质人员复核。"
+    ],
+    "dimensions": [
+      "冰箱：650W × 600D × 1900H mm（用户提供）",
+      "洗碗机：600W × 600D × 805H mm（用户提供）",
+      "台面暂定高890mm；洗碗机上方净高860mm",
+      "双槽参考780 × 450 × 200mm，尚未选定",
+      "烟道暂估600 × 600mm，不可利用",
+      "局部复尺2420 × 2610mm；全屋图旧边界待闭合"
+    ],
+    "references": [
+      {
+        "id": "franke-bxx220-74",
+        "title": "弗兰卡 BXX220-74 双槽 · 官方尺寸",
+        "url": "https://hschinaproduct.franke.com/list/post/86/",
+        "borrow": "780×450×200mm双槽，内盆420与298mm；仅作为可视尺寸参考，不等于选定型号。"
+      },
+      {
+        "id": "noritz-13ex31fex",
+        "title": "能率 13EX31FEX · 壁挂热水器尺寸参考",
+        "url": "https://www.noritz.com.cn/product/detail/?id=802",
+        "borrow": "530×330×205mm机身作为占位。能源、检修距离、独立排烟路线均待选型，不构成购买建议。"
+      },
+      {
+        "id": "rinnai-safety",
+        "title": "林内官方安装常见问题",
+        "url": "https://www.rinnai.com.cn/mobile/commonProblem3-baseKnowledge-page-2.html",
+        "borrow": "燃气热水器独立排烟至室外，不与厨房公共烟道混用；油烟机高度等按具体产品确认。"
+      }
+    ],
+    "render": "assets/schemes/family/kitchen-north.jpg"
   },
   "schemeId": "family",
   "layout": {
@@ -3462,6 +4659,25 @@
           2.75,
           1.35,
           13.55
+        ],
+        "horizontalFov": 90.0
+      }
+    },
+    {
+      "id": "kitchen-north",
+      "roomId": "kitchen",
+      "title": "北侧冰箱与洗碗机 · 窗边热水器",
+      "render": "assets/schemes/family/kitchen-north.jpg",
+      "interiorCamera": {
+        "position": [
+          6.25,
+          1.64,
+          12.9
+        ],
+        "target": [
+          7.03,
+          1.3,
+          11.38
         ],
         "horizontalFov": 90.0
       }
@@ -6113,9 +7329,99 @@
     "scope": "仅合并生活阳台、B书架、C推拉门与必要的客厅家具移位；亲子库、餐区、卧卫和低飘窗保留。"
   },
   "renderedViews": {
+    "kitchen": {
+      "sourceSha256": "b610d270058c753f765ad06867a92f4dbd3ca66e95f25e703db96a4e001484b1",
+      "baseBlendSha256": "4be9d3d28369d95dc0902141ed54252ac7c99850b9a1f99e325c4b465dbac96c",
+      "cameraState": {
+        "matrix": [
+          [
+            -0.8746823072433472,
+            0.10542789846658707,
+            -0.47309181094169617,
+            6.449999809265137
+          ],
+          [
+            -0.48469671607017517,
+            -0.1902550458908081,
+            0.8537400960922241,
+            -12.0
+          ],
+          [
+            -8.410568597128076e-08,
+            0.9760573506355286,
+            0.21751326322555542,
+            1.6399999856948853
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 17.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "69f4bcb4406a60eea3e260e71fb60f051979abd5ecc03b987f706445ebb73538",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "dc707ef1bb6f7a04db61fa8e0be57940fb5ef2ef8a4a4f4cef5216617fd8927a"
+    },
+    "kitchen-north": {
+      "sourceSha256": "b610d270058c753f765ad06867a92f4dbd3ca66e95f25e703db96a4e001484b1",
+      "baseBlendSha256": "4be9d3d28369d95dc0902141ed54252ac7c99850b9a1f99e325c4b465dbac96c",
+      "cameraState": {
+        "matrix": [
+          [
+            0.8896954655647278,
+            0.08911190927028656,
+            -0.44777342677116394,
+            6.25
+          ],
+          [
+            -0.45655447244644165,
+            0.17365391552448273,
+            -0.8725836873054504,
+            -12.899999618530273
+          ],
+          [
+            1.2481814692932858e-08,
+            0.9807667136192322,
+            0.19518354535102844,
+            1.6399999856948853
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 18.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "a786e5d4cc18bf235cab07fe554bf9fd0fd0e8f0934389608e3aca06f1a8f8d9",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "97c97a29e05abdd349caa778fcc53459a324c5a0be1bcd144d3c36630522ca4b"
+    },
     "overall": {
-      "sourceSha256": "273e18efebc5beeb38f8e7c2637c881fb0afac9dbdb76a1d1f46a61f1b829840",
-      "baseBlendSha256": "ee350d1f5013b2094993d08674de089e42037aa5bbeeb44f0fa84f83fbe3949e",
+      "sourceSha256": "b610d270058c753f765ad06867a92f4dbd3ca66e95f25e703db96a4e001484b1",
+      "baseBlendSha256": "4be9d3d28369d95dc0902141ed54252ac7c99850b9a1f99e325c4b465dbac96c",
       "cameraState": {
         "matrix": [
           [
@@ -6156,7 +7462,7 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "0b29c410f7885ae363162b59c4e10d47de696e942e23d0b5b0712347ea31bab2"
+      "imageSha256": "3131f96f35733f6b0dabcf39991eaf9223406ccc6bcbdb027829cd4f3158a436"
     },
     "living": {
       "sourceSha256": "273e18efebc5beeb38f8e7c2637c881fb0afac9dbdb76a1d1f46a61f1b829840",
@@ -6201,7 +7507,13 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "85d8fe979add67304f8e02c53b9a1c383982a73c8c7ac0fb214c4fd1ff278a1b"
+      "imageSha256": "85d8fe979add67304f8e02c53b9a1c383982a73c8c7ac0fb214c4fd1ff278a1b",
+      "retainedFrom": {
+        "commit": "92162a8cbc713f5ce72fa6632f37364328778253",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "living",
+        "reason": "kitchen-only-refresh; historical reference, not a current kitchen render"
+      }
     },
     "dining": {
       "sourceSha256": "273e18efebc5beeb38f8e7c2637c881fb0afac9dbdb76a1d1f46a61f1b829840",
@@ -6246,7 +7558,13 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "eb5ea9d5b737d7e3a85bae22a51f853a29cf6bd0e54e6540859d322837e7a98e"
+      "imageSha256": "eb5ea9d5b737d7e3a85bae22a51f853a29cf6bd0e54e6540859d322837e7a98e",
+      "retainedFrom": {
+        "commit": "92162a8cbc713f5ce72fa6632f37364328778253",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "dining",
+        "reason": "kitchen-only-refresh; historical reference, not a current kitchen render"
+      }
     },
     "master": {
       "sourceSha256": "273e18efebc5beeb38f8e7c2637c881fb0afac9dbdb76a1d1f46a61f1b829840",
@@ -6291,7 +7609,13 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "ad5c7a906d76e58ea83e2dba7f97bc0e012cfdefeef8d1a23b1dc478f29e026f"
+      "imageSha256": "ad5c7a906d76e58ea83e2dba7f97bc0e012cfdefeef8d1a23b1dc478f29e026f",
+      "retainedFrom": {
+        "commit": "92162a8cbc713f5ce72fa6632f37364328778253",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "master",
+        "reason": "kitchen-only-refresh; historical reference, not a current kitchen render"
+      }
     },
     "bedroom-b": {
       "sourceSha256": "273e18efebc5beeb38f8e7c2637c881fb0afac9dbdb76a1d1f46a61f1b829840",
@@ -6336,7 +7660,13 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "3e97c353338103cdb265eb3e574a18074dc527a0dd8716b90bd9cc246228c3cc"
+      "imageSha256": "3e97c353338103cdb265eb3e574a18074dc527a0dd8716b90bd9cc246228c3cc",
+      "retainedFrom": {
+        "commit": "92162a8cbc713f5ce72fa6632f37364328778253",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "bedroom-b",
+        "reason": "kitchen-only-refresh; historical reference, not a current kitchen render"
+      }
     },
     "study": {
       "sourceSha256": "273e18efebc5beeb38f8e7c2637c881fb0afac9dbdb76a1d1f46a61f1b829840",
@@ -6381,52 +7711,13 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "96f744d9ceba45112b4ff462c122a9073ba5406cc15df7c9a87d19b5b29bf9b5"
-    },
-    "kitchen": {
-      "sourceSha256": "273e18efebc5beeb38f8e7c2637c881fb0afac9dbdb76a1d1f46a61f1b829840",
-      "baseBlendSha256": "ee350d1f5013b2094993d08674de089e42037aa5bbeeb44f0fa84f83fbe3949e",
-      "cameraState": {
-        "matrix": [
-          [
-            0.6930155158042908,
-            0.026806147769093513,
-            -0.7204241156578064,
-            6.0
-          ],
-          [
-            -0.7209226489067078,
-            0.025768503546714783,
-            -0.6925362944602966,
-            -12.699999809265137
-          ],
-          [
-            2.0567794578596477e-08,
-            0.9993084669113159,
-            0.03718313202261925,
-            1.600000023841858
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "lens": 20.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
-      },
-      "cameraHash": "3a9bf12cf9f4a2a554680d7d0a915bc964b9198423ef33ce0e6460f43e20e578",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "6d07a4a94a174cf44465d43c5fad65716695af170476e8f7063fe0550afc9353"
+      "imageSha256": "96f744d9ceba45112b4ff462c122a9073ba5406cc15df7c9a87d19b5b29bf9b5",
+      "retainedFrom": {
+        "commit": "92162a8cbc713f5ce72fa6632f37364328778253",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "study",
+        "reason": "kitchen-only-refresh; historical reference, not a current kitchen render"
+      }
     },
     "master-bath": {
       "sourceSha256": "273e18efebc5beeb38f8e7c2637c881fb0afac9dbdb76a1d1f46a61f1b829840",
@@ -6471,7 +7762,13 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "a0c39a0e9c792e7b236f7fad6a645d8f9c5b58913403a40ea787f9b16e376b26"
+      "imageSha256": "a0c39a0e9c792e7b236f7fad6a645d8f9c5b58913403a40ea787f9b16e376b26",
+      "retainedFrom": {
+        "commit": "92162a8cbc713f5ce72fa6632f37364328778253",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "master-bath",
+        "reason": "kitchen-only-refresh; historical reference, not a current kitchen render"
+      }
     },
     "guest-bath": {
       "sourceSha256": "273e18efebc5beeb38f8e7c2637c881fb0afac9dbdb76a1d1f46a61f1b829840",
@@ -6516,7 +7813,13 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "e4bfc0af54f908887272f451d2528a4af18b653f31e591ebc75095264eaf876b"
+      "imageSha256": "e4bfc0af54f908887272f451d2528a4af18b653f31e591ebc75095264eaf876b",
+      "retainedFrom": {
+        "commit": "92162a8cbc713f5ce72fa6632f37364328778253",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "guest-bath",
+        "reason": "kitchen-only-refresh; historical reference, not a current kitchen render"
+      }
     },
     "balcony": {
       "sourceSha256": "273e18efebc5beeb38f8e7c2637c881fb0afac9dbdb76a1d1f46a61f1b829840",
@@ -6561,7 +7864,13 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "5954b8f13fa26ccd6c3bcda02366946a35d5315e208b559c0cc6ebd752fffa65"
+      "imageSha256": "5954b8f13fa26ccd6c3bcda02366946a35d5315e208b559c0cc6ebd752fffa65",
+      "retainedFrom": {
+        "commit": "92162a8cbc713f5ce72fa6632f37364328778253",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "balcony",
+        "reason": "kitchen-only-refresh; historical reference, not a current kitchen render"
+      }
     },
     "bay-master": {
       "sourceSha256": "273e18efebc5beeb38f8e7c2637c881fb0afac9dbdb76a1d1f46a61f1b829840",
@@ -6606,7 +7915,13 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "681ae979fad9434d85328adf40b2fb291087557198b24f278fcbe91cf73aadce"
+      "imageSha256": "681ae979fad9434d85328adf40b2fb291087557198b24f278fcbe91cf73aadce",
+      "retainedFrom": {
+        "commit": "92162a8cbc713f5ce72fa6632f37364328778253",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "bay-master",
+        "reason": "kitchen-only-refresh; historical reference, not a current kitchen render"
+      }
     },
     "bay-tea": {
       "sourceSha256": "273e18efebc5beeb38f8e7c2637c881fb0afac9dbdb76a1d1f46a61f1b829840",
@@ -6651,7 +7966,13 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "dfca7d9432a25a1b3549d4525aa88c16915406fc84308c6b7b1703fa979d9bf8"
+      "imageSha256": "dfca7d9432a25a1b3549d4525aa88c16915406fc84308c6b7b1703fa979d9bf8",
+      "retainedFrom": {
+        "commit": "92162a8cbc713f5ce72fa6632f37364328778253",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "bay-tea",
+        "reason": "kitchen-only-refresh; historical reference, not a current kitchen render"
+      }
     },
     "bay-living": {
       "sourceSha256": "273e18efebc5beeb38f8e7c2637c881fb0afac9dbdb76a1d1f46a61f1b829840",
@@ -6696,7 +8017,13 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "e3d203b0d177c4db71bf5a0fcf073536838dadd7ce6d10d0c99d546a20ebd063"
+      "imageSha256": "e3d203b0d177c4db71bf5a0fcf073536838dadd7ce6d10d0c99d546a20ebd063",
+      "retainedFrom": {
+        "commit": "92162a8cbc713f5ce72fa6632f37364328778253",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "bay-living",
+        "reason": "kitchen-only-refresh; historical reference, not a current kitchen render"
+      }
     },
     "entry-storage": {
       "sourceSha256": "273e18efebc5beeb38f8e7c2637c881fb0afac9dbdb76a1d1f46a61f1b829840",
@@ -6741,7 +8068,13 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "4cf3e7f2dee0a91e8a88a47cc7b559ee6494e23241c29bfe4197ef767bc67462"
+      "imageSha256": "4cf3e7f2dee0a91e8a88a47cc7b559ee6494e23241c29bfe4197ef767bc67462",
+      "retainedFrom": {
+        "commit": "92162a8cbc713f5ce72fa6632f37364328778253",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "entry-storage",
+        "reason": "kitchen-only-refresh; historical reference, not a current kitchen render"
+      }
     },
     "sideboard": {
       "sourceSha256": "273e18efebc5beeb38f8e7c2637c881fb0afac9dbdb76a1d1f46a61f1b829840",
@@ -6786,7 +8119,13 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "1f7e127cf55330e3a5805ce2704f64f1f464a8ff9fbf2fbecca9637e78d7c4ad"
+      "imageSha256": "1f7e127cf55330e3a5805ce2704f64f1f464a8ff9fbf2fbecca9637e78d7c4ad",
+      "retainedFrom": {
+        "commit": "92162a8cbc713f5ce72fa6632f37364328778253",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "sideboard",
+        "reason": "kitchen-only-refresh; historical reference, not a current kitchen render"
+      }
     },
     "suite-entry": {
       "sourceSha256": "273e18efebc5beeb38f8e7c2637c881fb0afac9dbdb76a1d1f46a61f1b829840",
@@ -6831,7 +8170,13 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "574b9dbd6eb8dd572662b47cc3f75f5a29bdf4b981d8188c705d33fd182dacbd"
+      "imageSha256": "574b9dbd6eb8dd572662b47cc3f75f5a29bdf4b981d8188c705d33fd182dacbd",
+      "retainedFrom": {
+        "commit": "92162a8cbc713f5ce72fa6632f37364328778253",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "suite-entry",
+        "reason": "kitchen-only-refresh; historical reference, not a current kitchen render"
+      }
     },
     "storage-library": {
       "sourceSha256": "273e18efebc5beeb38f8e7c2637c881fb0afac9dbdb76a1d1f46a61f1b829840",
@@ -6876,7 +8221,13 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "4fda5116f40fc6d129f2ff5f149d7a45f367902cdfde8b62e044fdae4f627569"
+      "imageSha256": "4fda5116f40fc6d129f2ff5f149d7a45f367902cdfde8b62e044fdae4f627569",
+      "retainedFrom": {
+        "commit": "92162a8cbc713f5ce72fa6632f37364328778253",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "storage-library",
+        "reason": "kitchen-only-refresh; historical reference, not a current kitchen render"
+      }
     },
     "laundry-detail": {
       "sourceSha256": "273e18efebc5beeb38f8e7c2637c881fb0afac9dbdb76a1d1f46a61f1b829840",
@@ -6921,7 +8272,13 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "e9e684342bd1539fd48138a40b843a5743867c5b92b6bb5b191eecc2e9c6a6de"
+      "imageSha256": "e9e684342bd1539fd48138a40b843a5743867c5b92b6bb5b191eecc2e9c6a6de",
+      "retainedFrom": {
+        "commit": "92162a8cbc713f5ce72fa6632f37364328778253",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "laundry-detail",
+        "reason": "kitchen-only-refresh; historical reference, not a current kitchen render"
+      }
     },
     "living-wall": {
       "sourceSha256": "273e18efebc5beeb38f8e7c2637c881fb0afac9dbdb76a1d1f46a61f1b829840",
@@ -6966,10 +8323,16 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "c2359dfd153dc0d2aa8098baa757e4cb8ee80d2a997b8d922d517db1798d521b"
+      "imageSha256": "c2359dfd153dc0d2aa8098baa757e4cb8ee80d2a997b8d922d517db1798d521b",
+      "retainedFrom": {
+        "commit": "92162a8cbc713f5ce72fa6632f37364328778253",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "living-wall",
+        "reason": "kitchen-only-refresh; historical reference, not a current kitchen render"
+      }
     }
   },
-  "baseBlendSha256": "ee350d1f5013b2094993d08674de089e42037aa5bbeeb44f0fa84f83fbe3949e",
+  "baseBlendSha256": "4be9d3d28369d95dc0902141ed54252ac7c99850b9a1f99e325c4b465dbac96c",
   "renderSpec": {
     "engine": "CYCLES",
     "width": 960,

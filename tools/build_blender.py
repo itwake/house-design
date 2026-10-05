@@ -1506,6 +1506,10 @@ def washer(f):
 def furnish(data):
     global CURRENT_ROOM
     for f in data["furniture"]:
+        if f.get("kitchenFitoutId"):
+            if f["kitchenFitoutId"] != data.get("kitchenFitout", {}).get("id"):
+                raise ValueError(f"Kitchen wrapper {f['name']} has no matching detailed fitout")
+            continue
         if f.get("diningFitoutId"):
             continue  # Family helper owns retractable table/chairs; dining_anchor still reads source.
         if f.get("storageFitoutId"):
@@ -1591,6 +1595,11 @@ def furnish(data):
         cylinder("Pendant opal diffuser",x,py,z-.065,r*.90,.01,"Lamp")
     if not data.get("storageFitouts"):
         framed_art(2.135,10.30,1.17,.6,.75,"west")
+    if data.get("kitchenFitout"):
+        spec=importlib.util.spec_from_file_location("kitchen_fitout",ROOT/"tools/kitchen_fitout.py")
+        kitchen=importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(kitchen)
+        kitchen.build(data,globals())
 
 
 VIEWS = {
@@ -1770,7 +1779,24 @@ def manifest(data, openings, src):
                 room["description"]=revision["roomDescriptions"][room["id"]]
         if revision.get("summary"):
             result["notes"].append(revision["summary"])
+    if data.get("kitchenFitout"):
+        result["kitchenFitout"]=data["kitchenFitout"]
+        for room in result["rooms"]:
+            if room["id"]=="kitchen":room["description"]=data["kitchenFitout"]["summary"]
+        result["notes"].append(data["kitchenFitout"]["summary"])
     (MODEL_DIR/"scene-manifest.json").write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding="utf-8")
+
+
+def kitchen_manifest_detail(data):
+    if not data.get('kitchenFitout'):return
+    path=MODEL_DIR/'scene-manifest.json'
+    result=json.loads(path.read_text(encoding='utf-8'))
+    pos,target,lens=VIEWS['kitchen-north']
+    result['layoutDetails']=[v for v in result.get('layoutDetails',[]) if v['id']!='kitchen-north']+[{
+        'id':'kitchen-north','roomId':'kitchen','title':'北侧冰箱与洗碗机 · 窗边热水器',
+        'render':data['kitchenFitout']['render'],
+        'interiorCamera':{'position':three(pos),'target':three(target),'horizontalFov':round(math.degrees(2*math.atan(36/(2*lens))),2)}}]
+    path.write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
 
 
 def build(args):
@@ -1799,6 +1825,7 @@ def build(args):
     scene.camera=bpy.data.objects["overall"]
     configure_render(args)
     manifest(data,openings,src)
+    kitchen_manifest_detail(data)
     bpy.ops.wm.save_as_mainfile(filepath=str(MODEL_DIR/"huiyayuan-wood.blend"),compress=True)
     bpy.ops.object.select_all(action="DESELECT")
     for obj in scene.objects:
@@ -1872,6 +1899,9 @@ def render(args):
     # inspectable state only by reading this same saved scene and matching
     # their exact recorded hash; never retrofit a guessed camera to an image.
     for previous_name,record in current_manifest.get("renderedViews",{}).items():
+        # A retained frame explicitly belongs to its original historical scene.
+        # Re-rendering other views must not retrofit its camera/model evidence.
+        if record.get('retainedFrom') and previous_name not in names:continue
         cam=bpy.data.objects.get(previous_name)
         if not cam or cam.type!="CAMERA":raise ValueError("Recorded camera is missing: "+previous_name)
         state=render_camera_state(cam)

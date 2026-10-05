@@ -4,7 +4,7 @@
  * node tools/test_measurement_r2_ui.cjs --native --base=http://127.0.0.1:4186/
  * node tools/test_measurement_r2_ui.cjs --sources-only  # all 3 final assets, no browser
  * --browser alone blocks GLBs (UI-only); --native loads final GLBs and requires
- * all 3 schemes' final sources, native models and complete freshly rendered views.
+ * all 3 schemes' final sources/native models and audited fresh or historical views.
  * Native browser defaults to family at 390/1440 to reduce CPU; --schemes/--widths override.
  */
 const assert=require('node:assert/strict');
@@ -12,6 +12,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const vm=require('node:vm');
 const crypto=require('node:crypto');
+const {execFileSync}=require('node:child_process');
 const root=path.resolve(__dirname,'..');
 const source=fs.readFileSync(path.join(root,'studio.js'),'utf8');
 const native=process.argv.includes('--native');
@@ -21,7 +22,11 @@ const revision=source.match(/const UI_REVISION = '([^']+)'/)[1];
 const surveyRevision='3.6.1';
 const catalog=JSON.parse(fs.readFileSync(path.join(root,'models/design-schemes.json'),'utf8'));
 const purchasedSource=JSON.parse(fs.readFileSync(path.join(root,catalog.purchasedFurnitureSource),'utf8'));
-const expectedViewCounts={wood:15,family:19,laundry:18};
+const expectedViewCounts={wood:16,family:20,laundry:19};
+const kitchenRetainedCommit='92162a8cbc713f5ce72fa6632f37364328778253';
+const kitchenFreshViews=new Set(['overall','kitchen','kitchen-north']);
+const kitchenRetainedReason='kitchen-only-refresh; historical reference, not a current kitchen render';
+const gitBytes=asset=>execFileSync('git',['show',`${kitchenRetainedCommit}:${asset}`],{cwd:root,maxBuffer:30*1024*1024});
 const defaultRenderViews=['overall','living','dining','master','bedroom-b','study','kitchen','master-bath','guest-bath','balcony','bay-master','bay-tea','bay-living','entry-storage','sideboard'];
 // Added only to the routed test response; production bundle remains untouched.
 const hooks=`\nwindow.__measurementR2QA={
@@ -56,7 +61,7 @@ sandbox.data.measurementRevision.roomDescriptions.bath_1.description='窗高确�
 assert.equal(helpers.measurementRoomDescription('bath_1'),'西门通套内玄关。 窗高确认，定位未核。','layout and new survey facts both retained');
 assert.equal(revision,catalog.version,'viewer cache follows the current product/catalog release');
 assert.equal(fs.readFileSync(path.join(root,'schemes.js'),'utf8').match(/SCHEME_REVISION='([^']+)'/)[1],revision,'catalog cache follows UI release');
-assert.equal(purchasedSource.version,revision,'purchased source follows current release');
+assert.equal(purchasedSource.version,'3.7.0','purchased evidence keeps its own verified release when the kitchen changes');
 const provenanceSource=source.match(/const renderProvenance = view => \{[\s\S]*?\r?\n};/)[0];
 const provenanceSandbox={data:{measurementRevision:{version:surveyRevision,date:'2026-10-04'},purchasedFurnitureRevision:{version:purchasedSource.version}},manifest:{measurementRevision:{version:surveyRevision,date:'2026-10-04'},purchasedFurnitureRevision:{version:purchasedSource.version},sourceSha256:'fresh-source',renderedViews:{living:{sourceSha256:'fresh-source'}}},metadataOnlyRenderProof:null};
 const provenance=vm.runInNewContext(provenanceSource+';renderProvenance',provenanceSandbox);
@@ -69,6 +74,10 @@ for(const invalid of [undefined,{version:'previous-purchased-model'}]){
 provenanceSandbox.manifest.purchasedFurnitureRevision={version:purchasedSource.version};
 provenanceSandbox.manifest.measurementRevision={version:'old-survey',date:'2026-10-04'};
 assert.match(provenance('living'),/^复尺前参考图/,'survey synchronization remains independently required');
+provenanceSandbox.manifest.measurementRevision={version:surveyRevision,date:'2026-10-04'};
+provenanceSandbox.manifest.renderedViews.living={sourceSha256:'original-source',retainedFrom:{commit:kitchenRetainedCommit,manifest:'models/schemes/wood/scene-manifest.json',view:'living',reason:kitchenRetainedReason}};
+assert.match(provenance('living'),/^沿用历史模型图/,'explicit kitchen-scoped retained frame remains visibly historical');
+assert.match(provenance('living'),/仅局部复尺，非全屋实测/,'retained frame keeps partial-survey limitation');
 const exportFixture={measurementRevision:{},windows:[{id:'window_bath_1_east',measuredDimensions:{widthMm:501,heightMm:1401,sillMm:null,fullyLocated:false},placeholderDecision:{geometry:'保留旧窗示意',sillMm:1501,heightMm:801}},{id:'window_a',measurementStatus:{fullyLocated:false},designScenario:'西段861mm条件定位，东段881mm而实测871mm，保留10mm差值待核。台高另列。'}]};
 const exportNotes=helpers.windowEvidenceExportNotes(exportFixture);
 assert.equal(exportNotes.length,3,'two separate bath reminders and one master location note');
@@ -99,10 +108,24 @@ function jpegDimensions(raw){
 
 function auditFinalSources(){
   const audited=new Map();
+  let kitchenGuardPassed=false;
   assert.deepEqual(catalog.schemes.map(s=>s.id),['wood','family','laundry'],'all active sources audited, regardless of browser filters');
   for(const scheme of catalog.schemes){
     const sourceBytes=fs.readFileSync(path.join(root,scheme.geometrySource)),data=JSON.parse(sourceBytes),manifest=JSON.parse(fs.readFileSync(path.join(root,scheme.manifest),'utf8'));
     const sourceHash=sha256(sourceBytes),modelBytes=fs.readFileSync(path.join(root,scheme.model)),modelHash=sha256(modelBytes);
+    const kitchenRefresh=data.kitchenFitout?.version==='3.8.0';
+    let previousManifest;
+    if(kitchenRefresh){
+      assert.equal(data.version,'3.8.0',`${scheme.id}: kitchen reuse is limited to this release`);
+      assert.equal(data.kitchenFitout.id,'kitchen-20261005',`${scheme.id}: exact reviewed kitchen fitout`);
+      assert.deepEqual(manifest.kitchenFitout,data.kitchenFitout,`${scheme.id}: model and source share the exact reviewed kitchen fitout`);
+      if(!kitchenGuardPassed){
+        const guard=JSON.parse(execFileSync(process.execPath,[path.join(root,'tools/test_kitchen_fitout.mjs')],{cwd:root,encoding:'utf8',timeout:60000,maxBuffer:20*1024*1024}));
+        assert.equal(guard.passed,true,'historical image reuse requires independent kitchen/source/unchanged-architecture guard');
+        kitchenGuardPassed=true;
+      }
+      previousManifest=JSON.parse(gitBytes(scheme.manifest));
+    }
     assert.equal(data.measurementRevision.version,surveyRevision,`${scheme.id}: unchanged R2 survey source revision`);
     assert.equal(manifest.sourceSha256,sourceHash,`${scheme.id}: manifest matches exact source bytes`);
     assert.equal(manifest.measurementRevision.version,surveyRevision,`${scheme.id}: model survey revision`);
@@ -125,13 +148,30 @@ function auditFinalSources(){
     }
     assert.deepEqual(Object.keys(manifest.renderedViews||{}).sort(),[...expected].sort(),`${scheme.id}: all final renders required`);
     assert(!manifest.metadataOnlySourceRefresh,`${scheme.id}: R2 is rebuilt, not prior text-only proof`);
+    if(kitchenRefresh){
+      assert.deepEqual([...expected].sort(),[...Object.keys(previousManifest.renderedViews),'kitchen-north'].sort(),`${scheme.id}: only one new view added to reviewed 3.7.0 inventory`);
+      assert.deepEqual(expected.filter(view=>!Object.hasOwn(manifest.renderedViews[view],'retainedFrom')).sort(),[...kitchenFreshViews].sort(),`${scheme.id}: exactly three required fresh kitchen/overview views`);
+      assert.deepEqual(expected.filter(view=>Object.hasOwn(manifest.renderedViews[view],'retainedFrom')).sort(),expected.filter(view=>!kitchenFreshViews.has(view)).sort(),`${scheme.id}: every other view explicitly marked historical`);
+    }
     for(const view of expected){
       const record=manifest.renderedViews[view];
-      assert.equal(record.sourceSha256,sourceHash,`${scheme.id}/${view}: fresh source SHA`);
-      assert.equal(record.baseBlendSha256,manifest.baseBlendSha256,`${scheme.id}/${view}: fresh native Blend SHA`);
-      assert(!record.retainedFrom,`${scheme.id}/${view}: no historical geometry image`);
-      const image=fs.readFileSync(path.join(root,scheme.renderDirectory||`assets/schemes/${scheme.id}`,view+'.jpg'));
-      assert.equal(record.imageSha256,sha256(image),`${scheme.id}/${view}: exact current image hash`);
+      const imagePath=path.posix.join(scheme.renderDirectory||`assets/schemes/${scheme.id}`,view+'.jpg');
+      const image=fs.readFileSync(path.join(root,imagePath));
+      if(kitchenRefresh&&!kitchenFreshViews.has(view)){
+        assert.deepEqual(record.retainedFrom,{commit:kitchenRetainedCommit,manifest:scheme.manifest,view,reason:kitchenRetainedReason},`${scheme.id}/${view}: exact kitchen-scoped historical-reference marker`);
+        const original=previousManifest.renderedViews[view];
+        assert(original&&!Object.hasOwn(original,'retainedFrom'),`${scheme.id}/${view}: original 3.7.0 record was fresh`);
+        const {retainedFrom,...unchangedRecord}=record;
+        assert.deepEqual(unchangedRecord,original,`${scheme.id}/${view}: preserve original source, Blend, camera, render settings and image hash without retrofitting`);
+        const originalImage=gitBytes(imagePath);
+        assert(image.equals(originalImage),`${scheme.id}/${view}: retained JPEG bytes exactly equal original Git image`);
+        assert.equal(sha256(image),sha256(originalImage),`${scheme.id}/${view}: retained JPEG SHA matches original Git bytes`);
+      }else{
+        assert.equal(record.sourceSha256,sourceHash,`${scheme.id}/${view}: fresh source SHA`);
+        assert.equal(record.baseBlendSha256,manifest.baseBlendSha256,`${scheme.id}/${view}: fresh native Blend SHA`);
+        assert(!Object.hasOwn(record,'retainedFrom'),`${scheme.id}/${view}: required fresh view cannot carry a historical marker`);
+      }
+      assert.equal(record.imageSha256,sha256(image),`${scheme.id}/${view}: exact audited image hash`);
       assert.deepEqual(jpegDimensions(image),{width:scheme.renderSpec.width,height:scheme.renderSpec.height},`${scheme.id}/${view}: actual JPEG dimensions match declared resolution`);
       assert.equal(record.renderSpec.engine,'CYCLES',`${scheme.id}/${view}: Cycles render`);
       assert.equal(record.renderSpec.denoise,true,`${scheme.id}/${view}: denoised render`);
@@ -140,9 +180,9 @@ function auditFinalSources(){
       assert(record.renderSpec.samples>=scheme.renderSpec.samples&&scheme.renderSpec.samples>=8,`${scheme.id}/${view}: actual sample count meets declared minimum`);
     }
     audited.set(scheme.id,{scheme,data,manifest,sourceHash,modelHash,views:expected});
-    console.log(`PASS ${scheme.id}: final source/manifest/Blend/GLB + ${expected.length} exact current-source images (all-scheme disk audit)`);
+    console.log(`PASS ${scheme.id}: final source/manifest/Blend/GLB + ${kitchenRefresh?`3 exact current-source images and ${expected.length-3} unchanged historical references`:`${expected.length} exact current-source images`} (all-scheme disk audit)`);
   }
-  assert.equal([...audited.values()].reduce((total,item)=>total+item.views.length,0),52,'all 52 final purchased-furniture frames audited');
+  assert.equal([...audited.values()].reduce((total,item)=>total+item.views.length,0),55,'all 55 declared frames audited, including 9 fresh kitchen/overview views for the kitchen release');
   return audited;
 }
 
@@ -163,18 +203,19 @@ async function checkNativePage(page,audit,responses){
   assert.equal(await page.locator('#model-fallback').isVisible(),false,`${scheme.id}: no fallback presentation`);
   const captions=await page.evaluate(views=>Object.fromEntries(views.map(view=>[view,window.__measurementR2QA.provenance(view)])),views);
   for(const [view,caption]of Object.entries(captions)){
-    assert.match(caption,/^当前模型重渲/,`${scheme.id}/${view}: current source has current caption`);
+    const retained=Boolean(manifest.renderedViews[view].retainedFrom);
+    assert.match(caption,retained?/^沿用历史模型图/:/^当前模型重渲/,`${scheme.id}/${view}: visible caption agrees with audited fresh/historical provenance`);
     assert.match(caption,/仅局部复尺，非全屋实测/,`${scheme.id}/${view}: partial-survey limitation preserved`);
   }
-  const record=manifest.renderedViews['master-bath'];
-  const badCaptions=await page.evaluate(({record,measurementRevision,purchasedFurnitureRevision})=>({
-    oldSource:window.__measurementR2QA.provenanceWithRecord('master-bath',{...record,sourceSha256:'0'.repeat(64)}),
-    retained:window.__measurementR2QA.provenanceWithRecord('master-bath',{...record,retainedFrom:'prior-native-model'}),
-    unknown:window.__measurementR2QA.provenanceWithRecord('master-bath',{...record,sourceSha256:undefined}),
-    oldRevision:window.__measurementR2QA.provenanceWithRevision('master-bath',{...measurementRevision,version:'historical-test-revision'}),
-    oldPurchasedRevision:window.__measurementR2QA.provenanceWithPurchasedRevision('master-bath',{...purchasedFurnitureRevision,version:'historical-purchased-revision'}),
-    missingPurchasedRevision:window.__measurementR2QA.provenanceWithPurchasedRevision('master-bath',undefined)
-  }),{record,measurementRevision:manifest.measurementRevision,purchasedFurnitureRevision:manifest.purchasedFurnitureRevision});
+  const probeView=manifest.kitchenFitout?.version==='3.8.0'?'kitchen':'master-bath',record=manifest.renderedViews[probeView];
+  const badCaptions=await page.evaluate(({view,record,measurementRevision,purchasedFurnitureRevision})=>({
+    oldSource:window.__measurementR2QA.provenanceWithRecord(view,{...record,sourceSha256:'0'.repeat(64)}),
+    retained:window.__measurementR2QA.provenanceWithRecord(view,{...record,retainedFrom:'prior-native-model'}),
+    unknown:window.__measurementR2QA.provenanceWithRecord(view,{...record,sourceSha256:undefined}),
+    oldRevision:window.__measurementR2QA.provenanceWithRevision(view,{...measurementRevision,version:'historical-test-revision'}),
+    oldPurchasedRevision:window.__measurementR2QA.provenanceWithPurchasedRevision(view,{...purchasedFurnitureRevision,version:'historical-purchased-revision'}),
+    missingPurchasedRevision:window.__measurementR2QA.provenanceWithPurchasedRevision(view,undefined)
+  }),{view:probeView,record,measurementRevision:manifest.measurementRevision,purchasedFurnitureRevision:manifest.purchasedFurnitureRevision});
   assert.match(badCaptions.oldSource,/^沿用历史模型图/,'old-source image never presented as current');
   assert.match(badCaptions.retained,/^沿用历史模型图/,'retained image never presented as current');
   assert.match(badCaptions.unknown,/^效果图来源待核/,'unknown source not promoted');
@@ -258,12 +299,13 @@ async function browserTest(audited){
       }
       assert.equal(await page.locator('#render-measurement-warning').textContent(),note);
       if(native){
-        assert.match(await page.locator('#render-provenance').textContent(),/^当前模型重渲/,'visible current master-bath render caption');
+        const bathRecord=audited.get(scheme).manifest.renderedViews['master-bath'];
+        assert.match(await page.locator('#render-provenance').textContent(),bathRecord.retainedFrom?/^沿用历史模型图/:/^当前模型重渲/,'visible master-bath caption matches audited historical/current provenance');
         await page.waitForFunction(()=>{const image=document.getElementById('active-render');return image.complete&&image.naturalWidth>0});
         const imageURL=await page.locator('#active-render').getAttribute('src');
         const response=await page.request.get(imageURL),record=audited.get(scheme).manifest.renderedViews['master-bath'];
         assert(response.ok(),'master-bath image served successfully');
-        assert.equal(sha256(await response.body()),record.imageSha256,'displayed current effect image matches audited render bytes');
+        assert.equal(sha256(await response.body()),record.imageSha256,'displayed effect image matches audited fresh or historical bytes');
         if(screenshotDir){fs.mkdirSync(screenshotDir,{recursive:true});await page.screenshot({path:path.join(screenshotDir,`${scheme}-${width}-bath-warning.png`)});}
       }
       await page.locator('#enlarge-render').click();
