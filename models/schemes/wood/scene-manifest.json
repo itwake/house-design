@@ -1,10 +1,10 @@
 {
-  "version": "3.9.0",
+  "version": "3.12.0",
   "model": "models/schemes/wood/huiyayuan-wood.glb",
   "blend": "models/schemes/wood/huiyayuan-wood.blend",
   "units": "m",
   "source": "models/schemes/wood/design-data.json",
-  "sourceSha256": "4af3387ba299a7cc912f4ce23b267a9e155aec34b0befd13d76429b1a062c399",
+  "sourceSha256": "d6348456f0411bdc4eb6ac11bbe4828602260ddcef82a758dd080f1800699797",
   "bounds": {
     "min": [
       0.0,
@@ -662,27 +662,33 @@
       },
       "interiorCamera": {
         "position": [
-          7.52,
-          1.48,
-          9.81
+          6.82,
+          1.62,
+          10.08
         ],
         "target": [
-          7.55,
-          0.97,
-          10.65
+          8.12,
+          1.48,
+          10.18
         ],
-        "horizontalFov": 93.27,
-        "fov": 70.44
+        "horizontalFov": 96.73
       },
       "render": "assets/schemes/wood/balcony.jpg",
-      "description": "洗衣机600×530×840mm和烘干机600×600×840mm靠厨房墙落地并排，上方1420×750mm独立承重浅盆台，完成面980mm。原净宽1240mm，隔断条件外移287.5mm后按1527.5mm保守宽度排布；操作带约740mm，旧图多180mm不计可用。",
+      "description": "洗衣机600×530×840mm和烘干机600×600×840mm靠厨房墙落地并排，上方1420×750mm独立承重浅盆台，完成面980mm。原净宽1240mm，隔断条件外移287.5mm后按1527.5mm保守宽度排布；操作带约740mm，旧图多180mm不计可用。 北、东两面改正为矮墙上通透开口，保留防护、边柱和顶梁，不增封窗玻璃；标高及宽度暂估待复尺。",
       "features": [
-        "同一 Blender 模型生成交互与新渲染",
-        "奶白柜门与浅原木",
-        "全屋哑光瓷砖"
+        "北、东双面通透",
+        "保留矮墙与防护",
+        "开口标高暂估"
       ],
       "heightCm": 270.0,
-      "measurementNote": "本轮仅应用已确认局部复尺；房间轮廓与面积仍为旧模型参考，具体已应用与待核项目见复尺明细。"
+      "measurementNote": "本轮仅应用已确认局部复尺；房间轮廓与面积仍为旧模型参考，具体已应用与待核项目见复尺明细。",
+      "conditions": [
+        "本次纠正阳台北、东两面被画成整面实墙的错误：按业主照片表达下部矮墙、上部通透防护开口，保留边柱及顶梁；不是新拆墙或拆护栏方案。",
+        "矮墙高1100mm、开口高1350mm、上口2450mm均暂按照片估算；总高2700mm沿用旧模型。开口水平范围沿旧模型端点，不是实测净宽。",
+        "防护框、竖杆和间距仅为存在性示意，不作为防坠、承重、安装或规范验收依据；梁柱、矮墙、防护及排水管不得据模型擅改。",
+        "北侧借厅短墙仍保留；东面仅阳台段通透，厨房东墙、厨房与阳台内窗、生活阳台门及洗烘设备位置均不变。",
+        "未增加封窗玻璃、柜体或背景景观。窗外楼栋、管线及实际遮挡以现场为准，不承诺无遮拦远景。"
+      ]
     }
   ],
   "openings": [
@@ -1052,6 +1058,68 @@
       "notes": "原900mm门洞向北300mm、向南500mm拓宽；北端墙中心线剩240mm、南端800mm。南端距鞋柜起点50mm、南柜140mm，门套与承重/管线须现场核验，不能据图直接扩洞。",
       "sill": 0.0,
       "height": 2.2
+    },
+    {
+      "id": "balcony_north_opening",
+      "name": "生活阳台北向通透开口（矮墙及防护保留；尺寸暂估）",
+      "kind": "window",
+      "roomId": "balcony",
+      "connects": [
+        "balcony",
+        "outside"
+      ],
+      "windowType": "guarded-open-air",
+      "glazing": false,
+      "x1": 687,
+      "y1": 960,
+      "x2": 829,
+      "y2": 960,
+      "widthMm": 1420,
+      "sillCm": 110,
+      "heightCm": 135,
+      "grade": "C",
+      "dimensionsVerified": false,
+      "guard": {
+        "frameCm": 2,
+        "barWidthCm": 1.2,
+        "nominalSpacingCm": 10,
+        "status": "schematic-not-engineered"
+      },
+      "source": "2026-10-05业主标注图与阳台实景确认北、东两面上部通透；开口尺寸和标高暂估，不是实测。",
+      "notes": "保留下方矮墙、边柱、顶梁及防护示意；无玻璃、无新增遮挡柜。不是拆改施工图。",
+      "sill": 1.1,
+      "height": 1.35
+    },
+    {
+      "id": "balcony_east_opening",
+      "name": "生活阳台东向通透开口（矮墙及防护保留；尺寸暂估）",
+      "kind": "window",
+      "roomId": "balcony",
+      "connects": [
+        "balcony",
+        "outside"
+      ],
+      "windowType": "guarded-open-air",
+      "glazing": false,
+      "x1": 835,
+      "y1": 966,
+      "x2": 835,
+      "y2": 1115,
+      "widthMm": 1490,
+      "sillCm": 110,
+      "heightCm": 135,
+      "grade": "C",
+      "dimensionsVerified": false,
+      "guard": {
+        "frameCm": 2,
+        "barWidthCm": 1.2,
+        "nominalSpacingCm": 10,
+        "status": "schematic-not-engineered"
+      },
+      "source": "2026-10-05业主标注图与阳台实景确认北、东两面上部通透；开口尺寸和标高暂估，不是实测。",
+      "notes": "保留下方矮墙、边柱、顶梁及防护示意；无玻璃、无新增遮挡柜。不是拆改施工图。",
+      "sill": 1.1,
+      "height": 1.35
     }
   ],
   "design": {
@@ -1087,7 +1155,13 @@
     "阳台复尺原净宽1240mm；内隔断暂向客厅西移287.5mm后，局部保守净宽1527.5mm，配置1420mm台面。旧模型仍多180mm，东侧空余不计可用机位。内隔断可改性、尺寸共同定位与防水须复核。",
     "只借鉴方案三阳台外移门，不增加客厅书架。两机并排仍需实际开门排演，一次操作一台；机门全开不能保证双人通行。沙发和茶几西移200mm、北移450mm，保持完整尺寸，给阳台入口让位。",
     "浅盆后排水与存水弯空间须定制核验，台面下不能用立板或抽屉封死机器检修路径。",
-    "厨房内窗模型窗台1000mm、台面980mm仅差20mm；窗框、龙头及窗扇开启必须核对，龙头不能伸入玻璃面。"
+    "厨房内窗模型窗台1000mm、台面980mm仅差20mm；窗框、龙头及窗扇开启必须核对，龙头不能伸入玻璃面。",
+    "本次纠正阳台北、东两面被画成整面实墙的错误：按业主照片表达下部矮墙、上部通透防护开口，保留边柱及顶梁；不是新拆墙或拆护栏方案。",
+    "矮墙高1100mm、开口高1350mm、上口2450mm均暂按照片估算；总高2700mm沿用旧模型。开口水平范围沿旧模型端点，不是实测净宽。",
+    "防护框、竖杆和间距仅为存在性示意，不作为防坠、承重、安装或规范验收依据；梁柱、矮墙、防护及排水管不得据模型擅改。",
+    "北侧借厅短墙仍保留；东面仅阳台段通透，厨房东墙、厨房与阳台内窗、生活阳台门及洗烘设备位置均不变。",
+    "未增加封窗玻璃、柜体或背景景观。窗外楼栋、管线及实际遮挡以现场为准，不承诺无遮拦远景。",
+    "4张本轮阳台相关新帧；其余图保留完整旧来源，只是历史参考，不代表本轮阳台边界或重算采光。"
   ],
   "measurementRevision": {
     "date": "2026-10-04",
@@ -4380,55 +4454,60 @@
       }
     }
   ],
+  "balconyOpennessRevision": {
+    "id": "balcony-two-sided-open-20261005",
+    "version": "3.12.0",
+    "baselineCommit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
+    "topologyConfirmedByOwner": true,
+    "dimensionsVerified": false,
+    "constructionApproved": false,
+    "evidenceFiles": [
+      "188e6af399cb806e2e2453d96a983d86.png",
+      "33082a0817245f15ae9db5cb51f6cde4.jpg"
+    ],
+    "openingIds": [
+      "balcony_north_opening",
+      "balcony_east_opening"
+    ],
+    "northWall": [
+      681,
+      960,
+      835,
+      960
+    ],
+    "eastWall": [
+      835,
+      960,
+      835,
+      1395
+    ],
+    "estimatedSillCm": 110,
+    "estimatedOpeningHeightCm": 135,
+    "estimatedOpeningTopCm": 245,
+    "originalWallHeightCm": 270,
+    "conditions": [
+      "本次纠正阳台北、东两面被画成整面实墙的错误：按业主照片表达下部矮墙、上部通透防护开口，保留边柱及顶梁；不是新拆墙或拆护栏方案。",
+      "矮墙高1100mm、开口高1350mm、上口2450mm均暂按照片估算；总高2700mm沿用旧模型。开口水平范围沿旧模型端点，不是实测净宽。",
+      "防护框、竖杆和间距仅为存在性示意，不作为防坠、承重、安装或规范验收依据；梁柱、矮墙、防护及排水管不得据模型擅改。",
+      "北侧借厅短墙仍保留；东面仅阳台段通透，厨房东墙、厨房与阳台内窗、生活阳台门及洗烘设备位置均不变。",
+      "未增加封窗玻璃、柜体或背景景观。窗外楼栋、管线及实际遮挡以现场为准，不承诺无遮拦远景。"
+    ],
+    "roomDescriptions": {
+      "balcony": {
+        "title": "北东通透，洗烘如旧",
+        "description": "洗衣机600×530×840mm和烘干机600×600×840mm靠厨房墙落地并排，上方1420×750mm独立承重浅盆台，完成面980mm。原净宽1240mm，隔断条件外移287.5mm后按1527.5mm保守宽度排布；操作带约740mm，旧图多180mm不计可用。 北、东两面改正为矮墙上通透开口，保留防护、边柱和顶梁，不增封窗玻璃；标高及宽度暂估待复尺。",
+        "features": [
+          "北、东双面通透",
+          "保留矮墙与防护",
+          "开口标高暂估"
+        ]
+      }
+    }
+  },
   "renderedViews": {
-    "master": {
-      "sourceSha256": "4af3387ba299a7cc912f4ce23b267a9e155aec34b0befd13d76429b1a062c399",
-      "baseBlendSha256": "b8574dbda6fab8b9f15652c1f8b733a62d3faa2252ad5659ce80cf0edd2a565c",
-      "cameraState": {
-        "matrix": [
-          [
-            0.8763239979743958,
-            0.14373040199279785,
-            -0.459780216217041,
-            4.420000076293945
-          ],
-          [
-            -0.4817222058773041,
-            0.2614668011665344,
-            -0.8364083170890808,
-            -3.049999952316284
-          ],
-          [
-            -4.111690543595614e-08,
-            0.9544509649276733,
-            0.2983677387237549,
-            1.649999976158142
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "lens": 18.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
-      },
-      "cameraHash": "2a276b53e36f8ffd378229257440527a33795c53a7bbf2ba9f18eaef614d3792",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "17bdca000805b1413d802336a8dc8994d18b084d7b2fe6acf23ab29cc160b0b0"
-    },
     "overall": {
-      "sourceSha256": "4af3387ba299a7cc912f4ce23b267a9e155aec34b0befd13d76429b1a062c399",
-      "baseBlendSha256": "b8574dbda6fab8b9f15652c1f8b733a62d3faa2252ad5659ce80cf0edd2a565c",
+      "sourceSha256": "d6348456f0411bdc4eb6ac11bbe4828602260ddcef82a758dd080f1800699797",
+      "baseBlendSha256": "9a4d1e92b6697691896343405781c840734555290a9b4219c5f87a830921c656",
       "cameraState": {
         "matrix": [
           [
@@ -4469,254 +4548,38 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "ff0762cb3f1a325e856c7486b0b74e18639af98b1886f4ac6f58a3d866ebf726"
-    },
-    "bedroom-b": {
-      "sourceSha256": "4af3387ba299a7cc912f4ce23b267a9e155aec34b0befd13d76429b1a062c399",
-      "baseBlendSha256": "b8574dbda6fab8b9f15652c1f8b733a62d3faa2252ad5659ce80cf0edd2a565c",
-      "cameraState": {
-        "matrix": [
-          [
-            0.8366655707359314,
-            0.12858255207538605,
-            -0.5324070453643799,
-            0.8500000238418579
-          ],
-          [
-            -0.547714114189148,
-            0.19641736149787903,
-            -0.8132831454277039,
-            -3.0899999141693115
-          ],
-          [
-            -3.2653787229719455e-08,
-            0.9720528721809387,
-            0.23476211726665497,
-            1.6399999856948853
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
+      "imageSha256": "68c68c39302750e8167b8575fdc06d120e0451739df9f7e742b33e89a91b1b63",
+      "visibilityRules": {
+        "dollhouseExteriorWallIndices": [
+          4,
+          5,
+          6
         ],
-        "lens": 17.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
-      },
-      "cameraHash": "efe8ea61b25d157f8ea721cbce666a1825275014cb95bc782aad4dcc960cfa88",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "03e271dc0f0339d03dbbad310fb985c1abeed8f1fedd7f800aa3c6b4031e0a46"
-    },
-    "study": {
-      "sourceSha256": "4af3387ba299a7cc912f4ce23b267a9e155aec34b0befd13d76429b1a062c399",
-      "baseBlendSha256": "b8574dbda6fab8b9f15652c1f8b733a62d3faa2252ad5659ce80cf0edd2a565c",
-      "cameraState": {
-        "matrix": [
-          [
-            -0.6880428194999695,
-            -0.18483136594295502,
-            0.7017367482185364,
-            2.6500000953674316
-          ],
-          [
-            0.7256700992584229,
-            -0.17524747550487518,
-            0.6653504371643066,
-            -4.480000019073486
-          ],
-          [
-            -3.340054277600757e-08,
-            0.9670189619064331,
-            0.2547043561935425,
-            1.6399999856948853
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "lens": 17.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
-      },
-      "cameraHash": "f2cc9badb86107898de5dd66817e3a80d5af754851b89425b65f5bc1c4f7551d",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "373b4e11676b039022a695cb0a82de069a630465d9ac8577a7e55e787a03df80"
+        "keepBalconyBoundary": true,
+        "reason": "保留阳台矮墙、顶梁与防护，避免剖顶视角只剩悬空格栅；厨房外墙仍沿用原剖墙规则。"
+      }
     },
     "balcony": {
-      "sourceSha256": "4af3387ba299a7cc912f4ce23b267a9e155aec34b0befd13d76429b1a062c399",
-      "baseBlendSha256": "b8574dbda6fab8b9f15652c1f8b733a62d3faa2252ad5659ce80cf0edd2a565c",
+      "sourceSha256": "d6348456f0411bdc4eb6ac11bbe4828602260ddcef82a758dd080f1800699797",
+      "baseBlendSha256": "9a4d1e92b6697691896343405781c840734555290a9b4219c5f87a830921c656",
       "cameraState": {
         "matrix": [
           [
-            -0.9993628263473511,
-            0.018514513969421387,
-            -0.030514096841216087,
-            7.519999980926514
+            -0.0766969844698906,
+            0.10644681751728058,
+            -0.9913559556007385,
+            6.820000171661377
           ],
           [
-            -0.035691697150468826,
-            -0.5184062123298645,
-            0.8543893098831177,
-            -9.8100004196167
+            -0.9970544576644897,
+            -0.008188229985535145,
+            0.07625863701105118,
+            -10.079999923706055
           ],
           [
-            -9.488523033951424e-08,
-            0.85493403673172,
-            0.518736720085144,
-            1.4800000190734863
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "lens": 17.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
-      },
-      "cameraHash": "d4d44a4549edff22ecfc0d6152783c49f578a31bfc97920309e896421f580ae1",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "8cd20a518b9207e94b04e1849f13a155578009fffae5bbdd5856d48864947a6a"
-    },
-    "master-bath": {
-      "sourceSha256": "4af3387ba299a7cc912f4ce23b267a9e155aec34b0befd13d76429b1a062c399",
-      "baseBlendSha256": "b8574dbda6fab8b9f15652c1f8b733a62d3faa2252ad5659ce80cf0edd2a565c",
-      "cameraState": {
-        "matrix": [
-          [
-            -0.9951448440551758,
-            -0.04345667362213135,
-            0.08830765634775162,
-            5.190000057220459
-          ],
-          [
-            0.09842115640640259,
-            -0.43939369916915894,
-            0.8928865790367126,
-            -3.5199999809265137
-          ],
-          [
-            -5.340475084381069e-08,
-            0.8972428441047668,
-            0.44153743982315063,
-            1.600000023841858
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "lens": 17.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
-      },
-      "cameraHash": "9d14c343642bf0168d200d9edb473aeef49c1e344cbbf656520aa600dd05967d",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "0922ab7975cdb5b3f68c1430d431efb2a5fe79b1f55fe55ad49f87c78e5259df"
-    },
-    "living": {
-      "sourceSha256": "4af3387ba299a7cc912f4ce23b267a9e155aec34b0befd13d76429b1a062c399",
-      "baseBlendSha256": "b8574dbda6fab8b9f15652c1f8b733a62d3faa2252ad5659ce80cf0edd2a565c",
-      "cameraState": {
-        "matrix": [
-          [
-            0.8558418154716492,
-            -0.07504504173994064,
-            0.511764645576477,
-            6.320000171661377
-          ],
-          [
-            0.517237663269043,
-            0.12417237460613251,
-            -0.8467859625816345,
-            -10.8100004196167
-          ],
-          [
-            5.734309027616291e-08,
-            0.9894187450408936,
-            0.14508803188800812,
-            1.600000023841858
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "lens": 23.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
-      },
-      "cameraHash": "6684a8e03131e6a4f9aa0eb10d2261185b343c893a8fb3bff5e69d4583c15e3c",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "931b5ddab5c20690e6e4231328cc83e5e786d570b9f94a83445d44c694c61f2c"
-    },
-    "dining": {
-      "sourceSha256": "4af3387ba299a7cc912f4ce23b267a9e155aec34b0befd13d76429b1a062c399",
-      "baseBlendSha256": "b8574dbda6fab8b9f15652c1f8b733a62d3faa2252ad5659ce80cf0edd2a565c",
-      "cameraState": {
-        "matrix": [
-          [
-            0.7552186846733093,
-            -0.13043460249900818,
-            0.6423640251159668,
-            4.869999885559082
-          ],
-          [
-            0.6554729342460632,
-            0.15028324723243713,
-            -0.7401149868965149,
-            -13.619999885559082
-          ],
-          [
-            5.4287919937223705e-08,
-            0.980000913143158,
-            0.19899307191371918,
+            3.846230711701537e-08,
+            0.9942846894264221,
+            0.10676128417253494,
             1.6200000047683716
           ],
           [
@@ -4726,12 +4589,12 @@
             1.0
           ]
         ],
-        "lens": 23.0,
+        "lens": 16.0,
         "sensorWidth": 36.0,
         "type": "PERSP",
         "orthoScale": 6.0
       },
-      "cameraHash": "273aec53736590e50bc3ef06c2b14edf0c6d94f2e33fd719a2f4413c61036acd",
+      "cameraHash": "a867e9be0eb84fdf743c687ac556a01ea8eddd84f114f9bb15081e1eea902993",
       "renderSpec": {
         "engine": "CYCLES",
         "width": 960,
@@ -4739,29 +4602,74 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "624ccc72050b94f14b6fa80e7e25f6e43e9fb978ae785f69bd3b6023b4b0cbd6"
+      "imageSha256": "6178d8d693027fa354d8ca9813f08a22316e192cc4df164f54373a47448489cc"
     },
-    "kitchen": {
-      "sourceSha256": "4af3387ba299a7cc912f4ce23b267a9e155aec34b0befd13d76429b1a062c399",
-      "baseBlendSha256": "b8574dbda6fab8b9f15652c1f8b733a62d3faa2252ad5659ce80cf0edd2a565c",
+    "laundry-detail": {
+      "sourceSha256": "d6348456f0411bdc4eb6ac11bbe4828602260ddcef82a758dd080f1800699797",
+      "baseBlendSha256": "9a4d1e92b6697691896343405781c840734555290a9b4219c5f87a830921c656",
       "cameraState": {
         "matrix": [
           [
-            -0.8746823072433472,
-            0.10542789846658707,
-            -0.47309181094169617,
-            6.449999809265137
+            -0.9121130704879761,
+            0.19279597699642181,
+            -0.3617725968360901,
+            7.079999923706055
           ],
           [
-            -0.48469671607017517,
-            -0.1902550458908081,
-            0.8537400960922241,
-            -12.0
+            -0.40993863344192505,
+            -0.42897066473960876,
+            0.8049437999725342,
+            -9.8100004196167
           ],
           [
-            -8.410568597128076e-08,
-            0.9760573506355286,
-            0.21751326322555542,
+            9.181795235235768e-08,
+            0.8825043439865112,
+            0.4703042805194855,
+            1.4700000286102295
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 17.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "abafb92d21b4d0f5a6424abee803420e110e60fc46419eca7e459d21adaa2bae",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "5aef76e275a3325489bf87b3110fdaf2c9a7e112ac87e88b021bbf89182d4ef9"
+    },
+    "kitchen-north": {
+      "sourceSha256": "d6348456f0411bdc4eb6ac11bbe4828602260ddcef82a758dd080f1800699797",
+      "baseBlendSha256": "9a4d1e92b6697691896343405781c840734555290a9b4219c5f87a830921c656",
+      "cameraState": {
+        "matrix": [
+          [
+            0.8896954655647278,
+            0.08911190927028656,
+            -0.44777342677116394,
+            6.25
+          ],
+          [
+            -0.45655447244644165,
+            0.17365391552448273,
+            -0.8725836873054504,
+            -12.899999618530273
+          ],
+          [
+            1.2481814692932858e-08,
+            0.9807667136192322,
+            0.19518354535102844,
             1.6399999856948853
           ],
           [
@@ -4771,102 +4679,12 @@
             1.0
           ]
         ],
-        "lens": 17.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
-      },
-      "cameraHash": "69f4bcb4406a60eea3e260e71fb60f051979abd5ecc03b987f706445ebb73538",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "c6c101c162b6d4527145b322731768e1d69d3240e416f46d6968652f8571e0da"
-    },
-    "guest-bath": {
-      "sourceSha256": "4af3387ba299a7cc912f4ce23b267a9e155aec34b0befd13d76429b1a062c399",
-      "baseBlendSha256": "b8574dbda6fab8b9f15652c1f8b733a62d3faa2252ad5659ce80cf0edd2a565c",
-      "cameraState": {
-        "matrix": [
-          [
-            0.38831594586372375,
-            -0.2752458453178406,
-            0.879460334777832,
-            6.539999961853027
-          ],
-          [
-            0.921526312828064,
-            0.1159839779138565,
-            -0.37059006094932556,
-            -6.03000020980835
-          ],
-          [
-            7.04290172848232e-08,
-            0.9543518424034119,
-            0.2986847162246704,
-            1.600000023841858
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "lens": 17.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
-      },
-      "cameraHash": "04334e9a9633a9cc55f9e80598374da245b84eaf8e5649e13b75c7f8331c1283",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "81cf59ccadb21b56f1a1bd9be6a17aee8f51aec2f5462bafd34c3f77870ba0f5"
-    },
-    "bay-master": {
-      "sourceSha256": "4af3387ba299a7cc912f4ce23b267a9e155aec34b0befd13d76429b1a062c399",
-      "baseBlendSha256": "b8574dbda6fab8b9f15652c1f8b733a62d3faa2252ad5659ce80cf0edd2a565c",
-      "cameraState": {
-        "matrix": [
-          [
-            0.9684438109397888,
-            0.04621543735265732,
-            -0.24490958452224731,
-            4.449999809265137
-          ],
-          [
-            -0.2492319643497467,
-            0.17958003282546997,
-            -0.9516482949256897,
-            -2.9200000762939453
-          ],
-          [
-            3.024296191256326e-08,
-            0.9826571941375732,
-            0.18543154001235962,
-            1.5800000429153442
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
         "lens": 18.0,
         "sensorWidth": 36.0,
         "type": "PERSP",
         "orthoScale": 6.0
       },
-      "cameraHash": "f1b6111ff6fa2e8a59851ee959cd40f65893bf375465b7b9bdfd8d3e21cd1c67",
+      "cameraHash": "a786e5d4cc18bf235cab07fe554bf9fd0fd0e8f0934389608e3aca06f1a8f8d9",
       "renderSpec": {
         "engine": "CYCLES",
         "width": 960,
@@ -4874,52 +4692,7 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "52da76000ba1b6bba51ec8d50b4a669faf728a354b0a17c2c9f4cc68fb9b9301"
-    },
-    "bay-tea": {
-      "sourceSha256": "4af3387ba299a7cc912f4ce23b267a9e155aec34b0befd13d76429b1a062c399",
-      "baseBlendSha256": "b8574dbda6fab8b9f15652c1f8b733a62d3faa2252ad5659ce80cf0edd2a565c",
-      "cameraState": {
-        "matrix": [
-          [
-            0.7803956270217896,
-            -0.14449310302734375,
-            0.608362078666687,
-            2.819999933242798
-          ],
-          [
-            0.6252861022949219,
-            0.1803361475467682,
-            -0.7592734694480896,
-            -1.5
-          ],
-          [
-            9.408643109054537e-08,
-            0.9729340076446533,
-            0.23108306527137756,
-            1.5199999809265137
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "lens": 18.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
-      },
-      "cameraHash": "3077a73c660451a101411f0a0bd60fcf08342b4983c9ecc06891a16b19edc49c",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "50f3d7ad4fd100bbd9090ca359fae19def18ae436b4b65dbcd57618b76f5cf7b"
+      "imageSha256": "f0cc515f9a66608a38a46490b692da02e58cf097c6bb79bbdf58c988ac319230"
     },
     "bay-living": {
       "sourceSha256": "4af3387ba299a7cc912f4ce23b267a9e155aec34b0befd13d76429b1a062c399",
@@ -4964,7 +4737,217 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "821607a2bbc56aad2a1c6bee3c63a171dca4799e0837eb072a1defff4c90214e"
+      "imageSha256": "821607a2bbc56aad2a1c6bee3c63a171dca4799e0837eb072a1defff4c90214e",
+      "retainedFrom": {
+        "commit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
+        "manifest": "models/schemes/wood/scene-manifest.json",
+        "view": "bay-living",
+        "reason": "本轮仅重渲指定阳台相关视角；此图完整保留发布旧来源，未更新阳台边界和采光，只作历史参考，不代表3.12.0阳台。"
+      }
+    },
+    "bay-master": {
+      "sourceSha256": "4af3387ba299a7cc912f4ce23b267a9e155aec34b0befd13d76429b1a062c399",
+      "baseBlendSha256": "b8574dbda6fab8b9f15652c1f8b733a62d3faa2252ad5659ce80cf0edd2a565c",
+      "cameraState": {
+        "matrix": [
+          [
+            0.9684438109397888,
+            0.04621543735265732,
+            -0.24490958452224731,
+            4.449999809265137
+          ],
+          [
+            -0.2492319643497467,
+            0.17958003282546997,
+            -0.9516482949256897,
+            -2.9200000762939453
+          ],
+          [
+            3.024296191256326e-08,
+            0.9826571941375732,
+            0.18543154001235962,
+            1.5800000429153442
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 18.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "f1b6111ff6fa2e8a59851ee959cd40f65893bf375465b7b9bdfd8d3e21cd1c67",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "52da76000ba1b6bba51ec8d50b4a669faf728a354b0a17c2c9f4cc68fb9b9301",
+      "retainedFrom": {
+        "commit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
+        "manifest": "models/schemes/wood/scene-manifest.json",
+        "view": "bay-master",
+        "reason": "本轮仅重渲指定阳台相关视角；此图完整保留发布旧来源，未更新阳台边界和采光，只作历史参考，不代表3.12.0阳台。"
+      }
+    },
+    "bay-tea": {
+      "sourceSha256": "4af3387ba299a7cc912f4ce23b267a9e155aec34b0befd13d76429b1a062c399",
+      "baseBlendSha256": "b8574dbda6fab8b9f15652c1f8b733a62d3faa2252ad5659ce80cf0edd2a565c",
+      "cameraState": {
+        "matrix": [
+          [
+            0.7803956270217896,
+            -0.14449310302734375,
+            0.608362078666687,
+            2.819999933242798
+          ],
+          [
+            0.6252861022949219,
+            0.1803361475467682,
+            -0.7592734694480896,
+            -1.5
+          ],
+          [
+            9.408643109054537e-08,
+            0.9729340076446533,
+            0.23108306527137756,
+            1.5199999809265137
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 18.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "3077a73c660451a101411f0a0bd60fcf08342b4983c9ecc06891a16b19edc49c",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "50f3d7ad4fd100bbd9090ca359fae19def18ae436b4b65dbcd57618b76f5cf7b",
+      "retainedFrom": {
+        "commit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
+        "manifest": "models/schemes/wood/scene-manifest.json",
+        "view": "bay-tea",
+        "reason": "本轮仅重渲指定阳台相关视角；此图完整保留发布旧来源，未更新阳台边界和采光，只作历史参考，不代表3.12.0阳台。"
+      }
+    },
+    "bedroom-b": {
+      "sourceSha256": "4af3387ba299a7cc912f4ce23b267a9e155aec34b0befd13d76429b1a062c399",
+      "baseBlendSha256": "b8574dbda6fab8b9f15652c1f8b733a62d3faa2252ad5659ce80cf0edd2a565c",
+      "cameraState": {
+        "matrix": [
+          [
+            0.8366655707359314,
+            0.12858255207538605,
+            -0.5324070453643799,
+            0.8500000238418579
+          ],
+          [
+            -0.547714114189148,
+            0.19641736149787903,
+            -0.8132831454277039,
+            -3.0899999141693115
+          ],
+          [
+            -3.2653787229719455e-08,
+            0.9720528721809387,
+            0.23476211726665497,
+            1.6399999856948853
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 17.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "efe8ea61b25d157f8ea721cbce666a1825275014cb95bc782aad4dcc960cfa88",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "03e271dc0f0339d03dbbad310fb985c1abeed8f1fedd7f800aa3c6b4031e0a46",
+      "retainedFrom": {
+        "commit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
+        "manifest": "models/schemes/wood/scene-manifest.json",
+        "view": "bedroom-b",
+        "reason": "本轮仅重渲指定阳台相关视角；此图完整保留发布旧来源，未更新阳台边界和采光，只作历史参考，不代表3.12.0阳台。"
+      }
+    },
+    "dining": {
+      "sourceSha256": "4af3387ba299a7cc912f4ce23b267a9e155aec34b0befd13d76429b1a062c399",
+      "baseBlendSha256": "b8574dbda6fab8b9f15652c1f8b733a62d3faa2252ad5659ce80cf0edd2a565c",
+      "cameraState": {
+        "matrix": [
+          [
+            0.7552186846733093,
+            -0.13043460249900818,
+            0.6423640251159668,
+            4.869999885559082
+          ],
+          [
+            0.6554729342460632,
+            0.15028324723243713,
+            -0.7401149868965149,
+            -13.619999885559082
+          ],
+          [
+            5.4287919937223705e-08,
+            0.980000913143158,
+            0.19899307191371918,
+            1.6200000047683716
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 23.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "273aec53736590e50bc3ef06c2b14edf0c6d94f2e33fd719a2f4413c61036acd",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "624ccc72050b94f14b6fa80e7e25f6e43e9fb978ae785f69bd3b6023b4b0cbd6",
+      "retainedFrom": {
+        "commit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
+        "manifest": "models/schemes/wood/scene-manifest.json",
+        "view": "dining",
+        "reason": "本轮仅重渲指定阳台相关视角；此图完整保留发布旧来源，未更新阳台边界和采光，只作历史参考，不代表3.12.0阳台。"
+      }
     },
     "entry-storage": {
       "sourceSha256": "4af3387ba299a7cc912f4ce23b267a9e155aec34b0befd13d76429b1a062c399",
@@ -5009,7 +4992,268 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "bc2cc9635ede17e1e05b768d3df69d3baa39f95295ef30108eb2af6cdf4b0145"
+      "imageSha256": "bc2cc9635ede17e1e05b768d3df69d3baa39f95295ef30108eb2af6cdf4b0145",
+      "retainedFrom": {
+        "commit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
+        "manifest": "models/schemes/wood/scene-manifest.json",
+        "view": "entry-storage",
+        "reason": "本轮仅重渲指定阳台相关视角；此图完整保留发布旧来源，未更新阳台边界和采光，只作历史参考，不代表3.12.0阳台。"
+      }
+    },
+    "guest-bath": {
+      "sourceSha256": "4af3387ba299a7cc912f4ce23b267a9e155aec34b0befd13d76429b1a062c399",
+      "baseBlendSha256": "b8574dbda6fab8b9f15652c1f8b733a62d3faa2252ad5659ce80cf0edd2a565c",
+      "cameraState": {
+        "matrix": [
+          [
+            0.38831594586372375,
+            -0.2752458453178406,
+            0.879460334777832,
+            6.539999961853027
+          ],
+          [
+            0.921526312828064,
+            0.1159839779138565,
+            -0.37059006094932556,
+            -6.03000020980835
+          ],
+          [
+            7.04290172848232e-08,
+            0.9543518424034119,
+            0.2986847162246704,
+            1.600000023841858
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 17.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "04334e9a9633a9cc55f9e80598374da245b84eaf8e5649e13b75c7f8331c1283",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "81cf59ccadb21b56f1a1bd9be6a17aee8f51aec2f5462bafd34c3f77870ba0f5",
+      "retainedFrom": {
+        "commit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
+        "manifest": "models/schemes/wood/scene-manifest.json",
+        "view": "guest-bath",
+        "reason": "本轮仅重渲指定阳台相关视角；此图完整保留发布旧来源，未更新阳台边界和采光，只作历史参考，不代表3.12.0阳台。"
+      }
+    },
+    "kitchen": {
+      "sourceSha256": "4af3387ba299a7cc912f4ce23b267a9e155aec34b0befd13d76429b1a062c399",
+      "baseBlendSha256": "b8574dbda6fab8b9f15652c1f8b733a62d3faa2252ad5659ce80cf0edd2a565c",
+      "cameraState": {
+        "matrix": [
+          [
+            -0.8746823072433472,
+            0.10542789846658707,
+            -0.47309181094169617,
+            6.449999809265137
+          ],
+          [
+            -0.48469671607017517,
+            -0.1902550458908081,
+            0.8537400960922241,
+            -12.0
+          ],
+          [
+            -8.410568597128076e-08,
+            0.9760573506355286,
+            0.21751326322555542,
+            1.6399999856948853
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 17.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "69f4bcb4406a60eea3e260e71fb60f051979abd5ecc03b987f706445ebb73538",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "c6c101c162b6d4527145b322731768e1d69d3240e416f46d6968652f8571e0da",
+      "retainedFrom": {
+        "commit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
+        "manifest": "models/schemes/wood/scene-manifest.json",
+        "view": "kitchen",
+        "reason": "本轮仅重渲指定阳台相关视角；此图完整保留发布旧来源，未更新阳台边界和采光，只作历史参考，不代表3.12.0阳台。"
+      }
+    },
+    "living": {
+      "sourceSha256": "4af3387ba299a7cc912f4ce23b267a9e155aec34b0befd13d76429b1a062c399",
+      "baseBlendSha256": "b8574dbda6fab8b9f15652c1f8b733a62d3faa2252ad5659ce80cf0edd2a565c",
+      "cameraState": {
+        "matrix": [
+          [
+            0.8558418154716492,
+            -0.07504504173994064,
+            0.511764645576477,
+            6.320000171661377
+          ],
+          [
+            0.517237663269043,
+            0.12417237460613251,
+            -0.8467859625816345,
+            -10.8100004196167
+          ],
+          [
+            5.734309027616291e-08,
+            0.9894187450408936,
+            0.14508803188800812,
+            1.600000023841858
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 23.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "6684a8e03131e6a4f9aa0eb10d2261185b343c893a8fb3bff5e69d4583c15e3c",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "931b5ddab5c20690e6e4231328cc83e5e786d570b9f94a83445d44c694c61f2c",
+      "retainedFrom": {
+        "commit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
+        "manifest": "models/schemes/wood/scene-manifest.json",
+        "view": "living",
+        "reason": "本轮仅重渲指定阳台相关视角；此图完整保留发布旧来源，未更新阳台边界和采光，只作历史参考，不代表3.12.0阳台。"
+      }
+    },
+    "master": {
+      "sourceSha256": "4af3387ba299a7cc912f4ce23b267a9e155aec34b0befd13d76429b1a062c399",
+      "baseBlendSha256": "b8574dbda6fab8b9f15652c1f8b733a62d3faa2252ad5659ce80cf0edd2a565c",
+      "cameraState": {
+        "matrix": [
+          [
+            0.8763239979743958,
+            0.14373040199279785,
+            -0.459780216217041,
+            4.420000076293945
+          ],
+          [
+            -0.4817222058773041,
+            0.2614668011665344,
+            -0.8364083170890808,
+            -3.049999952316284
+          ],
+          [
+            -4.111690543595614e-08,
+            0.9544509649276733,
+            0.2983677387237549,
+            1.649999976158142
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 18.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "2a276b53e36f8ffd378229257440527a33795c53a7bbf2ba9f18eaef614d3792",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "17bdca000805b1413d802336a8dc8994d18b084d7b2fe6acf23ab29cc160b0b0",
+      "retainedFrom": {
+        "commit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
+        "manifest": "models/schemes/wood/scene-manifest.json",
+        "view": "master",
+        "reason": "本轮仅重渲指定阳台相关视角；此图完整保留发布旧来源，未更新阳台边界和采光，只作历史参考，不代表3.12.0阳台。"
+      }
+    },
+    "master-bath": {
+      "sourceSha256": "4af3387ba299a7cc912f4ce23b267a9e155aec34b0befd13d76429b1a062c399",
+      "baseBlendSha256": "b8574dbda6fab8b9f15652c1f8b733a62d3faa2252ad5659ce80cf0edd2a565c",
+      "cameraState": {
+        "matrix": [
+          [
+            -0.9951448440551758,
+            -0.04345667362213135,
+            0.08830765634775162,
+            5.190000057220459
+          ],
+          [
+            0.09842115640640259,
+            -0.43939369916915894,
+            0.8928865790367126,
+            -3.5199999809265137
+          ],
+          [
+            -5.340475084381069e-08,
+            0.8972428441047668,
+            0.44153743982315063,
+            1.600000023841858
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 17.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "9d14c343642bf0168d200d9edb473aeef49c1e344cbbf656520aa600dd05967d",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "0922ab7975cdb5b3f68c1430d431efb2a5fe79b1f55fe55ad49f87c78e5259df",
+      "retainedFrom": {
+        "commit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
+        "manifest": "models/schemes/wood/scene-manifest.json",
+        "view": "master-bath",
+        "reason": "本轮仅重渲指定阳台相关视角；此图完整保留发布旧来源，未更新阳台边界和采光，只作历史参考，不代表3.12.0阳台。"
+      }
     },
     "sideboard": {
       "sourceSha256": "4af3387ba299a7cc912f4ce23b267a9e155aec34b0befd13d76429b1a062c399",
@@ -5054,75 +5298,36 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "6e99b392ad227e50d33e55ffb192ef84a221538a4e7e3ae3ded6f947f2d993d4"
+      "imageSha256": "6e99b392ad227e50d33e55ffb192ef84a221538a4e7e3ae3ded6f947f2d993d4",
+      "retainedFrom": {
+        "commit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
+        "manifest": "models/schemes/wood/scene-manifest.json",
+        "view": "sideboard",
+        "reason": "本轮仅重渲指定阳台相关视角；此图完整保留发布旧来源，未更新阳台边界和采光，只作历史参考，不代表3.12.0阳台。"
+      }
     },
-    "kitchen-north": {
+    "study": {
       "sourceSha256": "4af3387ba299a7cc912f4ce23b267a9e155aec34b0befd13d76429b1a062c399",
       "baseBlendSha256": "b8574dbda6fab8b9f15652c1f8b733a62d3faa2252ad5659ce80cf0edd2a565c",
       "cameraState": {
         "matrix": [
           [
-            0.8896954655647278,
-            0.08911190927028656,
-            -0.44777342677116394,
-            6.25
+            -0.6880428194999695,
+            -0.18483136594295502,
+            0.7017367482185364,
+            2.6500000953674316
           ],
           [
-            -0.45655447244644165,
-            0.17365391552448273,
-            -0.8725836873054504,
-            -12.899999618530273
+            0.7256700992584229,
+            -0.17524747550487518,
+            0.6653504371643066,
+            -4.480000019073486
           ],
           [
-            1.2481814692932858e-08,
-            0.9807667136192322,
-            0.19518354535102844,
+            -3.340054277600757e-08,
+            0.9670189619064331,
+            0.2547043561935425,
             1.6399999856948853
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "lens": 18.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
-      },
-      "cameraHash": "a786e5d4cc18bf235cab07fe554bf9fd0fd0e8f0934389608e3aca06f1a8f8d9",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "e39f8241453c5637285af16df334f6f23212a97386773f14890fa84d2d3bc908"
-    },
-    "laundry-detail": {
-      "sourceSha256": "4af3387ba299a7cc912f4ce23b267a9e155aec34b0befd13d76429b1a062c399",
-      "baseBlendSha256": "b8574dbda6fab8b9f15652c1f8b733a62d3faa2252ad5659ce80cf0edd2a565c",
-      "cameraState": {
-        "matrix": [
-          [
-            -0.9121130704879761,
-            0.19279597699642181,
-            -0.3617725968360901,
-            7.079999923706055
-          ],
-          [
-            -0.40993863344192505,
-            -0.42897066473960876,
-            0.8049437999725342,
-            -9.8100004196167
-          ],
-          [
-            9.181795235235768e-08,
-            0.8825043439865112,
-            0.4703042805194855,
-            1.4700000286102295
           ],
           [
             0.0,
@@ -5136,7 +5341,7 @@
         "type": "PERSP",
         "orthoScale": 6.0
       },
-      "cameraHash": "abafb92d21b4d0f5a6424abee803420e110e60fc46419eca7e459d21adaa2bae",
+      "cameraHash": "f2cc9badb86107898de5dd66817e3a80d5af754851b89425b65f5bc1c4f7551d",
       "renderSpec": {
         "engine": "CYCLES",
         "width": 960,
@@ -5144,15 +5349,47 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "65a93ec25f4d964f774908c6af6ac6824043f2d367fe02cae00189583e22faef"
+      "imageSha256": "373b4e11676b039022a695cb0a82de069a630465d9ac8577a7e55e787a03df80",
+      "retainedFrom": {
+        "commit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
+        "manifest": "models/schemes/wood/scene-manifest.json",
+        "view": "study",
+        "reason": "本轮仅重渲指定阳台相关视角；此图完整保留发布旧来源，未更新阳台边界和采光，只作历史参考，不代表3.12.0阳台。"
+      }
     }
   },
-  "baseBlendSha256": "b8574dbda6fab8b9f15652c1f8b733a62d3faa2252ad5659ce80cf0edd2a565c",
+  "baseBlendSha256": "9a4d1e92b6697691896343405781c840734555290a9b4219c5f87a830921c656",
   "renderSpec": {
     "engine": "CYCLES",
     "width": 960,
     "height": 640,
     "samples": 8,
     "denoise": true
+  },
+  "renderInheritance": {
+    "reviewedAt": "3.12.0",
+    "baselineCommit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
+    "currentViews": [
+      "overall",
+      "balcony",
+      "laundry-detail",
+      "kitchen-north"
+    ],
+    "referenceViews": [
+      "bay-living",
+      "bay-master",
+      "bay-tea",
+      "bedroom-b",
+      "dining",
+      "entry-storage",
+      "guest-bath",
+      "kitchen",
+      "living",
+      "master",
+      "master-bath",
+      "sideboard",
+      "study"
+    ],
+    "note": "4张本轮同源阳台相关新图；其余历史图字节和原始来源链保留。"
   }
 }

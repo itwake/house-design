@@ -1,10 +1,10 @@
 {
-  "version": "3.11.0",
+  "version": "3.12.0",
   "model": "models/schemes/family/huiyayuan-wood.glb",
   "blend": "models/schemes/family/huiyayuan-wood.blend",
   "units": "m",
   "source": "models/schemes/family/design-data.json",
-  "sourceSha256": "317d20a727f6ff0ddbc9ee0fd5fa5e85d9b2d5957329aafa73226dde088c199b",
+  "sourceSha256": "00494449f757566adee91aa784867df81944247dcd28ca051fd640ec43371048",
   "bounds": {
     "min": [
       0.0,
@@ -649,27 +649,33 @@
       },
       "interiorCamera": {
         "position": [
-          7.44,
-          1.28,
-          9.86
+          6.82,
+          1.62,
+          10.08
         ],
         "target": [
-          7.44,
-          0.68,
-          10.78
+          8.12,
+          1.48,
+          10.18
         ],
-        "horizontalFov": 96.73,
-        "fov": 73.74
+        "horizontalFov": 96.73
       },
       "render": "assets/schemes/family/balcony.jpg",
-      "description": "阳台并排洗烘、上方浅盆、三轨门及厨房保留原位；取消书架后不再以门框与柜面齐平描述。690mm阳台操作带、980mm浅盆台高及设备安装条件仍待核。 取消的是客厅书架，不扩大阳台、不移动外墙。",
+      "description": "阳台并排洗烘、上方浅盆、三轨门及厨房保留原位；取消书架后不再以门框与柜面齐平描述。690mm阳台操作带、980mm浅盆台高及设备安装条件仍待核。 取消的是客厅书架，不扩大阳台、不移动外墙。 北、东两面改正为矮墙上通透开口，保留防护、边柱和顶梁，不增封窗玻璃；标高及宽度暂估待复尺。",
       "features": [
-        "并排洗烘＋浅盆",
-        "三轨门位置保留",
-        "东墙改挂画"
+        "北、东双面通透",
+        "保留矮墙与防护",
+        "开口标高暂估"
       ],
       "heightCm": 270.0,
-      "measurementNote": "本轮仅应用已确认局部复尺；房间轮廓与面积仍为旧模型参考，具体已应用与待核项目见复尺明细。"
+      "measurementNote": "本轮仅应用已确认局部复尺；房间轮廓与面积仍为旧模型参考，具体已应用与待核项目见复尺明细。",
+      "conditions": [
+        "本次纠正阳台北、东两面被画成整面实墙的错误：按业主照片表达下部矮墙、上部通透防护开口，保留边柱及顶梁；不是新拆墙或拆护栏方案。",
+        "矮墙高1100mm、开口高1350mm、上口2450mm均暂按照片估算；总高2700mm沿用旧模型。开口水平范围沿旧模型端点，不是实测净宽。",
+        "防护框、竖杆和间距仅为存在性示意，不作为防坠、承重、安装或规范验收依据；梁柱、矮墙、防护及排水管不得据模型擅改。",
+        "北侧借厅短墙仍保留；东面仅阳台段通透，厨房东墙、厨房与阳台内窗、生活阳台门及洗烘设备位置均不变。",
+        "未增加封窗玻璃、柜体或背景景观。窗外楼栋、管线及实际遮挡以现场为准，不承诺无遮拦远景。"
+      ]
     }
   ],
   "openings": [
@@ -1156,6 +1162,68 @@
       "notes": "原900mm门洞向北300mm、向南500mm拓宽；北端墙中心线剩240mm、南端800mm。南端距鞋柜起点50mm、南柜140mm，门套与承重/管线须现场核验，不能据图直接扩洞。",
       "sill": 0.0,
       "height": 2.2
+    },
+    {
+      "id": "balcony_north_opening",
+      "name": "生活阳台北向通透开口（矮墙及防护保留；尺寸暂估）",
+      "kind": "window",
+      "roomId": "balcony",
+      "connects": [
+        "balcony",
+        "outside"
+      ],
+      "windowType": "guarded-open-air",
+      "glazing": false,
+      "x1": 687,
+      "y1": 960,
+      "x2": 829,
+      "y2": 960,
+      "widthMm": 1420,
+      "sillCm": 110,
+      "heightCm": 135,
+      "grade": "C",
+      "dimensionsVerified": false,
+      "guard": {
+        "frameCm": 2,
+        "barWidthCm": 1.2,
+        "nominalSpacingCm": 10,
+        "status": "schematic-not-engineered"
+      },
+      "source": "2026-10-05业主标注图与阳台实景确认北、东两面上部通透；开口尺寸和标高暂估，不是实测。",
+      "notes": "保留下方矮墙、边柱、顶梁及防护示意；无玻璃、无新增遮挡柜。不是拆改施工图。",
+      "sill": 1.1,
+      "height": 1.35
+    },
+    {
+      "id": "balcony_east_opening",
+      "name": "生活阳台东向通透开口（矮墙及防护保留；尺寸暂估）",
+      "kind": "window",
+      "roomId": "balcony",
+      "connects": [
+        "balcony",
+        "outside"
+      ],
+      "windowType": "guarded-open-air",
+      "glazing": false,
+      "x1": 835,
+      "y1": 966,
+      "x2": 835,
+      "y2": 1115,
+      "widthMm": 1490,
+      "sillCm": 110,
+      "heightCm": 135,
+      "grade": "C",
+      "dimensionsVerified": false,
+      "guard": {
+        "frameCm": 2,
+        "barWidthCm": 1.2,
+        "nominalSpacingCm": 10,
+        "status": "schematic-not-engineered"
+      },
+      "source": "2026-10-05业主标注图与阳台实景确认北、东两面上部通透；开口尺寸和标高暂估，不是实测。",
+      "notes": "保留下方矮墙、边柱、顶梁及防护示意；无玻璃、无新增遮挡柜。不是拆改施工图。",
+      "sill": 1.1,
+      "height": 1.35
     }
   ],
   "design": {
@@ -1169,7 +1237,6 @@
   },
   "notes": [
     "厘米设计数据转换为米；P2仅变更公共区家具与收纳，R3私密区、墙门窗、厨房及阳台实体保持不变。",
-    "8张受影响公共区视角来自同一P2模型新渲染；12张未改空间保留明确历史来源，非新全屋光照计算。",
     "按确认P2：VIMLE沙发2410×980mm向东430、向南500mm；2000×250×650mm背柜随移，距沙发20mm，朝南取物。",
     "地毯2240×1780mm位于电视柜前沿与沙发前沿之间，两端各70mm，横向与沙发居中；1200×620mm茶几同步居中。",
     "LISABO固定餐桌1400×780×740mm竖放贴西柜；四把椅子北1、东2、南1，不可折叠或收入柜内。贴靠餐柜段取物受限；餐柜850mm与桌740mm相差110mm。",
@@ -1190,7 +1257,13 @@
     "本稿暂估外包1500×1000mm，不是实测。",
     "两车仍分层：婴儿车落地，儿童车1230mm平台抬放；车尺寸、架体承重、防倾倒、防坠与抬放人体工学待专业深化。",
     "北面双组四扇向内折，前365mm净空区不放层板、架腿或物品。车辆和层板前缘余量很紧，安装缝/把手/导轨须厂家实核。",
-    "餐柜南端接到库门后，柜面至库东内侧1035mm；再扣折门叠停示意后仅约980mm，小于儿童车1100mm横向包络，不能直接横抽。移开南椅后需斜转抬取，须用真实车体、层板和折门五金排演；本稿不证明取放可行。"
+    "餐柜南端接到库门后，柜面至库东内侧1035mm；再扣折门叠停示意后仅约980mm，小于儿童车1100mm横向包络，不能直接横抽。移开南椅后需斜转抬取，须用真实车体、层板和折门五金排演；本稿不证明取放可行。",
+    "本次纠正阳台北、东两面被画成整面实墙的错误：按业主照片表达下部矮墙、上部通透防护开口，保留边柱及顶梁；不是新拆墙或拆护栏方案。",
+    "矮墙高1100mm、开口高1350mm、上口2450mm均暂按照片估算；总高2700mm沿用旧模型。开口水平范围沿旧模型端点，不是实测净宽。",
+    "防护框、竖杆和间距仅为存在性示意，不作为防坠、承重、安装或规范验收依据；梁柱、矮墙、防护及排水管不得据模型擅改。",
+    "北侧借厅短墙仍保留；东面仅阳台段通透，厨房东墙、厨房与阳台内窗、生活阳台门及洗烘设备位置均不变。",
+    "未增加封窗玻璃、柜体或背景景观。窗外楼栋、管线及实际遮挡以现场为准，不承诺无遮拦远景。",
+    "5张本轮阳台相关新帧；其余图保留完整旧来源，只是历史参考，不代表本轮阳台边界或重算采光。"
   ],
   "measurementRevision": {
     "date": "2026-10-04",
@@ -5423,10 +5496,105 @@
       ]
     }
   },
+  "balconyOpennessRevision": {
+    "id": "balcony-two-sided-open-20261005",
+    "version": "3.12.0",
+    "baselineCommit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
+    "topologyConfirmedByOwner": true,
+    "dimensionsVerified": false,
+    "constructionApproved": false,
+    "evidenceFiles": [
+      "188e6af399cb806e2e2453d96a983d86.png",
+      "33082a0817245f15ae9db5cb51f6cde4.jpg"
+    ],
+    "openingIds": [
+      "balcony_north_opening",
+      "balcony_east_opening"
+    ],
+    "northWall": [
+      681,
+      960,
+      835,
+      960
+    ],
+    "eastWall": [
+      835,
+      960,
+      835,
+      1395
+    ],
+    "estimatedSillCm": 110,
+    "estimatedOpeningHeightCm": 135,
+    "estimatedOpeningTopCm": 245,
+    "originalWallHeightCm": 270,
+    "conditions": [
+      "本次纠正阳台北、东两面被画成整面实墙的错误：按业主照片表达下部矮墙、上部通透防护开口，保留边柱及顶梁；不是新拆墙或拆护栏方案。",
+      "矮墙高1100mm、开口高1350mm、上口2450mm均暂按照片估算；总高2700mm沿用旧模型。开口水平范围沿旧模型端点，不是实测净宽。",
+      "防护框、竖杆和间距仅为存在性示意，不作为防坠、承重、安装或规范验收依据；梁柱、矮墙、防护及排水管不得据模型擅改。",
+      "北侧借厅短墙仍保留；东面仅阳台段通透，厨房东墙、厨房与阳台内窗、生活阳台门及洗烘设备位置均不变。",
+      "未增加封窗玻璃、柜体或背景景观。窗外楼栋、管线及实际遮挡以现场为准，不承诺无遮拦远景。"
+    ],
+    "roomDescriptions": {
+      "balcony": {
+        "title": "北东通透，洗烘如旧",
+        "description": "阳台并排洗烘、上方浅盆、三轨门及厨房保留原位；取消书架后不再以门框与柜面齐平描述。690mm阳台操作带、980mm浅盆台高及设备安装条件仍待核。 取消的是客厅书架，不扩大阳台、不移动外墙。 北、东两面改正为矮墙上通透开口，保留防护、边柱和顶梁，不增封窗玻璃；标高及宽度暂估待复尺。",
+        "features": [
+          "北、东双面通透",
+          "保留矮墙与防护",
+          "开口标高暂估"
+        ]
+      }
+    }
+  },
   "renderedViews": {
+    "balcony": {
+      "sourceSha256": "00494449f757566adee91aa784867df81944247dcd28ca051fd640ec43371048",
+      "baseBlendSha256": "c1d00f01ecaf7c3a05afdd79a267493397bcf4303143cda2d132ad66fd22c328",
+      "cameraState": {
+        "matrix": [
+          [
+            -0.0766969844698906,
+            0.10644681751728058,
+            -0.9913559556007385,
+            6.820000171661377
+          ],
+          [
+            -0.9970544576644897,
+            -0.008188229985535145,
+            0.07625863701105118,
+            -10.079999923706055
+          ],
+          [
+            3.846230711701537e-08,
+            0.9942846894264221,
+            0.10676128417253494,
+            1.6200000047683716
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 16.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "a867e9be0eb84fdf743c687ac556a01ea8eddd84f114f9bb15081e1eea902993",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "3c70b9fd1ce27d8b3e60ca97ae1d8ef14019fdcd20ce5ef53d98d8a54d5e6e9a"
+    },
     "overall": {
-      "sourceSha256": "317d20a727f6ff0ddbc9ee0fd5fa5e85d9b2d5957329aafa73226dde088c199b",
-      "baseBlendSha256": "aaac16c91c84b163a9695ec2bfea127a27b08e80e83e213a5248aa66dceeb509",
+      "sourceSha256": "00494449f757566adee91aa784867df81944247dcd28ca051fd640ec43371048",
+      "baseBlendSha256": "c1d00f01ecaf7c3a05afdd79a267493397bcf4303143cda2d132ad66fd22c328",
       "cameraState": {
         "matrix": [
           [
@@ -5467,29 +5635,128 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "77371eb97d36d24ca6b01cc9c3e48a29e43d44d850792f791278b31a2756038f"
+      "imageSha256": "c0d50415cf2d73f1d37bd2c5669ee7de400e39a5d8cbbb0da675321825d0bb88",
+      "visibilityRules": {
+        "dollhouseExteriorWallIndices": [
+          4,
+          5,
+          6
+        ],
+        "keepBalconyBoundary": true,
+        "reason": "保留阳台矮墙、顶梁与防护，避免剖顶视角只剩悬空格栅；厨房外墙仍沿用原剖墙规则。"
+      }
     },
-    "living": {
-      "sourceSha256": "317d20a727f6ff0ddbc9ee0fd5fa5e85d9b2d5957329aafa73226dde088c199b",
-      "baseBlendSha256": "aaac16c91c84b163a9695ec2bfea127a27b08e80e83e213a5248aa66dceeb509",
+    "laundry-detail": {
+      "sourceSha256": "00494449f757566adee91aa784867df81944247dcd28ca051fd640ec43371048",
+      "baseBlendSha256": "c1d00f01ecaf7c3a05afdd79a267493397bcf4303143cda2d132ad66fd22c328",
       "cameraState": {
         "matrix": [
           [
-            0.985161304473877,
-            0.026200687512755394,
-            -0.16961924731731415,
-            4.550000190734863
+            -0.7295374870300293,
+            -0.3066288232803345,
+            0.6113540530204773,
+            8.029999732971191
           ],
           [
-            -0.1716308891773224,
-            0.15039202570915222,
-            -0.9736144542694092,
-            -10.369999885559082
+            0.6839408278465271,
+            -0.32707107067108154,
+            0.6521115303039551,
+            -9.899999618530273
           ],
           [
-            1.4835332073914742e-08,
-            0.9882791638374329,
-            0.15265725553035736,
+            3.8764252252576625e-08,
+            0.8938698172569275,
+            0.44832658767700195,
+            1.4500000476837158
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 17.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "f0449b7ff5ede1e287bcd9b2cbdcf2cc7d3651550885989f27afc5adf6349cba",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "89e6320d543f77e3d9bef1d6cebdb566333c42a94ee0c0f93a208002522c19ec"
+    },
+    "kitchen-north": {
+      "sourceSha256": "00494449f757566adee91aa784867df81944247dcd28ca051fd640ec43371048",
+      "baseBlendSha256": "c1d00f01ecaf7c3a05afdd79a267493397bcf4303143cda2d132ad66fd22c328",
+      "cameraState": {
+        "matrix": [
+          [
+            0.8896954655647278,
+            0.08911190927028656,
+            -0.44777342677116394,
+            6.25
+          ],
+          [
+            -0.45655447244644165,
+            0.17365391552448273,
+            -0.8725836873054504,
+            -12.899999618530273
+          ],
+          [
+            1.2481814692932858e-08,
+            0.9807667136192322,
+            0.19518354535102844,
+            1.6399999856948853
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 18.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "a786e5d4cc18bf235cab07fe554bf9fd0fd0e8f0934389608e3aca06f1a8f8d9",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "c092bd47af09ed3a0bd7e1707a9866c2dfbf9a374314e2b9f485dee9b327dd53"
+    },
+    "living-wall": {
+      "sourceSha256": "00494449f757566adee91aa784867df81944247dcd28ca051fd640ec43371048",
+      "baseBlendSha256": "c1d00f01ecaf7c3a05afdd79a267493397bcf4303143cda2d132ad66fd22c328",
+      "cameraState": {
+        "matrix": [
+          [
+            0.5181780457496643,
+            0.06651371717453003,
+            -0.8526825308799744,
+            3.440000057220459
+          ],
+          [
+            -0.8552727699279785,
+            0.04029830917716026,
+            -0.5166086554527283,
+            -10.0
+          ],
+          [
+            1.0076273326831142e-07,
+            0.9969714283943176,
+            0.07776907086372375,
             1.6200000047683716
           ],
           [
@@ -5499,12 +5766,12 @@
             1.0
           ]
         ],
-        "lens": 20.0,
+        "lens": 19.0,
         "sensorWidth": 36.0,
         "type": "PERSP",
         "orthoScale": 6.0
       },
-      "cameraHash": "122bb01d89563dc1fae024d6a8052fabbb3b42059a5db22e748af263c0c95c3b",
+      "cameraHash": "b1ee2e23e2171ec1790f92fe05764dcc2451340ba94577cc75a868779e1b52ab",
       "renderSpec": {
         "engine": "CYCLES",
         "width": 960,
@@ -5512,52 +5779,7 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "8be922df9e91adf3c08a2de3f0c552024ae182bc104c19f3ae95fc4de4ee4050"
-    },
-    "dining": {
-      "sourceSha256": "317d20a727f6ff0ddbc9ee0fd5fa5e85d9b2d5957329aafa73226dde088c199b",
-      "baseBlendSha256": "aaac16c91c84b163a9695ec2bfea127a27b08e80e83e213a5248aa66dceeb509",
-      "cameraState": {
-        "matrix": [
-          [
-            0.7210651636123657,
-            -0.14466653764247894,
-            0.6775961518287659,
-            4.699999809265137
-          ],
-          [
-            0.6928672194480896,
-            0.1505541056394577,
-            -0.7051726579666138,
-            -12.680000305175781
-          ],
-          [
-            5.405734526675587e-09,
-            0.9779596328735352,
-            0.2087940275669098,
-            1.6200000047683716
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "lens": 20.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
-      },
-      "cameraHash": "94d908433d94939089425206d3d97c0269859b4a06dc867f617e7b2c31526564",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "ea726ec3176bb5f719443f012ad62ef7dadebc641ed128b2012aba304dd48800"
+      "imageSha256": "c43338ec1993896104440004be0795065d4335bf0e48025c8f01bf5feafc3494"
     },
     "bay-living": {
       "sourceSha256": "317d20a727f6ff0ddbc9ee0fd5fa5e85d9b2d5957329aafa73226dde088c199b",
@@ -5602,7 +5824,235 @@
         "samples": 8,
         "denoise": true
       },
-      "imageSha256": "ed72a209ec819daf614c0da0d818e8a44f7a5807a9a4e6dca79cfb8a51b759ce"
+      "imageSha256": "ed72a209ec819daf614c0da0d818e8a44f7a5807a9a4e6dca79cfb8a51b759ce",
+      "retainedFrom": {
+        "commit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "bay-living",
+        "reason": "本轮仅重渲指定阳台相关视角；此图完整保留发布旧来源，未更新阳台边界和采光，只作历史参考，不代表3.12.0阳台。"
+      }
+    },
+    "bay-master": {
+      "sourceSha256": "5a8ddb2209cd0e053994eba20d7824726c07fbad5641c4a32c95d616f7894b2a",
+      "baseBlendSha256": "a28ef561d9c3253da08a9099b07d1ac22472477a39d51d19603a282962203f95",
+      "cameraState": {
+        "matrix": [
+          [
+            0.9884549975395203,
+            0.03000291995704174,
+            -0.1485145390033722,
+            4.300000190734863
+          ],
+          [
+            -0.15151484310626984,
+            0.195733442902565,
+            -0.9688816666603088,
+            -2.9800000190734863
+          ],
+          [
+            -1.508635705249617e-08,
+            0.980198085308075,
+            0.1980195790529251,
+            1.600000023841858
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 18.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "7abd47f8951b7efef8b9d45da91e3bfe668a5cff9bdf05b0908d9b6e1b4d1b37",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "92851d487377ddc72da1f671a5b07b8660a90dc570584894866c6bf9a922b39e",
+      "retainedFrom": {
+        "commit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "bay-master",
+        "reason": "本轮仅重渲指定阳台相关视角；此图完整保留发布旧来源，未更新阳台边界和采光，只作历史参考，不代表3.12.0阳台。",
+        "previous": {
+          "commit": "d81f065ef4287ee24592df6c372a8fe2d7a64c3b",
+          "manifest": "models/schemes/family/scene-manifest.json",
+          "view": "bay-master",
+          "reason": "P2仅改变公区家具与收纳；此为未改私密区、厨房或阳台的已发布历史参考，非新帧，不代表重算全屋光照。"
+        }
+      }
+    },
+    "bay-tea": {
+      "sourceSha256": "5a8ddb2209cd0e053994eba20d7824726c07fbad5641c4a32c95d616f7894b2a",
+      "baseBlendSha256": "a28ef561d9c3253da08a9099b07d1ac22472477a39d51d19603a282962203f95",
+      "cameraState": {
+        "matrix": [
+          [
+            0.8570138812065125,
+            -0.13236084580421448,
+            0.4980037808418274,
+            2.4800000190734863
+          ],
+          [
+            0.515293300151825,
+            0.22013694047927856,
+            -0.828258752822876,
+            -1.4700000286102295
+          ],
+          [
+            -2.3339126187238435e-09,
+            0.9664472937583923,
+            0.2568650543689728,
+            1.5199999809265137
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 18.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "66272149be937c6e260cbb29f9b612cc1e7e55ffa5ee1b05297c5089024f6902",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "82fcc24ce7825f7737397fc582c50d7578168aa396257fe85a10cf24614a319b",
+      "retainedFrom": {
+        "commit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "bay-tea",
+        "reason": "本轮仅重渲指定阳台相关视角；此图完整保留发布旧来源，未更新阳台边界和采光，只作历史参考，不代表3.12.0阳台。",
+        "previous": {
+          "commit": "d81f065ef4287ee24592df6c372a8fe2d7a64c3b",
+          "manifest": "models/schemes/family/scene-manifest.json",
+          "view": "bay-tea",
+          "reason": "P2仅改变公区家具与收纳；此为未改私密区、厨房或阳台的已发布历史参考，非新帧，不代表重算全屋光照。"
+        }
+      }
+    },
+    "bedroom-b": {
+      "sourceSha256": "5a8ddb2209cd0e053994eba20d7824726c07fbad5641c4a32c95d616f7894b2a",
+      "baseBlendSha256": "a28ef561d9c3253da08a9099b07d1ac22472477a39d51d19603a282962203f95",
+      "cameraState": {
+        "matrix": [
+          [
+            0.8282155990600586,
+            -0.14497239887714386,
+            0.5413334369659424,
+            2.619999885559082
+          ],
+          [
+            0.5604095458984375,
+            0.21425119042396545,
+            -0.8000234961509705,
+            -2.869999885559082
+          ],
+          [
+            -8.354065883509065e-09,
+            0.9659603834152222,
+            0.25869008898735046,
+            1.6200000047683716
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 18.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "cf6dc050a4e78826849f64e6aa3fed6ab34fb04cef11e7c257f752dc94de845b",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "0a89b9798cf9085873d567f36f4acfa033049d33627c3c48859c6ef0c61323af",
+      "retainedFrom": {
+        "commit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "bedroom-b",
+        "reason": "本轮仅重渲指定阳台相关视角；此图完整保留发布旧来源，未更新阳台边界和采光，只作历史参考，不代表3.12.0阳台。",
+        "previous": {
+          "commit": "d81f065ef4287ee24592df6c372a8fe2d7a64c3b",
+          "manifest": "models/schemes/family/scene-manifest.json",
+          "view": "bedroom-b",
+          "reason": "P2仅改变公区家具与收纳；此为未改私密区、厨房或阳台的已发布历史参考，非新帧，不代表重算全屋光照。"
+        }
+      }
+    },
+    "dining": {
+      "sourceSha256": "317d20a727f6ff0ddbc9ee0fd5fa5e85d9b2d5957329aafa73226dde088c199b",
+      "baseBlendSha256": "aaac16c91c84b163a9695ec2bfea127a27b08e80e83e213a5248aa66dceeb509",
+      "cameraState": {
+        "matrix": [
+          [
+            0.7210651636123657,
+            -0.14466653764247894,
+            0.6775961518287659,
+            4.699999809265137
+          ],
+          [
+            0.6928672194480896,
+            0.1505541056394577,
+            -0.7051726579666138,
+            -12.680000305175781
+          ],
+          [
+            5.405734526675587e-09,
+            0.9779596328735352,
+            0.2087940275669098,
+            1.6200000047683716
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 20.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "94d908433d94939089425206d3d97c0269859b4a06dc867f617e7b2c31526564",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "ea726ec3176bb5f719443f012ad62ef7dadebc641ed128b2012aba304dd48800",
+      "retainedFrom": {
+        "commit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "dining",
+        "reason": "本轮仅重渲指定阳台相关视角；此图完整保留发布旧来源，未更新阳台边界和采光，只作历史参考，不代表3.12.0阳台。"
+      }
     },
     "entry-storage": {
       "sourceSha256": "317d20a727f6ff0ddbc9ee0fd5fa5e85d9b2d5957329aafa73226dde088c199b",
@@ -5696,357 +6146,12 @@
           1.23
         ],
         "lensMm": 19
-      }
-    },
-    "sideboard": {
-      "sourceSha256": "317d20a727f6ff0ddbc9ee0fd5fa5e85d9b2d5957329aafa73226dde088c199b",
-      "baseBlendSha256": "aaac16c91c84b163a9695ec2bfea127a27b08e80e83e213a5248aa66dceeb509",
-      "cameraState": {
-        "matrix": [
-          [
-            0.5127410292625427,
-            -0.10499297082424164,
-            0.8520992398262024,
-            4.53000020980835
-          ],
-          [
-            0.858543336391449,
-            0.06270404905080795,
-            -0.5088924765586853,
-            -12.09000015258789
-          ],
-          [
-            5.602283437156075e-08,
-            0.9924941658973694,
-            0.12229195237159729,
-            1.6200000047683716
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "lens": 19.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
       },
-      "cameraHash": "53524f5c7a3c225162468aff6ac159da4209163fb2205bc5080260ef47bd1197",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "7a42e5592f139c0c84e6d7da67456442d05a0d4373797a613a864b6285bd2dae"
-    },
-    "storage-library": {
-      "sourceSha256": "317d20a727f6ff0ddbc9ee0fd5fa5e85d9b2d5957329aafa73226dde088c199b",
-      "baseBlendSha256": "aaac16c91c84b163a9695ec2bfea127a27b08e80e83e213a5248aa66dceeb509",
-      "cameraState": {
-        "matrix": [
-          [
-            -0.9957294464111328,
-            -0.01560043916106224,
-            0.09099146723747253,
-            3.069999933242798
-          ],
-          [
-            0.09231913089752197,
-            -0.16826286911964417,
-            0.9814096093177795,
-            -12.130000114440918
-          ],
-          [
-            6.614954628503256e-08,
-            0.9856187105178833,
-            0.168984517455101,
-            1.6100000143051147
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "lens": 17.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
-      },
-      "cameraHash": "059b183efc3ab64b85fccc1eaeff786d0e8bf230e9f4cd715bb07a988b3fd16c",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "097deab82e2971ab2463a2e9ad8d71baaa8d9d5a528f80ebb2bcf2e1375bd242"
-    },
-    "living-wall": {
-      "sourceSha256": "317d20a727f6ff0ddbc9ee0fd5fa5e85d9b2d5957329aafa73226dde088c199b",
-      "baseBlendSha256": "aaac16c91c84b163a9695ec2bfea127a27b08e80e83e213a5248aa66dceeb509",
-      "cameraState": {
-        "matrix": [
-          [
-            0.5181780457496643,
-            0.06651371717453003,
-            -0.8526825308799744,
-            3.440000057220459
-          ],
-          [
-            -0.8552727699279785,
-            0.04029830917716026,
-            -0.5166086554527283,
-            -10.0
-          ],
-          [
-            1.0076273326831142e-07,
-            0.9969714283943176,
-            0.07776907086372375,
-            1.6200000047683716
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "lens": 19.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
-      },
-      "cameraHash": "b1ee2e23e2171ec1790f92fe05764dcc2451340ba94577cc75a868779e1b52ab",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "d94b8dd42ada7426dfc98e9d3dd76d2b55eb15cab3f1f2d40ed498798e93e2a0"
-    },
-    "balcony": {
-      "sourceSha256": "273e18efebc5beeb38f8e7c2637c881fb0afac9dbdb76a1d1f46a61f1b829840",
-      "baseBlendSha256": "ee350d1f5013b2094993d08674de089e42037aa5bbeeb44f0fa84f83fbe3949e",
-      "cameraState": {
-        "matrix": [
-          [
-            -1.0,
-            -1.438191929992172e-07,
-            8.647458571431343e-08,
-            7.440000057220459
-          ],
-          [
-            1.5099580252808664e-07,
-            -0.546267569065094,
-            0.8376107215881348,
-            -9.859999656677246
-          ],
-          [
-            -7.322623929439942e-08,
-            0.8376107215881348,
-            0.546267569065094,
-            1.2799999713897705
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "lens": 16.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
-      },
-      "cameraHash": "0eb4763833e6b0985d88653680c058dcdb249535ec4713c46eb16f29f86117ad",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "5954b8f13fa26ccd6c3bcda02366946a35d5315e208b559c0cc6ebd752fffa65",
       "retainedFrom": {
-        "commit": "d81f065ef4287ee24592df6c372a8fe2d7a64c3b",
+        "commit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
         "manifest": "models/schemes/family/scene-manifest.json",
-        "view": "balcony",
-        "reason": "P2仅改变公区家具与收纳；此为未改私密区、厨房或阳台的已发布历史参考，非新帧，不代表重算全屋光照。",
-        "previous": {
-          "commit": "e210bd72e3feb11bafd02f3e8619399bdc7a99f8",
-          "manifest": "models/schemes/family/scene-manifest.json",
-          "view": "balcony",
-          "reason": "R3仅调整私密区墙门家具；此为未改公共空间的已发布历史参考，非新帧，不代表重算全屋光照或新墙后的远景。",
-          "previous": {
-            "commit": "92162a8cbc713f5ce72fa6632f37364328778253",
-            "manifest": "models/schemes/family/scene-manifest.json",
-            "view": "balcony",
-            "reason": "kitchen-only-refresh; historical reference, not a current kitchen render"
-          }
-        }
-      }
-    },
-    "bay-master": {
-      "sourceSha256": "5a8ddb2209cd0e053994eba20d7824726c07fbad5641c4a32c95d616f7894b2a",
-      "baseBlendSha256": "a28ef561d9c3253da08a9099b07d1ac22472477a39d51d19603a282962203f95",
-      "cameraState": {
-        "matrix": [
-          [
-            0.9884549975395203,
-            0.03000291995704174,
-            -0.1485145390033722,
-            4.300000190734863
-          ],
-          [
-            -0.15151484310626984,
-            0.195733442902565,
-            -0.9688816666603088,
-            -2.9800000190734863
-          ],
-          [
-            -1.508635705249617e-08,
-            0.980198085308075,
-            0.1980195790529251,
-            1.600000023841858
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "lens": 18.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
-      },
-      "cameraHash": "7abd47f8951b7efef8b9d45da91e3bfe668a5cff9bdf05b0908d9b6e1b4d1b37",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "92851d487377ddc72da1f671a5b07b8660a90dc570584894866c6bf9a922b39e",
-      "retainedFrom": {
-        "commit": "d81f065ef4287ee24592df6c372a8fe2d7a64c3b",
-        "manifest": "models/schemes/family/scene-manifest.json",
-        "view": "bay-master",
-        "reason": "P2仅改变公区家具与收纳；此为未改私密区、厨房或阳台的已发布历史参考，非新帧，不代表重算全屋光照。"
-      }
-    },
-    "bay-tea": {
-      "sourceSha256": "5a8ddb2209cd0e053994eba20d7824726c07fbad5641c4a32c95d616f7894b2a",
-      "baseBlendSha256": "a28ef561d9c3253da08a9099b07d1ac22472477a39d51d19603a282962203f95",
-      "cameraState": {
-        "matrix": [
-          [
-            0.8570138812065125,
-            -0.13236084580421448,
-            0.4980037808418274,
-            2.4800000190734863
-          ],
-          [
-            0.515293300151825,
-            0.22013694047927856,
-            -0.828258752822876,
-            -1.4700000286102295
-          ],
-          [
-            -2.3339126187238435e-09,
-            0.9664472937583923,
-            0.2568650543689728,
-            1.5199999809265137
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "lens": 18.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
-      },
-      "cameraHash": "66272149be937c6e260cbb29f9b612cc1e7e55ffa5ee1b05297c5089024f6902",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "82fcc24ce7825f7737397fc582c50d7578168aa396257fe85a10cf24614a319b",
-      "retainedFrom": {
-        "commit": "d81f065ef4287ee24592df6c372a8fe2d7a64c3b",
-        "manifest": "models/schemes/family/scene-manifest.json",
-        "view": "bay-tea",
-        "reason": "P2仅改变公区家具与收纳；此为未改私密区、厨房或阳台的已发布历史参考，非新帧，不代表重算全屋光照。"
-      }
-    },
-    "bedroom-b": {
-      "sourceSha256": "5a8ddb2209cd0e053994eba20d7824726c07fbad5641c4a32c95d616f7894b2a",
-      "baseBlendSha256": "a28ef561d9c3253da08a9099b07d1ac22472477a39d51d19603a282962203f95",
-      "cameraState": {
-        "matrix": [
-          [
-            0.8282155990600586,
-            -0.14497239887714386,
-            0.5413334369659424,
-            2.619999885559082
-          ],
-          [
-            0.5604095458984375,
-            0.21425119042396545,
-            -0.8000234961509705,
-            -2.869999885559082
-          ],
-          [
-            -8.354065883509065e-09,
-            0.9659603834152222,
-            0.25869008898735046,
-            1.6200000047683716
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "lens": 18.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
-      },
-      "cameraHash": "cf6dc050a4e78826849f64e6aa3fed6ab34fb04cef11e7c257f752dc94de845b",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "0a89b9798cf9085873d567f36f4acfa033049d33627c3c48859c6ef0c61323af",
-      "retainedFrom": {
-        "commit": "d81f065ef4287ee24592df6c372a8fe2d7a64c3b",
-        "manifest": "models/schemes/family/scene-manifest.json",
-        "view": "bedroom-b",
-        "reason": "P2仅改变公区家具与收纳；此为未改私密区、厨房或阳台的已发布历史参考，非新帧，不代表重算全屋光照。"
+        "view": "entry-storage",
+        "reason": "本轮仅重渲指定阳台相关视角；此图完整保留发布旧来源，未更新阳台边界和采光，只作历史参考，不代表3.12.0阳台。"
       }
     },
     "guest-bath": {
@@ -6094,10 +6199,16 @@
       },
       "imageSha256": "047b8902bfdb1dfc00e0dce2c86a24eb9e7dd06fe74e50b3dd1bef7b065d85e1",
       "retainedFrom": {
-        "commit": "d81f065ef4287ee24592df6c372a8fe2d7a64c3b",
+        "commit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
         "manifest": "models/schemes/family/scene-manifest.json",
         "view": "guest-bath",
-        "reason": "P2仅改变公区家具与收纳；此为未改私密区、厨房或阳台的已发布历史参考，非新帧，不代表重算全屋光照。"
+        "reason": "本轮仅重渲指定阳台相关视角；此图完整保留发布旧来源，未更新阳台边界和采光，只作历史参考，不代表3.12.0阳台。",
+        "previous": {
+          "commit": "d81f065ef4287ee24592df6c372a8fe2d7a64c3b",
+          "manifest": "models/schemes/family/scene-manifest.json",
+          "view": "guest-bath",
+          "reason": "P2仅改变公区家具与收纳；此为未改私密区、厨房或阳台的已发布历史参考，非新帧，不代表重算全屋光照。"
+        }
       }
     },
     "kitchen": {
@@ -6145,136 +6256,73 @@
       },
       "imageSha256": "dc707ef1bb6f7a04db61fa8e0be57940fb5ef2ef8a4a4f4cef5216617fd8927a",
       "retainedFrom": {
-        "commit": "d81f065ef4287ee24592df6c372a8fe2d7a64c3b",
+        "commit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
         "manifest": "models/schemes/family/scene-manifest.json",
         "view": "kitchen",
-        "reason": "P2仅改变公区家具与收纳；此为未改私密区、厨房或阳台的已发布历史参考，非新帧，不代表重算全屋光照。",
+        "reason": "本轮仅重渲指定阳台相关视角；此图完整保留发布旧来源，未更新阳台边界和采光，只作历史参考，不代表3.12.0阳台。",
         "previous": {
-          "commit": "e210bd72e3feb11bafd02f3e8619399bdc7a99f8",
+          "commit": "d81f065ef4287ee24592df6c372a8fe2d7a64c3b",
           "manifest": "models/schemes/family/scene-manifest.json",
           "view": "kitchen",
-          "reason": "R3仅调整私密区墙门家具；此为未改公共空间的已发布历史参考，非新帧，不代表重算全屋光照或新墙后的远景。"
-        }
-      }
-    },
-    "kitchen-north": {
-      "sourceSha256": "b610d270058c753f765ad06867a92f4dbd3ca66e95f25e703db96a4e001484b1",
-      "baseBlendSha256": "4be9d3d28369d95dc0902141ed54252ac7c99850b9a1f99e325c4b465dbac96c",
-      "cameraState": {
-        "matrix": [
-          [
-            0.8896954655647278,
-            0.08911190927028656,
-            -0.44777342677116394,
-            6.25
-          ],
-          [
-            -0.45655447244644165,
-            0.17365391552448273,
-            -0.8725836873054504,
-            -12.899999618530273
-          ],
-          [
-            1.2481814692932858e-08,
-            0.9807667136192322,
-            0.19518354535102844,
-            1.6399999856948853
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "lens": 18.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
-      },
-      "cameraHash": "a786e5d4cc18bf235cab07fe554bf9fd0fd0e8f0934389608e3aca06f1a8f8d9",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "97c97a29e05abdd349caa778fcc53459a324c5a0be1bcd144d3c36630522ca4b",
-      "retainedFrom": {
-        "commit": "d81f065ef4287ee24592df6c372a8fe2d7a64c3b",
-        "manifest": "models/schemes/family/scene-manifest.json",
-        "view": "kitchen-north",
-        "reason": "P2仅改变公区家具与收纳；此为未改私密区、厨房或阳台的已发布历史参考，非新帧，不代表重算全屋光照。",
-        "previous": {
-          "commit": "e210bd72e3feb11bafd02f3e8619399bdc7a99f8",
-          "manifest": "models/schemes/family/scene-manifest.json",
-          "view": "kitchen-north",
-          "reason": "R3仅调整私密区墙门家具；此为未改公共空间的已发布历史参考，非新帧，不代表重算全屋光照或新墙后的远景。"
-        }
-      }
-    },
-    "laundry-detail": {
-      "sourceSha256": "273e18efebc5beeb38f8e7c2637c881fb0afac9dbdb76a1d1f46a61f1b829840",
-      "baseBlendSha256": "ee350d1f5013b2094993d08674de089e42037aa5bbeeb44f0fa84f83fbe3949e",
-      "cameraState": {
-        "matrix": [
-          [
-            -0.7295374870300293,
-            -0.3066288232803345,
-            0.6113540530204773,
-            8.029999732971191
-          ],
-          [
-            0.6839408278465271,
-            -0.32707107067108154,
-            0.6521115303039551,
-            -9.899999618530273
-          ],
-          [
-            3.8764252252576625e-08,
-            0.8938698172569275,
-            0.44832658767700195,
-            1.4500000476837158
-          ],
-          [
-            0.0,
-            0.0,
-            0.0,
-            1.0
-          ]
-        ],
-        "lens": 17.0,
-        "sensorWidth": 36.0,
-        "type": "PERSP",
-        "orthoScale": 6.0
-      },
-      "cameraHash": "f0449b7ff5ede1e287bcd9b2cbdcf2cc7d3651550885989f27afc5adf6349cba",
-      "renderSpec": {
-        "engine": "CYCLES",
-        "width": 960,
-        "height": 640,
-        "samples": 8,
-        "denoise": true
-      },
-      "imageSha256": "e9e684342bd1539fd48138a40b843a5743867c5b92b6bb5b191eecc2e9c6a6de",
-      "retainedFrom": {
-        "commit": "d81f065ef4287ee24592df6c372a8fe2d7a64c3b",
-        "manifest": "models/schemes/family/scene-manifest.json",
-        "view": "laundry-detail",
-        "reason": "P2仅改变公区家具与收纳；此为未改私密区、厨房或阳台的已发布历史参考，非新帧，不代表重算全屋光照。",
-        "previous": {
-          "commit": "e210bd72e3feb11bafd02f3e8619399bdc7a99f8",
-          "manifest": "models/schemes/family/scene-manifest.json",
-          "view": "laundry-detail",
-          "reason": "R3仅调整私密区墙门家具；此为未改公共空间的已发布历史参考，非新帧，不代表重算全屋光照或新墙后的远景。",
+          "reason": "P2仅改变公区家具与收纳；此为未改私密区、厨房或阳台的已发布历史参考，非新帧，不代表重算全屋光照。",
           "previous": {
-            "commit": "92162a8cbc713f5ce72fa6632f37364328778253",
+            "commit": "e210bd72e3feb11bafd02f3e8619399bdc7a99f8",
             "manifest": "models/schemes/family/scene-manifest.json",
-            "view": "laundry-detail",
-            "reason": "kitchen-only-refresh; historical reference, not a current kitchen render"
+            "view": "kitchen",
+            "reason": "R3仅调整私密区墙门家具；此为未改公共空间的已发布历史参考，非新帧，不代表重算全屋光照或新墙后的远景。"
           }
         }
+      }
+    },
+    "living": {
+      "sourceSha256": "317d20a727f6ff0ddbc9ee0fd5fa5e85d9b2d5957329aafa73226dde088c199b",
+      "baseBlendSha256": "aaac16c91c84b163a9695ec2bfea127a27b08e80e83e213a5248aa66dceeb509",
+      "cameraState": {
+        "matrix": [
+          [
+            0.985161304473877,
+            0.026200687512755394,
+            -0.16961924731731415,
+            4.550000190734863
+          ],
+          [
+            -0.1716308891773224,
+            0.15039202570915222,
+            -0.9736144542694092,
+            -10.369999885559082
+          ],
+          [
+            1.4835332073914742e-08,
+            0.9882791638374329,
+            0.15265725553035736,
+            1.6200000047683716
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 20.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "122bb01d89563dc1fae024d6a8052fabbb3b42059a5db22e748af263c0c95c3b",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "8be922df9e91adf3c08a2de3f0c552024ae182bc104c19f3ae95fc4de4ee4050",
+      "retainedFrom": {
+        "commit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "living",
+        "reason": "本轮仅重渲指定阳台相关视角；此图完整保留发布旧来源，未更新阳台边界和采光，只作历史参考，不代表3.12.0阳台。"
       }
     },
     "master": {
@@ -6322,10 +6370,16 @@
       },
       "imageSha256": "0029aaa5100c04a99705c0d4241a94464991b14039087d0a6932f913b5f1cdab",
       "retainedFrom": {
-        "commit": "d81f065ef4287ee24592df6c372a8fe2d7a64c3b",
+        "commit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
         "manifest": "models/schemes/family/scene-manifest.json",
         "view": "master",
-        "reason": "P2仅改变公区家具与收纳；此为未改私密区、厨房或阳台的已发布历史参考，非新帧，不代表重算全屋光照。"
+        "reason": "本轮仅重渲指定阳台相关视角；此图完整保留发布旧来源，未更新阳台边界和采光，只作历史参考，不代表3.12.0阳台。",
+        "previous": {
+          "commit": "d81f065ef4287ee24592df6c372a8fe2d7a64c3b",
+          "manifest": "models/schemes/family/scene-manifest.json",
+          "view": "master",
+          "reason": "P2仅改变公区家具与收纳；此为未改私密区、厨房或阳台的已发布历史参考，非新帧，不代表重算全屋光照。"
+        }
       }
     },
     "master-bath": {
@@ -6373,10 +6427,118 @@
       },
       "imageSha256": "ff2753b3a435785c128446f4911578ab8c901d8ed0ac78f97c80fec7d14a7042",
       "retainedFrom": {
-        "commit": "d81f065ef4287ee24592df6c372a8fe2d7a64c3b",
+        "commit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
         "manifest": "models/schemes/family/scene-manifest.json",
         "view": "master-bath",
-        "reason": "P2仅改变公区家具与收纳；此为未改私密区、厨房或阳台的已发布历史参考，非新帧，不代表重算全屋光照。"
+        "reason": "本轮仅重渲指定阳台相关视角；此图完整保留发布旧来源，未更新阳台边界和采光，只作历史参考，不代表3.12.0阳台。",
+        "previous": {
+          "commit": "d81f065ef4287ee24592df6c372a8fe2d7a64c3b",
+          "manifest": "models/schemes/family/scene-manifest.json",
+          "view": "master-bath",
+          "reason": "P2仅改变公区家具与收纳；此为未改私密区、厨房或阳台的已发布历史参考，非新帧，不代表重算全屋光照。"
+        }
+      }
+    },
+    "sideboard": {
+      "sourceSha256": "317d20a727f6ff0ddbc9ee0fd5fa5e85d9b2d5957329aafa73226dde088c199b",
+      "baseBlendSha256": "aaac16c91c84b163a9695ec2bfea127a27b08e80e83e213a5248aa66dceeb509",
+      "cameraState": {
+        "matrix": [
+          [
+            0.5127410292625427,
+            -0.10499297082424164,
+            0.8520992398262024,
+            4.53000020980835
+          ],
+          [
+            0.858543336391449,
+            0.06270404905080795,
+            -0.5088924765586853,
+            -12.09000015258789
+          ],
+          [
+            5.602283437156075e-08,
+            0.9924941658973694,
+            0.12229195237159729,
+            1.6200000047683716
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 19.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "53524f5c7a3c225162468aff6ac159da4209163fb2205bc5080260ef47bd1197",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "7a42e5592f139c0c84e6d7da67456442d05a0d4373797a613a864b6285bd2dae",
+      "retainedFrom": {
+        "commit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "sideboard",
+        "reason": "本轮仅重渲指定阳台相关视角；此图完整保留发布旧来源，未更新阳台边界和采光，只作历史参考，不代表3.12.0阳台。"
+      }
+    },
+    "storage-library": {
+      "sourceSha256": "317d20a727f6ff0ddbc9ee0fd5fa5e85d9b2d5957329aafa73226dde088c199b",
+      "baseBlendSha256": "aaac16c91c84b163a9695ec2bfea127a27b08e80e83e213a5248aa66dceeb509",
+      "cameraState": {
+        "matrix": [
+          [
+            -0.9957294464111328,
+            -0.01560043916106224,
+            0.09099146723747253,
+            3.069999933242798
+          ],
+          [
+            0.09231913089752197,
+            -0.16826286911964417,
+            0.9814096093177795,
+            -12.130000114440918
+          ],
+          [
+            6.614954628503256e-08,
+            0.9856187105178833,
+            0.168984517455101,
+            1.6100000143051147
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "lens": 17.0,
+        "sensorWidth": 36.0,
+        "type": "PERSP",
+        "orthoScale": 6.0
+      },
+      "cameraHash": "059b183efc3ab64b85fccc1eaeff786d0e8bf230e9f4cd715bb07a988b3fd16c",
+      "renderSpec": {
+        "engine": "CYCLES",
+        "width": 960,
+        "height": 640,
+        "samples": 8,
+        "denoise": true
+      },
+      "imageSha256": "097deab82e2971ab2463a2e9ad8d71baaa8d9d5a528f80ebb2bcf2e1375bd242",
+      "retainedFrom": {
+        "commit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
+        "manifest": "models/schemes/family/scene-manifest.json",
+        "view": "storage-library",
+        "reason": "本轮仅重渲指定阳台相关视角；此图完整保留发布旧来源，未更新阳台边界和采光，只作历史参考，不代表3.12.0阳台。"
       }
     },
     "study": {
@@ -6424,10 +6586,16 @@
       },
       "imageSha256": "c6c0416f727c66c8c3899b9603597b69af963b5b937f1621f1906188655b77ef",
       "retainedFrom": {
-        "commit": "d81f065ef4287ee24592df6c372a8fe2d7a64c3b",
+        "commit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
         "manifest": "models/schemes/family/scene-manifest.json",
         "view": "study",
-        "reason": "P2仅改变公区家具与收纳；此为未改私密区、厨房或阳台的已发布历史参考，非新帧，不代表重算全屋光照。"
+        "reason": "本轮仅重渲指定阳台相关视角；此图完整保留发布旧来源，未更新阳台边界和采光，只作历史参考，不代表3.12.0阳台。",
+        "previous": {
+          "commit": "d81f065ef4287ee24592df6c372a8fe2d7a64c3b",
+          "manifest": "models/schemes/family/scene-manifest.json",
+          "view": "study",
+          "reason": "P2仅改变公区家具与收纳；此为未改私密区、厨房或阳台的已发布历史参考，非新帧，不代表重算全屋光照。"
+        }
       }
     },
     "suite-entry": {
@@ -6475,14 +6643,20 @@
       },
       "imageSha256": "0f02ae9752946211323a7e176e15de47c44f5ba681044aa99cd4f3dd68405947",
       "retainedFrom": {
-        "commit": "d81f065ef4287ee24592df6c372a8fe2d7a64c3b",
+        "commit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
         "manifest": "models/schemes/family/scene-manifest.json",
         "view": "suite-entry",
-        "reason": "P2仅改变公区家具与收纳；此为未改私密区、厨房或阳台的已发布历史参考，非新帧，不代表重算全屋光照。"
+        "reason": "本轮仅重渲指定阳台相关视角；此图完整保留发布旧来源，未更新阳台边界和采光，只作历史参考，不代表3.12.0阳台。",
+        "previous": {
+          "commit": "d81f065ef4287ee24592df6c372a8fe2d7a64c3b",
+          "manifest": "models/schemes/family/scene-manifest.json",
+          "view": "suite-entry",
+          "reason": "P2仅改变公区家具与收纳；此为未改私密区、厨房或阳台的已发布历史参考，非新帧，不代表重算全屋光照。"
+        }
       }
     }
   },
-  "baseBlendSha256": "aaac16c91c84b163a9695ec2bfea127a27b08e80e83e213a5248aa66dceeb509",
+  "baseBlendSha256": "c1d00f01ecaf7c3a05afdd79a267493397bcf4303143cda2d132ad66fd22c328",
   "renderSpec": {
     "engine": "CYCLES",
     "width": 960,
@@ -6491,32 +6665,32 @@
     "denoise": true
   },
   "renderInheritance": {
-    "reviewedAt": "3.11.0",
-    "baselineCommit": "d81f065ef4287ee24592df6c372a8fe2d7a64c3b",
+    "reviewedAt": "3.12.0",
+    "baselineCommit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
     "currentViews": [
       "overall",
-      "living",
-      "dining",
-      "bay-living",
-      "entry-storage",
-      "sideboard",
-      "storage-library",
+      "balcony",
+      "laundry-detail",
+      "kitchen-north",
       "living-wall"
     ],
     "referenceViews": [
-      "balcony",
+      "bay-living",
       "bay-master",
       "bay-tea",
       "bedroom-b",
+      "dining",
+      "entry-storage",
       "guest-bath",
       "kitchen",
-      "kitchen-north",
-      "laundry-detail",
+      "living",
       "master",
       "master-bath",
+      "sideboard",
+      "storage-library",
       "study",
       "suite-entry"
     ],
-    "note": "8张P2公区新渲染＋12张未改空间历史参考；原图与历史来源hash保持。"
+    "note": "5张本轮同源阳台相关新图；其余历史图字节和原始来源链保留。"
   }
 }

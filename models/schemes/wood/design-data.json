@@ -1,6 +1,6 @@
 {
   "name": "荟雅苑 104.83㎡ · 28F",
-  "version": "3.9.0",
+  "version": "3.12.0",
   "unit": "cm",
   "north": "图上方（临道路侧）",
   "palette": [
@@ -758,6 +758,64 @@
       },
       "source": "业主确认厨房与阳台之间应有大窗；共墙位置沿用模型，洞宽1200/高1300/台高1000及双扇推拉窗型均为暂定，不是实测。",
       "notes": "厨房与家政阳台之间的内窗，不是通往客厅的窗或阳台外窗。保留窗下墙、两边台下柜和现有门；阳台外侧采光通风条件另核。"
+    },
+    {
+      "id": "balcony_north_opening",
+      "name": "生活阳台北向通透开口（矮墙及防护保留；尺寸暂估）",
+      "kind": "window",
+      "roomId": "balcony",
+      "connects": [
+        "balcony",
+        "outside"
+      ],
+      "windowType": "guarded-open-air",
+      "glazing": false,
+      "x1": 687,
+      "y1": 960,
+      "x2": 829,
+      "y2": 960,
+      "widthMm": 1420,
+      "sillCm": 110,
+      "heightCm": 135,
+      "grade": "C",
+      "dimensionsVerified": false,
+      "guard": {
+        "frameCm": 2,
+        "barWidthCm": 1.2,
+        "nominalSpacingCm": 10,
+        "status": "schematic-not-engineered"
+      },
+      "source": "2026-10-05业主标注图与阳台实景确认北、东两面上部通透；开口尺寸和标高暂估，不是实测。",
+      "notes": "保留下方矮墙、边柱、顶梁及防护示意；无玻璃、无新增遮挡柜。不是拆改施工图。"
+    },
+    {
+      "id": "balcony_east_opening",
+      "name": "生活阳台东向通透开口（矮墙及防护保留；尺寸暂估）",
+      "kind": "window",
+      "roomId": "balcony",
+      "connects": [
+        "balcony",
+        "outside"
+      ],
+      "windowType": "guarded-open-air",
+      "glazing": false,
+      "x1": 835,
+      "y1": 966,
+      "x2": 835,
+      "y2": 1115,
+      "widthMm": 1490,
+      "sillCm": 110,
+      "heightCm": 135,
+      "grade": "C",
+      "dimensionsVerified": false,
+      "guard": {
+        "frameCm": 2,
+        "barWidthCm": 1.2,
+        "nominalSpacingCm": 10,
+        "status": "schematic-not-engineered"
+      },
+      "source": "2026-10-05业主标注图与阳台实景确认北、东两面上部通透；开口尺寸和标高暂估，不是实测。",
+      "notes": "保留下方矮墙、边柱、顶梁及防护示意；无玻璃、无新增遮挡柜。不是拆改施工图。"
     }
   ],
   "doors": [
@@ -1807,7 +1865,9 @@
     "历史V3.0.6将餐桌及四椅统一东移400mm、北移400mm，吊灯随桌定位；V3.1.1保留该餐桌位置，但旧西鞋柜、固定凳及独立矮柜已由右鞋柜+左7字餐柜取代。",
     "V3.1.1依据业主图1红线，南门进入右侧设650×340mm浅鞋柜，左侧西/南两墙设7字连续餐柜。图2、3来自镜像户型，仅借样式不套方向或尺寸。24个实体构件按不同柜面方向驱动2D、分段立面、Blender与GLB；盲角不计容量，墙窗、三飘窗、床向和餐桌均不动。",
     "三飘窗细暖灰框和无绳卷帘为拟选内装/窗系统外观，窗框分格与开启方式未经物业、窗系统厂家或结构专业核准；卷帘及普通玻璃并非防坠设施。",
-    "V3.4.2：按业主授权暂估：客厅飘窗台面离地400mm，铺50mm可拆洗软垫，坐面约450mm。两片暖灰米色软垫各960×550mm，不向客厅外扩，不加书桌、椅子或台下柜。窗顶沿用2300mm占位，台高、净深、窗框及防护均待量房；这不是把实墙从900mm切低的施工指令。"
+    "V3.4.2：按业主授权暂估：客厅飘窗台面离地400mm，铺50mm可拆洗软垫，坐面约450mm。两片暖灰米色软垫各960×550mm，不向客厅外扩，不加书桌、椅子或台下柜。窗顶沿用2300mm占位，台高、净深、窗框及防护均待量房；这不是把实墙从900mm切低的施工指令。",
+    "本次纠正阳台北、东两面被画成整面实墙的错误：按业主照片表达下部矮墙、上部通透防护开口，保留边柱及顶梁；不是新拆墙或拆护栏方案。",
+    "矮墙高1100mm、开口高1350mm、上口2450mm均暂按照片估算；总高2700mm沿用旧模型。开口水平范围沿旧模型端点，不是实测净宽。"
   ],
   "renovationNotes": [
     {
@@ -5779,6 +5839,56 @@
     "livingFloorLampCm": {
       "x": 648,
       "y": 810
+    }
+  },
+  "balconyOpennessRevision": {
+    "id": "balcony-two-sided-open-20261005",
+    "version": "3.12.0",
+    "baselineCommit": "f9f4cb94ecf2bbdc39ab6e6ba086956081457c27",
+    "topologyConfirmedByOwner": true,
+    "dimensionsVerified": false,
+    "constructionApproved": false,
+    "evidenceFiles": [
+      "188e6af399cb806e2e2453d96a983d86.png",
+      "33082a0817245f15ae9db5cb51f6cde4.jpg"
+    ],
+    "openingIds": [
+      "balcony_north_opening",
+      "balcony_east_opening"
+    ],
+    "northWall": [
+      681,
+      960,
+      835,
+      960
+    ],
+    "eastWall": [
+      835,
+      960,
+      835,
+      1395
+    ],
+    "estimatedSillCm": 110,
+    "estimatedOpeningHeightCm": 135,
+    "estimatedOpeningTopCm": 245,
+    "originalWallHeightCm": 270,
+    "conditions": [
+      "本次纠正阳台北、东两面被画成整面实墙的错误：按业主照片表达下部矮墙、上部通透防护开口，保留边柱及顶梁；不是新拆墙或拆护栏方案。",
+      "矮墙高1100mm、开口高1350mm、上口2450mm均暂按照片估算；总高2700mm沿用旧模型。开口水平范围沿旧模型端点，不是实测净宽。",
+      "防护框、竖杆和间距仅为存在性示意，不作为防坠、承重、安装或规范验收依据；梁柱、矮墙、防护及排水管不得据模型擅改。",
+      "北侧借厅短墙仍保留；东面仅阳台段通透，厨房东墙、厨房与阳台内窗、生活阳台门及洗烘设备位置均不变。",
+      "未增加封窗玻璃、柜体或背景景观。窗外楼栋、管线及实际遮挡以现场为准，不承诺无遮拦远景。"
+    ],
+    "roomDescriptions": {
+      "balcony": {
+        "title": "北东通透，洗烘如旧",
+        "description": "洗衣机600×530×840mm和烘干机600×600×840mm靠厨房墙落地并排，上方1420×750mm独立承重浅盆台，完成面980mm。原净宽1240mm，隔断条件外移287.5mm后按1527.5mm保守宽度排布；操作带约740mm，旧图多180mm不计可用。 北、东两面改正为矮墙上通透开口，保留防护、边柱和顶梁，不增封窗玻璃；标高及宽度暂估待复尺。",
+        "features": [
+          "北、东双面通透",
+          "保留矮墙与防护",
+          "开口标高暂估"
+        ]
+      }
     }
   }
 }

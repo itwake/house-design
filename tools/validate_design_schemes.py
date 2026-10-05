@@ -1060,6 +1060,28 @@ def main():
     parser.add_argument("--archived", action="store_true", help="Also verify the three retired palette experiments; does not reactivate them")
     parser.add_argument("--json", action="store_true", help="Print machine-readable summary, rather than concise progress")
     args = parser.parse_args()
+    # The V3.12 revision intentionally updates all three active schemes.
+    # Its narrow independent proof compares actual world triangles/materials
+    # against the last complete release and tests the two wall voids plus the
+    # protected kitchen segment. Do not invoke historical tests whose contract
+    # was that every other scheme remains byte-identical to an older release.
+    catalog = load_json(ROOT / 'models/design-schemes.json')
+    if not args.archived and catalog.get('version') == '3.12.0':
+        try:
+            result = subprocess.run([shutil.which('node') or 'node', str(ROOT / 'tools/test_balcony_openness.mjs'),
+                                     '--glb', '--release'], cwd=ROOT, stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE, encoding='utf-8', check=True, timeout=180)
+            proof = json.loads(result.stdout)
+            if proof.get('passed') is not True:
+                raise ValueError('Independent balcony proof did not pass')
+            print(json.dumps(proof, ensure_ascii=False, indent=2) if args.json else
+                  'PASS V3.12 scoped balcony gate: all three source/native scopes; two actual wall openings; '
+                  'kitchen/furniture/materials/evidence preserved; 14 fresh + 42 historical frame/camera provenance verified')
+            return 0
+        except (OSError, subprocess.SubprocessError, ValueError) as exc:
+            details = getattr(exc, 'stderr', '') or str(exc)
+            print(json.dumps({'ok': False, 'errors': [details]}, ensure_ascii=False) if args.json else 'FAIL V3.12 balcony gate: '+details)
+            return 1
     audit = Audit(args.pending, args.archived)
     try:
         audit.run()

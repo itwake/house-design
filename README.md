@@ -4,7 +4,13 @@
 
 **在线查看：[itwake.github.io/house-design](https://itwake.github.io/house-design/)**
 
-**当前 V3.11.0 / 方案二 P2 公区确认布局**：[进入方案二](https://itwake.github.io/house-design/studio.html?scheme=family&v=3.11.0#living)。沙发和背柜按确认图向东南移动；地毯及茶几居于电视柜与沙发之间。固定LISABO餐桌竖放贴西柜，四椅北1、东2、南1。餐边柜从800库北缘连续向北4260mm；储物库改1500×1000mm暂定、北开四扇内折；东墙取消书架，改两幅薄框画，不添落地物件。R3卧卫、厨房、阳台设备与门位不变；方案一、三资产不变。
+**当前 V3.12.0 / 三方案生活阳台双面通透纠正**：[查看阳台](https://itwake.github.io/house-design/studio.html?scheme=family&v=3.12.0#balcony)。按业主标注与现场照片，北、东两面不再画成整面实墙，而是下部矮墙＋上部通透防护开口；保留边柱、顶梁和防护示意，不新增封窗玻璃。阳台门、南侧厨房内窗、所有洗烘设备、家具与厨房东墙保持原位。
+
+矮墙1100mm、开口上口2450mm（开口高1350mm）均是照片估值；水平开口沿旧模型端点，不作为实测净宽。北侧借厅短墙保留，外墙不向外扩；此为现状表达纠错，不是拆梁、拆矮墙或拆防护的施工方案，也不承诺窗外无楼栋或管线遮挡。三套原生/GLB同步；14张直接相关新图，42张历史参考保留原始来源，不冒充新阳台采光结果。
+
+复现：`node tools/apply_balcony_openness.mjs`；逐方案运行 `tools/refresh_balcony_openness.py -- --scheme wood|family|laundry --only-build`，再打开各自保存的 `.blend` 加 `--reuse --render all --resolution 960 --samples 8`。验证入口：`node tools/test_balcony_openness.mjs --glb --release`；旧版本门禁继续对应各自历史发布，不用于否定本轮已授权的三方案外墙纠正。
+
+**V3.11.0 / 方案二 P2 公区确认布局（保留于当前版）**：[进入方案二](https://itwake.github.io/house-design/studio.html?scheme=family&v=3.12.0#living)。沙发和背柜按确认图向东南移动；地毯及茶几居于电视柜与沙发之间。固定LISABO餐桌竖放贴西柜，四椅北1、东2、南1。餐边柜从800库北缘连续向北4260mm；储物库改1500×1000mm暂定、北开四扇内折；东墙取消书架，改两幅薄框画，不添落地物件。该历史发布中R3卧卫、厨房、阳台设备与门位不变，方案一、三资产未改。
 
 **取车条件尚未验证通过**：餐柜接至库门后，柜面与叠门间约980mm，小于1100mm儿童车横向包络，不能直接横抽；必须移开南椅并斜转抬取，用实车排演。儿童车仍在1230mm平台、婴儿车落地，承重、防坠、架体和四扇内折五金待深化。沙发西侧约1305mm是主通道，东侧470mm不是主通道。8个受影响公区视角由当前原生场景重渲，其余12张保留原图及明确来源链，不冒充新帧。
 

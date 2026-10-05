@@ -1,5 +1,5 @@
 {
-  "version": "3.11.0",
+  "version": "3.12.0",
   "defaultScheme": "wood",
   "updatedAt": "2026-10-05",
   "geometrySource": "models/design-data.json",
@@ -167,12 +167,12 @@
           ]
         },
         "balcony": {
-          "title": "洗烘并排，上方洗手台",
-          "description": "洗衣机600×530×840mm和烘干机600×600×840mm靠厨房墙落地并排，上方1420×750mm独立承重浅盆台，完成面980mm。原净宽1240mm，隔断条件外移287.5mm后按1527.5mm保守宽度排布；操作带约740mm，旧图多180mm不计可用。",
+          "title": "北东通透，洗烘如旧",
+          "description": "洗衣机600×530×840mm和烘干机600×600×840mm靠厨房墙落地并排，上方1420×750mm独立承重浅盆台，完成面980mm。原净宽1240mm，隔断条件外移287.5mm后按1527.5mm保守宽度排布；操作带约740mm，旧图多180mm不计可用。 北、东两面改正为矮墙上通透开口，保留防护、边柱和顶梁，不增封窗玻璃；标高及宽度暂估待复尺。",
           "features": [
-            "按业主机身尺寸",
-            "独立承重浅盆",
-            "条件外移隔断"
+            "北、东双面通透",
+            "保留矮墙与防护",
+            "开口标高暂估"
           ]
         },
         "living": {
@@ -246,7 +246,7 @@
       "model": "models/schemes/wood/huiyayuan-wood.glb",
       "blend": "models/schemes/wood/huiyayuan-wood.blend",
       "manifest": "models/schemes/wood/scene-manifest.json",
-      "assetRevision": "3.9.0",
+      "assetRevision": "3.12.0",
       "renderSpec": {
         "engine": "Cycles",
         "width": 960,
@@ -280,7 +280,8 @@
         "kitchen-north",
         "laundry-detail"
       ],
-      "bayOverrides": {}
+      "bayOverrides": {},
+      "balconyOpennessRevision": "3.12.0"
     },
     {
       "id": "family",
@@ -347,7 +348,7 @@
       "model": "models/schemes/family/huiyayuan-wood.glb",
       "blend": "models/schemes/family/huiyayuan-wood.blend",
       "manifest": "models/schemes/family/scene-manifest.json",
-      "assetRevision": "3.11.0",
+      "assetRevision": "3.12.0",
       "renderViews": [
         "overall",
         "living",
@@ -452,12 +453,12 @@
           ]
         },
         "balcony": {
-          "title": "洗烘浅盆保留，门位不变",
-          "description": "阳台并排洗烘、上方浅盆、三轨门及厨房保留原位；取消书架后不再以门框与柜面齐平描述。690mm阳台操作带、980mm浅盆台高及设备安装条件仍待核。 取消的是客厅书架，不扩大阳台、不移动外墙。",
+          "title": "北东通透，洗烘如旧",
+          "description": "阳台并排洗烘、上方浅盆、三轨门及厨房保留原位；取消书架后不再以门框与柜面齐平描述。690mm阳台操作带、980mm浅盆台高及设备安装条件仍待核。 取消的是客厅书架，不扩大阳台、不移动外墙。 北、东两面改正为矮墙上通透开口，保留防护、边柱和顶梁，不增封窗玻璃；标高及宽度暂估待复尺。",
           "features": [
-            "并排洗烘＋浅盆",
-            "三轨门位置保留",
-            "东墙改挂画"
+            "北、东双面通透",
+            "保留矮墙与防护",
+            "开口标高暂估"
           ]
         },
         "dining": {
@@ -484,7 +485,8 @@
         "新柜体、折门及挂画尺寸是确认设计假设，不是新增复尺或施工图。R3卧卫墙门及原测量待核记录不变。"
       ],
       "constraints": [],
-      "version": "3.11.0"
+      "version": "3.11.0",
+      "balconyOpennessRevision": "3.12.0"
     },
     {
       "id": "laundry",
@@ -548,7 +550,7 @@
       "model": "models/schemes/laundry/huiyayuan-wood.glb",
       "blend": "models/schemes/laundry/huiyayuan-wood.blend",
       "manifest": "models/schemes/laundry/scene-manifest.json",
-      "assetRevision": "3.8.0",
+      "assetRevision": "3.12.0",
       "renderViews": [
         "overall",
         "living",
@@ -652,12 +654,12 @@
           ]
         },
         "balcony": {
-          "title": "洗烘落地，台盆在上",
-          "description": "A洗衣机与烘干机在靠厨房共墙落地并排，980mm浅盆台面；B东侧300mm浅书架，C阳台推拉门外移约288mm拉齐门框与柜面。客餐厅采用已购VIMLE沙发与LISABO固定桌椅，7字柜、茶几和电视柜按当前布局保留。",
+          "title": "北东通透，洗烘如旧",
+          "description": "A洗衣机与烘干机在靠厨房共墙落地并排，980mm浅盆台面；B东侧300mm浅书架，C阳台推拉门外移约288mm拉齐门框与柜面。客餐厅采用已购VIMLE沙发与LISABO固定桌椅，7字柜、茶几和电视柜按当前布局保留。 北、东两面改正为矮墙上通透开口，保留防护、边柱和顶梁，不增封窗玻璃；标高及宽度暂估待复尺。",
           "features": [
-            "独立第4布局",
-            "专用浅盆条件方案",
-            "厨房参照方案3"
+            "北、东双面通透",
+            "保留矮墙与防护",
+            "开口标高暂估"
           ]
         },
         "dining": {
@@ -672,7 +674,8 @@
       },
       "renderDirectory": "assets/schemes/laundry",
       "purchasedFurnitureRevision": "3.7.0",
-      "version": "3.8.0"
+      "version": "3.8.0",
+      "balconyOpennessRevision": "3.12.0"
     }
   ],
   "archivedPalettes": [
@@ -1120,5 +1123,6 @@
   "renderQualityPolicy": "renderSpec.samples为各方案最低采样要求；每张图的实际采样、尺寸、引擎及来源以scene-manifest.json的renderedViews为准。更高采样可用，不降低最低质量。",
   "measurementSource": "models/measurements-20261004-r2.json",
   "measurementNote": "补充复尺已录入：主卧窗宽1760mm并按西墙段860mm条件定位；主卫实测局部轮廓独立展示。主卫窗高1400mm已确认，但模型保留旧窗占位等待定位；全屋墙线、面积及家具通道仍为旧设计参考。",
-  "purchasedFurnitureSource": "models/purchased-furniture-20261005.json"
+  "purchasedFurnitureSource": "models/purchased-furniture-20261005.json",
+  "balconyOpennessNote": "本次纠正阳台北、东两面被画成整面实墙的错误：按业主照片表达下部矮墙、上部通透防护开口，保留边柱及顶梁；不是新拆墙或拆护栏方案。 矮墙高1100mm、开口高1350mm、上口2450mm均暂按照片估算；总高2700mm沿用旧模型。开口水平范围沿旧模型端点，不是实测净宽。"
 }
