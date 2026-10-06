@@ -1,11 +1,11 @@
-import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.13.0';
-import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.13.0';
-import {createDesignEditor} from './design-editor.js?v=3.13.0';
-import {deriveData,furnitureKey,sourceFingerprint} from './design-editor-core.js?v=3.13.0';
-import {annotateEditorScene,createEditorSceneAdapter,editorBatchKey} from './editor-scene.js?v=3.13.0';
+import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.13.1';
+import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.13.1';
+import {createDesignEditor} from './design-editor.js?v=3.13.1';
+import {deriveData,furnitureKey,sourceFingerprint} from './design-editor-core.js?v=3.13.1';
+import {annotateEditorScene,createEditorSceneAdapter,editorBatchKey} from './editor-scene.js?v=3.13.1';
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
-const UI_REVISION = '3.13.0';
+const UI_REVISION = '3.13.1';
 document.documentElement.dataset.uiRevision = UI_REVISION;
 let ASSET_REVISION = '3.12.0';
 const revisedAsset = path => {const url=new URL(path,document.baseURI);url.searchParams.set('v',ASSET_REVISION);return url.href};

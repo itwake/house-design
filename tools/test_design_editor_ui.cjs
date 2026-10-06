@@ -65,6 +65,7 @@ async function checkDimensions(page){const text=(await page.locator('.de-selecti
 async function measure(page){
   const a={x:430,y:650},b={x:520,y:770};
   await page.locator('.de-modes [data-mode=measure]').click();
+  await page.locator('.de-panel [data-action=measure-new]').click();
   await clickPoint(page,a);await clickPoint(page,b);
   const record=await page.locator('.de-measures li').last().textContent();
   const clean=record.replaceAll(',',''),total=Number(clean.match(/总长\s*([\d.]+)/)?.[1]),horizontal=Number(clean.match(/水平\s*([\d.]+)/)?.[1]),vertical=Number(clean.match(/垂直\s*([\d.]+)/)?.[1]);
@@ -75,7 +76,7 @@ async function loadPage(context,id,width){
   const page=await context.newPage(),errors=[];await page.setViewportSize({width,height:1000});page.on('pageerror',e=>errors.push(e.message));
   await page.route('**/studio.js*',r=>r.fulfill({contentType:'text/javascript; charset=utf-8',body:source+hooks}));
   let nativeHash;await page.route(`**/models/schemes/${id}/huiyayuan-wood.glb*`,async route=>{const response=await route.fetch({timeout:180000});nativeHash=sha(await response.body());await route.fulfill({response})});
-  await page.goto(new URL(`studio.html?scheme=${id}&v=3.13.0#living`,base).href,{waitUntil:'domcontentloaded',timeout:180000});
+  await page.goto(new URL(`studio.html?scheme=${id}&v=3.13.1#living`,base).href,{waitUntil:'domcontentloaded',timeout:180000});
   await page.waitForFunction(()=>window.__editorQA?.ready(),{},{timeout:180000});
   equal(nativeHash,sha(fs.readFileSync(path.join(root,`models/schemes/${id}/huiyayuan-wood.glb`))),id+' exact real GLB response SHA');
   equal(await page.evaluate(()=>window.__editorQA.source().version),'3.12.0',id+' formal source stays 3.12.0');
@@ -166,6 +167,6 @@ async function mobile(browser){
     if(!mobileOnly){const context=await browser.newContext();try{await fullFamily(context);if(!familyOnly){await schemeSmoke(context,'wood');await schemeSmoke(context,'laundry')}}finally{await context.close()}}
     if(mobileOnly||!familyOnly)await mobile(browser);
   }finally{await browser.close();equal(assetSnapshot(),assetsBefore,'Published source, GLBs, manifests and render-image bytes unchanged')}
-  const report={passed:true,checks,results,officialAssetFiles:Object.keys(assetsBefore).length,actions:'visible UI; diagnostics read-only; actual native GLB',sourceVersion:'3.12.0',uiVersion:'3.13.0'};
+  const report={passed:true,checks,results,officialAssetFiles:Object.keys(assetsBefore).length,actions:'visible UI; diagnostics read-only; actual native GLB',sourceVersion:'3.12.0',uiVersion:'3.13.1'};
   fs.writeFileSync(path.join(out,`report${mobileOnly?'-mobile':familyOnly?'-family':''}.json`),JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));
 })().catch(error=>{console.error(error);process.exitCode=1});

@@ -1,7 +1,7 @@
 // Three.js bridge for browser-local drafts. Published geometry is never edited.
 // Annotate BEFORE static batching; construct the adapter AFTER viewer materials
 // are prepared, then collect any clipping-material references from these clones.
-import { furnitureKey, isMovableFurniture, COLOR_KEYS, MAX_OFFSET_CM } from './design-editor-core.js?v=3.13.0';
+import { furnitureKey, isMovableFurniture, COLOR_KEYS, MAX_OFFSET_CM } from './design-editor-core.js?v=3.13.1';
 
 export const EDITOR_SEMANTIC_KEYS = Object.freeze([
   'editorFurnitureKey', 'editorMovable', 'editorColorCategory', 'editorColorCategories'

@@ -1,4 +1,4 @@
-import {createDraft,deriveData,listSelections,selectionInfo,measurePoints,validateMove,validateDraft,loadDraft,saveDraft,clearDraft} from './design-editor-core.js?v=3.13.0';
+import {createDraft,deriveData,listSelections,selectionInfo,measurePoints,validateMove,validateDraft,loadDraft,saveDraft,clearDraft} from './design-editor-core.js?v=3.13.1';
 
 const NS='http://www.w3.org/2000/svg';
 const COLOR_FIELDS=[['wall','墙面'],['floor','地面'],['cabinet','柜面'],['wood','木材'],['fabric','织物'],['accent','点缀']];
@@ -30,6 +30,7 @@ export function createDesignEditor(options){
   let draft=createDraft(schemeId,sourceFingerprint),preview=null,selected=null,mode='select',view='model';
   let opened=false,collapsed=false,destroyed=false,available=new Map(),mappingReady=false;
   let svg=null,homeViewBox=null,viewBox=null,drag=null,pendingPoint=null,measurements=[],sequence=0;
+  let selectedMeasure=null,measureHistory=[],measureArmed=false;
   let history=[],savedSnapshot=null,raf=0,lastMove=null,colorPreviewKey=null;
   let cleanupPlan=()=>{};
   const cleanups=[];
@@ -55,7 +56,9 @@ export function createDesignEditor(options){
     <div class="de-zoom" role="group" aria-label="平面缩放"><button type="button" data-action="zoom-out" aria-label="缩小平面">−</button><span class="de-zoom-level">100%</span><button type="button" data-action="zoom-in" aria-label="放大平面">＋</button><button type="button" data-action="zoom-reset">全图</button></div>
     <section class="de-selection"><label class="de-label">选择物件或空间<select class="de-object-select" aria-label="选择物件或空间"><option value="">点击平面，或从这里选择</option></select></label><div class="de-selection-info"></div>
     <form class="de-move-form"><div class="de-number-grid"><label>向东偏移 · mm<input name="dx" type="number" step="10" min="-30000" max="30000" value="0" inputmode="decimal"></label><label>向南偏移 · mm<input name="dy" type="number" step="10" min="-30000" max="30000" value="0" inputmode="decimal"></label></div><small>相对正式位置；负值为向西 / 向北。不改变尺寸或旋转。</small><button type="submit">应用偏移</button></form></section>
-    <section class="de-measure-section"><div class="de-section-title"><h3>两点量尺</h3><button type="button" data-action="measure-clear">清除全部</button></div><p class="de-measure-hint">依次点选两个位置，可保留多条尺寸。</p><ol class="de-measures"></ol><small>测的是模型投影，非实测净距；量尺线仅本次会话保留。</small></section>
+    <section class="de-measure-section"><div class="de-section-title"><h3>量尺 · 选择与编辑</h3><button type="button" data-action="measure-clear">清除全部</button></div><div class="de-measure-actions"><button type="button" data-action="measure-new">＋ 新增量尺</button><button type="button" data-action="measure-undo" disabled>撤销量尺</button><button type="button" data-action="measure-delete" disabled>删除选中</button></div><p class="de-measure-hint">点尺寸线选中；拖动 A / B 调整端点，拖动线段整体平移。</p><ol class="de-measures"></ol>
+    <form class="de-measure-form" hidden><strong class="de-measure-name"></strong><label class="de-label">总长 · mm<input name="length" type="number" min="1" max="100000" step="any" inputmode="decimal" required></label><small>固定起点 A，保持方向，调整终点 B；仅修改量尺，不改家具或墙体。</small><button type="submit">应用长度</button><details class="de-measure-coordinates"><summary>精调 A / B 坐标</summary><p>相对模型原点，单位 mm；X 向东、Y 向南，不是房间净距。</p><div class="de-number-grid"><label>A · X<input name="ax" type="number" step="any" inputmode="decimal"></label><label>A · Y<input name="ay" type="number" step="any" inputmode="decimal"></label><label>B · X<input name="bx" type="number" step="any" inputmode="decimal"></label><label>B · Y<input name="by" type="number" step="any" inputmode="decimal"></label></div><button type="button" data-action="measure-coordinates-apply">应用端点坐标</button></details></form>
+    <small>量尺独立撤销；测的是模型投影，非实测净距。量尺线仅本次会话保留，不随家具草稿保存。</small></section>
     <section><div class="de-section-title"><h3>个人配色</h3><button type="button" data-action="palette-reset">正式配色</button></div><div class="de-presets"></div><div class="de-colors"></div></section>
     <p class="de-status" role="status" aria-live="polite"></p>
     <footer class="de-footer"><button type="button" data-action="undo" disabled>撤销一步</button><button type="button" data-action="reset">恢复正式</button><button type="button" data-action="save" class="de-primary">保存到本机</button><small class="de-save-note">按方案独立保存于当前浏览器；不是账号或云同步。</small></footer></div>`;
@@ -110,7 +113,7 @@ export function createDesignEditor(options){
     q('[data-action=undo]').disabled=!history.length;
     q('.de-plan-request').hidden=view==='plan';
     q('.de-zoom').hidden=view!=='plan';
-    q('.de-mode-hint').textContent=({select:'点选后显示模型尺寸；家具优先于所在房间。',measure:pendingPoint?'已选起点，请点终点。Escape 可取消。':'依次点两点：显示总长、水平与垂直分量。',move:'拖动已映射的松散家具。越界不能提交，碰撞会提示。',pan:'拖动平面查看；使用 ＋ / − 放大缩小。'})[mode];
+    q('.de-mode-hint').textContent=({select:'点选后显示模型尺寸；家具优先于所在房间。',measure:pendingPoint?'已选 A，请点 B。Escape 可取消。':measureArmed?'新增量尺：依次点选 A、B 两点。':'点线选中；拖动端点调整，拖线平移。也可输入长度或删除。',move:'拖动已映射的松散家具。越界不能提交，碰撞会提示。',pan:'拖动平面查看；使用 ＋ / − 放大缩小。'})[mode];
     q('.de-zoom-level').textContent=homeViewBox&&viewBox?`${Math.round(homeViewBox[2]/viewBox[2]*100)}%`:'100%';
     q('.de-save-note').textContent=savedSnapshot&&same(draft,savedSnapshot)?'已保存到当前浏览器 · 按方案隔离 · 非云同步':savedSnapshot||history.length||Object.keys(draft.offsets||{}).length||Object.keys(draft.colors||{}).length?'存在未保存的个人预览 · 仅当前浏览器，非云同步':'按方案独立保存于当前浏览器；不是账号或云同步。';
     for(const input of q('.de-colors').querySelectorAll('input'))input.value=(preview||draft).colors?.[input.dataset.color]||PRESETS[0].colors[input.dataset.color];
@@ -129,7 +132,7 @@ export function createDesignEditor(options){
     if(cancel){emit(draft,'palette-cancel');updateControls();}
     else if(value)commit(value,'palette-color','已应用个人配色，尚未保存。');
   }
-  function setMode(next){cancelDrag();pendingPoint=null;mode=next;shell.dataset.mode=mode;panel.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));updateControls();drawOverlay();if(view!=='plan')onRequestPlan();}
+  function setMode(next){cancelDrag();pendingPoint=null;measureArmed=false;mode=next;shell.dataset.mode=mode;panel.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));if(next==='measure')q('.de-selection').before(q('.de-measure-section'));else q('.de-selection').after(q('.de-measure-section'));updateControls();drawOverlay();if(view!=='plan')onRequestPlan();}
   function open(){opened=true;panel.hidden=false;toggle.setAttribute('aria-expanded','true');host.classList.add('design-editor-open');onPanelChange(true);refreshList();renderSelection();updateControls();drawOverlay();}
   function close(){finishColorPreview();cancelDrag();pendingPoint=null;opened=false;panel.hidden=true;toggle.setAttribute('aria-expanded','false');host.classList.remove('design-editor-open');onPanelChange(false);drawOverlay();toggle.focus();}
 
@@ -147,7 +150,7 @@ export function createDesignEditor(options){
     return selections.find(s=>s.type==='room'&&insidePolygon(p,s.points))||null;
   }
   function applyViewBox(){if(svg&&viewBox)svg.setAttribute('viewBox',viewBox.join(' '));updateControls();drawOverlay();}
-  function zoom(factor,anchor){if(!viewBox||!homeViewBox)return;const scale=Math.max(.8,Math.min(8,homeViewBox[2]/viewBox[2]*factor)),ratio=viewBox[2]/(homeViewBox[2]/scale),p=anchor||{x:viewBox[0]+viewBox[2]/2,y:viewBox[1]+viewBox[3]/2};viewBox=[p.x-(p.x-viewBox[0])/ratio,p.y-(p.y-viewBox[1])/ratio,viewBox[2]/ratio,viewBox[3]/ratio];applyViewBox();}
+  function zoom(factor,anchor){if(drag||!viewBox||!homeViewBox)return;const scale=Math.max(.8,Math.min(8,homeViewBox[2]/viewBox[2]*factor)),ratio=viewBox[2]/(homeViewBox[2]/scale),p=anchor||{x:viewBox[0]+viewBox[2]/2,y:viewBox[1]+viewBox[3]/2};viewBox=[p.x-(p.x-viewBox[0])/ratio,p.y-(p.y-viewBox[1])/ratio,viewBox[2]/ratio,viewBox[3]/ratio];applyViewBox();}
 
   function drawOverlay(){
     if(!svg)return;svg.querySelector('[data-editor-overlay]')?.remove();if(!opened)return;
@@ -161,18 +164,44 @@ export function createDesignEditor(options){
       else group.append(svgEl('rect',{x:info.x,y:info.y,width:info.w,height:info.d,fill:'none',stroke:'#357970','stroke-width':sw,'stroke-dasharray':`${5/scale} ${3/scale}`}));
       if(Number.isFinite(info.w)&&Number.isFinite(info.d))label(info.x,info.y-8/scale,`${mm(info.w*10)} × ${mm(info.d*10)} mm`);
     }
-    for(const line of measurements){const{a,b}=line,m=measurePoints(a,b);group.append(svgEl('path',{d:`M${a.x} ${a.y}H${b.x}V${b.y}`,fill:'none',stroke:'#7c9688','stroke-width':sw,'stroke-dasharray':`${4/scale} ${4/scale}`}));group.append(svgEl('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y,stroke:'#ad704e','stroke-width':sw}));for(const p of [a,b])group.append(svgEl('circle',{cx:p.x,cy:p.y,r:3/scale,fill:'#ad704e'}));label((a.x+b.x)/2,(a.y+b.y)/2-6/scale,`${line.id}. ${mm(m.distanceMm)} mm`,'#925936');}
+    for(const line of measurements){
+      const{a,b}=line,m=measurePoints(a,b),active=line.id===selectedMeasure,color=active?'#176f75':'#ad704e';
+      group.append(svgEl('path',{d:`M${a.x} ${a.y}H${b.x}V${b.y}`,fill:'none',stroke:'#7c9688','stroke-width':sw,'stroke-dasharray':`${4/scale} ${4/scale}`}));
+      group.append(svgEl('line',{'data-measure-line':line.id,x1:a.x,y1:a.y,x2:b.x,y2:b.y,stroke:color,'stroke-width':(active?2.5:1.5)/scale}));
+      label((a.x+b.x)/2,(a.y+b.y)/2-8/scale,`${line.id}. ${mm(m.distanceMm)} mm`,color);
+      for(const [end,p]of [['a',a],['b',b]]){group.append(svgEl('circle',{'data-measure-handle':end,'data-measure-id':line.id,cx:p.x,cy:p.y,r:(active?7:4)/scale,fill:active?'#fffdf7':color,stroke:color,'stroke-width':2/scale}));if(active&&mode==='measure')label(p.x+10/scale,p.y+4/scale,end.toUpperCase(),color);}
+    }
     if(pendingPoint)group.append(svgEl('circle',{cx:pendingPoint.x,cy:pendingPoint.y,r:5/scale,fill:'#ad704e',stroke:'white','stroke-width':sw}));
     if(drag?.invalidRect)group.append(svgEl('rect',{...{x:drag.invalidRect.x,y:drag.invalidRect.y,width:drag.invalidRect.w,height:drag.invalidRect.d},fill:'#a53e2d','fill-opacity':'.12',stroke:'#b74435','stroke-width':sw}));
   }
-  function renderMeasures(){const list=q('.de-measures');list.replaceChildren();for(const line of measurements){const item=el('li'),m=measurePoints(line.a,line.b);item.append(el('b',{},`${line.id}. 总长 ${mm(m.distanceMm)} mm`),el('span',{},`水平 ${mm(m.horizontalMm)} · 垂直 ${mm(m.verticalMm)} mm`));const remove=el('button',{type:'button','aria-label':`删除量尺 ${line.id}`},'×');remove.addEventListener('click',()=>{measurements=measurements.filter(v=>v.id!==line.id);renderMeasures();drawOverlay();});item.append(remove);list.append(item);}q('[data-action=measure-clear]').disabled=!measurements.length&&!pendingPoint;updateControls();}
+  const measureSnapshot=()=>({lines:clone(measurements),selected:selectedMeasure});
+  function rememberMeasures(before){if(same(before.lines,measurements))return;measureHistory.push(before);if(measureHistory.length>40)measureHistory.shift();}
+  function restoreMeasures(before){measurements=clone(before.lines);selectedMeasure=before.selected;pendingPoint=null;measureArmed=false;renderMeasures();drawOverlay();}
+  function validMeasure(line){return [line.a.x,line.a.y,line.b.x,line.b.y].every(n=>Number.isFinite(n)&&Math.abs(n)<=10000)&&Math.hypot(line.a.x-line.b.x,line.a.y-line.b.y)>=.1;}
+  function editMeasure(next){if(!validMeasure(next)){setStatus('端点须为有效坐标（±100000 mm 内），且 A / B 至少相距 1 mm。','error');return;}const before=measureSnapshot();measurements=measurements.map(line=>line.id===next.id?next:line);rememberMeasures(before);renderMeasures();drawOverlay();setStatus('量尺已修改；仅改变标注，不改变户型或家具。');}
+  function deleteMeasure(id){cancelDrag();const before=measureSnapshot();measurements=measurements.filter(line=>line.id!==id);if(selectedMeasure===id)selectedMeasure=null;pendingPoint=null;rememberMeasures(before);renderMeasures();drawOverlay();setStatus('已删除量尺，可用“撤销量尺”恢复。');}
+  function renderMeasures(){
+    const list=q('.de-measures');list.replaceChildren();for(const line of measurements){const item=el('li',{'data-selected':String(line.id===selectedMeasure)}),m=measurePoints(line.a,line.b),choose=el('button',{type:'button','data-measure-select':line.id,'aria-pressed':String(line.id===selectedMeasure)},`${line.id}. 总长 ${mm(m.distanceMm)} mm · 编辑`),remove=el('button',{type:'button','data-measure-delete':line.id,'aria-label':`删除量尺 ${line.id}`},'删除');item.append(choose,el('span',{},`水平 ${mm(m.horizontalMm)} · 垂直 ${mm(m.verticalMm)} mm`),remove);list.append(item);}
+    const line=measurements.find(line=>line.id===selectedMeasure),form=q('.de-measure-form');form.hidden=!line;
+    if(line){q('.de-measure-name').textContent=`编辑量尺 ${line.id} · A → B`;for(const[name,value]of Object.entries({length:measurePoints(line.a,line.b).distanceMm,ax:line.a.x*10,ay:line.a.y*10,bx:line.b.x*10,by:line.b.y*10}))form.elements.namedItem(name).value=Math.round(value*10)/10;}
+    q('[data-action=measure-delete]').disabled=!line;q('[data-action=measure-undo]').disabled=!measureHistory.length;q('[data-action=measure-clear]').disabled=!measurements.length&&!pendingPoint;updateControls();
+  }
+  function measureHit(p,pointerType){
+    const matrix=svg.getScreenCTM(),scale=Math.hypot(matrix.a,matrix.b),radius=(pointerType==='touch'?22:11)/scale;
+    const ordered=[...measurements].sort((a,b)=>(b.id===selectedMeasure)-(a.id===selectedMeasure));
+    for(const line of ordered){const ends=['a','b'].map(end=>({line,end,d:Math.hypot(p.x-line[end].x,p.y-line[end].y)})).sort((a,b)=>a.d-b.d);if(ends[0].d<=radius)return ends[0];}
+    for(const line of ordered){if(nearSegment(p,{x1:line.a.x,y1:line.a.y,x2:line.b.x,y2:line.b.y},radius))return{line,end:'line'};const x=(line.a.x+line.b.x)/2,y=(line.a.y+line.b.y)/2-8/scale,text=`${line.id}. ${mm(measurePoints(line.a,line.b).distanceMm)} mm`;if(p.x>=x-4/scale&&p.x<=x+(text.length*7+4)/scale&&p.y>=y-12/scale&&p.y<=y+5/scale)return{line,end:'line'};}return null;
+  }
 
   function pointerDown(event){
     if(destroyed||!opened||view!=='plan'||event.button!==0||drag)return;
     finishColorPreview();const p=pointFromEvent(event);if(!p)return;event.preventDefault();event.stopImmediatePropagation();
     if(mode==='measure'){
-      if(!pendingPoint){pendingPoint=p;setStatus('起点已选，请点击终点。');}
-      else if(Math.hypot(p.x-pendingPoint.x,p.y-pendingPoint.y)>.01){measurements.push({id:++sequence,a:pendingPoint,b:p});pendingPoint=null;setStatus('已添加模型量尺。');}renderMeasures();drawOverlay();return;
+      svg.setAttribute('tabindex','-1');svg.focus({preventScroll:true});
+      const found=!pendingPoint&&!measureArmed?measureHit(p,event.pointerType):null;
+      if(found){selectedMeasure=found.line.id;drag={type:'measure',pointerId:event.pointerId,start:p,before:measureSnapshot(),line:clone(found.line),end:found.end};host.setPointerCapture?.(event.pointerId);renderMeasures();drawOverlay();setStatus(found.end==='line'?'已选量尺：拖线整体平移，或在面板修改 / 删除。':'拖动端点调整；Escape 取消这次修改。');return;}
+      if(!pendingPoint){pendingPoint=p;selectedMeasure=null;setStatus('起点 A 已选，请点击终点 B。');}
+      else{const next={id:sequence+1,a:pendingPoint,b:p};if(validMeasure(next)){const before=measureSnapshot();measurements.push(next);sequence++;selectedMeasure=next.id;pendingPoint=null;measureArmed=false;rememberMeasures(before);setStatus('已添加量尺；拖动 A / B 调整，或点“删除选中”。');}else setStatus('两端至少相距 1 mm，请重新选择终点。','warning');}renderMeasures();drawOverlay();return;
     }
     if(mode==='pan'){drag={type:'pan',pointerId:event.pointerId,start:p,startClient:{x:event.clientX,y:event.clientY},matrix:svg.getScreenCTM().inverse(),viewBox:[...viewBox]};host.setPointerCapture?.(event.pointerId);return;}
     const info=hit(p);select(info);if(mode!=='move')return;
@@ -184,13 +213,19 @@ export function createDesignEditor(options){
     if(!drag||event.pointerId!==drag.pointerId)return;
     if(drag.type==='pan'){const v=new DOMPoint(event.clientX-drag.startClient.x,event.clientY-drag.startClient.y).matrixTransform(new DOMMatrix([drag.matrix.a,drag.matrix.b,drag.matrix.c,drag.matrix.d,0,0]));viewBox=[drag.viewBox[0]-v.x,drag.viewBox[1]-v.y,drag.viewBox[2],drag.viewBox[3]];applyViewBox();return;}
     const p=pointFromEvent(event);if(!p)return;
+    if(drag.type==='measure'){
+      const dx=p.x-drag.start.x,dy=p.y-drag.start.y,next=clone(drag.line);
+      for(const end of ['a','b'])if(drag.end==='line'||drag.end===end){next[end].x+=dx;next[end].y+=dy;}
+      drag.valid=validMeasure(next);if(drag.valid)measurements=measurements.map(line=>line.id===next.id?next:line);
+      renderMeasures();drawOverlay();return;
+    }
     const offset={dx:Math.round((drag.offset.dx+p.x-drag.start.x)*10)/10,dy:Math.round((drag.offset.dy+p.y-drag.start.y)*10)/10};
     const result=validateMove(source,drag.startDraft,drag.key,offset,{schemeId,sourceFingerprint});drag.result=result;drag.changed=!same(offset,drag.offset);drag.valid=result.ok;
     if(result.ok){drag.invalidRect=null;preview=result.draft;emit(preview,'drag-preview',true);}
     else{drag.invalidRect={...drag.info,x:drag.info.x+offset.dx-drag.offset.dx,y:drag.info.y+offset.dy-drag.offset.dy};preview=null;emit(drag.startDraft,'drag-invalid',true);}
     drawOverlay();
   }
-  function cancelDrag(){if(!drag)return;const d=drag;drag=null;lastMove=null;if(raf){cancelAnimationFrame(raf);raf=0;}if(d.type==='move'){preview=null;emit(d.startDraft,'drag-cancel');setStatus('已取消移动，恢复拖动前位置。');}try{host.releasePointerCapture?.(d.pointerId);}catch{}renderSelection();drawOverlay();}
+  function cancelDrag(){if(!drag)return;const d=drag;drag=null;lastMove=null;if(raf){cancelAnimationFrame(raf);raf=0;}if(d.type==='move'){preview=null;emit(d.startDraft,'drag-cancel');setStatus('已取消移动，恢复拖动前位置。');}else if(d.type==='measure'){restoreMeasures(d.before);setStatus('已取消量尺拖动，恢复原位置。');}try{host.releasePointerCapture?.(d.pointerId);}catch{}renderSelection();drawOverlay();}
   function pointerEnd(event){
     if(!drag||event.pointerId!==drag.pointerId)return;if(raf){cancelAnimationFrame(raf);raf=0;}processMove(event);
     const d=drag;drag=null;lastMove=null;try{host.releasePointerCapture?.(d.pointerId);}catch{}
@@ -198,6 +233,7 @@ export function createDesignEditor(options){
       if(d.valid&&d.result?.ok&&d.changed){commit(d.result.draft,'move','已应用个人试摆，尚未保存。');if(d.result.warnings?.length)setStatus(`已试摆；注意：${errorsText(d.result.warnings)}`,'warning');}
       else{preview=null;emit(d.startDraft,'drag-revert');if(!d.valid)setStatus(`没有应用：${errorsText(d.result?.errors)}`,'error');}
     }
+    else if(d.type==='measure'){if(d.valid!==false){rememberMeasures(d.before);renderMeasures();setStatus('量尺已选中，可拖动调整、输入长度或删除。');}else{restoreMeasures(d.before);setStatus('量尺端点无效，已恢复拖动前位置。','warning');}}
     renderSelection();drawOverlay();
   }
 
@@ -221,18 +257,34 @@ export function createDesignEditor(options){
     const button=event.target.closest('button');if(!button)return;
     finishColorPreview();
     if(button.dataset.mode){setMode(button.dataset.mode);return;}
+    if(button.dataset.measureSelect){cancelDrag();setMode('measure');selectedMeasure=Number(button.dataset.measureSelect);renderMeasures();drawOverlay();return;}
+    if(button.dataset.measureDelete){deleteMeasure(Number(button.dataset.measureDelete));return;}
     const action=button.dataset.action;
     if(action==='close')close();
     else if(action==='collapse'){collapsed=!collapsed;shell.classList.toggle('de-collapsed',collapsed);button.textContent=collapsed?'＋':'−';button.setAttribute('aria-expanded',String(!collapsed));button.setAttribute('aria-label',collapsed?'展开工具面板':'折叠工具面板');}
     else if(action==='plan')onRequestPlan();
     else if(action==='zoom-in')zoom(1.3);else if(action==='zoom-out')zoom(1/1.3);else if(action==='zoom-reset'){viewBox=homeViewBox&&[...homeViewBox];applyViewBox();}
-    else if(action==='measure-clear'){measurements=[];pendingPoint=null;renderMeasures();drawOverlay();}
+    else if(action==='measure-new'){cancelDrag();setMode('measure');measureArmed=true;selectedMeasure=null;pendingPoint=null;renderMeasures();drawOverlay();setStatus('新增量尺：依次点击 A、B；可与已有量尺重叠。');}
+    else if(action==='measure-delete')deleteMeasure(selectedMeasure);
+    else if(action==='measure-undo'){cancelDrag();if(measureHistory.length){restoreMeasures(measureHistory.pop());setStatus('已撤销量尺操作；家具和配色不变。');}}
+    else if(action==='measure-clear'){cancelDrag();const before=measureSnapshot();measurements=[];selectedMeasure=null;pendingPoint=null;measureArmed=false;rememberMeasures(before);renderMeasures();drawOverlay();setStatus('量尺已清空，可用“撤销量尺”恢复。');}
+    else if(action==='measure-coordinates-apply'){
+      cancelDrag();const line=measurements.find(line=>line.id===selectedMeasure),form=q('.de-measure-form');if(!line)return;
+      const names=['ax','ay','bx','by'];if(names.some(name=>!form.elements.namedItem(name).value.trim())){setStatus('请完整填写 A、B 的四个坐标。','error');return;}
+      const values=names.map(name=>Number(form.elements.namedItem(name).value)/10);editMeasure({...line,a:{x:values[0],y:values[1]},b:{x:values[2],y:values[3]}});
+    }
     else if(action==='palette-reset')commit({...draft,colors:{}},'palette-reset','已恢复正式配色。');
     else if(action==='save'){cancelDrag();const result=saveDraft(storage,draft,context);if(result.ok){savedSnapshot=clone(draft);setStatus('已保存到当前浏览器，其他设备和账号不会同步。');}else setStatus(`保存失败：${errorsText(result.errors)||'当前浏览器不可使用本地存储。'}`,'error');updateControls();}
     else if(action==='undo'&&history.length)confirm('撤销上一步？','仅撤销本次会话上一项个人修改，不影响正式方案。',()=>{cancelDrag();draft=history.pop();preview=null;emit(draft,'undo');refreshList();renderSelection();updateControls();setStatus('已撤销；如需保留请重新保存到本机。');});
     else if(action==='reset')confirm('恢复正式方案？','清除此方案在当前浏览器保存的个人草稿，并恢复正式位置和配色。其他方案不受影响。',()=>{cancelDrag();history.push(clone(draft));draft=createDraft(schemeId,sourceFingerprint);preview=null;savedSnapshot=null;const result=clearDraft(storage,schemeId);emit(draft,'reset');refreshList();renderSelection();drawOverlay();updateControls();setStatus(result?.ok===false?'预览已恢复，但本机旧草稿清除失败，请检查浏览器存储权限。':'已恢复正式方案；未修改公开网站模型。',result?.ok===false?'warning':'');});
   });
   listen(objectSelect,'change',()=>{finishColorPreview();const entry=listSelections(effective()).find(v=>recordKey(v)===objectSelect.value);select(entry);if(view!=='plan')onRequestPlan();});
+  listen(q('.de-measure-form'),'submit',event=>{
+    event.preventDefault();cancelDrag();const line=measurements.find(line=>line.id===selectedMeasure),input=q('.de-measure-form [name=length]');if(!line)return;
+    const length=Number(input.value),old=measurePoints(line.a,line.b).distanceMm;if(!input.value.trim()||!Number.isFinite(length)||length<1||length>100000||old<1){setStatus('请输入 1～100000 mm 的有效长度。','error');return;}
+    editMeasure({...line,b:{x:line.a.x+(line.b.x-line.a.x)*length/old,y:line.a.y+(line.b.y-line.a.y)*length/old}});
+  });
+  listen(q('.de-measure-form'),'keydown',event=>{if(event.key==='Enter'&&['ax','ay','bx','by'].includes(event.target.name)){event.preventDefault();q('[data-action=measure-coordinates-apply]').click();}});
   listen(q('.de-move-form'),'submit',event=>{
     event.preventDefault();cancelDrag();const info=selectedInfo(),permission=movePermission(info);if(!permission.ok){setStatus(permission.reason,'warning');return;}
     const dx=Number(q('[name=dx]').value),dy=Number(q('[name=dy]').value);if(!q('[name=dx]').value.trim()||!q('[name=dy]').value.trim()||!Number.isFinite(dx)||!Number.isFinite(dy)){setStatus('请输入有效的毫米数值。','error');return;}
@@ -250,8 +302,14 @@ export function createDesignEditor(options){
   listen(window,'pointermove',event=>{if(!drag||drag.pointerId!==event.pointerId)return;event.preventDefault();lastMove=event;if(!raf)raf=requestAnimationFrame(()=>{raf=0;if(lastMove)processMove(lastMove);});},{passive:false});
   listen(window,'pointerup',pointerEnd);
   listen(window,'pointercancel',event=>{if(drag?.pointerId===event.pointerId)cancelDrag();});
-  listen(window,'keydown',event=>{if(event.key==='Escape'&&opened&&!confirmation.open){if(drag){event.preventDefault();cancelDrag();}else if(colorPreviewKey){event.preventDefault();finishColorPreview(true);setStatus('已取消这次配色预览。');}else if(pendingPoint){pendingPoint=null;drawOverlay();updateControls();setStatus('已取消未完成的量尺。');}}});
-  listen(window,'resize',()=>drawOverlay());
+  listen(host,'lostpointercapture',event=>{if(drag?.pointerId===event.pointerId)cancelDrag();});
+  listen(window,'blur',()=>cancelDrag());
+  listen(window,'keydown',event=>{
+    if(!opened||confirmation.open||document.querySelector('dialog[open]'))return;
+    if(event.key==='Escape'){if(drag){event.preventDefault();cancelDrag();}else if(colorPreviewKey){event.preventDefault();finishColorPreview(true);setStatus('已取消这次配色预览。');}else if(pendingPoint||measureArmed){pendingPoint=null;measureArmed=false;renderMeasures();drawOverlay();setStatus('已取消未完成的量尺。');}}
+    else if((event.key==='Delete'||event.key==='Backspace')&&mode==='measure'&&view==='plan'&&selectedMeasure!==null&&!event.target.closest('input,textarea,select,[contenteditable]')){event.preventDefault();deleteMeasure(selectedMeasure);}
+  });
+  listen(window,'resize',()=>{cancelDrag();drawOverlay();});
   const loaded=loadDraft(storage,context);
   if(loaded.status==='loaded'){draft=clone(loaded.draft);savedSnapshot=clone(draft);setStatus('已恢复此方案在当前浏览器保存的个人草稿。');queueMicrotask(()=>{if(!destroyed)emit(draft,'load');});}
   else if(loaded.status==='fingerprint-mismatch')setStatus('正式方案已更新，旧草稿未自动应用。可点击“恢复正式”清除本机旧草稿。','warning');
