@@ -1,11 +1,11 @@
-import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.13.1';
-import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.13.1';
-import {createDesignEditor} from './design-editor.js?v=3.13.1';
-import {deriveData,furnitureKey,sourceFingerprint} from './design-editor-core.js?v=3.13.1';
-import {annotateEditorScene,createEditorSceneAdapter,editorBatchKey} from './editor-scene.js?v=3.13.1';
+import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.13.2';
+import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.13.2';
+import {createDesignEditor} from './design-editor.js?v=3.13.2';
+import {deriveData,furnitureKey,sourceFingerprint} from './design-editor-core.js?v=3.13.2';
+import {annotateEditorScene,createEditorSceneAdapter,editorBatchKey} from './editor-scene.js?v=3.13.2';
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
-const UI_REVISION = '3.13.1';
+const UI_REVISION = '3.13.2';
 document.documentElement.dataset.uiRevision = UI_REVISION;
 let ASSET_REVISION = '3.12.0';
 const revisedAsset = path => {const url=new URL(path,document.baseURI);url.searchParams.set('v',ASSET_REVISION);return url.href};
@@ -47,6 +47,23 @@ const descriptions = {
 const order = Object.keys(descriptions);
 const state = {room:'overall',view:'model',cutWalls:true,labels:true,dimensions:false,interior:false,walking:false,ready:false,roomCardVisible:true,diningClosed:false};
 const ROOM_CARD_STORAGE_KEY = 'house-design:room-card-visible';
+const measurementNoticePreferences=new Map();
+const measurementNoticeKey=()=>data?.measurementRevision?'house-design:measurement-notice:'+encodeURIComponent(`${data.measurementRevision.date||''}:${data.measurementRevision.version||''}`):null;
+function measurementNoticeHidden(){
+  const key=measurementNoticeKey();if(!key)return false;
+  if(!measurementNoticePreferences.has(key)){let hidden=false;try{hidden=localStorage.getItem(key)==='hidden'}catch{}measurementNoticePreferences.set(key,hidden)}
+  return measurementNoticePreferences.get(key);
+}
+function setMeasurementNoticeVisible(visible){
+  const key=measurementNoticeKey();if(!key)return;
+  measurementNoticePreferences.set(key,!visible);let persisted=true;
+  try{if(visible)localStorage.removeItem(key);else localStorage.setItem(key,'hidden')}catch{persisted=false}
+  syncMeasurementNotice();
+  // The drawing's viewport changed without a window resize. Recalculate SVG
+  // handles and the live camera without changing model dimensions or drafts.
+  requestAnimationFrame(()=>{window.dispatchEvent(new Event('resize'));resizeScene();scheduleRender()});
+  if(!visible)toast(persisted?'已隐藏复尺提示，可在“设计说明”中重新显示':'提示已隐藏；本机存储不可用，刷新后可能恢复');
+}
 let data, manifest, scheme, schemeCatalog, rooms = [], three, scene, camera, renderer, controls, model, cameraTween, defaultDistance=20, resizeObserver, dimensionLines, activeHorizontalFov=null, pendingFrame=null;
 let metadataOnlyRenderProof=null;
 let designEditor,editorScene,editorBaseline,editorDraft,editorCardRestore=null;
@@ -190,9 +207,11 @@ function localExistingPlanMarkup(plan){
 function syncMeasurementNotice(){
   const revision=data?.measurementRevision,notice=$('#measurement-notice');
   if(!notice)return;
-  notice.hidden=!revision;$('#workspace').classList.toggle('measurement-partial',Boolean(revision));
+  const visible=Boolean(revision)&&!measurementNoticeHidden();
+  notice.hidden=!visible;$('#workspace').classList.toggle('measurement-partial',visible);
   const roomNotice=measurementRoomNotice(state.room);
-  $('#workspace').classList.toggle('measurement-room-warning',Boolean(roomNotice));
+  $('#workspace').classList.toggle('measurement-room-warning',visible&&Boolean(roomNotice));
+  const toggle=$('#project-measurement-toggle');if(toggle){toggle.hidden=!revision;toggle.textContent=visible?'隐藏顶部复尺提示':'显示顶部复尺提示';toggle.setAttribute('aria-pressed',String(visible))}
   if(!revision)return;
   const view=state.view==='plan'?'平面':state.view==='renders'?'效果图':'空间模型';
   const modelPending=state.view==='model'&&(manifest?.measurementRevision?.date!==revision.date||manifest?.measurementRevision?.version!==revision.version);
@@ -226,6 +245,11 @@ function renderMeasurementAudit(){
     button.innerHTML='<span><small>本轮复尺 · 已应用 / 待核对</small>查看实测修订与旧模型保留范围</span><b>↗</b>';
     button.addEventListener('click',showMeasurement);$('#project-scheme-intro').insertAdjacentElement('afterend',button);
   }
+  if(!$('#project-measurement-toggle')){
+    const button=document.createElement('button');button.id='project-measurement-toggle';button.type='button';button.className='measurement-notice-toggle';button.setAttribute('aria-controls','measurement-notice');
+    button.addEventListener('click',()=>setMeasurementNoticeVisible(measurementNoticeHidden()));$('#project-measurement-link').insertAdjacentElement('afterend',button);
+  }
+  syncMeasurementNotice();
   const surveyArticle=$('#project-dialog .dialog-grid article:last-child');
   if(surveyArticle){surveyArticle.querySelector('b').textContent='部分复尺已应用，整屋尚未闭合';surveyArticle.querySelector('p').textContent='明确的局部数值按复尺修订；不确定墙位、外轮廓和面积保留旧模型并单列待核，不把旧假设当成实测。'}
   if(surveyArticle&&data.familyR3Revision)surveyArticle.querySelector('p').textContent='本版卧卫墙线按R3确认设计更新，并非新增实测。局部复尺证据保留；新墙线与既有窗位的相对尺寸、结构可改性及全屋定位仍须闭合。';
@@ -1270,6 +1294,7 @@ function bindControls(){
   $('#fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await $('#workspace').requestFullscreen()}catch{toast('当前浏览器不支持全屏，可使用横屏查看')}});
   ['#open-project','#open-dimensions'].forEach(id=>$(id).addEventListener('click',()=>$('#project-dialog').showModal()));
   $('#open-measurement').addEventListener('click',showMeasurement);
+  $('#hide-measurement-notice').addEventListener('click',()=>{setMeasurementNoticeVisible(false);$('#open-project').focus({preventScroll:true})});
   ['#open-bays','#view-bay-fitout','#project-bay-link'].forEach(id=>$(id).addEventListener('click',()=>{if($('#project-dialog').open)$('#project-dialog').close();showBayFitouts()}));
   ['#open-storage','#view-storage-fitout','#project-storage-link'].forEach(id=>$(id).addEventListener('click',()=>{if($('#project-dialog').open)$('#project-dialog').close();showStorageFitouts()}));
   $$('.dialog-close').forEach(button=>button.addEventListener('click',()=>button.closest('dialog').close()));
