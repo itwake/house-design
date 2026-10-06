@@ -93,6 +93,13 @@ export function buildWalkWorld(data){
   if(data.garage?.doorState==='hinged-open')for(const p of data.garage.parts.filter(p=>p.role==='hinged-door')){
     rect('garage-'+p.id,p.x/100,p.y/100,p.w/100,p.d/100,'door-leaf');
   }
+  // Scheme two presents the north-facing 800库 with its four folding leaves
+  // closed. Keep the visual privacy door physically blocking first-person
+  // walking as well; the storage contents remain a plan/elevation reference.
+  if(data.garage?.presentationDoorState==='folded-closed'){
+    const g=data.garage,spec=g.presentationDoor||{},opening=g.opening||{},depth=(spec.panelDepthCm??2.5)/100;
+    rect('garage-presentation-closed-door',opening.x1/100,opening.y1/100,(opening.x2-opening.x1)/100,depth,'door-leaf');
+  }
   // This floor lamp is authored directly in build_blender.py, not in the
   // plan furniture list. Its 440 mm shade is the widest standing obstruction.
   // Keep the source coordinate/GLB bound regression in test_walkthrough.mjs.

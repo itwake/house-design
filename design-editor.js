@@ -1,4 +1,4 @@
-import {createDraft,deriveData,listSelections,selectionInfo,measurePoints,validateMove,validateDraft,loadDraft,saveDraft,clearDraft} from './design-editor-core.js?v=3.13.2';
+import {createDraft,deriveData,listSelections,selectionInfo,measurePoints,validateMove,validateDraft,loadDraft,saveDraft,clearDraft} from './design-editor-core.js?v=3.13.3';
 
 const NS='http://www.w3.org/2000/svg';
 const COLOR_FIELDS=[['wall','墙面'],['floor','地面'],['cabinet','柜面'],['wood','木材'],['fabric','织物'],['accent','点缀']];

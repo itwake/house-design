@@ -25,7 +25,8 @@ if(family){
     // The tiny store is not walk-in: its aggregate remains a solid collision
     // body. Inward leaves are inside that envelope, not extra hall obstacles.
     assert.ok(world.obstacles.some(o=>o.id==='family_garage'));
-    assert.ok(!world.obstacles.some(o=>o.id.startsWith('garage-')),'No old outward fold blocks the hall');
+    assert.ok(world.obstacles.some(o=>o.id==='garage-presentation-closed-door'),'Closed presentation door blocks the north opening');
+    assert.ok(!world.obstacles.some(o=>o.id.startsWith('garage-folded-')),'No old outward fold blocks the hall');
   }else if(data.familyFlowRevision){
     const leaves=data.garage.parts.filter(p=>p.role==='folded-door');assert.equal(leaves.length,2,'Flow layout uses two physical east folded leaves');
     for(const leaf of leaves){const obstacle=world.obstacles.find(o=>o.id==='garage-'+leaf.id);assert.ok(obstacle,'Walking mode keeps folded leaf '+leaf.id);assert.deepEqual([obstacle.x,obstacle.z,obstacle.w,obstacle.d],[leaf.x/100,leaf.y/100,leaf.w/100,leaf.d/100]);}

@@ -1,11 +1,11 @@
-import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.13.2';
-import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.13.2';
-import {createDesignEditor} from './design-editor.js?v=3.13.2';
-import {deriveData,furnitureKey,sourceFingerprint} from './design-editor-core.js?v=3.13.2';
-import {annotateEditorScene,createEditorSceneAdapter,editorBatchKey} from './editor-scene.js?v=3.13.2';
+import {loadSchemeCatalog,resolveScheme,schemeRender} from './schemes.js?v=3.13.3';
+import {buildWalkWorld,findWalkStart,WalkController,WALK_STARTS,isWalkDoorInfill} from './walkthrough.js?v=3.13.3';
+import {createDesignEditor} from './design-editor.js?v=3.13.3';
+import {deriveData,furnitureKey,sourceFingerprint} from './design-editor-core.js?v=3.13.3';
+import {annotateEditorScene,createEditorSceneAdapter,editorBatchKey} from './editor-scene.js?v=3.13.3';
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
-const UI_REVISION = '3.13.2';
+const UI_REVISION = '3.13.3';
 document.documentElement.dataset.uiRevision = UI_REVISION;
 let ASSET_REVISION = '3.12.0';
 const revisedAsset = path => {const url=new URL(path,document.baseURI);url.searchParams.set('v',ASSET_REVISION);return url.href};
@@ -64,7 +64,7 @@ function setMeasurementNoticeVisible(visible){
   requestAnimationFrame(()=>{window.dispatchEvent(new Event('resize'));resizeScene();scheduleRender()});
   if(!visible)toast(persisted?'已隐藏复尺提示，可在“设计说明”中重新显示':'提示已隐藏；本机存储不可用，刷新后可能恢复');
 }
-let data, manifest, scheme, schemeCatalog, rooms = [], three, scene, camera, renderer, controls, model, cameraTween, defaultDistance=20, resizeObserver, dimensionLines, activeHorizontalFov=null, pendingFrame=null;
+let data, manifest, scheme, schemeCatalog, rooms = [], three, scene, camera, renderer, controls, model, cameraTween, defaultDistance=20, resizeObserver, dimensionLines, activeHorizontalFov=null, pendingFrame=null, garageDoorPresentation=null;
 let metadataOnlyRenderProof=null;
 let designEditor,editorScene,editorBaseline,editorDraft,editorCardRestore=null;
 const hasPersonalDraft=()=>Boolean(Object.keys(editorDraft?.offsets||{}).length||Object.keys(editorDraft?.colors||{}).length);
@@ -407,9 +407,9 @@ function renderStorageFitouts(){
     const sofa=data.furniture.find(f=>f.name==='三人沙发'),bookcase=data.laundry?.bookcase;
     const table=data.furniture.find(f=>f.purchasedProductId==='ikea-lisabo-80365717');
     const garageCard=data.familyPublicP2Revision?{
-      summary:'按确认P2：1500×1000mm分层800库北开四扇内折，西餐柜接至库门北缘；北面没有返柜。不是可步入储物间。',
-      dimensions:[`外包 ${g.w*10}×${g.d*10}mm / ${g.metrics.footprintM2.toFixed(2)}㎡；尺寸暂定`,`四扇各${metricMm(g.doorOperation.panelWidthCm)}，向库内折，双侧叠停后名义净开${metricMm(g.opening.clearWidthCm)}`,'库前365mm折门区必须留空；架腿及五金尚未深化','餐柜与东侧叠门间约980mm，小于儿童车1100mm横向包络，不能直接横抽',...g.items.map(f=>`${f.label}示意包络 ${f.w*10}×${f.d*10}×${f.hCm*10}mm；底面离地${metricMm(f.zCm||0)}`),'LISABO固定桌竖放贴柜；北1、东2、南1四席，取车先移开南椅'],
-      operation:'儿童车须斜转抬取；模型不证明实际能顺利取出。车把、踏板、手部空间、承重及折门运动必须实车排演，不能沿用上一版取车路线。'
+      summary:'按确认P2：1500×1000mm分层800库北开四扇折叠门，默认闭合遮挡内部；西餐柜接至库门北缘，北面没有返柜。不是可步入储物间。',
+      dimensions:[`外包 ${g.w*10}×${g.d*10}mm / ${g.metrics.footprintM2.toFixed(2)}㎡；尺寸暂定`,`四扇各${metricMm(g.presentationDoor?.panelWidthCm||g.doorOperation.panelWidthCm)}，默认闭合；取物时向库内折叠，名义开口${metricMm(g.opening.clearWidthCm)}`,'闭合门扇遮挡儿童车、婴儿车与层架；内部布局仍以平面和收纳说明核对','开门及取车时需保留前365mm操作区；架腿、门套与五金尚未深化','餐柜与库门旁侧约980mm，小于儿童车1100mm横向包络，不能直接横抽',...g.items.map(f=>`${f.label}示意包络 ${f.w*10}×${f.d*10}×${f.hCm*10}mm；底面离地${metricMm(f.zCm||0)}`),'LISABO固定桌竖放贴柜；北1、东2、南1四席，取车先移开南椅'],
+      operation:'日常保持四扇折叠门闭合；取车前先移开南椅并向库内折叠门扇。儿童车须斜转抬取；模型不证明实际能顺利取出，车把、踏板、手部空间、承重及折门运动必须实车排演。'
     }:table?{
       summary:'入户分层车库、东向双折门和北面餐柜保留；餐厅采用已购 LISABO 固定餐桌与餐椅，取车前需整理餐椅并让出操作空间。',
       dimensions:[`外包 ${g.w*10}×${g.d*10}mm，约${g.metrics.footprintM2.toFixed(3)}㎡；两车仍分层收纳`,`东向名义开口${metricMm(g.opening.clearWidthCm)}；双折门向北叠停，完整开启过程待现场核对`,...g.items.map(f=>`${f.label}示意包络 ${f.w*10}×${f.d*10}×${f.hCm*10}mm；底面离地${metricMm(f.zCm||0)}（非实物测量）`),`LISABO 固定餐桌占地${metricMm(table.w)}×${metricMm(table.d)}；餐椅拉出与取车操作须实物试摆`,`VIMLE 沙发宽${metricMm(sofa?.w)}；书架前模型净距${metricMm(sofa&&bookcase?bookcase.x-sofa.x-sofa.w:undefined)}，不等于现场已核净空`],
@@ -703,6 +703,33 @@ function renderParallelLaundryFitout(l){
   dialog.querySelector('[data-laundry-render]').onclick=()=>{$('#large-render').src=schemeRender(scheme,'laundry-detail');$('#large-render').alt='方案一并排洗烘与上方浅盆';$('#large-render-caption').textContent=renderProvenance('laundry-detail');$('#image-dialog').showModal()};
 }
 
+function familyGarageDoorClosed(g=data?.garage){
+  return Boolean(g?.presentationDoorState==='folded-closed'||g?.presentationDoor?.default==='closed');
+}
+
+function createGarageClosedDoor(THREE,g){
+  if(scheme?.id!=='family'||!familyGarageDoorClosed(g))return null;
+  const spec=g.presentationDoor||{},opening=g.opening||{};
+  const count=Math.max(1,Number(spec.panelCount)||4),width=(opening.x2-opening.x1)/count;
+  const depth=Number(spec.panelDepthCm)||2.5,height=Number(spec.heightCm)||241.2,zCm=Number(spec.zCm)||.8;
+  const group=new THREE.Group();group.name='方案二 · 800库默认关闭折叠门';
+  const panelMaterial=new THREE.MeshStandardMaterial({color:0xeee8dc,roughness:.78,metalness:0});
+  const edgeMaterial=new THREE.MeshStandardMaterial({color:0xc0ad91,roughness:.7,metalness:.02});
+  for(let i=0;i<count;i++){
+    const panel=new THREE.Mesh(new THREE.BoxGeometry(width/100,height/100,depth/100),panelMaterial.clone());
+    panel.position.set((opening.x1+width*(i+.5))/100,(zCm+height/2)/100,(opening.y1+depth/2)/100);
+    panel.name=`800库折叠门 · 扇 ${i+1}`;
+    panel.userData={kind:'garage-door-overlay',garageId:g.id,garageDoorState:'folded-closed',fixedFeature:true};
+    panel.castShadow=false;panel.receiveShadow=false;group.add(panel);
+    if(i>0){
+      const seam=new THREE.Mesh(new THREE.BoxGeometry(.006,height/100+.006,.004),edgeMaterial);
+      seam.position.set((opening.x1+width*i)/100,(zCm+height/2)/100,(opening.y1-.012)/100);
+      seam.name=`800库折叠门 · 缝 ${i}`;seam.userData={kind:'garage-door-overlay-seam',garageId:g.id,fixedFeature:true};group.add(seam);
+    }
+  }
+  return group;
+}
+
 function planPublicP2Laundry(){
   const l=data.laundry,c=l.counter,s=l.basin;
   const rect=(p,a)=>`<rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.d}" ${a}/>`;
@@ -710,9 +737,13 @@ function planPublicP2Laundry(){
 }
 function planPublicP2Garage(){
   const g=data.garage,rect=(p,a)=>`<rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.d}" ${a}/>`;
-  const parts=g.parts.filter(p=>['panel','folded-door'].includes(p.role)).map(p=>rect(p,`data-garage-part="${escapeHTML(p.id)}" fill="${p.role==='panel'?'#908d87':'#c5b9a7'}"`)).join('');
-  const items=g.items.map(p=>`<g data-garage-item="${escapeHTML(p.id)}" data-z-cm="${p.zCm||0}">${rect(p,`rx="3" fill="${p.zCm?'none':'#d5ddcf'}" stroke="#82957d" ${p.zCm?'stroke-dasharray="4 3"':''}`)}</g>`).join('');
-  return `<g data-family-garage="${g.id}" data-opening-face="north" pointer-events="none"><title>北向四扇内折，双侧叠停；儿童车斜转抬取待实车验证，不视为取放通过。</title>${rect(g,'fill="#eeece4"')}${parts}${rect({x:214,y:1287,w:146,d:36.5},'data-garage-fold-zone fill="#d1a377" fill-opacity=".15" stroke="#b78555" stroke-dasharray="3 3"')}${items}<text x="287" y="1307" text-anchor="middle" font-size="8" fill="#99714c">北面四扇内折 · 前365禁放物</text><text x="287" y="1342" text-anchor="middle" font-size="8" fill="#68785f">儿童车上层 / 婴儿车落地</text><text x="287" y="1372" text-anchor="middle" font-size="8" fill="#68785f">平台1230 · 抬放待核</text><text x="287" y="1410" text-anchor="middle" font-size="11" fill="#6e8069">800库 · 1500×1000暂定</text><text data-garage-movement-warning x="400" y="1264" font-size="10" fill="#9b6855">取车先移南椅 · 斜转抬取待核</text><text x="307" y="1277" text-anchor="middle" font-size="8" fill="#9b6855">叠门后旁侧约980</text></g>`;
+  const closed=familyGarageDoorClosed(g),spec=g.presentationDoor||{},panelCount=Math.max(1,Number(spec.panelCount)||4),panelWidth=(g.opening.x2-g.opening.x1)/panelCount,panelDepth=Number(spec.panelDepthCm)||2.5;
+  const parts=closed?Array.from({length:panelCount},(_,i)=>rect({x:g.opening.x1+i*panelWidth,y:g.opening.y1,w:panelWidth,d:panelDepth},`data-garage-part="presentation-fold-${i}" fill="#eee8dc" stroke="#b9a78d" stroke-width=".8"`)).join(''):g.parts.filter(p=>['panel','folded-door'].includes(p.role)).map(p=>rect(p,`data-garage-part="${escapeHTML(p.id)}" fill="${p.role==='panel'?'#908d87':'#c5b9a7'}"`)).join('');
+  const items=g.items.map(p=>`<g data-garage-item="${escapeHTML(p.id)}" data-z-cm="${p.zCm||0}" opacity="${closed?.2:1}">${rect(p,`rx="3" fill="${p.zCm?'none':'#d5ddcf'}" stroke="#82957d" ${p.zCm?'stroke-dasharray="4 3"':''}`)}</g>`).join('');
+  // In the closed state the storage layout is a faint plan reference behind
+  // the four door leaves, never a visible stack drawn over the doors.
+  const layers=closed?`${items}${parts}`:`${parts}${rect({x:214,y:1287,w:146,d:36.5},'data-garage-fold-zone fill="#d1a377" fill-opacity=".15" stroke="#b78555" stroke-dasharray="3 3"')}${items}`;
+  return `<g data-family-garage="${g.id}" data-opening-face="north" data-door-state="${closed?'folded-closed':'folded-open'}" pointer-events="none"><title>${closed?'北向四扇折叠门默认闭合，内部内容不从厅内直接暴露；':'北向四扇内折，双侧叠停；'}儿童车斜转抬取待实车验证，不视为取放通过。</title>${rect(g,'fill="#eeece4"')}${layers}<text x="287" y="1307" text-anchor="middle" font-size="8" fill="#99714c">${closed?'北面四扇折叠门 · 默认闭合':'北面四扇内折 · 前365禁放物'}</text><text x="287" y="1342" text-anchor="middle" font-size="8" fill="#68785f">儿童车上层 / 婴儿车落地</text><text x="287" y="1372" text-anchor="middle" font-size="8" fill="#68785f">平台1230 · 抬放待核</text><text x="287" y="1410" text-anchor="middle" font-size="11" fill="#6e8069">800库 · 1500×1000暂定</text><text data-garage-movement-warning x="400" y="1264" font-size="10" fill="#9b6855">${closed?'取车需先开折叠门、移南椅 · 斜转抬取待核':'取车先移南椅 · 斜转抬取待核'}</text><text x="307" y="1277" text-anchor="middle" font-size="8" fill="#9b6855">${closed?'默认闭合 · 内部布局示意':'叠门后旁侧约980'}</text></g>`;
 }
 function planPublicP2Art(){
   const art=data.modelAddons?.livingWallArt;if(!art)return '';
@@ -1049,6 +1080,8 @@ async function buildScene(){
       }
     });
     editorScene=createEditorSceneAdapter({model,data:editorBaseline||data,THREE});
+    garageDoorPresentation=createGarageClosedDoor(THREE,data.garage);
+    if(garageDoorPresentation)scene.add(garageDoorPresentation);
     // The editor clones materials for reversible tinting. Clip the live clones,
     // not the now-detached originals from the viewer's material preparation.
     wallMaterials.length=0;
